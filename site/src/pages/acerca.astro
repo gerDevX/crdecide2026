@@ -5,127 +5,298 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 <BaseLayout title="Acerca del Proyecto">
   <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 prose prose-slate prose-lg">
     
-    <h1>Acerca de Costa Rica Decide</h1>
+    <h1 class="flex items-center gap-3">
+      <span>ℹ️</span> Acerca de Costa Rica Decide
+    </h1>
 
-    <h2>Propósito</h2>
-    <p>
-      Costa Rica Decide nace de la necesidad de facilitar el acceso ciudadano a la información 
-      contenida en los planes de gobierno de los candidatos presidenciales.
-    </p>
-    <p>
-      Los planes de gobierno son documentos extensos (algunos superan las 200 páginas) que 
-      contienen propuestas, diagnósticos y visiones de país. Leerlos todos y compararlos 
-      requiere tiempo que la mayoría de los ciudadanos no tiene.
-    </p>
-    <p>
-      Esta herramienta extrae, organiza y presenta esa información de manera estructurada 
-      para que puedas tomar decisiones más informadas.
-    </p>
-
-    <hr />
-
-    <h2>Qué somos</h2>
-    <ul>
-      <li>Una herramienta de <strong>análisis estructural</strong> de documentos públicos</li>
-      <li>Un <strong>comparador visual</strong> de propuestas por tema</li>
-      <li>Un <strong>repositorio accesible</strong> de planes de gobierno</li>
-    </ul>
-
-    <h2>Qué NO somos</h2>
-    <ul>
-      <li>No somos un medio de comunicación</li>
-      <li>No hacemos periodismo de opinión</li>
-      <li>No recomendamos candidatos</li>
-      <li>No evaluamos ideologías</li>
-      <li>No predecimos ganadores</li>
-    </ul>
-
-    <hr />
-
-    <h2>Neutralidad</h2>
-    <p>
-      El análisis se basa exclusivamente en el <strong>texto literal</strong> de los planes de gobierno. 
-      No agregamos información que no esté en los documentos, no interpretamos intenciones 
-      y no hacemos juicios de valor.
-    </p>
-    <p>
-      Cuando evaluamos si una propuesta cumple con las dimensiones (existencia, plazo, mecanismo, 
-      financiamiento), lo hacemos con criterios objetivos y verificables. Cada evaluación 
-      incluye una referencia a la página exacta del documento original.
-    </p>
-
-    <hr />
-
-    <h2>Limitaciones</h2>
-    <p>Este análisis tiene limitaciones que debes conocer:</p>
-    <ul>
-      <li>
-        <strong>Solo analizamos lo escrito:</strong> Un plan de gobierno no es una predicción 
-        de lo que hará un gobierno. Muchas promesas no se cumplen, y algunas acciones no 
-        estaban en ningún plan.
-      </li>
-      <li>
-        <strong>La calidad no es solo estructura:</strong> Una propuesta bien estructurada 
-        no es necesariamente buena política. Y una propuesta vaga podría funcionar en la práctica.
-      </li>
-      <li>
-        <strong>El análisis es automatizado:</strong> Usamos algoritmos de procesamiento de 
-        texto que pueden cometer errores. Por eso incluimos enlaces a los documentos originales.
-      </li>
-      <li>
-        <strong>Los pesos son una decisión editorial:</strong> La ponderación de pilares 
-        (15% para economía, 2% para política exterior, etc.) refleja una priorización que 
-        puede no coincidir con la tuya.
-      </li>
-    </ul>
-
-    <hr />
-
-    <h2>Verifica por ti mismo</h2>
-    <p>
-      Cada propuesta en este sitio incluye:
-    </p>
-    <ul>
-      <li>El número de página donde aparece en el documento original</li>
-      <li>Un fragmento del texto (snippet) para contexto</li>
-      <li>Un enlace directo al PDF del plan de gobierno</li>
-    </ul>
-    <p>
-      Te invitamos a verificar cualquier dato que te parezca relevante para tu decisión.
-    </p>
-
-    <hr />
-
-    <h2>Código abierto</h2>
-    <p>
-      El código que genera este análisis está disponible públicamente. Puedes revisarlo, 
-      auditarlo y sugerir mejoras.
-    </p>
-
-    <hr />
-
-    <h2>Contacto</h2>
-    <p>
-      Si encuentras errores, tienes sugerencias o quieres reportar un problema, 
-      puedes contactarnos a través del repositorio del proyecto.
-    </p>
-
-    <div class="not-prose mt-12 p-6 bg-slate-100 rounded-lg">
-      <p class="text-slate-600 text-sm">
-        <strong>Nota importante:</strong> Este sitio no solicita ni acepta donaciones de 
-        partidos políticos, candidatos o sus representantes. Cualquier intento de influir 
-        en el contenido será rechazado y documentado públicamente.
+    <h2>🎯 Propósito</h2>
+    
+    <div class="not-prose bg-gradient-to-r from-civic-50 to-blue-50 border border-civic-200 rounded-xl p-6 mt-4">
+      <p class="text-lg text-slate-700 mb-4">
+        <strong class="text-civic-800">Costa Rica Decide</strong> nace de la necesidad de facilitar el acceso ciudadano a la información 
+        contenida en los planes de gobierno de los candidatos presidenciales.
       </p>
+      <div class="space-y-3">
+        <div class="flex items-start gap-3">
+          <span class="text-2xl">📚</span>
+          <p class="text-slate-600">
+            Los planes de gobierno son documentos extensos (algunos superan las <strong>200 páginas</strong>) que 
+            contienen propuestas, diagnósticos y visiones de país.
+          </p>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="text-2xl">⏰</span>
+          <p class="text-slate-600">
+            Leerlos todos y compararlos requiere <strong>tiempo que la mayoría de los ciudadanos no tiene</strong>.
+          </p>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="text-2xl">🎯</span>
+          <p class="text-slate-600">
+            Esta herramienta extrae, organiza y presenta esa información de manera estructurada 
+            para que puedas <strong>tomar decisiones más informadas</strong>.
+          </p>
+        </div>
+      </div>
     </div>
 
-    <p class="text-sm text-slate-500 mt-12">
-      <em>Costa Rica Decide 2026 · Versión 2.0</em>
-    </p>
+    <hr />
+
+    <h2>✅ Qué somos</h2>
+    
+    <div class="not-prose grid gap-4 mt-4">
+      <div class="flex items-center gap-4 bg-emerald-50 border border-emerald-200 rounded-xl p-4">
+        <span class="text-3xl">🔍</span>
+        <div>
+          <p class="font-semibold text-emerald-800">Herramienta de análisis estructural</p>
+          <p class="text-sm text-emerald-600">Procesamos documentos públicos de forma sistemática</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-4 bg-blue-50 border border-blue-200 rounded-xl p-4">
+        <span class="text-3xl">⚖️</span>
+        <div>
+          <p class="font-semibold text-blue-800">Comparador visual de propuestas</p>
+          <p class="text-sm text-blue-600">Organizamos por tema para facilitar la comparación</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-4 bg-purple-50 border border-purple-200 rounded-xl p-4">
+        <span class="text-3xl">📁</span>
+        <div>
+          <p class="font-semibold text-purple-800">Repositorio accesible</p>
+          <p class="text-sm text-purple-600">Todos los planes de gobierno en un solo lugar</p>
+        </div>
+      </div>
+    </div>
+
+    <h2>❌ Qué NO somos</h2>
+    
+    <div class="not-prose grid gap-3 mt-4">
+      <div class="flex items-center gap-3 bg-slate-100 border border-slate-200 rounded-lg px-4 py-3">
+        <span class="text-xl">🚫</span>
+        <p class="text-slate-700">No somos un <strong>medio de comunicación</strong></p>
+      </div>
+      <div class="flex items-center gap-3 bg-slate-100 border border-slate-200 rounded-lg px-4 py-3">
+        <span class="text-xl">🚫</span>
+        <p class="text-slate-700">No hacemos <strong>periodismo de opinión</strong></p>
+      </div>
+      <div class="flex items-center gap-3 bg-slate-100 border border-slate-200 rounded-lg px-4 py-3">
+        <span class="text-xl">🚫</span>
+        <p class="text-slate-700">No <strong>recomendamos candidatos</strong></p>
+      </div>
+      <div class="flex items-center gap-3 bg-slate-100 border border-slate-200 rounded-lg px-4 py-3">
+        <span class="text-xl">🚫</span>
+        <p class="text-slate-700">No <strong>evaluamos ideologías</strong></p>
+      </div>
+      <div class="flex items-center gap-3 bg-slate-100 border border-slate-200 rounded-lg px-4 py-3">
+        <span class="text-xl">🚫</span>
+        <p class="text-slate-700">No <strong>predecimos ganadores</strong></p>
+      </div>
+    </div>
+
+    <hr />
+
+    <h2>⚖️ Neutralidad</h2>
+    
+    <div class="not-prose bg-amber-50 border border-amber-200 rounded-xl p-6 mt-4">
+      <div class="flex items-start gap-4">
+        <span class="text-4xl">📜</span>
+        <div class="space-y-3">
+          <p class="text-lg text-amber-900">
+            El análisis se basa exclusivamente en el <strong>texto literal</strong> de los planes de gobierno.
+          </p>
+          <ul class="space-y-2 text-amber-800">
+            <li class="flex items-start gap-2">
+              <span class="text-amber-600">•</span>
+              No agregamos información que no esté en los documentos
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-amber-600">•</span>
+              No interpretamos intenciones
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-amber-600">•</span>
+              No hacemos juicios de valor
+            </li>
+          </ul>
+          <p class="text-amber-700 text-sm mt-3 border-t border-amber-200 pt-3">
+            Cuando evaluamos si una propuesta cumple con las dimensiones (existencia, plazo, mecanismo, 
+            financiamiento), lo hacemos con criterios objetivos y verificables. Cada evaluación 
+            incluye una referencia a la página exacta del documento original.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr />
+
+    <h2>⚠️ Limitaciones</h2>
+    <p>Este análisis tiene limitaciones que debes conocer:</p>
+    
+    <div class="not-prose grid gap-4 mt-4">
+      <div class="bg-orange-50 border-l-4 border-orange-400 rounded-r-xl p-4">
+        <div class="flex items-start gap-3">
+          <span class="text-2xl">📝</span>
+          <div>
+            <p class="font-semibold text-orange-800">Solo analizamos lo escrito</p>
+            <p class="text-sm text-orange-700">
+              Un plan de gobierno no es una predicción de lo que hará un gobierno. 
+              Muchas promesas no se cumplen, y algunas acciones no estaban en ningún plan.
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-orange-50 border-l-4 border-orange-400 rounded-r-xl p-4">
+        <div class="flex items-start gap-3">
+          <span class="text-2xl">📊</span>
+          <div>
+            <p class="font-semibold text-orange-800">La calidad no es solo estructura</p>
+            <p class="text-sm text-orange-700">
+              Una propuesta bien estructurada no es necesariamente buena política. 
+              Y una propuesta vaga podría funcionar en la práctica.
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-orange-50 border-l-4 border-orange-400 rounded-r-xl p-4">
+        <div class="flex items-start gap-3">
+          <span class="text-2xl">🤖</span>
+          <div>
+            <p class="font-semibold text-orange-800">El análisis es automatizado</p>
+            <p class="text-sm text-orange-700">
+              Usamos algoritmos de procesamiento de texto que pueden cometer errores. 
+              Por eso incluimos enlaces a los documentos originales.
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-orange-50 border-l-4 border-orange-400 rounded-r-xl p-4">
+        <div class="flex items-start gap-3">
+          <span class="text-2xl">⚖️</span>
+          <div>
+            <p class="font-semibold text-orange-800">Los pesos son una decisión editorial</p>
+            <p class="text-sm text-orange-700">
+              La ponderación de pilares (18% para seguridad, 2% para política exterior, etc.) 
+              refleja una priorización basada en las urgencias actuales de Costa Rica, que puede no coincidir con la tuya.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr />
+
+    <h2>🔎 Verifica por ti mismo</h2>
+    
+    <div class="not-prose bg-green-50 border border-green-200 rounded-xl p-6 mt-4">
+      <p class="text-lg text-green-800 mb-4">
+        Cada propuesta en este sitio incluye:
+      </p>
+      <div class="grid gap-3">
+        <div class="flex items-center gap-3 bg-white rounded-lg px-4 py-3 shadow-sm">
+          <span class="text-2xl">📄</span>
+          <p class="text-green-800">El <strong>número de página</strong> donde aparece en el documento original</p>
+        </div>
+        <div class="flex items-center gap-3 bg-white rounded-lg px-4 py-3 shadow-sm">
+          <span class="text-2xl">💬</span>
+          <p class="text-green-800">Un <strong>fragmento del texto</strong> (snippet) para contexto</p>
+        </div>
+        <div class="flex items-center gap-3 bg-white rounded-lg px-4 py-3 shadow-sm">
+          <span class="text-2xl">🔗</span>
+          <p class="text-green-800">Un <strong>enlace directo al PDF</strong> oficial del TSE</p>
+        </div>
+      </div>
+      <div class="mt-4 bg-green-100 rounded-lg px-4 py-3">
+        <p class="text-green-700 font-medium">
+          💡 Te invitamos a verificar cualquier dato que te parezca relevante para tu decisión.
+        </p>
+      </div>
+    </div>
+
+    <hr />
+
+    <h2>🔓 Transparencia</h2>
+    
+    <div class="not-prose grid md:grid-cols-2 gap-4 mt-4">
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-5">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="text-3xl">📐</span>
+          <p class="font-bold text-slate-800 text-lg">Metodología pública</p>
+        </div>
+        <p class="text-slate-600 text-sm">
+          Documentamos cómo analizamos cada plan, qué criterios usamos 
+          y cómo calculamos las puntuaciones.
+        </p>
+        <a href="/metodologia" class="inline-flex items-center gap-2 mt-3 text-civic-600 hover:text-civic-700 font-medium text-sm">
+          Ver metodología →
+        </a>
+      </div>
+      
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-5">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="text-3xl">📊</span>
+          <p class="font-bold text-slate-800 text-lg">Análisis objetivo</p>
+        </div>
+        <p class="text-slate-600 text-sm">
+          El código que genera este análisis está disponible públicamente. 
+          Puedes revisarlo, auditarlo y sugerir mejoras.
+        </p>
+      </div>
+    </div>
+
+    <hr />
+
+    <h2>📬 Contacto</h2>
+    
+    <div class="not-prose bg-blue-50 border border-blue-200 rounded-xl p-6 mt-4">
+      <div class="flex items-start gap-4">
+        <span class="text-4xl">💬</span>
+        <div>
+          <p class="text-lg text-blue-800 mb-2">
+            Si encuentras errores, tienes sugerencias o quieres reportar un problema:
+          </p>
+          <p class="text-blue-700">
+            Puedes contactarnos a través del repositorio del proyecto.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nota importante -->
+    <div class="not-prose mt-8 bg-red-50 border border-red-200 rounded-xl p-6">
+      <div class="flex items-start gap-4">
+        <span class="text-3xl">🚨</span>
+        <div>
+          <p class="font-bold text-red-800 mb-2">Nota importante sobre independencia</p>
+          <p class="text-red-700">
+            Este sitio <strong>no solicita ni acepta donaciones</strong> de partidos políticos, 
+            candidatos o sus representantes. Cualquier intento de influir en el contenido 
+            será <strong>rechazado y documentado públicamente</strong>.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="not-prose mt-12 text-center">
+      <p class="text-sm text-slate-500">
+        <span class="inline-flex items-center gap-2">
+          🇨🇷 Costa Rica Decide 2026 · Versión 2.0
+        </span>
+      </p>
+    </div>
 
   </article>
 </BaseLayout>
 
 <style>
+  .prose h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 2rem;
+  }
   .prose h2 {
     font-size: 1.5rem;
     font-weight: 700;
@@ -141,7 +312,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     color: #475569;
   }
   .prose hr {
-    margin: 2rem 0;
+    margin: 2.5rem 0;
     border-color: #e2e8f0;
   }
 </style>
