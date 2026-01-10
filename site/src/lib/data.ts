@@ -214,7 +214,7 @@ export function getPillarCardData(pillarId: PillarId): PillarCardData {
   return {
     pillar,
     avgScore,
-    topCandidates: candidateScoresForPillar.slice(0, 5),
+    topCandidates: candidateScoresForPillar, // Devolver todos los candidatos, no solo top 5
   };
 }
 

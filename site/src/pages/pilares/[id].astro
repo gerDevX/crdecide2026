@@ -248,15 +248,36 @@ const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
                     <p class="dashboard-candidate-party">{item.candidate.party_name}</p>
                   </div>
                   
-                  <div class={`dashboard-score-badge ${
-                    scorePercent === 100 ? 'perfect' : 
-                    scorePercent >= 75 ? 'high' : 
-                    scorePercent >= 50 ? 'medium' : 'low'
-                  }`}>
-                    <span class="dashboard-score-number">{scorePercent}</span>
-                    <span class="dashboard-score-symbol">%</span>
+                  <div class="dashboard-score-container">
+                    <div class={`dashboard-score-badge ${
+                      scorePercent === 100 ? 'perfect' : 
+                      scorePercent >= 75 ? 'high' : 
+                      scorePercent >= 50 ? 'medium' : 'low'
+                    }`}>
+                      <span class="dashboard-score-number">{scorePercent}</span>
+                      <span class="dashboard-score-symbol">%</span>
+                    </div>
+                    {item.score.penalties && item.score.penalties.length > 0 && (
+                      <div class="dashboard-score-detail">
+                        <span class="dashboard-raw-score">Base: {item.score.raw_score}/4</span>
+                        <span class="dashboard-penalty-count">-{item.score.raw_score - item.score.effective_score} penalización</span>
+                      </div>
+                    )}
                   </div>
                 </div>
+                
+                <!-- Penalty Alert -->
+                {item.score.penalties && item.score.penalties.length > 0 && (
+                  <div class="dashboard-penalty-alert">
+                    <span class="dashboard-penalty-icon">⚠️</span>
+                    <div class="dashboard-penalty-content">
+                      <span class="dashboard-penalty-title">Penalización fiscal aplicada:</span>
+                      {item.score.penalties.map((penalty: any) => (
+                        <p class="dashboard-penalty-reason">{penalty.reason}</p>
+                      ))}
+                    </div>
+                  </div>
+                )}
                 
                 <!-- Proposal Preview -->
                 {bestProposal && (
@@ -428,11 +449,23 @@ const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
                     <p class="express-candidate-party">{item.candidate.party_name}</p>
                   </div>
               
-                  <div class={`express-score-badge ${scorePercent === 100 ? 'perfect' : scorePercent >= 75 ? 'high' : scorePercent >= 50 ? 'medium' : 'low'}`}>
-                    <span class="express-score-number">{scorePercent}</span>
-                    <span class="express-score-symbol">%</span>
+                  <div class="express-score-container">
+                    <div class={`express-score-badge ${scorePercent === 100 ? 'perfect' : scorePercent >= 75 ? 'high' : scorePercent >= 50 ? 'medium' : 'low'}`}>
+                      <span class="express-score-number">{scorePercent}</span>
+                      <span class="express-score-symbol">%</span>
+                    </div>
+                    {item.score.penalties && item.score.penalties.length > 0 && (
+                      <span class="express-penalty-indicator">⚠️ -{item.score.raw_score - item.score.effective_score}</span>
+                    )}
                   </div>
                 </div>
+                
+                {/* Penalty Alert */}
+                {item.score.penalties && item.score.penalties.length > 0 && (
+                  <div class="express-penalty-alert">
+                    ⚠️ <strong>Penalización:</strong> {item.score.penalties.map((p: any) => p.reason).join('. ')}
+                  </div>
+                )}
                 
                 {bestProposal && (
                   <div class="express-proposal-preview">
@@ -659,8 +692,28 @@ const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
                   
                   <div class={`reading-candidate-score ${scoreClass}`}>
                     <span class="reading-score-value">{scorePercent}%</span>
+                    {item.score.penalties && item.score.penalties.length > 0 && (
+                      <span class="reading-score-base">(Base: {item.score.raw_score}/4)</span>
+                    )}
                   </div>
                 </div>
+                
+                {/* Penalty Alert for Reading Mode */}
+                {item.score.penalties && item.score.penalties.length > 0 && (
+                  <div class="reading-penalty-alert">
+                    <h4 class="reading-penalty-title">⚠️ Penalización fiscal aplicada:</h4>
+                    {item.score.penalties.map((penalty: any) => (
+                      <p class="reading-penalty-reason">
+                        <strong>Razón:</strong> {penalty.reason}
+                      </p>
+                    ))}
+                    <p class="reading-penalty-detail">
+                      Puntaje base: <strong>{item.score.raw_score}/4</strong> → 
+                      Penalización: <strong>-{item.score.raw_score - item.score.effective_score}</strong> → 
+                      Puntaje final: <strong>{item.score.effective_score}/4 ({scorePercent}%)</strong>
+                    </p>
+                  </div>
+                )}
                 
                 {bestProposal && (
                   <div class="reading-proposal-box">
@@ -1113,10 +1166,37 @@ const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
     color: #64748b;
   }
   
+  .express-score-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
+  }
+  
   .express-score-number {
     font-size: 1.5rem;
     font-weight: 800;
     line-height: 1;
+  }
+  
+  .express-penalty-indicator {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #dc2626;
+    background: #fef2f2;
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.25rem;
+  }
+  
+  .express-penalty-alert {
+    padding: 0.625rem 0.875rem;
+    background: linear-gradient(135deg, #fef2f2, #fff7ed);
+    border: 2px solid #fecaca;
+    border-radius: 0.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.8rem;
+    color: #7f1d1d;
+    line-height: 1.5;
   }
   
   .express-score-symbol {
@@ -1753,10 +1833,65 @@ const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
     color: #64748b;
   }
   
+  .dashboard-score-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
+  }
+  
   .dashboard-score-number {
     font-size: 1.75rem;
     font-weight: 800;
     line-height: 1;
+  }
+  
+  .dashboard-score-detail {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+  }
+  
+  .dashboard-raw-score {
+    color: #64748b;
+  }
+  
+  .dashboard-penalty-count {
+    color: #dc2626;
+    font-weight: 600;
+  }
+  
+  .dashboard-penalty-alert {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(135deg, #fef2f2, #fff7ed);
+    border: 2px solid #fecaca;
+    border-radius: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  
+  .dashboard-penalty-icon {
+    font-size: 1.25rem;
+    flex-shrink: 0;
+  }
+  
+  .dashboard-penalty-content {
+    flex: 1;
+  }
+  
+  .dashboard-penalty-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #dc2626;
+    margin-bottom: 0.25rem;
+  }
+  
+  .dashboard-penalty-reason {
+    font-size: 0.85rem;
+    color: #7f1d1d;
+    margin: 0;
+    line-height: 1.5;
   }
   
   .dashboard-score-symbol {
@@ -2294,6 +2429,44 @@ const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
   .reading-score-value {
     font-size: 1.5rem;
     font-weight: 800;
+  }
+  
+  .reading-score-base {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 500;
+    opacity: 0.8;
+    margin-top: 0.25rem;
+  }
+  
+  .reading-penalty-alert {
+    background: linear-gradient(135deg, #fef2f2, #fff7ed);
+    border: 3px solid #fecaca;
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  
+  .reading-penalty-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #dc2626;
+    margin: 0 0 0.75rem 0;
+  }
+  
+  .reading-penalty-reason {
+    font-size: 1.125rem;
+    line-height: 1.7;
+    color: #7f1d1d;
+    margin: 0 0 0.75rem 0;
+  }
+  
+  .reading-penalty-detail {
+    font-size: 1rem;
+    color: #991b1b;
+    margin: 0;
+    padding-top: 0.75rem;
+    border-top: 2px solid #fecaca;
   }
   
   /* Propuesta */
