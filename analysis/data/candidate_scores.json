@@ -1772,18 +1772,18 @@
       },
       {
         "pillar_id": "P2",
-        "raw_score": 3,
-        "effective_score": 3,
-        "normalized": 0.75,
-        "weighted": 0.0825,
+        "raw_score": 4,
+        "effective_score": 4,
+        "normalized": 1.0,
+        "weighted": 0.11,
         "penalties": []
       },
       {
         "pillar_id": "P3",
-        "raw_score": 2,
-        "effective_score": 2,
-        "normalized": 0.5,
-        "weighted": 0.09,
+        "raw_score": 3,
+        "effective_score": 3,
+        "normalized": 0.75,
+        "weighted": 0.135,
         "penalties": []
       },
       {
@@ -1804,34 +1804,34 @@
       },
       {
         "pillar_id": "P6",
-        "raw_score": 2,
-        "effective_score": 2,
-        "normalized": 0.5,
-        "weighted": 0.015,
+        "raw_score": 3,
+        "effective_score": 3,
+        "normalized": 0.75,
+        "weighted": 0.0225,
         "penalties": []
       },
       {
         "pillar_id": "P7",
-        "raw_score": 2,
-        "effective_score": 2,
-        "normalized": 0.5,
-        "weighted": 0.06,
+        "raw_score": 3,
+        "effective_score": 3,
+        "normalized": 0.75,
+        "weighted": 0.09,
         "penalties": []
       },
       {
         "pillar_id": "P8",
-        "raw_score": 3,
-        "effective_score": 3,
-        "normalized": 0.75,
-        "weighted": 0.0375,
+        "raw_score": 0,
+        "effective_score": 0,
+        "normalized": 0.0,
+        "weighted": 0.0,
         "penalties": []
       },
       {
         "pillar_id": "P9",
-        "raw_score": 3,
-        "effective_score": 3,
-        "normalized": 0.75,
-        "weighted": 0.015,
+        "raw_score": 0,
+        "effective_score": 0,
+        "normalized": 0.0,
+        "weighted": 0.0,
         "penalties": []
       },
       {
@@ -1848,19 +1848,19 @@
         "attacks_fiscal_rule": false,
         "proposes_debt_increase": false,
         "proposes_tax_increase": false,
-        "shows_fiscal_responsibility": false
+        "shows_fiscal_responsibility": true
       },
       "total_penalty": 0,
       "evidence": []
     },
     "overall": {
-      "raw_sum": 27,
-      "effective_sum": 27,
-      "weighted_sum": 0.6675,
-      "priority_weighted_sum": 0.375,
-      "critical_weighted_sum": 0.5325,
+      "raw_sum": 25,
+      "effective_sum": 25,
+      "weighted_sum": 0.725,
+      "priority_weighted_sum": 0.45,
+      "critical_weighted_sum": 0.635,
       "fiscal_penalty_applied": 0,
-      "notes": ""
+      "notes": "✅ Muestra responsabilidad fiscal | Sin propuestas: P8, P9"
     }
   },
   {

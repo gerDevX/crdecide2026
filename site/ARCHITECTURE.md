@@ -6,13 +6,13 @@
 
 | Ruta | Descripción | Componentes Principales |
 |------|-------------|------------------------|
-| `/` | Home + Dashboard principal | `<AgeGateModal/>`, `<PillarGrid/>`, `<QuickRanking/>` |
-| `/pilares` | Vista grid de 9 pilares | `<PillarCard/>` × 9 |
-| `/pilares/[id]` | Detalle de pilar (P1-P9) | `<PillarHeader/>`, `<CandidateRankingByPillar/>`, `<ProposalList/>` |
+| `/` | Home + Dashboard principal | `<ModeSelector/>`, `<PillarGrid/>`, `<QuickRanking/>` |
+| `/pilares` | Vista grid de 10 pilares | `<PillarCard/>` × 10 |
+| `/pilares/[id]` | Detalle de pilar (P1-P10) | `<PillarHeader/>`, `<CandidateRankingByPillar/>`, `<ProposalList/>` |
 | `/candidatos` | Grid de todos los candidatos | `<CandidateCard/>` × 20 |
-| `/candidatos/[id]` | Perfil de candidato | `<CandidateHeader/>`, `<CandidateMatrix/>`, `<ProposalsByPillar/>` |
+| `/candidatos/[id]` | Perfil de candidato | `<CandidateHeader/>`, `<CandidateMatrix/>`, `<FiscalRiskBadge/>` |
 | `/comparar` | Comparador (2-4 candidatos) | `<CompareSelector/>`, `<CompareTable/>`, `<CompareDetail/>` |
-| `/ranking` | Rankings ponderados | `<RankingTable/>`, `<RankingCritical/>` |
+| `/ranking` | Rankings ponderados (3 tipos) | `<RankingTable/>`, `<FiscalRiskBadge/>` |
 | `/metodologia` | Explicación del análisis | Contenido estático |
 | `/acerca` | Propósito y transparencia | Contenido estático |
 
@@ -20,63 +20,80 @@
 
 #### Home (`/`)
 ```
-┌─────────────────────────────────────────────────────────┐
-│  [Logo] Costa Rica Decide 2026    [Edad ▼] [Metodología]│
-├─────────────────────────────────────────────────────────┤
-│                                                         │
-│  ┌─────────────────────────────────────────────────┐   │
-│  │  AgeGateModal (si primera visita)                │   │
-│  │  "¿Cuál es tu rango de edad?"                    │   │
-│  │  [18-35] [36-49] [50+]                           │   │
-│  └─────────────────────────────────────────────────┘   │
-│                                                         │
-│  EXPLORA LOS 9 PILARES NACIONALES                      │
-│  ┌────────┐ ┌────────┐ ┌────────┐                      │
-│  │   P1   │ │   P2   │ │   P3   │  ...                 │
-│  │ Fiscal │ │Empleo  │ │Seguri. │                      │
-│  │ ████▓░ │ │ ███▓░░ │ │ ████░░ │                      │
-│  └────────┘ └────────┘ └────────┘                      │
-│                                                         │
-│  RANKING RÁPIDO                                        │
-│  1. FA ████████████ 0.98                               │
-│  2. PSD ██████████░ 0.91                               │
-│  3. PNR █████████░░ 0.86                               │
-│                                                         │
-│  [Ver ranking completo] [Comparar candidatos]          │
-└─────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────┐
+│  [Logo] Costa Rica Decide 2026    [Modo ▼] [🔍 Transparencia ▼]    │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  ┌─────────────────────────────────────────────────────────────┐   │
+│  │  ModeSelector (si primera visita)                           │   │
+│  │  "¿Cómo prefieres explorar?"                                │   │
+│  │  [🚀 Express] [📊 Dashboard] [📖 Lectura]                   │   │
+│  └─────────────────────────────────────────────────────────────┘   │
+│                                                                     │
+│  EXPLORA LOS 10 PILARES NACIONALES                                 │
+│  ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐           │
+│  │   P1   │ │   P2   │ │   P3   │ │   P4   │ │   P5   │           │
+│  │ Fiscal │ │Empleo  │ │Seguri. │ │ Salud  │ │ Educ.  │           │
+│  │ ████▓░ │ │ ███▓░░ │ │ ████░░ │ │ ███▓░░ │ │ ████░░ │           │
+│  └────────┘ └────────┘ └────────┘ └────────┘ └────────┘           │
+│  ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐           │
+│  │   P6   │ │   P7   │ │   P8   │ │   P9   │ │  P10   │           │
+│  │Ambiente│ │Reforma │ │ Social │ │Exterior│ │Infraest│           │
+│  └────────┘ └────────┘ └────────┘ └────────┘ └────────┘           │
+│                                                                     │
+│  🔴 ALERTA FISCAL: X candidatos atacan la regla fiscal            │
+│                                                                     │
+│  🏆 RANKING RÁPIDO                                                 │
+│  1. FA   🟢 ████████████ 0.98                                      │
+│  2. PSD  🟢 ██████████░░ 0.91                                      │
+│  3. PNR  🟠 █████████░░░ 0.86                                      │
+│                                                                     │
+│  [Ver ranking completo] [Comparar candidatos]                      │
+└─────────────────────────────────────────────────────────────────────┘
 ```
 
-#### Pilar Detalle (`/pilares/[id]`)
+#### Perfil de Candidato (`/candidatos/[id]`)
 ```
-┌─────────────────────────────────────────────────────────┐
-│  ← Pilares   P1: Sostenibilidad Fiscal   Peso: 15%     │
-├─────────────────────────────────────────────────────────┤
-│                                                         │
-│  RANKING EN ESTE PILAR                                 │
-│  ┌─────────────────────────────────────────────────┐   │
-│  │ 1. FA    [4/4] ████████████ Existencia ✓ Cuándo ✓│   │
-│  │ 2. PSD   [3/4] █████████░░░ Existencia ✓ Cómo ✓  │   │
-│  │ 3. PNR   [3/4] █████████░░░ Existencia ✓ Fondos ✓│   │
-│  └─────────────────────────────────────────────────┘   │
-│                                                         │
-│  PROPUESTAS DESTACADAS                                 │
-│  ┌─────────────────────────────────────────────────┐   │
-│  │ [FA] Reforma tributaria progresiva               │   │
-│  │ Dimensiones: [E✓] [C✓] [H✓] [F✓]                 │   │
-│  │ "...modificar la estructura del impuesto..."     │   │
-│  │ [Ver en PDF p.23 ↗]                              │   │
-│  └─────────────────────────────────────────────────┘   │
-│                                                         │
-└─────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────┐
+│  ← Candidatos   FA: Frente Amplio                                   │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  Puntaje: 0.98  │  Rank: #1  │  Riesgo: 🟢 BAJO                    │
+│                                                                     │
+│  MATRIZ DE PILARES                                                  │
+│  ┌─────────────────────────────────────────────────────────────┐   │
+│  │ P1 4/4 │ P2 3/4 │ P3 4/4 │ P4 4/4 │ P5 4/4 │               │   │
+│  │ P6 3/4 │ P7 4/4 │ P8 3/4 │ P9 3/4 │P10 3/4 │               │   │
+│  └─────────────────────────────────────────────────────────────┘   │
+│                                                                     │
+│  📊 ANÁLISIS FISCAL                                                │
+│  ┌─────────────────────────────────────────────────────────────┐   │
+│  │ Responsabilidad fiscal: Sí ✓                                │   │
+│  │ Ataca regla fiscal: No ✓                                    │   │
+│  │ Propone más deuda: No ✓                                     │   │
+│  │ Propone más impuestos: No ✓                                 │   │
+│  └─────────────────────────────────────────────────────────────┘   │
+│                                                                     │
+│  💪 FORTALEZAS                                                     │
+│  • Plan fiscal detallado con fuentes de financiamiento             │
+│  • Propuestas de seguridad con plazos definidos                    │
+│                                                                     │
+│  ⚠️ DEBILIDADES                                                    │
+│  • No menciona política exterior                                    │
+│  • Ambiente recibe poca atención                                    │
+│                                                                     │
+│  [📄 Ver plan de gobierno PDF]                                     │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
 ```
 
-### Vista por Defecto según Edad
+### Vista por Defecto según Modo
 
-| Edad | Vista Default | Densidad | Detalle Expandido |
+| Modo | Vista Default | Densidad | Detalle Expandido |
 |------|---------------|----------|-------------------|
-| 18-35 | Cards + Barras | Alta (grid 3-4 cols) | Colapsado |
-| 36-49 | Cards + Tabs | Media (grid 2-3 cols) | Tab disponible |
-| 50+ | Lista vertical | Baja (1 col) | Siempre visible |
+| Express | Cards full-screen | Una a la vez | Swipe para ver |
+| Dashboard | Cards + Grid | Alta (grid 2-3 cols) | Tabs disponibles |
+| Lectura | Lista vertical | Baja (1 col) | Siempre visible |
 
 ---
 
@@ -90,10 +107,9 @@
 // ============================================
 
 type AgeGroup = '18-35' | '36-49' | '50+';
-
-type PillarId = 'P1' | 'P2' | 'P3' | 'P4' | 'P5' | 'P6' | 'P7' | 'P8' | 'P9';
-
-type ConflictType = 'constitutional' | 'fiscal' | 'none';
+type VisualMode = 'express' | 'dashboard' | 'reading';
+type PillarId = 'P1' | 'P2' | 'P3' | 'P4' | 'P5' | 'P6' | 'P7' | 'P8' | 'P9' | 'P10';
+type FiscalRiskLevel = 'ALTO' | 'MEDIO' | 'BAJO';
 
 // ============================================
 // ENTIDADES PRINCIPALES
@@ -127,13 +143,6 @@ interface ExtractedFields {
   funding_text: string;
 }
 
-interface Compatibility {
-  normative_fiscal: 0 | 1;
-  conflict_type: ConflictType;
-  reference: string;
-  note: string;
-}
-
 interface Evidence {
   pdf_id: string;
   page: number;
@@ -148,16 +157,36 @@ interface Proposal {
   proposal_text: string;
   dimensions: Dimensions;
   extracted_fields: ExtractedFields;
-  compatibility: Compatibility;
   evidence: Evidence;
-  multi_pillar_source_proposal_id: string | null;
 }
 
-interface Penalty {
-  type: 'compatibility';
+// ============================================
+// ANÁLISIS FISCAL
+// ============================================
+
+interface FiscalPenalty {
+  type: 'attacks_fiscal_rule' | 'proposes_debt_increase' | 'proposes_tax_increase' | 'urgency_omission';
   value: number;
   reason: string;
+  evidence?: string;
 }
+
+interface FiscalFlags {
+  attacks_fiscal_rule: boolean;
+  proposes_debt_increase: boolean;
+  proposes_tax_increase: boolean;
+  shows_fiscal_responsibility: boolean;
+}
+
+interface FiscalAnalysis {
+  flags: FiscalFlags;
+  total_penalty: number;
+  evidence: string[];
+}
+
+// ============================================
+// SCORES
+// ============================================
 
 interface PillarScore {
   pillar_id: PillarId;
@@ -165,37 +194,65 @@ interface PillarScore {
   effective_score: number;
   normalized: number;
   weighted: number;
-  dimension_counts: Dimensions;
-  penalties: Penalty[];
-  evidence_refs: Array<{
-    proposal_id: string;
-    page: number;
-  }>;
+  penalties: FiscalPenalty[];
 }
 
 interface CandidateScore {
   candidate_id: string;
   pillar_scores: PillarScore[];
+  fiscal_analysis: FiscalAnalysis;
   overall: {
     raw_sum: number;
     effective_sum: number;
     weighted_sum: number;
-    coverage_critical_weighted_sum: number;
+    priority_weighted_sum: number;
+    critical_weighted_sum: number;
+    fiscal_penalty_applied: number;
     notes: string;
   };
 }
+
+// ============================================
+// ANÁLISIS DETALLADO
+// ============================================
+
+interface DetailedAnalysis {
+  candidate_id: string;
+  pdf_id: string;
+  total_pages: number;
+  fiscal_responsibility: FiscalFlags;
+  fiscal_evidence: string[];
+  urgency_coverage: UrgencyCoverage;
+  strengths: string[];
+  weaknesses: string[];
+  risk_level: FiscalRiskLevel;
+}
+
+// ============================================
+// RANKING
+// ============================================
 
 interface RankingEntry {
   rank: number;
   candidate_id: string;
   weighted_sum?: number;
-  coverage_critical_weighted_sum?: number;
+  fiscal_penalty?: number;
+  priority_weighted_sum?: number;
+  critical_weighted_sum?: number;
 }
 
 interface Ranking {
   method_version: string;
   weights: Record<PillarId, number>;
+  priority_pillars: string[];
+  critical_pillars: string[];
+  penalties_applied: {
+    attacks_fiscal_rule: number;
+    proposes_debt_increase: number;
+    proposes_tax_increase: number;
+  };
   ranking_overall_weighted: RankingEntry[];
+  ranking_priority_weighted: RankingEntry[];
   ranking_critical_weighted: RankingEntry[];
 }
 
@@ -211,68 +268,38 @@ interface PillarIndex {
   [pillar_id: string]: Pillar;
 }
 
-interface ProposalsByCandidate {
-  [candidate_id: string]: Proposal[];
-}
-
-interface ProposalsByPillar {
-  [pillar_id: string]: Proposal[];
-}
-
 interface ScoresByCandidate {
   [candidate_id: string]: CandidateScore;
 }
 
-// ============================================
-// TIPOS PARA UI
-// ============================================
-
-interface PillarCardData {
-  pillar: Pillar;
-  avgScore: number;
-  topCandidates: Array<{
-    candidate: Candidate;
-    score: PillarScore;
-  }>;
+interface AnalysisByCandidate {
+  [candidate_id: string]: DetailedAnalysis;
 }
 
-interface CompareData {
-  candidates: Candidate[];
-  scores: CandidateScore[];
-  proposalsByPillar: Record<PillarId, Proposal[]>;
-}
+// ============================================
+// CONSTANTES DE UI
+// ============================================
+
+const PILLAR_ICONS: Record<PillarId, string> = {
+  P1: '💰', P2: '💼', P3: '🛡️', P4: '🏥', P5: '📚',
+  P6: '🌿', P7: '⚖️', P8: '🤝', P9: '🌎', P10: '🏗️',
+};
+
+const PRIORITY_PILLARS: PillarId[] = ['P3', 'P4', 'P1', 'P7'];
+const CRITICAL_PILLARS: PillarId[] = ['P3', 'P4', 'P1', 'P7', 'P2', 'P5'];
 ```
 
-### Estrategia de Partición de JSON
+### Estructura de Datos JSON
 
 ```
 analysis/data/
-├── candidates.json          # 5 KB  - Cargado globalmente
-├── pillars.json             # 1 KB  - Cargado globalmente
-├── ranking.json             # 4 KB  - Cargado globalmente
-├── candidate_scores.json    # 140 KB - Cargado globalmente
-├── proposals.json           # 5 MB  - Particionado ↓
-│
-└── partitioned/             # Generado en build
-    ├── proposals-by-pillar/
-    │   ├── P1.json
-    │   ├── P2.json
-    │   └── ...
-    ├── proposals-by-candidate/
-    │   ├── fa.json
-    │   ├── pln.json
-    │   └── ...
-    └── indexes/
-        ├── candidate-index.json
-        ├── pillar-index.json
-        └── score-index.json
+├── candidates.json          # 20 candidatos
+├── pillars.json             # 10 pilares con pesos
+├── proposals.json           # ~3,400 propuestas
+├── candidate_scores.json    # Scores + análisis fiscal
+├── detailed_analysis.json   # Fortalezas, debilidades, riesgo
+└── ranking.json             # 3 tipos de ranking
 ```
-
-### Estructura Recomendada para `analysis/data/`
-
-Los JSONs actuales están bien. Solo agregar durante el build:
-- Índices invertidos por candidato y pilar
-- Propuestas particionadas para carga lazy
 
 ---
 
@@ -287,7 +314,7 @@ Los JSONs actuales están bien. Solo agregar durante el build:
 │                                                                     │
 │  SELECCIONA 2 A 4 CANDIDATOS                                       │
 │  ┌─────────────────────────────────────────────────────────────┐   │
-│  │ [FA ✓] [PLN ✓] [PUSC ✓] [PNR ○] [PSD ○] [+12 más...]       │   │
+│  │ [FA ✓] [PLN ✓] [PUSC ✓] [PNR ○] [PSD ○] [+15 más...]       │   │
 │  └─────────────────────────────────────────────────────────────┘   │
 │                                                                     │
 │  ═══════════════════════════════════════════════════════════════   │
@@ -295,6 +322,7 @@ Los JSONs actuales están bien. Solo agregar durante el build:
 │  ┌─────────── STICKY HEADER ───────────┐                           │
 │  │        │ FA      │ PLN     │ PUSC   │                           │
 │  │        │ 0.98    │ 0.68    │ 0.75   │                           │
+│  │ Riesgo │ 🟢 BAJO │ 🟠 MEDIO│ 🔴 ALTO│                           │
 │  └────────┴─────────┴─────────┴────────┘                           │
 │                                                                     │
 │  ┌─────────── SCROLLABLE BODY ─────────┐                           │
@@ -305,7 +333,6 @@ Los JSONs actuales están bien. Solo agregar durante el build:
 │  │ ─ ─ ─ ─│─ ─ ─ ─ ─│─ ─ ─ ─ ─│─ ─ ─ ─ │                           │
 │  │ P2 Empleo                           │                           │
 │  │        │ 3/4 ████│ 3/4 ████│ 2/4 ██░│                           │
-│  │        │ [E✓C✓H✓F○]│[E✓C○H✓F✓]│[E✓C○H✓F○]                       │
 │  │ ...                                 │                           │
 │  └─────────────────────────────────────┘                           │
 │                                                                     │
@@ -326,24 +353,25 @@ Los JSONs actuales están bien. Solo agregar durante el build:
 
 ### Vista Resumen vs Detalle
 
-**Resumen (default 18-35)**
+**Resumen (default Express)**
 - Solo score y barra
-- Badges de dimensiones compactos
+- Badge de riesgo fiscal compacto
 - Sin snippet
 
-**Detalle (default 36-49, 50+)**
+**Detalle (default Dashboard, Lectura)**
 - Score + barra + dimensiones expandidas
 - Snippet de evidencia visible
 - Link a PDF con página
+- Análisis fiscal completo
 
 ### Componentes Específicos
 
-#### `<AgeGateModal/>`
+#### `<ModeSelector/>`
 ```
-Props: { onSelect: (age: AgeGroup) => void }
+Props: { onSelect: (mode: VisualMode) => void }
 State: isOpen (true si no hay preferencia guardada)
-UI: Modal centrado, 3 botones grandes, cierra al seleccionar
-Storage: localStorage.setItem('ageGroup', value)
+UI: Modal con 3 opciones visuales, cierra al seleccionar
+Storage: localStorage.setItem('costarica-decide-mode', value)
 ```
 
 #### `<PillarCard/>`
@@ -352,11 +380,11 @@ Props: {
   pillar: Pillar;
   avgScore: number;
   topCandidate?: { name: string; score: number };
-  ageGroup: AgeGroup;
+  mode: VisualMode;
 }
-UI 18-35: Card compacta, barra horizontal, sin texto extra
-UI 36-49: Card con descripción corta expandible
-UI 50+: Card vertical, texto grande, barra ancha
+UI Express: Card compacta, barra horizontal, sin texto extra
+UI Dashboard: Card con descripción corta expandible
+UI Lectura: Card vertical, texto grande, barra ancha
 ```
 
 #### `<ScoreBar/>`
@@ -381,26 +409,26 @@ UI Expanded: Existencia ✓ | Cuándo ✓ | Cómo ○ | Fondos ○
 Colors: ✓ = green-600, ○ = gray-400
 ```
 
+#### `<FiscalRiskBadge/>`
+```
+Props: {
+  risk: FiscalRiskLevel;
+  compact?: boolean;
+}
+UI Compact: 🟢 / 🟠 / 🔴
+UI Expanded: 🟢 BAJO / 🟠 MEDIO / 🔴 ALTO + tooltip con explicación
+Colors: BAJO = green, MEDIO = amber, ALTO = red
+```
+
 #### `<CandidateMatrix/>`
 ```
 Props: {
   candidate: Candidate;
   scores: PillarScore[];
-  ageGroup: AgeGroup;
+  mode: VisualMode;
 }
-UI: Grid 3x3 de los 9 pilares con score visual
+UI: Grid de 10 pilares con score visual
 Hover: Muestra nombre del pilar y score numérico
-```
-
-#### `<CompareTable/>`
-```
-Props: {
-  candidates: Candidate[];
-  scores: CandidateScore[];
-  view: 'summary' | 'detail';
-}
-UI: Tabla sticky-header con filas por pilar
-Columns: Pilar | Candidato1 | Candidato2 | ...
 ```
 
 #### `<EvidenceLink/>`
@@ -416,27 +444,24 @@ Href: /planes/{pdfId}.pdf#page={page}
 
 ---
 
-## D) UX ADAPTATIVA POR EDAD
+## D) 3 MODOS VISUALES
 
 ### Diferencias Concretas
 
-| Aspecto | 18-35 | 36-49 | 50+ |
-|---------|-------|-------|-----|
+| Aspecto | Express 🚀 | Dashboard 📊 | Lectura 📖 |
+|---------|------------|--------------|------------|
+| **Layout** | Full-screen cards | Grid responsivo | Una columna |
 | **Base font** | 16px | 16px | 20px |
-| **Headings** | text-xl | text-2xl | text-3xl |
-| **Line height** | 1.4 | 1.5 | 1.7 |
-| **Grid columns** | 3-4 | 2-3 | 1 |
+| **Headings** | text-2xl bold | text-xl semibold | text-3xl bold |
 | **Card padding** | p-4 | p-5 | p-6 |
-| **Button size** | py-2 px-4 | py-2.5 px-5 | py-3 px-6 |
-| **Animations** | Sí (subtle) | Mínimas | Ninguna |
-| **Hover effects** | Sí | Sí | No |
-| **Default view** | Resumen | Resumen + tabs | Detalle completo |
-| **Scroll behavior** | Smooth | Smooth | Auto |
+| **Grid columns** | 1 | 2-3 | 1 |
+| **Animaciones** | Sí (suaves) | Sutiles | Ninguna |
+| **Riesgo fiscal** | Emoji | Badge + texto | Texto completo |
 
-### CTAs por Edad
+### CTAs por Modo
 
-| Acción | 18-35 | 36-49 | 50+ |
-|--------|-------|-------|-----|
+| Acción | Express | Dashboard | Lectura |
+|--------|---------|-----------|---------|
 | Ver detalle | "Ver más" | "Ver detalle" | "Ver propuesta completa" |
 | Comparar | "Comparar" | "Comparar candidatos" | "Comparar propuestas" |
 | Evidencia | "PDF ↗" | "Ver en plan oficial" | "Abrir documento oficial (PDF)" |
@@ -445,60 +470,28 @@ Href: /planes/{pdfId}.pdf#page={page}
 ### Implementación Técnica
 
 ```typescript
-// lib/age-group.ts
+// lib/mode.ts
 
-export type AgeGroup = '18-35' | '36-49' | '50+';
+export type VisualMode = 'express' | 'dashboard' | 'reading';
 
-const STORAGE_KEY = 'costarica-decide-age-group';
+const STORAGE_KEY = 'costarica-decide-mode';
 
-export function getAgeGroup(): AgeGroup | null {
-  if (typeof window === 'undefined') return null;
-  return localStorage.getItem(STORAGE_KEY) as AgeGroup | null;
-}
-
-export function setAgeGroup(age: AgeGroup): void {
-  localStorage.setItem(STORAGE_KEY, age);
-  document.documentElement.setAttribute('data-age-group', age);
-}
-
-export function getAgeGroupClasses(age: AgeGroup): Record<string, string> {
-  const classes = {
-    '18-35': {
-      container: 'grid-cols-3 lg:grid-cols-4 gap-4',
-      card: 'p-4',
-      text: 'text-base',
-      heading: 'text-xl',
-      button: 'py-2 px-4 text-sm',
-    },
-    '36-49': {
-      container: 'grid-cols-2 lg:grid-cols-3 gap-5',
-      card: 'p-5',
-      text: 'text-base',
-      heading: 'text-2xl',
-      button: 'py-2.5 px-5 text-base',
-    },
-    '50+': {
-      container: 'grid-cols-1 gap-6',
-      card: 'p-6',
-      text: 'text-lg leading-relaxed',
-      heading: 'text-3xl',
-      button: 'py-3 px-6 text-lg',
-    },
-  };
-  return classes[age];
-}
+export function getMode(): VisualMode | null;
+export function setMode(mode: VisualMode): void;
+export function hasSelectedMode(): boolean;
+export function getModeClasses(mode: VisualMode): Record<string, string>;
 ```
 
-### Selector Manual en Header
+### Selector en Header
 
 ```
 ┌─────────────────────────────────────────────────┐
-│  [Logo]  Pilares  Candidatos  Comparar  │ 50+ ▼│
-│                                         ├──────┤
-│                                         │18-35 │
-│                                         │36-49 │
-│                                         │50+ ✓ │
-│                                         └──────┘
+│  [Logo]  Pilares  Ranking  Candidatos  │ 📊 ▼  │
+│                                        ├──────┤
+│                                        │🚀 18-35│
+│                                        │📊 36-49│
+│                                        │📖 50+ ✓│
+│                                        └──────┘
 └─────────────────────────────────────────────────┘
 ```
 
@@ -513,8 +506,8 @@ export function getAgeGroupClasses(age: AgeGroup): Record<string, string> {
 | Framework | Astro 4.x |
 | Styling | Tailwind CSS 3.x |
 | Lenguaje | TypeScript 5.x |
-| Iconos | Lucide Icons |
-| Fuentes | Inter (system-ui fallback) |
+| Iconos | Emojis + Lucide Icons |
+| Fuentes | System UI (fallbacks) |
 | PDF Viewer | Link externo (navegador nativo) |
 
 ### Estructura de Carpetas
@@ -527,43 +520,46 @@ site/
 ├── package.json
 │
 ├── public/
-│   └── planes/              # Symlink a analysis/planes/
+│   ├── planes/              # PDFs de planes de gobierno
+│   ├── favicon.svg
+│   ├── icons/
+│   ├── manifest.json
+│   ├── sw.js
+│   └── offline.html
 │
 ├── src/
 │   ├── components/
 │   │   ├── layout/
 │   │   │   ├── Header.astro
-│   │   │   ├── Footer.astro
-│   │   │   └── Layout.astro
+│   │   │   └── Footer.astro
 │   │   │
 │   │   ├── ui/
+│   │   │   ├── ModeSelector.astro
+│   │   │   ├── AgeGateModal.astro
 │   │   │   ├── ScoreBar.astro
 │   │   │   ├── DimensionBadges.astro
 │   │   │   ├── EvidenceLink.astro
-│   │   │   ├── Button.astro
-│   │   │   └── Card.astro
+│   │   │   └── FiscalRiskBadge.astro
+│   │   │
+│   │   ├── modes/
+│   │   │   ├── express/
+│   │   │   │   ├── ExpressCard.astro
+│   │   │   │   └── ExpressSwiper.astro
+│   │   │   ├── dashboard/
+│   │   │   └── reading/
+│   │   │       └── ReadingRanking.astro
 │   │   │
 │   │   ├── pillars/
 │   │   │   ├── PillarCard.astro
-│   │   │   ├── PillarGrid.astro
-│   │   │   └── PillarHeader.astro
+│   │   │   └── PillarGrid.astro
 │   │   │
 │   │   ├── candidates/
 │   │   │   ├── CandidateCard.astro
-│   │   │   ├── CandidateMatrix.astro
-│   │   │   └── CandidateHeader.astro
+│   │   │   └── CandidateMatrix.astro
 │   │   │
-│   │   ├── compare/
-│   │   │   ├── CompareSelector.astro
-│   │   │   ├── CompareTable.astro
-│   │   │   └── CompareDetail.astro
-│   │   │
-│   │   ├── ranking/
-│   │   │   ├── RankingTable.astro
-│   │   │   └── QuickRanking.astro
-│   │   │
-│   │   └── modals/
-│   │       └── AgeGateModal.astro
+│   │   └── ranking/
+│   │       ├── RankingTable.astro
+│   │       └── QuickRanking.astro
 │   │
 │   ├── layouts/
 │   │   └── BaseLayout.astro
@@ -582,11 +578,10 @@ site/
 │   │   └── acerca.astro
 │   │
 │   ├── lib/
-│   │   ├── data.ts           # Carga de JSON
+│   │   ├── data.ts           # Carga de JSON + funciones
 │   │   ├── types.ts          # TypeScript types
-│   │   ├── age-group.ts      # Gestión de edad
-│   │   ├── pillars.ts        # Helpers de pilares
-│   │   └── format.ts         # Formateo de datos
+│   │   ├── mode.ts           # Gestión de modo visual
+│   │   └── age-group.ts      # Backward compatibility
 │   │
 │   └── styles/
 │       └── global.css
@@ -606,26 +601,14 @@ export default defineConfig({
     assets: '_assets',
     inlineStylesheets: 'auto',
   },
-  vite: {
-    build: {
-      rollupOptions: {
-        output: {
-          manualChunks: {
-            'proposals': ['./src/lib/proposals.ts'],
-          },
-        },
-      },
-    },
-  },
 });
 ```
 
 **Optimizaciones:**
 1. Pre-render todas las rutas estáticas
 2. JSON pequeños (<50KB) inlineados
-3. Proposals cargado lazy por página
-4. Sin JavaScript para páginas informativas
-5. Islands solo para interactividad (compare, age selector)
+3. Sin JavaScript para páginas informativas
+4. Islands solo para interactividad (compare, mode selector)
 
 ### Comandos de Desarrollo
 
@@ -665,21 +648,23 @@ Estos documentos son públicos y los puedes descargar directamente desde este si
 
 ## ¿Qué son los pilares?
 
-Organizamos las propuestas en **9 áreas temáticas** que consideramos fundamentales para el país:
+Organizamos las propuestas en **10 áreas temáticas** que consideramos fundamentales para el país:
 
 | Pilar | ¿De qué trata? | Peso |
 |-------|----------------|------|
 | **P1. Sostenibilidad fiscal** | Impuestos, deuda, gasto público | 15% |
-| **P2. Empleo y competitividad** | Trabajo, empresas, inversión | 15% |
-| **P3. Seguridad ciudadana** | Policía, crimen, justicia | 15% |
+| **P2. Empleo y competitividad** | Trabajo, empresas, inversión | 12% |
+| **P3. Seguridad ciudadana** | Policía, crimen, justicia | 18% |
 | **P4. Salud pública (CCSS)** | Hospitales, medicina, pensiones | 15% |
-| **P5. Educación** | Escuelas, universidades, capacitación | 15% |
-| **P6. Ambiente** | Cambio climático, conservación | 5% |
-| **P7. Reforma del Estado** | Corrupción, eficiencia, transparencia | 10% |
-| **P8. Política social** | Pobreza, vulnerabilidad, subsidios | 8% |
+| **P5. Educación** | Escuelas, universidades, capacitación | 12% |
+| **P6. Ambiente** | Cambio climático, conservación | 4% |
+| **P7. Reforma del Estado** | Corrupción, eficiencia, transparencia | 12% |
+| **P8. Política social** | Pobreza, vulnerabilidad, subsidios | 5% |
 | **P9. Política exterior** | Comercio internacional, diplomacia | 2% |
+| **P10. Infraestructura** | Carreteras, puentes, APPs | 5% |
 
-Los **pilares críticos** (P1-P5 y P7) suman el 85% del peso total porque son los temas que más impactan el día a día de los costarricenses.
+Los **pilares prioritarios** (P3, P4, P1, P7) suman el 60% del peso total.
+Los **pilares críticos** (incluye P2 y P5) suman el 81%.
 
 ---
 
@@ -713,15 +698,23 @@ Para cada propuesta que encontramos, respondemos **4 preguntas simples**:
 
 ---
 
-## ¿Qué es la compatibilidad normativa?
+## ¿Qué es el análisis fiscal?
 
-Además de las 4 preguntas anteriores, verificamos si la propuesta **presenta conflictos claros** con:
+Además de las 4 dimensiones, evaluamos la **responsabilidad fiscal** de cada candidato:
 
-- La **Constitución Política** de Costa Rica
-- La **regla fiscal** vigente
-- El **destino legal** de ciertos fondos (como los de la CCSS)
+| Indicador | Qué significa | Penalización |
+|-----------|---------------|--------------|
+| 🔴 **Ataca regla fiscal** | Propone eliminar o flexibilizar la regla fiscal que mantiene las finanzas de CR a flote | -10% |
+| 💰 **Más deuda** | Propone aumentar la deuda pública sin un plan claro de sostenibilidad | -5% |
+| 📈 **Más impuestos** | Propone nuevos impuestos al pueblo costarricense | -3% |
 
-**Importante:** Solo marcamos conflicto cuando es **explícito y documentable**. Si el candidato propone reformar la ley para hacer algo, no hay conflicto.
+### Niveles de Riesgo Fiscal
+
+| Nivel | Emoji | Qué significa |
+|-------|-------|---------------|
+| **BAJO** | 🟢 | Candidato fiscalmente responsable |
+| **MEDIO** | 🟠 | Algunas propuestas con impacto fiscal |
+| **ALTO** | 🔴 | Propuestas que ponen en riesgo las finanzas del país |
 
 ---
 
@@ -735,6 +728,7 @@ El puntaje final se calcula así:
 1. Se normaliza el puntaje de cada pilar (0 a 1)
 2. Se multiplica por el peso del pilar
 3. Se suman todos los pilares
+4. Se aplican las penalizaciones fiscales
 
 **Máximo posible:** 1.0 (todas las propuestas perfectas en todos los pilares)
 
@@ -771,5 +765,5 @@ Este proyecto fue desarrollado con herramientas de análisis automatizado. El c�
 ---
 
 *Última actualización: Enero 2026*
-*Versión del análisis: v2*
+*Versión del análisis: v4 (con análisis fiscal)*
 ```

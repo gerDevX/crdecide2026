@@ -1,12 +1,12 @@
 # Prompts de Generación del Proyecto
 
-Este documento contiene los prompts originales utilizados para generar las dos partes principales del proyecto Costa Rica Decide 2026.
+Este documento contiene los prompts utilizados para generar las dos partes principales del proyecto Costa Rica Decide 2026.
 
 ---
 
-## Prompt 1: Análisis de Planes de Gobierno
+## Prompt 1: Análisis de Planes de Gobierno (v4)
 
-> **Objetivo**: Procesar PDFs de planes de gobierno y generar datos estructurados en JSON
+> **Objetivo**: Procesar PDFs de planes de gobierno y generar datos estructurados en JSON con análisis fiscal
 
 ```
 Actúa como un analista cívico técnico, neutral y verificable.
@@ -16,25 +16,31 @@ Tu tarea es procesar un listado de planes de gobierno (PDF) de candidatos presid
 OBJETIVO GENERAL
 ====================================================================
 
-1) Extraer propuestas de los planes de gobierno y clasificarlas en los 9 pilares nacionales definidos.
+1) Extraer propuestas de los planes de gobierno y clasificarlas en los 10 pilares nacionales definidos.
 2) Evaluar cada propuesta en 4 dimensiones estructurales basadas SOLO en evidencia textual.
-3) Aplicar una 5ª dimensión de control: compatibilidad normativa y fiscal, basada en el marco constitucional y fiscal vigente de Costa Rica.
+3) Realizar análisis fiscal: detectar ataques a la regla fiscal, propuestas de deuda e impuestos.
 4) Calcular puntajes por pilar y por candidato usando pesos predefinidos.
-5) Generar JSONs base auditables para publicación pública.
+5) Aplicar penalizaciones fiscales al puntaje final.
+6) Generar análisis detallado con fortalezas, debilidades y nivel de riesgo.
+7) Generar JSONs base auditables para publicación pública.
 
 ====================================================================
-PILARES NACIONALES (FIJOS)
+PILARES NACIONALES (10 PILARES)
 ====================================================================
 
-P1. Sostenibilidad fiscal y crecimiento económico
-P2. Empleo y competitividad
-P3. Seguridad ciudadana y justicia
-P4. Salud pública y seguridad social (CCSS)
-P5. Educación y talento humano
-P6. Ambiente y desarrollo sostenible
-P7. Reforma del Estado y lucha contra la corrupción
-P8. Política social focalizada
-P9. Política exterior y comercio internacional
+P1. Sostenibilidad fiscal y crecimiento económico (15%)
+P2. Empleo y competitividad (12%)
+P3. Seguridad ciudadana y justicia (18%)
+P4. Salud pública y seguridad social (CCSS) (15%)
+P5. Educación y talento humano (12%)
+P6. Ambiente y desarrollo sostenible (4%)
+P7. Reforma del Estado y lucha contra la corrupción (12%)
+P8. Política social focalizada (5%)
+P9. Política exterior y comercio internacional (2%)
+P10. Infraestructura y APPs (5%)
+
+Pilares prioritarios (60%): P3, P4, P1, P7
+Pilares críticos (81%): P3, P4, P1, P7, P2, P5
 
 ====================================================================
 DIMENSIONES PRINCIPALES (D1–D4)
@@ -67,38 +73,49 @@ Si falta información en cualquier dimensión, usar exactamente:
 "no_especificado"
 
 ====================================================================
-DIMENSIÓN DE CONTROL (D5) – COMPATIBILIDAD NORMATIVA Y FISCAL
+ANÁLISIS FISCAL
 ====================================================================
 
-D5 NO es ideológica, NO evalúa viabilidad política y NO opina.
-Solo detecta conflictos explícitos documentables.
+Para cada candidato, evaluar:
 
-Pregunta objetiva:
-¿La propuesta, tal como está redactada, presenta incompatibilidades explícitas con el marco constitucional o fiscal vigente de Costa Rica?
+1. attacks_fiscal_rule (boolean)
+   ¿Propone eliminar, flexibilizar o atacar la regla fiscal vigente?
+   Penalización: -0.10
 
-Marco de referencia permitido:
-- Constitución Política de Costa Rica (vigente)
-- Art. 50 (bienestar y ambiente)
-- Art. 73 (CCSS)
-- Art. 176–184 (Hacienda Pública)
-- Regla fiscal vigente
-- Situación documentada de déficit fiscal
+2. proposes_debt_increase (boolean)
+   ¿Propone aumentar la deuda pública sin plan de sostenibilidad?
+   Penalización: -0.05
 
-Evaluación:
-- D5 = 1 → NO hay conflicto explícito documentable.
-- D5 = 0 → SOLO si existe al menos uno de estos casos:
-a) Contradicción directa con la Constitución SIN mencionar reforma.
-b) Promesa de gasto SIN fuente en contexto de déficit reconocido.
-c) Uso de fondos con destino constitucional distinto.
-- Si el plan menciona "reforma constitucional" o "cambio legal", D5 = 1.
+3. proposes_tax_increase (boolean)
+   ¿Propone crear nuevos impuestos o aumentar los existentes?
+   Penalización: -0.03
 
-Toda evaluación D5 = 0 DEBE incluir:
-- referencia constitucional o fiscal
-- tipo de conflicto: constitutional | fiscal | presupuestary
-- nota técnica neutral (máx 240 caracteres)
+4. shows_fiscal_responsibility (boolean)
+   ¿Demuestra compromiso explícito con la sostenibilidad fiscal?
+   (No genera penalización, es indicador positivo)
 
-D5 NO suma puntos.
-D5 puede aplicar una penalización de -1 al puntaje del pilar correspondiente.
+NIVEL DE RIESGO FISCAL:
+- ALTO: attacks_fiscal_rule = true O total_penalty >= 0.10
+- MEDIO: total_penalty > 0 AND < 0.10
+- BAJO: total_penalty = 0
+
+====================================================================
+COBERTURA DE URGENCIAS NACIONALES
+====================================================================
+
+Verificar si el plan menciona explícitamente:
+
+- seguridad_operativa: Policía, equipamiento, presupuesto de seguridad
+- salud_ccss: Crisis de la CCSS, listas de espera, sostenibilidad
+- inversion_extranjera: Atracción de inversión, zonas francas
+- empleo: Desempleo, creación de empleos, informalidad
+- educacion: Calidad educativa, deserción, infraestructura
+- infraestructura_APP: Carreteras, puentes, alianzas público-privadas
+- crimen_organizado: Narcotráfico, crimen organizado, seguridad
+
+Para cada tema:
+- covered: true/false
+- mentions: Array de snippets textuales (≤240 chars cada uno)
 
 ====================================================================
 REGLAS DE NEUTRALIDAD Y EVIDENCIA
@@ -108,10 +125,9 @@ REGLAS DE NEUTRALIDAD Y EVIDENCIA
 - No hagas inferencias económicas ni políticas.
 - No completes información ausente.
 - Todo dato debe tener:
-- pdf_id
-- página (1-indexed)
-- snippet textual (≤ 240 caracteres)
-- Si una propuesta aplica a varios pilares, duplica el registro por pilar usando el mismo proposal_id base.
+  - pdf_id
+  - página (1-indexed)
+  - snippet textual (≤ 240 caracteres)
 - Si un pilar NO aparece en el documento, crea una propuesta placeholder con todas las dimensiones en 0.
 
 ====================================================================
@@ -119,125 +135,149 @@ PESOS POR PILAR
 ====================================================================
 
 P1: 0.15
-P2: 0.15
-P3: 0.15
+P2: 0.12
+P3: 0.18
 P4: 0.15
-P5: 0.15
-P7: 0.10
-P8: 0.08
-P6: 0.05
+P5: 0.12
+P6: 0.04
+P7: 0.12
+P8: 0.05
 P9: 0.02
+P10: 0.05
 
 ====================================================================
-SALIDAS REQUERIDAS (SOLO JSON VÁLIDO)
+SALIDAS REQUERIDAS (6 ARCHIVOS JSON)
 ====================================================================
 
 A) candidates.json
 [
-{
-"candidate_id": "string_slug",
-"candidate_name": "string",
-"party_name": "string",
-"pdf_id": "string",
-"pdf_title": "string",
-"pdf_url": "string"
-}
+  {
+    "candidate_id": "string_slug",
+    "candidate_name": "string",
+    "party_name": "string",
+    "pdf_id": "string",
+    "pdf_title": "string",
+    "pdf_url": "string"
+  }
 ]
 
 B) pillars.json
 [
-{ "pillar_id": "P1", "pillar_name": "...", "weight": 0.15 }
+  { "pillar_id": "P1", "pillar_name": "...", "weight": 0.15 }
 ]
 
 C) proposals.json
 [
-{
-"proposal_id": "unique_string",
-"candidate_id": "string_slug",
-"pillar_id": "P1..P9",
-"proposal_title": "string_short",
-"proposal_text": "resumen fiel sin agregar información",
-"dimensions": {
-"existence": 0,
-"when": 0,
-"how": 0,
-"funding": 0
-},
-"extracted_fields": {
-"when_text": "string | no_especificado",
-"how_text": "string | no_especificado",
-"funding_text": "string | no_especificado"
-},
-"compatibility": {
-"normative_fiscal": 0,
-"conflict_type": "constitutional | fiscal | none",
-"reference": "Art. X Constitución / Regla Fiscal",
-"note": "descripción técnica neutral"
-},
-"evidence": {
-"pdf_id": "string",
-"page": 1,
-"snippet": "string <= 240"
-},
-"multi_pillar_source_proposal_id": "string"
-}
+  {
+    "proposal_id": "unique_string",
+    "candidate_id": "string_slug",
+    "pillar_id": "P1..P10",
+    "proposal_title": "string_short",
+    "proposal_text": "resumen fiel sin agregar información",
+    "dimensions": {
+      "existence": 0,
+      "when": 0,
+      "how": 0,
+      "funding": 0
+    },
+    "extracted_fields": {
+      "when_text": "string | no_especificado",
+      "how_text": "string | no_especificado",
+      "funding_text": "string | no_especificado"
+    },
+    "evidence": {
+      "pdf_id": "string",
+      "page": 1,
+      "snippet": "string <= 240"
+    }
+  }
 ]
 
 D) candidate_scores.json
 [
-{
-"candidate_id": "string_slug",
-"pillar_scores": [
-{
-"pillar_id": "P1",
-"raw_score": 0-4,
-"effective_score": 0-4,
-"normalized": 0.0-1.0,
-"weighted": 0.0-1.0,
-"penalties": [
-{
-"type": "compatibility",
-"value": -1,
-"reason": "conflicto fiscal explícito"
-}
-]
-}
-],
-"overall": {
-"raw_sum": 0-36,
-"weighted_sum": 0.0-1.0,
-"coverage_critical_weighted_sum": 0.0,
-"notes": "observaciones neutrales sin juicio"
-}
-}
+  {
+    "candidate_id": "string_slug",
+    "pillar_scores": [
+      {
+        "pillar_id": "P1",
+        "raw_score": 0-4,
+        "effective_score": 0-4,
+        "normalized": 0.0-1.0,
+        "weighted": 0.0-1.0,
+        "penalties": []
+      }
+    ],
+    "fiscal_analysis": {
+      "flags": {
+        "attacks_fiscal_rule": false,
+        "proposes_debt_increase": false,
+        "proposes_tax_increase": false,
+        "shows_fiscal_responsibility": true
+      },
+      "total_penalty": 0.0,
+      "evidence": []
+    },
+    "overall": {
+      "raw_sum": 0-40,
+      "effective_sum": 0-40,
+      "weighted_sum": 0.0-1.0,
+      "priority_weighted_sum": 0.0-1.0,
+      "critical_weighted_sum": 0.0-1.0,
+      "fiscal_penalty_applied": 0.0,
+      "notes": "observaciones neutrales sin juicio"
+    }
+  }
 ]
 
-E) ranking.json
-{
-"method_version": "v1",
-"weights": { "P1":0.15, "P2":0.15, "...":0.02 },
-"ranking_overall_weighted": [
-{ "rank": 1, "candidate_id": "string", "weighted_sum": 0.0 }
-],
-"ranking_critical_weighted": [
-{ "rank": 1, "candidate_id": "string", "coverage_critical_weighted_sum": 0.0 }
-]
-}
-
-====================================================================
-ENTRADA
-====================================================================
-
-Recibirás una lista de PDFs con este formato:
+E) detailed_analysis.json
 [
-{
-"pdf_id": "PLN",
-"candidate_name": "Nombre",
-"party_name": "Partido",
-"pdf_title": "Plan de Gobierno 2026–2030",
-"pdf_url": "https://..."
-}
+  {
+    "candidate_id": "string_slug",
+    "pdf_id": "string",
+    "total_pages": 45,
+    "fiscal_responsibility": {
+      "attacks_fiscal_rule": false,
+      "proposes_debt_increase": false,
+      "proposes_tax_increase": false,
+      "shows_fiscal_responsibility": true
+    },
+    "fiscal_evidence": [],
+    "urgency_coverage": {
+      "seguridad_operativa": { "covered": true, "mentions": [] },
+      "salud_ccss": { "covered": true, "mentions": [] },
+      "inversion_extranjera": { "covered": false, "mentions": [] },
+      "empleo": { "covered": true, "mentions": [] },
+      "educacion": { "covered": true, "mentions": [] },
+      "infraestructura_APP": { "covered": false, "mentions": [] },
+      "crimen_organizado": { "covered": true, "mentions": [] }
+    },
+    "strengths": ["fortaleza 1", "fortaleza 2"],
+    "weaknesses": ["debilidad 1", "debilidad 2"],
+    "risk_level": "BAJO"
+  }
 ]
+
+F) ranking.json
+{
+  "method_version": "v4",
+  "weights": { "P1": 0.15, "P2": 0.12, ... },
+  "priority_pillars": ["P3", "P4", "P1", "P7"],
+  "critical_pillars": ["P3", "P4", "P1", "P7", "P2", "P5"],
+  "penalties_applied": {
+    "attacks_fiscal_rule": -0.10,
+    "proposes_debt_increase": -0.05,
+    "proposes_tax_increase": -0.03
+  },
+  "ranking_overall_weighted": [
+    { "rank": 1, "candidate_id": "string", "weighted_sum": 0.0, "fiscal_penalty": 0.0 }
+  ],
+  "ranking_priority_weighted": [
+    { "rank": 1, "candidate_id": "string", "priority_weighted_sum": 0.0 }
+  ],
+  "ranking_critical_weighted": [
+    { "rank": 1, "candidate_id": "string", "critical_weighted_sum": 0.0 }
+  ]
+}
 
 ====================================================================
 SALIDA FINAL
@@ -245,18 +285,19 @@ SALIDA FINAL
 
 Devuelve UN SOLO objeto JSON con estas claves exactas:
 {
-"candidates.json": [...],
-"pillars.json": [...],
-"proposals.json": [...],
-"candidate_scores.json": [...],
-"ranking.json": {...}
+  "candidates.json": [...],
+  "pillars.json": [...],
+  "proposals.json": [...],
+  "candidate_scores.json": [...],
+  "detailed_analysis.json": [...],
+  "ranking.json": {...}
 }
 
 No agregues texto fuera del JSON.
 No agregues explicaciones adicionales.
 No uses markdown.
 
-Y estos json deben alamacenarse en la ruta analysis/data.
+Y estos json deben almacenarse en la ruta analysis/data.
 ```
 
 ---
@@ -268,14 +309,15 @@ Y estos json deben alamacenarse en la ruta analysis/data.
 ```
 Actúa como un Arquitecto de Producto + Frontend Tech Lead especializado en portales cívicos, dashboards de datos públicos y experiencias web altamente accesibles.
 
-Vas a diseñar un sitio web estático construido con Astro + Tailwind + TypeScript  en la carpeta llamada "site" que consume un análisis ya generados en JSON y planes de gobierno en PDF, ambos almacenados localmente en el source code del proyecto.
+Vas a diseñar un sitio web estático construido con Astro + Tailwind + TypeScript en la carpeta llamada "site" que consume un análisis ya generado en JSON y planes de gobierno en PDF, ambos almacenados localmente en el source code del proyecto.
 
 El sitio debe priorizar:
 - Experiencia visual y gráfica
 - Claridad estadística
 - Velocidad extrema
 - Confianza pública
-- Adaptación real de UX según rango de edad
+- Adaptación de UX según modo visual (Express, Dashboard, Lectura)
+- Transparencia en el análisis fiscal
 
 El estilo UX base debe ser: "Civic Data Dashboard"
 (un híbrido entre dashboard estadístico, portal editorial y comparador ciudadano).
@@ -296,10 +338,13 @@ Los insumos ya fueron analizados previamente (Prompt 1) y están disponibles LOC
     pillars.json
     proposals.json
     candidate_scores.json
+    detailed_analysis.json
     ranking.json
 
 Asume que:
 - proposals.json incluye evidence.page y evidence.snippet.
+- candidate_scores.json incluye fiscal_analysis con flags y penalties.
+- detailed_analysis.json incluye strengths, weaknesses y risk_level.
 - Los PDFs corresponden exactamente a los datos analizados.
 - No existe backend ni base de datos externa.
 
@@ -307,27 +352,33 @@ Asume que:
 OBJETIVOS DEL SITIO
 ====================================================================
 
-1) La navegación principal se centra en los 9 PILARES (no en candidatos).
+1) La navegación principal se centra en los 10 PILARES (no en candidatos).
 2) Cada pilar se presenta como una unidad visual (card/dashboard):
    - ranking por candidato
    - score visual (barras, chips, ratios)
    - acceso a detalle y evidencia
 3) Cada candidato tiene:
-   - matriz visual de cobertura por pilar (9 pilares)
+   - matriz visual de cobertura por pilar (10 pilares)
    - acceso a propuestas con desglose estructural
+   - análisis fiscal con indicador de riesgo
+   - fortalezas y debilidades
 4) Comparador:
    - comparar 2 a 4 candidatos
    - vista estadística por pilar
    - vista de detalle con dimensiones + evidencia
+   - indicadores de riesgo fiscal lado a lado
 5) Rankings:
-   - ranking ponderado general
-   - ranking ponderado de pilares críticos (P1,P2,P3,P4,P5,P7)
-6) UX adaptativa:
-   - preguntar rango de edad al inicio
-   - adaptar visualización, densidad y detalle
+   - ranking ponderado general (con penalizaciones fiscales)
+   - ranking de pilares prioritarios (P3, P4, P1, P7)
+   - ranking de pilares críticos (P3, P4, P1, P7, P2, P5)
+6) 3 Modos visuales:
+   - Express 🚀: Cards full-screen, swipe, visual rápido
+   - Dashboard 📊: Grid de cards, tabs, estilo analítico
+   - Lectura 📖: Tipografía grande, una columna, sin animaciones
 7) Página informativa:
    - propósito del sitio
    - explicación coloquial del análisis
+   - explicación del análisis fiscal y penalizaciones
    - aclaración de neutralidad y límites
 
 ====================================================================
@@ -339,6 +390,7 @@ FILOSOFÍA UX (OBLIGATORIA)
 - "Todo número debe tener respaldo visible"
 - "Nada debe sentirse lento ni pesado"
 - "El diseño inspira confianza, no propaganda"
+- "El riesgo fiscal debe ser visible pero no alarmista"
 
 ====================================================================
 ESTILO UX BASE: CIVIC DATA DASHBOARD
@@ -350,49 +402,48 @@ VISUAL
 - Cards limpias
 - Barras horizontales (no gráficos de torta)
 - Chips numéricos (ej. 3/4)
-- Íconos neutros por pilar
+- Íconos neutros por pilar (emojis)
 - Colores suaves (grises, azul cívico, verde neutro)
+- Indicadores de riesgo fiscal (🟢🟠🔴)
 
 ESTADÍSTICO
 - Scores visibles siempre con contexto (máx /4)
 - Rankings claros y ordenables
 - Indicadores explícitos de "no especificado"
+- Penalizaciones fiscales transparentes
 
 PERFORMANCE
 - HTML prerender (Astro)
 - JSON livianos por vista
 - Nada de loaders largos
-- Animaciones mínimas y sutiles
+- Animaciones mínimas y sutiles (excepto modo Express)
 
 ====================================================================
-UX ADAPTATIVA POR RANGO DE EDAD
+3 MODOS VISUALES
 ====================================================================
 
-El sitio debe preguntar el rango de edad del lector al inicio
-(18–35, 36–49, 50+) y guardar la preferencia.
+El sitio ofrece 3 experiencias completamente distintas:
 
-Diferencias obligatorias:
+Express 🚀 (Visual / Rápido)
+- Cards full-screen, una a la vez
+- Swipe para navegar
+- Gradientes vibrantes
+- Mínimo texto, máximo visual
+- Riesgo fiscal como emoji badge
 
-18–35 años (Visual / Rápido)
-- Vista resumen por defecto
-- Cards + barras + rankings
-- Poco texto
-- Interacciones rápidas (tap / hover)
-- CTA: "Comparar ahora", "Ver ranking"
-
-36–49 años (Visual + Explicativo)
+Dashboard 📊 (Visual + Explicativo)
+- Grid responsivo de cards
+- Tabs para secciones
+- Colores neutros con acentos
 - Resumen + expandible
-- Tabs: Resumen | Detalle | Evidencia
-- Contexto corto por pilar
-- CTA: "Ver detalle", "Entender diferencias"
+- Riesgo fiscal con etiqueta
 
-50+ años (Lectura / Confianza)
-- Tipografía +20%
-- Vista vertical (una cosa a la vez)
-- Muy pocas animaciones
-- Botones grandes
-- PDF y evidencia siempre visibles
-- CTA: "Ver propuesta completa", "Abrir plan oficial"
+Lectura 📖 (Lectura / Confianza)
+- Una columna vertical
+- Tipografía serif, 20px mínimo
+- Sin animaciones
+- Todo visible, sin colapsar
+- Riesgo fiscal con texto completo
 
 ====================================================================
 RESTRICCIONES Y FILOSOFÍA TÉCNICA
@@ -414,42 +465,30 @@ Debes entregar, en el orden indicado:
 A) Estructura final del sitio (IA / UX)
    - Mapa exacto de rutas (URLs)
    - Componentes visuales por página
-   - Qué se muestra por defecto según edad
+   - Qué se muestra por defecto según modo
 
 B) Modelo de datos completo
    - Data Contract con tipos TypeScript exactos
    - Índices recomendados para navegación rápida
-   - Estrategia de partición de JSON
-   - Estructura recomendada para analysis/data/
+   - Tipos para análisis fiscal y riesgo
 
 C) UI exacta del Comparador (nivel quirúrgico)
    - Layout preciso
    - Qué es sticky, qué colapsa
    - Vista resumen vs detalle
-   - Componentes específicos:
-     <AgeGateModal/>
-     <PillarCard/>
-     <ScoreBar/>
-     <DimensionBadges/>
-     <CandidateMatrix/>
-     <CompareTable/>
-     <EvidenceLink/>
+   - Indicadores de riesgo fiscal
+   - Componentes específicos
 
-D) UX adaptativa por edad
+D) 3 Modos visuales
    - Diferencias concretas de:
      densidad, tipografía, animación, CTA
    - Implementación técnica:
-     ageGroup en localStorage/cookie
+     mode en localStorage
      selector manual en header
 
 E) Stack y plan de implementación (Astro)
    - Astro + Tailwind + TypeScript + JSON
-   - Estructura de carpetas:
-     src/pages
-     src/components
-     src/lib
-     analysis/data
-     analysis/planes
+   - Estructura de carpetas
    - Estrategia de build y performance
 
 F) Página /metodologia (copy listo para pegar)
@@ -459,7 +498,7 @@ F) Página /metodologia (copy listo para pegar)
      origen de datos
      pilares
      dimensiones
-     compatibilidad normativa/fiscal
+     análisis fiscal y penalizaciones
      rankings
      límites y transparencia
 
@@ -482,14 +521,29 @@ FORMATO DE RESPUESTA
 
 ### Diferencias entre Prompts y Realidad
 
-1. **candidate_scores.json**: La implementación actual incluye campos adicionales como `dimension_counts` y `evidence_refs` que no estaban en el prompt original pero mejoran la navegabilidad.
+1. **10 pilares**: La implementación actual usa 10 pilares (se agregó P10: Infraestructura).
 
-2. **Partición de JSONs**: La estrategia de partición sugerida (`partitioned/`) no se implementó porque Astro maneja bien la carga en build-time del JSON completo.
+2. **Análisis fiscal**: Se agregó un sistema completo de análisis fiscal con:
+   - FiscalFlags (attacks_fiscal_rule, proposes_debt_increase, etc.)
+   - FiscalPenalty aplicada al weighted_sum
+   - FiscalRiskLevel (ALTO, MEDIO, BAJO)
+   - detailed_analysis.json con fortalezas, debilidades y riesgo
 
-3. **Selector de edad en header**: Implementado en el Header.astro como dropdown.
+3. **3 tipos de ranking**: 
+   - ranking_overall_weighted (general)
+   - ranking_priority_weighted (pilares prioritarios)
+   - ranking_critical_weighted (pilares críticos)
+
+4. **3 Modos visuales**: Reemplazan el antiguo selector de edad:
+   - Express 🚀 (antes 18-35)
+   - Dashboard 📊 (antes 36-49)
+   - Lectura 📖 (antes 50+)
+
+5. **FiscalRiskBadge.astro**: Nuevo componente para mostrar riesgo fiscal.
 
 ### Extensiones Futuras
 
 - Agregar búsqueda de propuestas
-- Implementar partición de proposals.json si crece mucho
-- Agregar más visualizaciones (timeline, etc.)
+- Implementar filtros por nivel de riesgo fiscal
+- Agregar gráficos de comparación temporal (si hay actualizaciones)
+- Implementar dark mode para modo Lectura

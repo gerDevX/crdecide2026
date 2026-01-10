@@ -2,7 +2,7 @@
 
 ## Resumen
 
-En lugar de ajustes graduales por edad, el sitio ofrece **3 experiencias visuales radicalmente distintas** que el usuario puede elegir según su preferencia.
+El sitio ofrece **3 experiencias visuales radicalmente distintas** que el usuario puede elegir según su preferencia. El sistema migra automáticamente desde el antiguo selector de rango de edad.
 
 ---
 
@@ -21,6 +21,7 @@ En lugar de ajustes graduales por edad, el sitio ofrece **3 experiencias visuale
 | **Tipografía** | Sans-serif bold, títulos grandes |
 | **Animaciones** | Transiciones suaves, micro-interacciones |
 | **Contenido** | Mínimo texto, máximo visual |
+| **Riesgo Fiscal** | Badge compacto con emoji y color |
 
 ### Paleta de Colores
 
@@ -40,6 +41,7 @@ En lugar de ajustes graduales por edad, el sitio ofrece **3 experiencias visuale
 │                                 │
 │         🗳️ FA                  │
 │    Frente Amplio                │
+│         🟢 Riesgo BAJO          │
 │                                 │
 │    ████████████░░ 0.98         │
 │    #1 de 20 candidatos          │
@@ -55,50 +57,6 @@ En lugar de ajustes graduales por edad, el sitio ofrece **3 experiencias visuale
 │  [Ver propuestas]  [Comparar]  │
 │                                 │
 │      ● ○ ○ ○ ○ ○ ○ ○ ○ ○       │
-└─────────────────────────────────┘
-```
-
-#### ExpressPillar (Pilar)
-```
-┌─────────────────────────────────┐
-│                                 │
-│    💰 P1: Sostenibilidad Fiscal │
-│    Peso: 15%                    │
-│                                 │
-│    Top 3                        │
-│    ┌─────────────────────────┐ │
-│    │ 🥇 FA      ████████ 4/4 │ │
-│    │ 🥈 PSD     ███████░ 3/4 │ │
-│    │ 🥉 PNR     ███████░ 3/4 │ │
-│    └─────────────────────────┘ │
-│                                 │
-│    Promedio: 2.8/4              │
-│                                 │
-│    ↑ Desliza para ver más ↑    │
-│                                 │
-└─────────────────────────────────┘
-```
-
-#### ExpressCompare (Comparador)
-```
-┌─────────────────────────────────┐
-│  FA  vs  PLN                    │
-├─────────────────────────────────┤
-│                                 │
-│  ┌──────────┐  ┌──────────┐    │
-│  │   0.98   │  │   0.68   │    │
-│  │  ██████  │  │  ████░░  │    │
-│  │   #1     │  │   #15    │    │
-│  └──────────┘  └──────────┘    │
-│                                 │
-│  P1 Fiscal                      │
-│  4/4  ████████  vs  ██░░  2/4  │
-│                                 │
-│  P2 Empleo                      │
-│  3/4  ██████░░  vs  ███░  3/4  │
-│                                 │
-│  [+ Agregar candidato]          │
-│                                 │
 └─────────────────────────────────┘
 ```
 
@@ -147,6 +105,7 @@ En lugar de ajustes graduales por edad, el sitio ofrece **3 experiencias visuale
 | **Tipografía** | System UI, jerarquía clara |
 | **Animaciones** | Sutiles, solo donde aportan |
 | **Contenido** | Resumen visible, detalle expandible |
+| **Riesgo Fiscal** | Badge con etiqueta y descripción en hover |
 
 ### Paleta de Colores
 
@@ -169,28 +128,34 @@ En lugar de ajustes graduales por edad, el sitio ofrece **3 experiencias visuale
 │                                 │
 │  📊 Resumen                     │
 │  ┌─────────┬─────────┬────────┐│
-│  │20       │9        │3,400+  ││
+│  │20       │10       │3,400+  ││
 │  │Candidat.│Pilares  │Propuest││
 │  └─────────┴─────────┴────────┘│
 │                                 │
+│  🔴 Alerta Fiscal               │
+│  X candidatos atacan regla fisc.│
+│                                 │
 │  🏆 Top 5 Ranking               │
 │  ┌─────────────────────────────┐│
-│  │ 1  FA     ████████░░  0.98 ││
-│  │ 2  PSD    ███████░░░  0.91 ││
-│  │ 3  PNR    ██████░░░░  0.86 ││
-│  │ 4  PPSO   ██████░░░░  0.83 ││
-│  │ 5  PNG    ██████░░░░  0.82 ││
+│  │ 1  FA  🟢  ████████░░  0.98 ││
+│  │ 2  PSD 🟢  ███████░░░  0.91 ││
+│  │ 3  PNR 🟠  ██████░░░░  0.86 ││
+│  │ 4  PPSO🔴  ██████░░░░  0.83 ││
+│  │ 5  PNG 🟢  ██████░░░░  0.82 ││
 │  └─────────────────────────────┘│
 │  [Ver ranking completo →]       │
 │                                 │
 │  📋 Pilares                     │
 │  ┌────┐ ┌────┐ ┌────┐ ┌────┐   │
 │  │ P1 │ │ P2 │ │ P3 │ │ P4 │   │
-│  │15% │ │15% │ │15% │ │15% │   │
+│  │15% │ │12% │ │18% │ │15% │   │
 │  └────┘ └────┘ └────┘ └────┘   │
 │  ┌────┐ ┌────┐ ┌────┐ ┌────┐   │
 │  │ P5 │ │ P6 │ │ P7 │ │ P8 │   │
 │  └────┘ └────┘ └────┘ └────┘   │
+│  ┌────┐ ┌────┐                 │
+│  │ P9 │ │P10 │                 │
+│  └────┘ └────┘                 │
 │                                 │
 ├─────────────────────────────────┤
 │ [🏠] [📊Pilares] [⚖️Comparar] [ℹ️]│
@@ -207,6 +172,7 @@ En lugar de ajustes graduales por edad, el sitio ofrece **3 experiencias visuale
 │  ─────────────────────────────  │
 │                                 │
 │  Puntaje: 0.98  │  Rank: #1     │
+│  Riesgo: 🟢 BAJO                │
 │                                 │
 │  Matriz de Pilares              │
 │  ┌─────┬─────┬─────┐           │
@@ -216,11 +182,16 @@ En lugar de ajustes graduales por edad, el sitio ofrece **3 experiencias visuale
 │  ├─────┼─────┼─────┤           │
 │  │P7 4/4│P8 3/4│P9 3/4│          │
 │  └─────┴─────┴─────┘           │
+│  ┌─────┐                       │
+│  │P10 3/4                       │
+│  └─────┘                       │
 │                                 │
-│  Dimensiones Fuertes            │
-│  ✓ Existencia (9/9 pilares)    │
-│  ✓ Mecanismo (8/9 pilares)     │
-│  △ Financiamiento (6/9 pilares)│
+│  Fortalezas                     │
+│  ✓ Plan fiscal detallado       │
+│  ✓ Seguridad con plazos        │
+│                                 │
+│  Debilidades                    │
+│  △ No menciona ambiente        │
 │                                 │
 │  [📄 Ver plan de gobierno PDF]  │
 │                                 │
@@ -252,6 +223,7 @@ En lugar de ajustes graduales por edad, el sitio ofrece **3 experiencias visuale
 | **Tipografía** | Serif para cuerpo, 20px mínimo |
 | **Animaciones** | Ninguna o mínimas |
 | **Contenido** | Todo visible, sin colapsar |
+| **Riesgo Fiscal** | Texto completo con explicación |
 
 ### Paleta de Colores
 
@@ -301,58 +273,19 @@ En lugar de ajustes graduales por edad, el sitio ofrece **3 experiencias visuale
 │                                 │
 │  1. Frente Amplio               │
 │     Puntaje: 0.98 de 1.0        │
+│     Riesgo fiscal: BAJO 🟢     │
 │     Ver propuestas →            │
 │                                 │
 │  ───────────────────────────    │
 │                                 │
 │  2. Partido Social Demócrata    │
 │     Puntaje: 0.91 de 1.0        │
+│     Riesgo fiscal: MEDIO 🟠    │
 │     Ver propuestas →            │
 │                                 │
 │  ───────────────────────────    │
 │                                 │
 │  [Página 1 de 4]   [Siguiente →]│
-│                                 │
-└─────────────────────────────────┘
-```
-
-#### ReadingCandidate
-```
-┌─────────────────────────────────┐
-│  ← Volver                       │
-│                                 │
-│  Frente Amplio                  │
-│  ═══════════════════════════    │
-│                                 │
-│  Candidato: Por determinar      │
-│  Posición en ranking: #1 de 20  │
-│  Puntaje general: 0.98          │
-│                                 │
-│  ───────────────────────────    │
-│                                 │
-│  Sostenibilidad Fiscal (P1)     │
-│  Puntaje: 4 de 4                │
-│                                 │
-│  ✓ Propuesta concreta           │
-│  ✓ Plazo definido               │
-│  ✓ Mecanismo explicado          │
-│  ✓ Financiamiento indicado      │
-│                                 │
-│  Propuesta destacada:           │
-│                                 │
-│  "Reforma tributaria progresiva │
-│   mediante modificación de la   │
-│   Ley del Impuesto sobre la     │
-│   Renta para hacerla más        │
-│   equitativa..."                │
-│                                 │
-│  📄 Ver en documento original   │
-│     (página 23)                 │
-│                                 │
-│  ───────────────────────────    │
-│                                 │
-│  [← Anterior pilar]             │
-│  [Siguiente pilar →]            │
 │                                 │
 └─────────────────────────────────┘
 ```
@@ -408,6 +341,21 @@ En lugar de ajustes graduales por edad, el sitio ofrece **3 experiencias visuale
 └─────────────────────────────────┘
 ```
 
+### Header con Selector de Modo
+
+El Header incluye un dropdown que permite cambiar el modo visual en cualquier momento:
+
+```
+┌─────────────────────────────────────────────────┐
+│  [Logo]  Pilares  Ranking  Candidatos │ 📊 ▼  │
+│                                        ├──────┤
+│                                        │🚀 18-35│
+│                                        │📊 36-49│
+│                                        │📖 50+ ✓│
+│                                        └──────┘
+└─────────────────────────────────────────────────┘
+```
+
 ---
 
 ## Implementación Técnica
@@ -420,42 +368,67 @@ src/
 │   ├── modes/
 │   │   ├── express/
 │   │   │   ├── ExpressCard.astro
-│   │   │   ├── ExpressNav.astro
-│   │   │   ├── ExpressCompare.astro
 │   │   │   └── ExpressSwiper.astro
 │   │   │
 │   │   ├── dashboard/
-│   │   │   ├── DashboardCard.astro
-│   │   │   ├── DashboardNav.astro
-│   │   │   ├── DashboardTabs.astro
-│   │   │   └── DashboardBottomSheet.astro
+│   │   │   └── (usa componentes base)
 │   │   │
 │   │   └── reading/
-│   │       ├── ReadingArticle.astro
-│   │       ├── ReadingNav.astro
-│   │       ├── ReadingPagination.astro
-│   │       └── ReadingMenu.astro
+│   │       └── ReadingRanking.astro
 │   │
-│   └── shared/
+│   └── ui/
 │       ├── ModeSelector.astro
+│       ├── AgeGateModal.astro
+│       ├── FiscalRiskBadge.astro
 │       ├── ScoreBar.astro
 │       └── EvidenceLink.astro
 │
-├── layouts/
-│   ├── ExpressLayout.astro
-│   ├── DashboardLayout.astro
-│   └── ReadingLayout.astro
+├── lib/
+│   ├── mode.ts           # Gestión de modo
+│   ├── types.ts          # Tipos (incluye FiscalRiskLevel)
+│   └── data.ts           # Funciones de datos
 │
-├── styles/
-│   ├── modes/
-│   │   ├── express.css
-│   │   ├── dashboard.css
-│   │   └── reading.css
-│   └── global.css
-│
-└── lib/
-    ├── mode.ts          # Gestión de modo
-    └── swipe.ts         # Utilidades de gestos
+└── styles/
+    └── global.css
+```
+
+### Gestión de Modo (mode.ts)
+
+```typescript
+export type VisualMode = 'express' | 'dashboard' | 'reading';
+
+const STORAGE_KEY = 'costarica-decide-mode';
+
+export const MODE_INFO: Record<VisualMode, {
+  name: string;
+  emoji: string;
+  description: string;
+  tagline: string;
+}> = {
+  express: {
+    name: 'Express',
+    emoji: '🚀',
+    description: 'Rápido y visual',
+    tagline: 'Desliza para explorar',
+  },
+  dashboard: {
+    name: 'Dashboard',
+    emoji: '📊',
+    description: 'Completo con detalles',
+    tagline: 'Todo en un vistazo',
+  },
+  reading: {
+    name: 'Lectura',
+    emoji: '📖',
+    description: 'Claro y sin distracciones',
+    tagline: 'Lee con calma',
+  },
+};
+
+export function getMode(): VisualMode | null;
+export function setMode(mode: VisualMode): void;
+export function hasSelectedMode(): boolean;
+export function getModeClasses(mode: VisualMode): object;
 ```
 
 ### CSS Variables por Modo
@@ -499,34 +472,17 @@ src/
 }
 ```
 
-### JavaScript para Gestos (Express)
+### Migración desde Age Group
+
+El sistema migra automáticamente las preferencias del antiguo selector de edad:
 
 ```typescript
-// lib/swipe.ts
-export function initSwipe(container: HTMLElement, options: SwipeOptions) {
-  let startX = 0;
-  let currentX = 0;
-  
-  container.addEventListener('touchstart', (e) => {
-    startX = e.touches[0].clientX;
-  });
-  
-  container.addEventListener('touchmove', (e) => {
-    currentX = e.touches[0].clientX;
-    const diff = currentX - startX;
-    // Aplicar transform durante el drag
-    container.style.transform = `translateX(${diff}px)`;
-  });
-  
-  container.addEventListener('touchend', () => {
-    const diff = currentX - startX;
-    if (Math.abs(diff) > options.threshold) {
-      if (diff > 0) options.onSwipeRight?.();
-      else options.onSwipeLeft?.();
-    }
-    container.style.transform = '';
-  });
-}
+// Mapeo de edad a modo
+const modeMap: Record<string, VisualMode> = {
+  '18-35': 'express',
+  '36-49': 'dashboard',
+  '50+': 'reading',
+};
 ```
 
 ---
@@ -587,12 +543,25 @@ self.addEventListener('fetch', (e) => {
 
 ---
 
-## Próximos Pasos
+## Riesgo Fiscal por Modo
+
+El componente `FiscalRiskBadge.astro` se adapta a cada modo:
+
+| Modo | Visualización |
+|------|---------------|
+| Express | Badge compacto: `🟢` |
+| Dashboard | Badge con texto: `🟢 BAJO` + tooltip |
+| Lectura | Texto completo: `Riesgo fiscal: BAJO 🟢` |
+
+---
+
+## Estado de Implementación
 
 1. ✅ Documentar los 3 modos (este archivo)
-2. ⏳ Configurar PWA (manifest + service worker)
-3. ⏳ Crear estructura de componentes por modo
-4. ⏳ Implementar Modo Express (swipe cards)
-5. ⏳ Refinar Modo Dashboard
-6. ⏳ Crear Modo Lectura
-7. ⏳ Actualizar selector de modo con previews
+2. ✅ Configurar PWA (manifest + service worker)
+3. ✅ Crear estructura de componentes por modo
+4. ✅ Implementar Modo Express (swipe cards)
+5. ✅ Refinar Modo Dashboard
+6. ✅ Crear Modo Lectura
+7. ✅ Selector de modo con previews
+8. ✅ Integrar indicadores de riesgo fiscal

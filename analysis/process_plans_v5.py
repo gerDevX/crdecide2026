@@ -22,8 +22,24 @@ import json
 import os
 import re
 import hashlib
+import io
 from collections import defaultdict
 from typing import Dict, List, Tuple, Any, Optional
+
+# OCR imports (optional, used when text is corrupted)
+try:
+    import pytesseract
+    from PIL import Image
+    OCR_AVAILABLE = True
+except ImportError:
+    OCR_AVAILABLE = False
+    print("⚠️  OCR no disponible. Instala: pip install pytesseract pillow")
+
+# Caracteres que indican texto corrupto (fuentes con encoding incorrecto)
+CORRUPT_CHARS = set('ӌǢņĞļšŹĵūÔŤŅƕýðųöĒĽĚÔūŤýĵÔūðŅĽųŤÔļšŹĵūÔŤšŤŅƕýðųŅŤýĒŅŤļÔ')
+CORRUPT_THRESHOLD = 0.05  # 5% de caracteres corruptos
+TESSERACT_CONFIG = '--oem 3 --psm 6 -l spa'
+RENDER_DPI = 200
 
 # ====================================================================
 # CONFIGURACIÓN
@@ -226,25 +242,95 @@ def slugify(text: str) -> str:
     return text
 
 # ====================================================================
-# EXTRACCIÓN DE PDF
+# EXTRACCIÓN DE PDF CON SOPORTE OCR
 # ====================================================================
 
+def detect_corrupt_text(text: str) -> Tuple[bool, float]:
+    """Detecta si un texto tiene caracteres de fuentes corruptas."""
+    if not text:
+        return False, 0.0
+    total_chars = len(text)
+    corrupt_count = sum(1 for char in text if char in CORRUPT_CHARS)
+    corrupt_ratio = corrupt_count / total_chars if total_chars > 0 else 0
+    return corrupt_ratio > CORRUPT_THRESHOLD, corrupt_ratio
+
+
+def extract_page_with_ocr(page, dpi: int = RENDER_DPI) -> str:
+    """Extrae texto de una página usando OCR."""
+    if not OCR_AVAILABLE:
+        return ""
+    try:
+        mat = fitz.Matrix(dpi / 72, dpi / 72)
+        pix = page.get_pixmap(matrix=mat)
+        img_data = pix.tobytes("png")
+        img = Image.open(io.BytesIO(img_data))
+        text = pytesseract.image_to_string(img, config=TESSERACT_CONFIG)
+        return text
+    except Exception as e:
+        print(f"    ⚠️  Error OCR en página: {e}")
+        return ""
+
+
 def extract_text_from_pdf(pdf_path: str) -> Tuple[List[Tuple[int, str]], str]:
-    """Extrae texto de un PDF, retorna páginas y texto completo."""
+    """
+    Extrae texto de un PDF, retorna páginas y texto completo.
+    Detecta automáticamente texto corrupto y usa OCR cuando es necesario.
+    """
     pages = []
     full_text = ""
+    ocr_pages = 0
+    doc = None
+    
     try:
         doc = fitz.open(pdf_path)
-        for page_num in range(len(doc)):
+        pdf_name = os.path.basename(pdf_path)
+        num_pages = len(doc)
+        
+        # Primera pasada: detectar si hay texto corrupto (muestra de primeras 10 páginas)
+        sample_text = ""
+        for page_num in range(min(10, num_pages)):
+            sample_text += doc[page_num].get_text()
+        
+        is_corrupt, ratio = detect_corrupt_text(sample_text)
+        use_ocr = is_corrupt and OCR_AVAILABLE
+        
+        if is_corrupt:
+            if OCR_AVAILABLE:
+                print(f"  ⚠️  {pdf_name}: Texto corrupto ({ratio*100:.1f}%), usando OCR...")
+            else:
+                print(f"  ⚠️  {pdf_name}: Texto corrupto ({ratio*100:.1f}%) pero OCR no disponible")
+        
+        # Segunda pasada: extraer texto
+        for page_num in range(num_pages):
             page = doc[page_num]
-            text = page.get_text()
+            
+            if use_ocr:
+                # Usar OCR para esta página
+                text = extract_page_with_ocr(page)
+                ocr_pages += 1
+            else:
+                # Extracción directa
+                text = page.get_text()
+                # Verificar si esta página específica tiene problemas
+                page_corrupt, _ = detect_corrupt_text(text)
+                if page_corrupt and OCR_AVAILABLE:
+                    text = extract_page_with_ocr(page)
+                    ocr_pages += 1
+            
             normalized = normalize_text(text)
             if normalized:
                 pages.append((page_num + 1, normalized))
                 full_text += " " + normalized
-        doc.close()
+        
+        if ocr_pages > 0:
+            print(f"  ✅ OCR completado: {ocr_pages}/{num_pages} páginas procesadas")
+            
     except Exception as e:
         print(f"Error leyendo {pdf_path}: {e}")
+    finally:
+        if doc:
+            doc.close()
+    
     return pages, full_text
 
 def extract_candidate_info(pages: List[Tuple[int, str]], pdf_id: str) -> Dict[str, str]:

@@ -14,16 +14,16 @@
   },
   "priority_pillars": [
     "P3",
-    "P4",
     "P1",
+    "P4",
     "P7"
   ],
   "critical_pillars": [
-    "P3",
-    "P7",
-    "P5",
     "P1",
+    "P5",
+    "P3",
     "P2",
+    "P7",
     "P4"
   ],
   "penalties_applied": {
@@ -34,15 +34,15 @@
   "ranking_overall_weighted": [
     {
       "rank": 1,
-      "candidate_id": "elicer-feinzaig-mintz",
-      "weighted_sum": 0.6675,
-      "fiscal_penalty": -3
+      "candidate_id": "laura-fernandez-delgado",
+      "weighted_sum": 0.725,
+      "fiscal_penalty": 0
     },
     {
       "rank": 2,
-      "candidate_id": "laura-fernandez-delgado",
+      "candidate_id": "elicer-feinzaig-mintz",
       "weighted_sum": 0.6675,
-      "fiscal_penalty": 0
+      "fiscal_penalty": -3
     },
     {
       "rank": 3,
@@ -156,23 +156,23 @@
   "ranking_priority_weighted": [
     {
       "rank": 1,
+      "candidate_id": "laura-fernandez-delgado",
+      "priority_weighted_sum": 0.45
+    },
+    {
+      "rank": 2,
       "candidate_id": "elicer-feinzaig-mintz",
       "priority_weighted_sum": 0.385
     },
     {
-      "rank": 2,
+      "rank": 3,
       "candidate_id": "fernando-zamora-castellanos",
       "priority_weighted_sum": 0.385
     },
     {
-      "rank": 3,
+      "rank": 4,
       "candidate_id": "douglas-caamano-q",
       "priority_weighted_sum": 0.38
-    },
-    {
-      "rank": 4,
-      "candidate_id": "laura-fernandez-delgado",
-      "priority_weighted_sum": 0.375
     },
     {
       "rank": 5,
@@ -258,18 +258,18 @@
   "ranking_critical_weighted": [
     {
       "rank": 1,
+      "candidate_id": "laura-fernandez-delgado",
+      "critical_weighted_sum": 0.635
+    },
+    {
+      "rank": 2,
       "candidate_id": "elicer-feinzaig-mintz",
       "critical_weighted_sum": 0.5425
     },
     {
-      "rank": 2,
+      "rank": 3,
       "candidate_id": "fernando-zamora-castellanos",
       "critical_weighted_sum": 0.5425
-    },
-    {
-      "rank": 3,
-      "candidate_id": "laura-fernandez-delgado",
-      "critical_weighted_sum": 0.5325
     },
     {
       "rank": 4,

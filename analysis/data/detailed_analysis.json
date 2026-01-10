@@ -1345,70 +1345,76 @@
   },
   {
     "pdf_id": "PPSO",
-    "total_pages": 85,
+    "total_pages": 87,
     "fiscal_responsibility": {
       "attacks_fiscal_rule": false,
       "proposes_debt_increase": false,
       "proposes_tax_increase": false,
-      "shows_fiscal_responsibility": false
+      "shows_fiscal_responsibility": true
     },
     "fiscal_evidence": [],
     "urgency_coverage": {
       "seguridad_operativa": {
         "covered": true,
         "mentions": [
-          "policía (5)",
-          "inteligencia (10)",
+          "policía (10)",
+          "fuerza pública (1)",
+          "OIJ (2)",
+          "inteligencia (24)",
           "patrullaje (1)",
-          "operativo (7)"
+          "operativo (8)"
         ]
       },
       "salud_ccss": {
         "covered": true,
         "mentions": [
-          "CCSS (11)",
-          "hospital (5)",
-          "seguridad social (11)"
+          "CCSS (22)",
+          "hospital (6)",
+          "EBAIS (3)",
+          "seguridad social (14)"
         ]
       },
       "inversion_extranjera": {
         "covered": true,
         "mentions": [
-          "inversión extranjera (4)",
-          "IED (20)"
+          "inversión extranjera (7)",
+          "IED (25)"
         ]
       },
       "empleo": {
         "covered": true,
         "mentions": [
-          "empleo (24)",
+          "empleo (30)",
           "desempleo (4)",
-          "trabajo (16)",
-          "informalidad (1)",
-          "capacitación (17)"
+          "trabajo (23)",
+          "informalidad (2)",
+          "capacitación (18)"
         ]
       },
       "educacion": {
         "covered": true,
         "mentions": [
-          "educación (45)",
-          "MEP (5)",
-          "docente (15)"
+          "educación (59)",
+          "MEP (11)",
+          "docente (23)"
         ]
       },
       "infraestructura_APP": {
         "covered": true,
         "mentions": [
-          "alianza público-privada (1)",
-          "concesión (6)",
+          "APP (2)",
+          "alianza público-privada (2)",
+          "concesión (8)",
           "inversión privada (1)"
         ]
       },
       "crimen_organizado": {
         "covered": true,
         "mentions": [
-          "crimen organizado (10)",
-          "sicariato (2)"
+          "crimen organizado (13)",
+          "narcotráfico (9)",
+          "sicariato (3)",
+          "lavado (2)"
         ]
       }
     },
@@ -1416,7 +1422,8 @@
       "Aborda seguridad con enfoque operativo",
       "Aborda salud y CCSS",
       "Considera inversión extranjera para empleo",
-      "Propone APP para infraestructura"
+      "Propone APP para infraestructura",
+      "✅ Demuestra responsabilidad fiscal"
     ],
     "weaknesses": [],
     "risk_level": "BAJO",
