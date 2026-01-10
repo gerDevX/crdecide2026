@@ -14,14 +14,14 @@ const currentPath = Astro.url.pathname;
     <div class="flex items-center justify-between h-16">
       <!-- Logo -->
       <a href="/" class="flex items-center gap-3 group">
-        <div class="w-10 h-10 bg-gradient-ocean rounded-xl flex items-center justify-center shadow-md">
+        <div class="logo-gradient w-10 h-10 rounded-xl flex items-center justify-center shadow-lg shadow-cyan-500/20 group-hover:shadow-cyan-500/40 transition-shadow duration-300">
           <span class="text-white text-xl">🗳️</span>
         </div>
         <div class="hidden sm:block">
-          <span class="font-bold text-slate-900 group-hover:text-civic-600 transition-colors">
+          <span class="font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent group-hover:from-cyan-600 group-hover:to-blue-600 transition-all duration-300">
             CR Decide
           </span>
-          <span class="text-slate-400 text-sm ml-1">2026</span>
+          <span class="text-cyan-500 text-sm font-semibold ml-1">2026</span>
         </div>
       </a>
 
@@ -31,10 +31,10 @@ const currentPath = Astro.url.pathname;
           <a
             href={item.href}
             class:list={[
-              'flex items-center gap-1.5 px-4 py-2 rounded-lg font-medium transition-colors',
+              'nav-link-aceternity flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-medium transition-all duration-200',
               currentPath.startsWith(item.href)
-                ? 'bg-civic-100 text-civic-700'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                ? 'bg-gradient-to-r from-cyan-50 to-blue-50 text-cyan-700 shadow-sm'
+                : 'text-slate-600 hover:text-cyan-600'
             ]}
           >
             <span class="text-base">{item.icon}</span>
@@ -325,24 +325,32 @@ const currentPath = Astro.url.pathname;
 
 <style>
   .header-container {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid #e2e8f0;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
     position: sticky;
     top: 0;
     z-index: 30;
+    transition: all 0.3s ease;
   }
   
-  /* Express mode header */
+  .header-container:hover {
+    background: rgba(255, 255, 255, 0.95);
+  }
+  
+  /* Express mode header - coherente con dashboard */
   :global(html[data-mode="express"]) .header-container {
-    background: rgba(255, 255, 255, 0.8);
-    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(226, 232, 240, 0.8);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   }
   
   /* Reading mode header */
   :global(html[data-mode="reading"]) .header-container {
     background: white;
     border-color: #cbd5e1;
+    backdrop-filter: none;
   }
   
   .mode-dropdown-option {
@@ -350,24 +358,77 @@ const currentPath = Astro.url.pathname;
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.5rem 0.75rem;
-    border-radius: 0.5rem;
-    transition: background-color 0.15s;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    transition: all 0.2s ease;
     cursor: pointer;
     border: none;
     background: transparent;
   }
   
   .mode-dropdown-option:hover {
-    background: #f1f5f9;
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(59, 130, 246, 0.1));
+    transform: translateX(4px);
   }
   
   .mode-dropdown-option:focus {
     outline: none;
-    background: #f1f5f9;
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(59, 130, 246, 0.1));
   }
   
   .bg-gradient-ocean {
     background: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%);
+  }
+  
+  /* Animated underline for nav items */
+  :global(.nav-link-aceternity) {
+    position: relative;
+  }
+  
+  :global(.nav-link-aceternity)::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #06b6d4, #3b82f6);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+    border-radius: 9999px;
+  }
+  
+  :global(.nav-link-aceternity):hover::after {
+    width: 80%;
+  }
+  
+  /* Logo animation */
+  :global(.logo-gradient) {
+    background: linear-gradient(135deg, #0284c7 0%, #06b6d4 50%, #0284c7 100%);
+    background-size: 200% 200%;
+    animation: logo-gradient-shift 3s ease infinite;
+  }
+  
+  @keyframes logo-gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  
+  /* Dropdown animation */
+  #mode-dropdown,
+  #transparencia-dropdown {
+    transform-origin: top right;
+    animation: dropdown-appear 0.2s ease-out;
+  }
+  
+  @keyframes dropdown-appear {
+    from {
+      opacity: 0;
+      transform: scale(0.95) translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
   }
 </style>

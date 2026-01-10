@@ -1,7 +1,10 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CandidateCard from '../../components/candidates/CandidateCard.astro';
-import { candidates, scoresByCandidate, ranking } from '../../lib/data';
+import { candidates, scoresByCandidate, analysisByCandidate } from '../../lib/data';
+import { CandidateSpotlight } from '../../components/ui/aceternity/CandidateSpotlight';
+import { PILLAR_ICONS } from '../../lib/types';
+import type { PillarId } from '../../lib/types';
 
 // Sort candidates by ranking
 const sortedCandidates = [...candidates].sort((a, b) => {
@@ -9,38 +12,258 @@ const sortedCandidates = [...candidates].sort((a, b) => {
   const scoreB = scoresByCandidate[b.candidate_id]?.overall.weighted_sum || 0;
   return scoreB - scoreA;
 });
+
+// Prepare data for Aceternity component
+const candidatesData = sortedCandidates.map((candidate, idx) => {
+  const score = scoresByCandidate[candidate.candidate_id];
+  const analysis = analysisByCandidate[candidate.candidate_id];
+  
+  return {
+    id: candidate.candidate_id,
+    name: candidate.party_name,
+    party: candidate.pdf_id,
+    score: Math.round((score?.overall.weighted_sum || 0) * 100),
+    rank: idx + 1,
+    riskLevel: (analysis?.risk_level || 'BAJO') as "BAJO" | "MEDIO" | "ALTO",
+    pillars: score?.pillar_scores.slice(0, 5).map(ps => ({
+      id: ps.pillar_id,
+      score: ps.effective_score,
+      icon: PILLAR_ICONS[ps.pillar_id as PillarId] || '📌'
+    })) || []
+  };
+});
 ---
 
 <BaseLayout title="Candidatos">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    
-    <!-- Header -->
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold text-slate-900 mb-2">Candidatos Presidenciales</h1>
-      <p class="text-slate-600 max-w-3xl">
-        {candidates.length} partidos con planes de gobierno registrados para las elecciones 2026-2030.
-        Ordenados por puntaje ponderado general.
-      </p>
-    </div>
+  <div class="candidates-page">
+    <!-- Hero Header -->
+    <header class="page-hero">
+      <div class="hero-bg"></div>
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="pulse-dot"></span>
+          <span>{candidates.length} partidos inscritos</span>
+        </div>
+        <h1 class="page-title">
+          Candidatos
+          <span class="highlight">Presidenciales</span>
+        </h1>
+        <p class="page-subtitle">
+          Planes de gobierno registrados para las elecciones 2026-2030.
+          Ordenados por puntaje ponderado general.
+        </p>
+      </div>
+    </header>
 
-    <!-- Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-      {sortedCandidates.map((candidate) => {
-        const score = scoresByCandidate[candidate.candidate_id];
-        if (!score) return null;
-        
-        return (
-          <CandidateCard candidate={candidate} score={score} />
-        );
-      })}
-    </div>
+    <!-- Content -->
+    <div class="content-container">
+      <!-- Candidate Grid with Aceternity effects -->
+      <CandidateSpotlight 
+        client:visible 
+        candidates={candidatesData}
+        className="mb-12"
+      />
 
-    <!-- CTA -->
-    <div class="mt-12 text-center">
-      <a href="/comparar" class="btn btn-primary py-3 px-8">
-        Comparar candidatos
-      </a>
+      <!-- CTA Section -->
+      <section class="cta-section">
+        <div class="cta-content">
+          <div class="cta-icon">⚖️</div>
+          <h2>¿Quieres comparar?</h2>
+          <p>Selecciona hasta 4 candidatos y compara sus propuestas lado a lado.</p>
+          <a href="/comparar" class="cta-button">
+            <span>Ir al comparador</span>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </a>
+        </div>
+      </section>
     </div>
-
   </div>
 </BaseLayout>
+
+<style>
+  .candidates-page {
+    min-height: 100vh;
+  }
+  
+  /* Hero */
+  .page-hero {
+    position: relative;
+    padding: 4rem 0 3rem;
+    overflow: hidden;
+  }
+  
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: 
+      linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  }
+  
+  .hero-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(circle at 30% 50%, rgba(6, 182, 212, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 70% 30%, rgba(59, 130, 246, 0.06) 0%, transparent 50%);
+  }
+  
+  .hero-content {
+    position: relative;
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 0 1rem;
+    text-align: center;
+  }
+  
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: white;
+    border-radius: 9999px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #0891b2;
+    margin-bottom: 1.5rem;
+  }
+  
+  .pulse-dot {
+    position: relative;
+    width: 0.5rem;
+    height: 0.5rem;
+  }
+  
+  .pulse-dot::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #06b6d4;
+    border-radius: 9999px;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  
+  .pulse-dot::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #06b6d4;
+    border-radius: 9999px;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(2); opacity: 0; }
+  }
+  
+  .page-title {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.1;
+    margin: 0 0 1rem;
+  }
+  
+  .page-title .highlight {
+    display: block;
+    background: linear-gradient(135deg, #06b6d4, #3b82f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .page-subtitle {
+    font-size: 1.125rem;
+    color: #64748b;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+  
+  /* Content */
+  .content-container {
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 2rem 1rem 4rem;
+  }
+  
+  /* CTA Section */
+  .cta-section {
+    margin-top: 3rem;
+  }
+  
+  .cta-content {
+    text-align: center;
+    padding: 3rem;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    border-radius: 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .cta-content::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(circle at 20% 50%, rgba(6, 182, 212, 0.2) 0%, transparent 50%),
+      radial-gradient(circle at 80% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  
+  .cta-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+  
+  .cta-content h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: white;
+    margin: 0 0 0.5rem;
+    position: relative;
+  }
+  
+  .cta-content p {
+    color: #94a3b8;
+    margin: 0 0 1.5rem;
+    position: relative;
+  }
+  
+  .cta-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 2rem;
+    background: linear-gradient(135deg, #06b6d4, #3b82f6);
+    color: white;
+    font-weight: 600;
+    border-radius: 0.75rem;
+    transition: all 0.3s ease;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(6, 182, 212, 0.4);
+  }
+  
+  .cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(6, 182, 212, 0.5);
+  }
+  
+  .cta-button svg {
+    transition: transform 0.3s ease;
+  }
+  
+  .cta-button:hover svg {
+    transform: translateX(4px);
+  }
+  
+  @media (max-width: 640px) {
+    .page-title {
+      font-size: 2rem;
+    }
+  }
+</style>

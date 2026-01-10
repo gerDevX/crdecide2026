@@ -1,7 +1,6 @@
 ---
 import type { Candidate, CandidateScore, PillarScore } from '../../../lib/types';
 import { pillarIndex } from '../../../lib/data';
-import ScoreBar from '../../ui/ScoreBar.astro';
 
 interface Props {
   candidate: Candidate;
@@ -12,199 +11,271 @@ interface Props {
 
 const { candidate, score, rank, totalCandidates } = Astro.props;
 
-// Get top 6 pillar scores
+// Calculate percentage score
+const scorePercent = Math.round(score.overall.weighted_sum * 100);
+
+// Get top 6 pillar scores with percentages
 const topPillars = score.pillar_scores
   .slice(0, 6)
   .map(ps => ({
     ...ps,
     pillar: pillarIndex[ps.pillar_id],
+    scorePercent: Math.round((ps.effective_score / 4) * 100),
   }));
 ---
 
-<div class="express-card-wrapper">
-  <div class="card-express">
-    <!-- Rank Badge -->
-    <div class="absolute top-4 right-4">
-      <span class="express-rank-badge">
-        #{rank}
-      </span>
+<div class="express-card">
+  <!-- Header Row -->
+  <div class="card-header-row">
+    <div class="rank-badge" class:list={{ 'top-3': rank <= 3 }}>
+      #{rank}
     </div>
-
-    <!-- Party Name -->
-    <div class="text-center mb-6">
-      <div class="text-5xl mb-4">🗳️</div>
-      <h2 class="text-2xl font-bold text-slate-900 mb-1">
-        {candidate.party_name}
+    <div class="party-info">
+      <h2 class="candidate-title">
+        {candidate.candidate_name !== 'Por determinar' && candidate.candidate_name !== 'no_especificado' 
+          ? candidate.candidate_name 
+          : candidate.party_name}
       </h2>
-      <p class="text-slate-500 text-sm">
-        {candidate.candidate_name !== 'Por determinar' ? candidate.candidate_name : ''}
-      </p>
+      <p class="party-subtitle">{candidate.party_name}</p>
     </div>
-
-    <!-- Score -->
-    <div class="text-center mb-8">
-      <div class="express-score">
-        {score.overall.weighted_sum.toFixed(2)}
-      </div>
-      <p class="text-slate-500 text-sm mt-1">
-        Puntaje ponderado
-      </p>
-    </div>
-
-    <!-- Score Bar -->
-    <div class="mb-8">
-      <ScoreBar 
-        score={Math.round(score.overall.weighted_sum * 4)} 
-        max={4} 
-        size="lg" 
-        showLabel={true}
-      />
-    </div>
-
-    <!-- Pillar Grid -->
-    <div class="grid grid-cols-3 gap-3 mb-8">
-      {topPillars.map(({ pillar_id, effective_score, pillar }) => {
-        const weightPercent = pillar?.weight ? Math.round(pillar.weight * 100) : 0;
-        return (
-          <div class={`p-3 rounded-xl bg-slate-50 text-center pillar-${pillar_id}`}>
-            <div class="text-xs text-slate-500 mb-1">
-              {pillar?.pillar_name || pillar_id}
-            </div>
-            <div class="text-[10px] text-slate-400">{weightPercent}%</div>
-            <div class="text-lg font-bold text-slate-900">
-              {effective_score}/4
-            </div>
-            <div class="flex justify-center gap-0.5 mt-1">
-              {[1,2,3,4].map(i => (
-                <span class={`w-2 h-2 rounded-full ${i <= effective_score ? 'bg-emerald-500' : 'bg-slate-200'}`}></span>
-              ))}
-            </div>
-          </div>
-        );
-      })}
-    </div>
-
-    <!-- CTA Buttons -->
-    <div class="flex gap-3">
-      <a 
-        href={`/candidatos/${candidate.candidate_id}`} 
-        class="flex-1 btn btn-secondary text-center"
-      >
-        Ver propuestas
-      </a>
-      <a 
-        href={`/comparar?c=${candidate.candidate_id}`} 
-        class="flex-1 btn btn-primary text-center"
-      >
-        Comparar
-      </a>
+    <div class="main-score">
+      <span class="score-number">{scorePercent}</span>
+      <span class="score-percent">%</span>
     </div>
   </div>
-
-  <!-- Swipe Hint -->
-  <div class="swipe-hint">
-    <span>← Desliza para ver más →</span>
+  
+  <!-- Score Bar -->
+  <div class="score-bar-container">
+    <div class="score-bar" style={`width: ${scorePercent}%`}></div>
   </div>
-
-  <!-- Navigation Dots -->
-  <div class="express-dots">
-    {Array.from({ length: Math.min(totalCandidates, 10) }).map((_, i) => (
-      <span class={`express-dot ${i === rank - 1 ? 'active' : ''}`}></span>
-    ))}
-    {totalCandidates > 10 && (
-      <span class="text-white/50 text-xs ml-2">+{totalCandidates - 10}</span>
-    )}
+  
+  <!-- Pillars Grid -->
+  <div class="pillars-grid">
+    {topPillars.map(({ pillar_id, effective_score, pillar, scorePercent }) => {
+      const isHigh = scorePercent >= 75;
+      const isMedium = scorePercent >= 50 && scorePercent < 75;
+      
+      return (
+        <div class={`pillar-item ${isHigh ? 'high' : isMedium ? 'medium' : 'low'}`}>
+          <span class="pillar-label">{pillar?.pillar_name?.split(' ').slice(0, 2).join(' ') || pillar_id}</span>
+          <span class="pillar-score">{scorePercent}%</span>
+        </div>
+      );
+    })}
+  </div>
+  
+  <!-- Actions -->
+  <div class="card-actions">
+    <a href={`/candidatos/${candidate.candidate_id}`} class="action-btn secondary">
+      Ver detalles
+    </a>
+    <a href={`/comparar?c=${candidate.candidate_id}`} class="action-btn primary">
+      Comparar
+    </a>
   </div>
 </div>
 
 <style>
-  .express-card-wrapper {
-    min-height: calc(100vh - 80px);
-    min-height: calc(100dvh - 80px);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 1.5rem 1rem;
-  }
-  
-  .card-express {
+  .express-card {
     background: white;
-    border-radius: 1.5rem;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-    padding: 1.5rem;
-    position: relative;
-    animation: scaleIn 0.2s ease-out;
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 1.25rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
   }
   
-  .express-rank-badge {
-    display: inline-flex;
+  .express-card:hover {
+    border-color: rgba(6, 182, 212, 0.3);
+    box-shadow: 0 12px 30px rgba(6, 182, 212, 0.1);
+    transform: translateY(-2px);
+  }
+  
+  /* Header Row */
+  .card-header-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .rank-badge {
+    flex-shrink: 0;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
     align-items: center;
-    padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
+    justify-content: center;
+    background: #f1f5f9;
+    border-radius: 0.75rem;
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: #64748b;
+  }
+  
+  .rank-badge.top-3 {
     background: linear-gradient(135deg, #f43f5e, #fb7185);
     color: white;
-    font-weight: bold;
-    font-size: 0.875rem;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(244, 63, 94, 0.25);
   }
   
-  .express-score {
-    font-size: 3rem;
-    font-weight: bold;
+  .party-info {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .candidate-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+    line-height: 1.3;
+  }
+  
+  .party-subtitle {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin: 0.125rem 0 0;
+    font-weight: 500;
+  }
+  
+  .main-score {
+    display: flex;
+    align-items: baseline;
+    gap: 0.125rem;
+    flex-shrink: 0;
+  }
+  
+  .main-score .score-number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1;
     background: linear-gradient(135deg, #0284c7, #06b6d4);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
   
-  .swipe-hint {
-    text-align: center;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 0.875rem;
-    margin-top: 1rem;
+  .main-score .score-percent {
+    font-size: 1.25rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #0284c7, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
   
-  .express-dots {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.5rem;
-    margin-top: 1rem;
-  }
-  
-  .express-dot {
-    width: 0.5rem;
+  /* Score Bar */
+  .score-bar-container {
     height: 0.5rem;
+    background: #f1f5f9;
     border-radius: 9999px;
-    background: rgba(255, 255, 255, 0.3);
-    transition: all 0.3s;
+    overflow: hidden;
+    margin-bottom: 1rem;
   }
   
-  .express-dot.active {
-    width: 1.5rem;
-    background: white;
+  .score-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #06b6d4, #3b82f6);
+    border-radius: 9999px;
+    transition: width 0.8s ease;
   }
   
-  /* Pillar colors */
-  .pillar-P1 { border-left: 4px solid #10b981; }
-  .pillar-P2 { border-left: 4px solid #3b82f6; }
-  .pillar-P3 { border-left: 4px solid #ef4444; }
-  .pillar-P4 { border-left: 4px solid #ec4899; }
-  .pillar-P5 { border-left: 4px solid #f59e0b; }
-  .pillar-P6 { border-left: 4px solid #22c55e; }
-  .pillar-P7 { border-left: 4px solid #8b5cf6; }
-  .pillar-P8 { border-left: 4px solid #f97316; }
-  .pillar-P9 { border-left: 4px solid #06b6d4; }
-  .pillar-P10 { border-left: 4px solid #6366f1; }
+  /* Pillars Grid */
+  .pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
   
-  @keyframes scaleIn {
-    from {
-      opacity: 0;
-      transform: scale(0.95);
+  @media (min-width: 480px) {
+    .pillars-grid {
+      grid-template-columns: repeat(6, 1fr);
     }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
+  }
+  
+  .pillar-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.5rem 0.25rem;
+    background: #f8fafc;
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+    text-align: center;
+  }
+  
+  .pillar-item.high {
+    background: rgba(16, 185, 129, 0.08);
+    border-color: rgba(16, 185, 129, 0.2);
+  }
+  
+  .pillar-item.medium {
+    background: rgba(245, 158, 11, 0.08);
+    border-color: rgba(245, 158, 11, 0.2);
+  }
+  
+  .pillar-item.low {
+    background: rgba(239, 68, 68, 0.05);
+    border-color: rgba(239, 68, 68, 0.15);
+  }
+  
+  .pillar-label {
+    font-size: 0.6rem;
+    color: #64748b;
+    line-height: 1.2;
+    margin-bottom: 0.25rem;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .pillar-score {
+    font-size: 1rem;
+    font-weight: 700;
+  }
+  
+  .pillar-item.high .pillar-score { color: #059669; }
+  .pillar-item.medium .pillar-score { color: #d97706; }
+  .pillar-item.low .pillar-score { color: #dc2626; }
+  
+  /* Actions */
+  .card-actions {
+    display: flex;
+    gap: 0.75rem;
+  }
+  
+  .action-btn {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  
+  .action-btn.secondary {
+    background: #f1f5f9;
+    color: #475569;
+  }
+  
+  .action-btn.secondary:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+  }
+  
+  .action-btn.primary {
+    background: linear-gradient(135deg, #06b6d4, #3b82f6);
+    color: white;
+    box-shadow: 0 4px 12px rgba(6, 182, 212, 0.25);
+  }
+  
+  .action-btn.primary:hover {
+    box-shadow: 0 8px 20px rgba(6, 182, 212, 0.35);
+    transform: translateY(-1px);
   }
 </style>

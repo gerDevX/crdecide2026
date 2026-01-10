@@ -12,17 +12,7 @@ const sortedPillarData = [...pillarData].sort((a, b) =>
 );
 ---
 
-<section class="py-8">
-  <div class="flex items-center justify-between mb-6">
-    <div>
-      <h2 class="text-2xl font-bold text-slate-900">Los 10 Pilares Nacionales</h2>
-      <p class="text-sm text-slate-500 mt-1">Ordenados por prioridad según las urgencias de Costa Rica</p>
-    </div>
-    <a href="/pilares" class="text-civic-600 hover:text-civic-700 text-sm font-medium">
-      Ver todos →
-    </a>
-  </div>
-  
+<section class="py-4">
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
     {sortedPillarData.map((data, index) => {
       const topCandidate = data.topCandidates[0];
@@ -43,14 +33,25 @@ const sortedPillarData = [...pillarData].sort((a, b) =>
     })}
   </div>
   
-  <div class="mt-4 text-sm text-slate-500 flex items-center gap-4">
-    <span class="flex items-center gap-1">
-      <span class="w-3 h-3 bg-red-100 rounded"></span>
-      <span>Prioritarios (60% del peso)</span>
-    </span>
-    <span class="flex items-center gap-1">
-      <span class="w-3 h-3 bg-amber-100 rounded"></span>
-      <span>Críticos</span>
-    </span>
+  <div class="mt-6 flex flex-wrap items-center justify-between gap-4">
+    <div class="flex items-center gap-4 text-sm text-slate-500">
+      <span class="flex items-center gap-2">
+        <span class="w-3 h-3 bg-gradient-to-r from-red-400 to-rose-500 rounded"></span>
+        <span>Prioritarios (60% del peso)</span>
+      </span>
+      <span class="flex items-center gap-2">
+        <span class="w-3 h-3 bg-gradient-to-r from-cyan-400 to-blue-500 rounded"></span>
+        <span>Estándar</span>
+      </span>
+    </div>
+    <a 
+      href="/pilares" 
+      class="inline-flex items-center gap-1 text-sm font-semibold text-cyan-600 hover:text-cyan-700 transition-colors group"
+    >
+      Ver todos los pilares
+      <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+      </svg>
+    </a>
   </div>
 </section>

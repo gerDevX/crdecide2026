@@ -69,252 +69,887 @@ if (omissionAnalysis?.urgency_coverage) {
   }
 }
 omissionAnalysis?.missing_pillars?.forEach(p => omissionPenalties.push('missing_priority_pillar'));
+
+const getRiskColor = (level: FiscalRiskLevel) => {
+  switch (level) {
+    case 'BAJO': return 'from-emerald-500 to-green-600';
+    case 'MEDIO': return 'from-amber-500 to-orange-500';
+    case 'ALTO': return 'from-red-500 to-rose-600';
+  }
+};
+
+const getRiskTextColor = (level: FiscalRiskLevel) => {
+  switch (level) {
+    case 'BAJO': return 'text-emerald-600';
+    case 'MEDIO': return 'text-amber-600';
+    case 'ALTO': return 'text-red-600';
+  }
+};
 ---
 
 <BaseLayout title={candidate.party_name}>
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    
-    <!-- Breadcrumb -->
-    <nav class="mb-6 text-sm">
-      <a href="/candidatos" class="text-civic-600 hover:underline">← Candidatos</a>
-    </nav>
-
-    <!-- Header -->
-    <header class="card p-6 mb-8">
-      <div class="flex flex-wrap items-start justify-between gap-6">
-        <div>
-          <span class="text-sm font-medium text-slate-400 uppercase">{candidate.pdf_id}</span>
-          <h1 class="text-3xl font-bold text-slate-900 mt-1">{candidate.party_name}</h1>
-          {candidate.candidate_name !== 'no_especificado' && candidate.candidate_name !== 'Por determinar' && (
-            <p class="text-lg text-slate-600 mt-1">{candidate.candidate_name}</p>
-          )}
-        </div>
-        <div class="text-right">
-          <div class={`text-4xl font-bold ${
-            riskLevel === 'BAJO' ? 'text-green-600' :
-            riskLevel === 'MEDIO' ? 'text-amber-600' :
-            'text-red-600'
-          }`}>{weightedPercent}%</div>
-          <div class="text-sm text-slate-500">Puntaje ponderado</div>
-          <div class="mt-2">
-            <FiscalRiskBadge riskLevel={riskLevel} size="md" />
+  <div class="candidate-page">
+    <!-- Hero Header -->
+    <header class="candidate-hero">
+      <div class="hero-background"></div>
+      <div class="hero-content">
+        <nav class="mb-6">
+          <a href="/candidatos" class="breadcrumb-link">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            Volver a candidatos
+          </a>
+        </nav>
+        
+        <div class="hero-grid">
+          <div class="hero-info">
+            <span class="party-code">{candidate.pdf_id}</span>
+            <h1 class="party-name">{candidate.party_name}</h1>
+            {candidate.candidate_name !== 'no_especificado' && candidate.candidate_name !== 'Por determinar' && (
+              <p class="candidate-name">{candidate.candidate_name}</p>
+            )}
+          </div>
+          
+          <div class="hero-score">
+            <div class={`score-circle ${getRiskTextColor(riskLevel)}`}>
+              <span class="score-value">{weightedPercent}</span>
+              <span class="score-percent">%</span>
+            </div>
+            <div class="score-label">Puntaje Ponderado</div>
+            <div class="mt-3">
+              <FiscalRiskBadge riskLevel={riskLevel} size="lg" />
+            </div>
           </div>
         </div>
-      </div>
-      
-      <div class="mt-6 grid sm:grid-cols-4 gap-4">
-        <div class="bg-slate-50 rounded-lg p-4">
-          <div class="text-2xl font-bold text-slate-900">{score.overall.raw_sum}/40</div>
-          <div class="text-sm text-slate-500">Puntaje bruto</div>
-        </div>
-        <div class="bg-emerald-50 rounded-lg p-4">
-          <div class="text-2xl font-bold text-emerald-700">{weightedPercent}%</div>
-          <div class="text-sm text-slate-500">Ponderado general</div>
-        </div>
-        <div class="bg-purple-50 rounded-lg p-4">
-          <div class="text-2xl font-bold text-purple-700">{priorityPercent}%</div>
-          <div class="text-sm text-slate-500">Pilares prioritarios</div>
-        </div>
-        <div class={`rounded-lg p-4 ${totalPenalties < 0 ? 'bg-red-50' : 'bg-green-50'}`}>
-          <div class={`text-2xl font-bold ${totalPenalties < 0 ? 'text-red-600' : 'text-green-600'}`}>
-            {totalPenalties}
+        
+        <!-- Stats Row -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">📊</div>
+            <div class="stat-value">{score.overall.raw_sum}/40</div>
+            <div class="stat-label">Puntaje bruto</div>
           </div>
-          <div class="text-sm text-slate-500">Penalización total</div>
+          <div class="stat-card highlight-emerald">
+            <div class="stat-icon">📈</div>
+            <div class="stat-value">{weightedPercent}%</div>
+            <div class="stat-label">Ponderado general</div>
+          </div>
+          <div class="stat-card highlight-purple">
+            <div class="stat-icon">🎯</div>
+            <div class="stat-value">{priorityPercent}%</div>
+            <div class="stat-label">Pilares prioritarios</div>
+          </div>
+          <div class={`stat-card ${totalPenalties < 0 ? 'highlight-red' : 'highlight-green'}`}>
+            <div class="stat-icon">⚖️</div>
+            <div class="stat-value">{totalPenalties}</div>
+            <div class="stat-label">Penalización total</div>
+          </div>
         </div>
-      </div>
-      
-      <div class="mt-6 flex flex-wrap gap-3">
-        <a
-          href={candidate.pdf_url && candidate.pdf_url !== 'no_especificado' ? candidate.pdf_url : `/planes/${candidate.pdf_id}.pdf`}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="btn btn-primary"
-        >
-          📄 Ver plan de gobierno (PDF)
-        </a>
-        {candidate.pdf_url && candidate.pdf_url.includes('tse.go.cr') && (
-          <span class="inline-flex items-center text-xs text-green-600 bg-green-50 px-2 py-1 rounded">
-            ✓ Fuente oficial TSE
-          </span>
-        )}
-        <a href={`/comparar?c=${candidate.candidate_id}`} class="btn btn-secondary">
-          Comparar con otros
-        </a>
+        
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+          <a
+            href={candidate.pdf_url && candidate.pdf_url !== 'no_especificado' ? candidate.pdf_url : `/planes/${candidate.pdf_id}.pdf`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-primary"
+          >
+            <span>📄</span>
+            Ver plan de gobierno (PDF)
+            {candidate.pdf_url && candidate.pdf_url.includes('tse.go.cr') && (
+              <span class="tse-badge">TSE</span>
+            )}
+          </a>
+          <a href={`/comparar?c=${candidate.candidate_id}`} class="btn-secondary">
+            <span>⚖️</span>
+            Comparar con otros
+          </a>
+        </div>
       </div>
     </header>
 
-    <!-- Fiscal Alerts Section -->
-    {activePenalties.length > 0 && (
-      <section class="card p-6 mb-8 bg-red-50 border-red-200">
-        <h2 class="text-xl font-bold text-red-800 mb-4">⚠️ Alertas Fiscales</h2>
-        <p class="text-sm text-red-700 mb-4">
-          Este plan de gobierno tiene <strong>{activePenalties.length}</strong> bandera(s) roja(s) fiscal(es):
-        </p>
-        <div class="grid gap-3">
-          {activePenalties.map(flag => (
-            <div class="flex items-start gap-3 bg-white p-3 rounded-lg border border-red-200">
-              <span class="text-2xl">{PENALTY_LABELS[flag]?.emoji}</span>
-              <div>
-                <h4 class="font-semibold text-red-800">{PENALTY_LABELS[flag]?.label}</h4>
-                <p class="text-sm text-red-600">{PENALTY_LABELS[flag]?.description}</p>
+    <div class="content-container">
+      <!-- Fiscal Alerts Section -->
+      {activePenalties.length > 0 && (
+        <section class="alert-section alert-danger">
+          <div class="alert-header">
+            <span class="alert-icon">🚨</span>
+            <h2>Alertas Fiscales</h2>
+          </div>
+          <p class="alert-description">
+            Este plan de gobierno tiene <strong>{activePenalties.length}</strong> bandera(s) roja(s) fiscal(es):
+          </p>
+          <div class="alert-items">
+            {activePenalties.map(flag => (
+              <div class="alert-item">
+                <span class="item-icon">{PENALTY_LABELS[flag]?.emoji}</span>
+                <div class="item-content">
+                  <h4>{PENALTY_LABELS[flag]?.label}</h4>
+                  <p>{PENALTY_LABELS[flag]?.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          {score.fiscal_analysis?.evidence && score.fiscal_analysis.evidence.length > 0 && (
+            <div class="evidence-section">
+              <h4>Evidencia del documento:</h4>
+              <div class="evidence-quotes">
+                {score.fiscal_analysis.evidence.slice(0, 2).map(ev => (
+                  <blockquote>"{ev}"</blockquote>
+                ))}
               </div>
             </div>
-          ))}
-        </div>
-        {score.fiscal_analysis?.evidence && score.fiscal_analysis.evidence.length > 0 && (
-          <div class="mt-4">
-            <h4 class="font-semibold text-red-800 mb-2">Evidencia del documento:</h4>
-            <div class="space-y-2">
-              {score.fiscal_analysis.evidence.slice(0, 2).map(ev => (
-                <blockquote class="text-sm text-red-700 bg-white p-3 rounded border-l-4 border-red-400 italic">
-                  "{ev}"
-                </blockquote>
-              ))}
-            </div>
-          </div>
-        )}
-      </section>
-    )}
+          )}
+        </section>
+      )}
 
-    <!-- Omission Alerts Section -->
-    {omissionPenalties.length > 0 && (
-      <section class="card p-6 mb-8 bg-amber-50 border-amber-200">
-        <h2 class="text-xl font-bold text-amber-800 mb-4">⚠️ Urgencias Nacionales No Abordadas</h2>
-        <p class="text-sm text-amber-700 mb-4">
-          Este plan de gobierno no menciona <strong>{omissionPenalties.length}</strong> tema(s) crítico(s) 
-          para Costa Rica:
-        </p>
-        <div class="grid gap-3">
-          {omissionPenalties.map(flag => (
-            <div class="flex items-start gap-3 bg-white p-3 rounded-lg border border-amber-200">
-              <span class="text-2xl">{PENALTY_LABELS[flag]?.emoji}</span>
-              <div>
-                <h4 class="font-semibold text-amber-800">{PENALTY_LABELS[flag]?.label}</h4>
-                <p class="text-sm text-amber-600">{PENALTY_LABELS[flag]?.description}</p>
+      <!-- Omission Alerts Section -->
+      {omissionPenalties.length > 0 && (
+        <section class="alert-section alert-warning">
+          <div class="alert-header">
+            <span class="alert-icon">⚠️</span>
+            <h2>Urgencias Nacionales No Abordadas</h2>
+          </div>
+          <p class="alert-description">
+            Este plan de gobierno no menciona <strong>{omissionPenalties.length}</strong> tema(s) crítico(s) 
+            para Costa Rica:
+          </p>
+          <div class="alert-items">
+            {omissionPenalties.map(flag => (
+              <div class="alert-item">
+                <span class="item-icon">{PENALTY_LABELS[flag]?.emoji}</span>
+                <div class="item-content">
+                  <h4>{PENALTY_LABELS[flag]?.label}</h4>
+                  <p>{PENALTY_LABELS[flag]?.description}</p>
+                </div>
               </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- Fiscal Responsibility if good -->
+      {fiscalFlags?.shows_fiscal_responsibility && riskLevel === 'BAJO' && (
+        <section class="alert-section alert-success">
+          <div class="alert-header">
+            <span class="alert-icon">✅</span>
+            <h2>Responsabilidad Fiscal</h2>
+          </div>
+          <p class="alert-description">
+            Este plan de gobierno muestra indicadores de responsabilidad fiscal y no presenta 
+            banderas rojas que comprometan las finanzas públicas de Costa Rica.
+          </p>
+        </section>
+      )}
+
+      <!-- Strengths & Weaknesses -->
+      {analysis && (analysis.strengths.length > 0 || analysis.weaknesses.length > 0) && (
+        <section class="analysis-grid">
+          {analysis.strengths.length > 0 && (
+            <div class="analysis-card strengths">
+              <h3>💪 Fortalezas</h3>
+              <ul>
+                {analysis.strengths.map(s => (
+                  <li>
+                    <span class="check-icon">✓</span>
+                    <span>{s}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
-          ))}
+          )}
+          {analysis.weaknesses.length > 0 && (
+            <div class="analysis-card weaknesses">
+              <h3>⚠️ Debilidades</h3>
+              <ul>
+                {analysis.weaknesses.map(w => (
+                  <li>
+                    <span class="x-icon">✗</span>
+                    <span>{w}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </section>
+      )}
+
+      <!-- Matrix -->
+      <section class="matrix-section">
+        <div class="section-header">
+          <span class="section-icon">📊</span>
+          <h2>Evaluación por Pilar</h2>
         </div>
+        <CandidateMatrix score={score} />
       </section>
-    )}
 
-    <!-- Fiscal Responsibility if good -->
-    {fiscalFlags?.shows_fiscal_responsibility && riskLevel === 'BAJO' && (
-      <section class="card p-6 mb-8 bg-green-50 border-green-200">
-        <h2 class="text-xl font-bold text-green-800 mb-2">✅ Responsabilidad Fiscal</h2>
-        <p class="text-sm text-green-700">
-          Este plan de gobierno muestra indicadores de responsabilidad fiscal y no presenta 
-          banderas rojas que comprometan las finanzas públicas de Costa Rica.
-        </p>
-      </section>
-    )}
-
-    <!-- Strengths & Weaknesses -->
-    {analysis && (analysis.strengths.length > 0 || analysis.weaknesses.length > 0) && (
-      <section class="grid md:grid-cols-2 gap-6 mb-8">
-        {analysis.strengths.length > 0 && (
-          <div class="card p-5 border-l-4 border-green-500">
-            <h3 class="font-bold text-green-800 mb-3">💪 Fortalezas</h3>
-            <ul class="space-y-2 text-sm">
-              {analysis.strengths.map(s => (
-                <li class="flex items-start gap-2 text-green-700">
-                  <span class="text-green-500">✓</span>
-                  <span>{s}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-        {analysis.weaknesses.length > 0 && (
-          <div class="card p-5 border-l-4 border-red-500">
-            <h3 class="font-bold text-red-800 mb-3">⚠️ Debilidades</h3>
-            <ul class="space-y-2 text-sm">
-              {analysis.weaknesses.map(w => (
-                <li class="flex items-start gap-2 text-red-700">
-                  <span class="text-red-500">✗</span>
-                  <span>{w}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </section>
-    )}
-
-    <!-- Matrix -->
-    <section class="mb-12">
-      <h2 class="text-2xl font-bold text-slate-900 mb-4">Evaluación por Pilar</h2>
-      <CandidateMatrix score={score} />
-    </section>
-
-    <!-- Proposals by Pillar -->
-    <section>
-      <h2 class="text-2xl font-bold text-slate-900 mb-4">Propuestas por Pilar</h2>
-      
-      <div class="space-y-8">
-        {score.pillar_scores.map((ps) => {
-          const pillar = pillarIndex[ps.pillar_id];
-          const icon = PILLAR_ICONS[ps.pillar_id as PillarId];
-          const weightPercent = pillar?.weight ? Math.round(pillar.weight * 100) : 0;
-          const pillarProposals = (proposalsByPillar[ps.pillar_id] || [])
-            .sort((a, b) => {
-              const scoreA = a.dimensions.existence + a.dimensions.when + a.dimensions.how + a.dimensions.funding;
-              const scoreB = b.dimensions.existence + b.dimensions.when + b.dimensions.how + b.dimensions.funding;
-              return scoreB - scoreA;
-            })
-            .slice(0, 3);
-          
-          const hasPenalties = ps.penalties && ps.penalties.length > 0;
-          
-          return (
-            <div>
-              <div class="flex items-center gap-2 mb-3 flex-wrap">
-                <span class="text-xl">{icon}</span>
-                <span class="text-xs font-medium text-slate-400 uppercase">{ps.pillar_id}</span>
-                <h3 class="font-semibold text-slate-900">{pillar?.pillar_name || ps.pillar_id}</h3>
-                <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded">
-                  Peso: {weightPercent}%
-                </span>
-                <span class={`text-sm ${hasPenalties ? 'text-red-600' : 'text-slate-500'}`}>
-                  ({ps.effective_score}/4)
-                  {hasPenalties && ps.raw_score !== ps.effective_score && (
-                    <span class="text-xs ml-1">(bruto: {ps.raw_score})</span>
-                  )}
-                </span>
-                {hasPenalties && (
-                  <span class="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded">
-                    Penalizado
-                  </span>
+      <!-- Proposals by Pillar -->
+      <section class="proposals-section">
+        <div class="section-header">
+          <span class="section-icon">📋</span>
+          <h2>Propuestas por Pilar</h2>
+        </div>
+        
+        <div class="proposals-list">
+          {score.pillar_scores.map((ps) => {
+            const pillar = pillarIndex[ps.pillar_id];
+            const icon = PILLAR_ICONS[ps.pillar_id as PillarId];
+            const weightPercent = pillar?.weight ? Math.round(pillar.weight * 100) : 0;
+            const pillarProposals = (proposalsByPillar[ps.pillar_id] || [])
+              .sort((a, b) => {
+                const scoreA = a.dimensions.existence + a.dimensions.when + a.dimensions.how + a.dimensions.funding;
+                const scoreB = b.dimensions.existence + b.dimensions.when + b.dimensions.how + b.dimensions.funding;
+                return scoreB - scoreA;
+              })
+              .slice(0, 3);
+            
+            const hasPenalties = ps.penalties && ps.penalties.length > 0;
+            
+            return (
+              <div class="pillar-section">
+                <div class="pillar-header">
+                  <span class="pillar-icon">{icon}</span>
+                  <div class="pillar-info">
+                    <span class="pillar-id">{ps.pillar_id}</span>
+                    <h3>{pillar?.pillar_name || ps.pillar_id}</h3>
+                  </div>
+                  <div class="pillar-meta">
+                    <span class="weight-badge">Peso: {weightPercent}%</span>
+                    <span class={`score-badge ${hasPenalties ? 'penalized' : ''}`}>
+                      {ps.effective_score}/4
+                      {hasPenalties && ps.raw_score !== ps.effective_score && (
+                        <span class="raw-score">(bruto: {ps.raw_score})</span>
+                      )}
+                    </span>
+                    {hasPenalties && (
+                      <span class="penalty-badge">Penalizado</span>
+                    )}
+                  </div>
+                </div>
+                
+                {pillarProposals.length > 0 ? (
+                  <div class="proposals-cards">
+                    {pillarProposals.map((proposal) => (
+                      <div class={`proposal-card ${hasPenalties ? 'penalized' : ''}`}>
+                        <h4>{proposal.proposal_title}</h4>
+                        <p>{proposal.proposal_text}</p>
+                        <div class="proposal-footer">
+                          <DimensionBadges dimensions={proposal.dimensions} compact={true} />
+                          <EvidenceLink 
+                            pdfId={proposal.evidence.pdf_id}
+                            page={proposal.evidence.page}
+                            compact={true}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p class="no-proposals">
+                    No se encontraron propuestas concretas para este pilar.
+                  </p>
                 )}
               </div>
-              
-              {pillarProposals.length > 0 ? (
-                <div class="space-y-3">
-                  {pillarProposals.map((proposal) => (
-                    <div class={`card p-4 border-l-4 ${hasPenalties ? 'border-red-400' : `pillar-${ps.pillar_id}`}`}>
-                      <h4 class="font-medium text-slate-900 mb-2">{proposal.proposal_title}</h4>
-                      <p class="text-sm text-slate-600 mb-3 line-clamp-2">{proposal.proposal_text}</p>
-                      <div class="flex flex-wrap items-center justify-between gap-3">
-                        <DimensionBadges dimensions={proposal.dimensions} compact={true} />
-                        <EvidenceLink 
-                          pdfId={proposal.evidence.pdf_id}
-                          page={proposal.evidence.page}
-                          compact={true}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p class="text-slate-500 text-sm italic">
-                  No se encontraron propuestas concretas para este pilar.
-                </p>
-              )}
-            </div>
-          );
-        })}
-      </div>
-    </section>
-
+            );
+          })}
+        </div>
+      </section>
+    </div>
   </div>
 </BaseLayout>
+
+<style>
+  .candidate-page {
+    min-height: 100vh;
+  }
+  
+  /* Hero Section */
+  .candidate-hero {
+    position: relative;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    padding: 2rem 0 3rem;
+    overflow: hidden;
+  }
+  
+  .hero-background {
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(circle at 20% 50%, rgba(6, 182, 212, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.06) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  
+  .hero-content {
+    position: relative;
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+  
+  .breadcrumb-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #0891b2;
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+  }
+  
+  .breadcrumb-link:hover {
+    color: #0e7490;
+    transform: translateX(-4px);
+  }
+  
+  .hero-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  .hero-info {
+    flex: 1;
+    min-width: 280px;
+  }
+  
+  .party-code {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748b;
+    background: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    margin-bottom: 0.5rem;
+  }
+  
+  .party-name {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.1;
+    margin: 0;
+  }
+  
+  .candidate-name {
+    font-size: 1.25rem;
+    color: #64748b;
+    margin-top: 0.5rem;
+  }
+  
+  .hero-score {
+    text-align: center;
+    background: white;
+    padding: 1.5rem 2rem;
+    border-radius: 1.5rem;
+    box-shadow: 0 10px 40px -10px rgba(0,0,0,0.1);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+  }
+  
+  .score-circle {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.25rem;
+  }
+  
+  .score-value {
+    font-size: 4rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+  
+  .score-percent {
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+  
+  .score-label {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin-top: 0.25rem;
+  }
+  
+  /* Stats Grid */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .stat-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.25rem;
+    box-shadow: 0 4px 20px -5px rgba(0,0,0,0.05);
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+  }
+  
+  .stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1);
+  }
+  
+  .stat-icon {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #0f172a;
+  }
+  
+  .stat-label {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-top: 0.25rem;
+  }
+  
+  .stat-card.highlight-emerald {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(5, 150, 105, 0.05));
+    border-color: rgba(16, 185, 129, 0.2);
+  }
+  
+  .stat-card.highlight-emerald .stat-value { color: #059669; }
+  
+  .stat-card.highlight-purple {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(109, 40, 217, 0.05));
+    border-color: rgba(139, 92, 246, 0.2);
+  }
+  
+  .stat-card.highlight-purple .stat-value { color: #7c3aed; }
+  
+  .stat-card.highlight-red {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.05), rgba(220, 38, 38, 0.05));
+    border-color: rgba(239, 68, 68, 0.2);
+  }
+  
+  .stat-card.highlight-red .stat-value { color: #dc2626; }
+  
+  .stat-card.highlight-green {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.05), rgba(22, 163, 74, 0.05));
+    border-color: rgba(34, 197, 94, 0.2);
+  }
+  
+  .stat-card.highlight-green .stat-value { color: #16a34a; }
+  
+  /* Action Buttons */
+  .action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.5rem;
+    background: linear-gradient(135deg, #0891b2, #0284c7);
+    color: white;
+    font-weight: 600;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 15px rgba(8, 145, 178, 0.3);
+    transition: all 0.3s ease;
+  }
+  
+  .btn-primary:hover {
+    box-shadow: 0 8px 25px rgba(8, 145, 178, 0.4);
+    transform: translateY(-2px);
+  }
+  
+  .tse-badge {
+    font-size: 0.65rem;
+    padding: 0.125rem 0.375rem;
+    background: rgba(255,255,255,0.2);
+    border-radius: 0.25rem;
+  }
+  
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.5rem;
+    background: white;
+    color: #334155;
+    font-weight: 600;
+    border-radius: 0.75rem;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-secondary:hover {
+    border-color: #06b6d4;
+    color: #0891b2;
+    background: rgba(6, 182, 212, 0.05);
+  }
+  
+  /* Content Container */
+  .content-container {
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 2rem 1rem 4rem;
+  }
+  
+  /* Alert Sections */
+  .alert-section {
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid;
+  }
+  
+  .alert-danger {
+    background: linear-gradient(135deg, rgba(254, 242, 242, 0.8), rgba(254, 226, 226, 0.5));
+    border-color: rgba(252, 165, 165, 0.5);
+  }
+  
+  .alert-warning {
+    background: linear-gradient(135deg, rgba(255, 251, 235, 0.8), rgba(254, 243, 199, 0.5));
+    border-color: rgba(252, 211, 77, 0.5);
+  }
+  
+  .alert-success {
+    background: linear-gradient(135deg, rgba(236, 253, 245, 0.8), rgba(209, 250, 229, 0.5));
+    border-color: rgba(110, 231, 183, 0.5);
+  }
+  
+  .alert-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  
+  .alert-icon {
+    font-size: 1.5rem;
+  }
+  
+  .alert-header h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+  }
+  
+  .alert-danger .alert-header h2 { color: #991b1b; }
+  .alert-warning .alert-header h2 { color: #92400e; }
+  .alert-success .alert-header h2 { color: #166534; }
+  
+  .alert-description {
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+  }
+  
+  .alert-danger .alert-description { color: #b91c1c; }
+  .alert-warning .alert-description { color: #b45309; }
+  .alert-success .alert-description { color: #15803d; }
+  
+  .alert-items {
+    display: grid;
+    gap: 0.75rem;
+  }
+  
+  .alert-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(0,0,0,0.05);
+  }
+  
+  .item-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+  
+  .item-content h4 {
+    font-weight: 600;
+    margin: 0 0 0.25rem;
+  }
+  
+  .item-content p {
+    font-size: 0.875rem;
+    margin: 0;
+    opacity: 0.8;
+  }
+  
+  .evidence-section {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(0,0,0,0.1);
+  }
+  
+  .evidence-section h4 {
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+  
+  .evidence-quotes blockquote {
+    font-style: italic;
+    padding: 0.75rem 1rem;
+    background: white;
+    border-left: 4px solid currentColor;
+    border-radius: 0.25rem;
+    margin: 0.5rem 0;
+  }
+  
+  /* Analysis Grid */
+  .analysis-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .analysis-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    border-left: 4px solid;
+    box-shadow: 0 4px 20px -5px rgba(0,0,0,0.05);
+  }
+  
+  .analysis-card.strengths { border-color: #10b981; }
+  .analysis-card.weaknesses { border-color: #ef4444; }
+  
+  .analysis-card h3 {
+    font-weight: 700;
+    margin: 0 0 1rem;
+  }
+  
+  .analysis-card.strengths h3 { color: #065f46; }
+  .analysis-card.weaknesses h3 { color: #991b1b; }
+  
+  .analysis-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .analysis-card li {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    font-size: 0.875rem;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  
+  .analysis-card li:last-child {
+    border-bottom: none;
+  }
+  
+  .check-icon { color: #10b981; font-weight: bold; }
+  .x-icon { color: #ef4444; font-weight: bold; }
+  
+  /* Section Headers */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .section-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #06b6d4, #3b82f6);
+    border-radius: 0.75rem;
+    font-size: 1.25rem;
+    box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+  }
+  
+  .section-header h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+  }
+  
+  /* Matrix Section */
+  .matrix-section {
+    margin-bottom: 3rem;
+  }
+  
+  /* Proposals Section */
+  .proposals-section {
+    margin-bottom: 3rem;
+  }
+  
+  .proposals-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .pillar-section {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px -5px rgba(0,0,0,0.05);
+    border: 1px solid #e2e8f0;
+  }
+  
+  .pillar-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  
+  .pillar-icon {
+    font-size: 1.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(59, 130, 246, 0.1));
+    border-radius: 0.5rem;
+  }
+  
+  .pillar-info {
+    flex: 1;
+    min-width: 200px;
+  }
+  
+  .pillar-id {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #94a3b8;
+  }
+  
+  .pillar-info h3 {
+    font-weight: 600;
+    color: #0f172a;
+    margin: 0;
+    font-size: 1rem;
+  }
+  
+  .pillar-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .weight-badge,
+  .score-badge {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    background: #f1f5f9;
+    color: #64748b;
+    font-weight: 500;
+  }
+  
+  .score-badge.penalized {
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+  }
+  
+  .raw-score {
+    opacity: 0.7;
+    margin-left: 0.25rem;
+  }
+  
+  .penalty-badge {
+    font-size: 0.65rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    background: #fef2f2;
+    color: #dc2626;
+    font-weight: 600;
+  }
+  
+  .proposals-cards {
+    display: grid;
+    gap: 1rem;
+  }
+  
+  .proposal-card {
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: 0.75rem;
+    border-left: 4px solid #06b6d4;
+    transition: all 0.2s ease;
+  }
+  
+  .proposal-card.penalized {
+    border-left-color: #f43f5e;
+    background: rgba(254, 242, 242, 0.5);
+  }
+  
+  .proposal-card:hover {
+    background: white;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  }
+  
+  .proposal-card h4 {
+    font-weight: 600;
+    color: #0f172a;
+    margin: 0 0 0.5rem;
+    font-size: 0.95rem;
+  }
+  
+  .proposal-card p {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin: 0 0 0.75rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .proposal-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .no-proposals {
+    color: #94a3b8;
+    font-style: italic;
+    font-size: 0.875rem;
+  }
+  
+  @media (max-width: 640px) {
+    .party-name {
+      font-size: 1.75rem;
+    }
+    
+    .score-value {
+      font-size: 3rem;
+    }
+    
+    .hero-grid {
+      flex-direction: column;
+    }
+    
+    .hero-score {
+      width: 100%;
+    }
+  }
+</style>

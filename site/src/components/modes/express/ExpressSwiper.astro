@@ -11,15 +11,68 @@ interface Props {
 }
 
 const { candidates } = Astro.props;
+
+// Create list of candidates for the dropdown
+const candidateList = candidates.map(c => ({
+  id: c.candidate.candidate_id,
+  candidateName: c.candidate.candidate_name !== 'Por determinar' && c.candidate.candidate_name !== 'no_especificado'
+    ? c.candidate.candidate_name
+    : c.candidate.party_name,
+  partyName: c.candidate.party_name,
+  rank: c.rank,
+}));
 ---
 
-<div class="express-swiper-container" id="express-swiper">
-  <div class="express-swiper-track" id="swiper-track">
-    {candidates.map(({ candidate, score, rank }, index) => (
+<div class="express-list-container">
+  <!-- Header with Filter -->
+  <div class="express-header">
+    <div class="header-content">
+      <h1 class="express-title">
+        <span class="title-icon">🗳️</span>
+        Candidatos 2026
+      </h1>
+      <p class="express-subtitle">{candidates.length} partidos ordenados por puntaje</p>
+    </div>
+    
+    <!-- Party Selector -->
+    <div class="filter-container">
+      <label for="party-select" class="filter-label">Filtrar por candidato:</label>
+      <div class="select-wrapper">
+        <select id="party-select" class="party-select">
+          <option value="">Todos los candidatos</option>
+          {candidateList.map(candidate => (
+            <option value={candidate.id}>
+              #{candidate.rank} - {candidate.candidateName} ({candidate.partyName})
+            </option>
+          ))}
+        </select>
+        <svg class="select-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </div>
+      
+      <!-- Quick filter buttons -->
+      <div class="quick-filters">
+        <button class="quick-filter-btn active" data-filter="all">
+          Todos
+        </button>
+        <button class="quick-filter-btn" data-filter="top5">
+          🏆 Top 5
+        </button>
+        <button class="quick-filter-btn" data-filter="top10">
+          ⭐ Top 10
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Candidates List -->
+  <div class="express-list" id="candidates-list">
+    {candidates.map(({ candidate, score, rank }) => (
       <div 
-        class="express-swiper-slide" 
-        data-index={index}
-        style={index === 0 ? '' : 'display: none;'}
+        class="express-list-item" 
+        data-candidate-id={candidate.candidate_id}
+        data-rank={rank}
       >
         <ExpressCard 
           candidate={candidate} 
@@ -29,240 +82,288 @@ const { candidates } = Astro.props;
         />
       </div>
     ))}
+    
+    <!-- No results message -->
+    <div id="no-results" class="no-results hidden">
+      <div class="no-results-icon">🔍</div>
+      <p class="no-results-text">Selecciona un partido del menú</p>
+    </div>
   </div>
-  
-  <!-- Navigation Arrows (for desktop) -->
-  <button 
-    id="swiper-prev" 
-    class="swiper-nav-btn swiper-nav-prev"
-    aria-label="Candidato anterior"
-  >
-    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-    </svg>
-  </button>
-  <button 
-    id="swiper-next" 
-    class="swiper-nav-btn swiper-nav-next"
-    aria-label="Siguiente candidato"
-  >
-    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-    </svg>
-  </button>
 </div>
 
 <script>
-  const swiper = document.getElementById('express-swiper');
-  const track = document.getElementById('swiper-track');
-  const slides = track?.querySelectorAll('.express-swiper-slide') as NodeListOf<HTMLElement>;
-  const prevBtn = document.getElementById('swiper-prev');
-  const nextBtn = document.getElementById('swiper-next');
+  const partySelect = document.getElementById('party-select') as HTMLSelectElement;
+  const quickFilterBtns = document.querySelectorAll('.quick-filter-btn') as NodeListOf<HTMLButtonElement>;
+  const listItems = document.querySelectorAll('.express-list-item') as NodeListOf<HTMLElement>;
+  const noResults = document.getElementById('no-results');
   
-  let currentIndex = 0;
-  let startX = 0;
-  let currentX = 0;
-  let isDragging = false;
-  
-  const totalSlides = slides?.length || 0;
-  
-  function showSlide(index: number, direction: 'left' | 'right' = 'right') {
-    if (!slides || index < 0 || index >= totalSlides) return;
-    
-    // Hide current
-    slides[currentIndex].style.display = 'none';
-    slides[currentIndex].classList.remove('animate-slide-in-left', 'animate-slide-in-right');
-    
-    // Show new
-    currentIndex = index;
-    slides[currentIndex].style.display = 'block';
-    slides[currentIndex].classList.add(direction === 'left' ? 'animate-slide-in-left' : 'animate-slide-in-right');
-    
-    // Update dots
-    updateDots();
-  }
-  
-  function updateDots() {
-    const dots = document.querySelectorAll('.express-dot');
-    dots.forEach((dot, i) => {
-      dot.classList.toggle('active', i === currentIndex);
+  function showAll() {
+    listItems.forEach(item => {
+      item.style.display = 'block';
+      item.style.animation = 'fadeIn 0.2s ease-out';
     });
+    if (noResults) noResults.classList.add('hidden');
   }
   
-  function goNext() {
-    if (currentIndex < totalSlides - 1) {
-      showSlide(currentIndex + 1, 'right');
+  function filterByParty(partyId: string) {
+    if (!partyId) {
+      showAll();
+      return;
     }
-  }
-  
-  function goPrev() {
-    if (currentIndex > 0) {
-      showSlide(currentIndex - 1, 'left');
-    }
-  }
-  
-  // Button navigation
-  nextBtn?.addEventListener('click', goNext);
-  prevBtn?.addEventListener('click', goPrev);
-  
-  // Keyboard navigation
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowRight') goNext();
-    if (e.key === 'ArrowLeft') goPrev();
-  });
-  
-  // Touch/swipe handling
-  swiper?.addEventListener('touchstart', (e) => {
-    startX = (e as TouchEvent).touches[0].clientX;
-    isDragging = true;
-  }, { passive: true });
-  
-  swiper?.addEventListener('touchmove', (e) => {
-    if (!isDragging) return;
-    currentX = (e as TouchEvent).touches[0].clientX;
-  }, { passive: true });
-  
-  swiper?.addEventListener('touchend', () => {
-    if (!isDragging) return;
-    isDragging = false;
     
-    const diff = currentX - startX;
-    const threshold = 50;
-    
-    if (Math.abs(diff) > threshold) {
-      if (diff > 0) {
-        goPrev();
+    let found = false;
+    listItems.forEach(item => {
+      if (item.dataset.candidateId === partyId) {
+        item.style.display = 'block';
+        item.style.animation = 'slideUp 0.3s ease-out';
+        found = true;
+        // Scroll to the item
+        setTimeout(() => {
+          item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
       } else {
-        goNext();
+        item.style.display = 'none';
       }
+    });
+    
+    if (noResults) {
+      noResults.classList.toggle('hidden', found);
     }
-    
-    startX = 0;
-    currentX = 0;
-  });
+  }
   
-  // Mouse drag for desktop
-  swiper?.addEventListener('mousedown', (e) => {
-    startX = (e as MouseEvent).clientX;
-    isDragging = true;
-    swiper.style.cursor = 'grabbing';
-  });
-  
-  swiper?.addEventListener('mousemove', (e) => {
-    if (!isDragging) return;
-    currentX = (e as MouseEvent).clientX;
-  });
-  
-  swiper?.addEventListener('mouseup', () => {
-    if (!isDragging) return;
-    isDragging = false;
-    swiper.style.cursor = 'grab';
+  function filterByRank(filter: string) {
+    let maxRank = Infinity;
     
-    const diff = currentX - startX;
-    const threshold = 50;
+    if (filter === 'top5') maxRank = 5;
+    else if (filter === 'top10') maxRank = 10;
     
-    if (Math.abs(diff) > threshold) {
-      if (diff > 0) {
-        goPrev();
+    listItems.forEach(item => {
+      const rank = parseInt(item.dataset.rank || '999', 10);
+      if (rank <= maxRank) {
+        item.style.display = 'block';
+        item.style.animation = 'fadeIn 0.2s ease-out';
       } else {
-        goNext();
+        item.style.display = 'none';
       }
-    }
+    });
     
-    startX = 0;
-    currentX = 0;
+    if (noResults) noResults.classList.add('hidden');
+  }
+  
+  // Party select handler
+  partySelect?.addEventListener('change', (e) => {
+    const value = (e.target as HTMLSelectElement).value;
+    filterByParty(value);
+    
+    // Reset quick filter buttons
+    quickFilterBtns.forEach(btn => btn.classList.remove('active'));
+    if (!value) {
+      quickFilterBtns[0]?.classList.add('active');
+    }
   });
   
-  swiper?.addEventListener('mouseleave', () => {
-    isDragging = false;
-    swiper.style.cursor = 'grab';
+  // Quick filter buttons handler
+  quickFilterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const filter = btn.dataset.filter;
+      
+      // Update active state
+      quickFilterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      
+      // Reset select
+      if (partySelect) partySelect.value = '';
+      
+      // Apply filter
+      if (filter === 'all') {
+        showAll();
+      } else {
+        filterByRank(filter || 'all');
+      }
+    });
   });
 </script>
 
 <style>
-  .express-swiper-container {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-    cursor: grab;
+  .express-list-container {
+    min-height: 100vh;
+    padding-bottom: 2rem;
   }
   
-  .express-swiper-track {
-    position: relative;
-    width: 100%;
-  }
-  
-  .express-swiper-slide {
-    width: 100%;
-  }
-  
-  .swiper-nav-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
+  /* Header */
+  .express-header {
+    position: sticky;
+    top: 64px;
     z-index: 20;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.9);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    display: none;
+    background: #f8fafc;
+    padding: 1.5rem 1rem 1rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  .header-content {
+    text-align: center;
+    margin-bottom: 1.25rem;
+  }
+  
+  .express-title {
+    display: flex;
     align-items: center;
     justify-content: center;
-    color: #475569;
-    transition: all 0.2s;
-    border: none;
-    cursor: pointer;
-  }
-  
-  @media (min-width: 768px) {
-    .swiper-nav-btn {
-      display: flex;
-    }
-  }
-  
-  .swiper-nav-btn:hover {
-    transform: translateY(-50%) scale(1.1);
+    gap: 0.5rem;
+    font-size: 1.75rem;
+    font-weight: 800;
     color: #0f172a;
+    margin: 0 0 0.25rem;
+  }
+  
+  .title-icon {
+    font-size: 2rem;
+  }
+  
+  .express-subtitle {
+    color: #64748b;
+    font-size: 0.875rem;
+    margin: 0;
+  }
+  
+  /* Filter */
+  .filter-container {
+    max-width: 28rem;
+    margin: 0 auto;
+  }
+  
+  .filter-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748b;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  .select-wrapper {
+    position: relative;
+    margin-bottom: 1rem;
+  }
+  
+  .party-select {
+    width: 100%;
+    padding: 0.875rem 2.5rem 0.875rem 1rem;
+    font-size: 1rem;
+    font-weight: 500;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.75rem;
     background: white;
+    color: #0f172a;
+    cursor: pointer;
+    appearance: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   }
   
-  .swiper-nav-prev {
-    left: 16px;
+  .party-select:focus {
+    outline: none;
+    border-color: #06b6d4;
+    box-shadow: 0 4px 15px rgba(6, 182, 212, 0.15);
   }
   
-  .swiper-nav-next {
-    right: 16px;
+  .party-select:hover {
+    border-color: #cbd5e1;
   }
   
-  /* Slide animations */
-  .animate-slide-in-right {
-    animation: slideInRight 0.3s ease-out;
+  .select-arrow {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1.25rem;
+    height: 1.25rem;
+    color: #64748b;
+    pointer-events: none;
   }
   
-  .animate-slide-in-left {
-    animation: slideInLeft 0.3s ease-out;
+  /* Quick Filters */
+  .quick-filters {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
   }
   
-  @keyframes slideInRight {
+  .quick-filter-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 9999px;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .quick-filter-btn:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #475569;
+  }
+  
+  .quick-filter-btn.active {
+    background: linear-gradient(135deg, #06b6d4, #3b82f6);
+    border-color: transparent;
+    color: white;
+    box-shadow: 0 4px 12px rgba(6, 182, 212, 0.25);
+  }
+  
+  /* List */
+  .express-list {
+    max-width: 32rem;
+    margin: 0 auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .express-list-item {
+    animation: slideUp 0.3s ease-out;
+  }
+  
+  /* No results */
+  .no-results {
+    text-align: center;
+    padding: 3rem 1rem;
+  }
+  
+  .no-results-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+  }
+  
+  .no-results-text {
+    color: #64748b;
+    font-size: 1.125rem;
+    margin: 0;
+  }
+  
+  .hidden {
+    display: none !important;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes slideUp {
     from {
       opacity: 0;
-      transform: translateX(50px);
+      transform: translateY(20px);
     }
     to {
       opacity: 1;
-      transform: translateX(0);
-    }
-  }
-  
-  @keyframes slideInLeft {
-    from {
-      opacity: 0;
-      transform: translateX(-50px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
+      transform: translateY(0);
     }
   }
 </style>
