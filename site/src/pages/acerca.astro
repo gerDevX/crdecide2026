@@ -291,6 +291,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 </BaseLayout>
 
 <style>
+  /* ============================================
+     MODE: DASHBOARD (default)
+     ============================================ */
   .prose h1 {
     font-size: 2rem;
     font-weight: 800;
@@ -314,5 +317,71 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .prose hr {
     margin: 2.5rem 0;
     border-color: #e2e8f0;
+  }
+
+  /* ============================================
+     MODE: EXPRESS 🚀 (18-35)
+     ============================================ */
+  :global(html[data-mode="express"]) article {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    border-radius: 1.5rem;
+    padding: 2rem;
+    margin: 1rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  }
+  
+  :global(html[data-mode="express"]) .prose h1 {
+    font-size: 1.75rem;
+    text-align: center;
+  }
+  
+  :global(html[data-mode="express"]) .prose h2 {
+    font-size: 1.25rem;
+    margin-top: 2rem;
+  }
+  
+  :global(html[data-mode="express"]) .not-prose {
+    border-radius: 1rem;
+  }
+
+  /* ============================================
+     MODE: READING 📖 (50+)
+     ============================================ */
+  :global(html[data-mode="reading"]) article {
+    max-width: 48rem;
+    background: #fffef5;
+    padding: 3rem 2rem;
+  }
+  
+  :global(html[data-mode="reading"]) .prose h1 {
+    font-size: 2.5rem;
+    font-family: Georgia, 'Times New Roman', serif;
+    line-height: 1.2;
+    margin-bottom: 2.5rem;
+  }
+  
+  :global(html[data-mode="reading"]) .prose h2 {
+    font-size: 1.75rem;
+    font-family: Georgia, 'Times New Roman', serif;
+    margin-top: 3.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  :global(html[data-mode="reading"]) .prose p,
+  :global(html[data-mode="reading"]) .not-prose p {
+    font-size: 1.25rem;
+    line-height: 2;
+    color: #1a1a1a;
+  }
+  
+  :global(html[data-mode="reading"]) .not-prose {
+    padding: 1.5rem;
+    border-width: 2px;
+  }
+  
+  :global(html[data-mode="reading"]) .prose hr {
+    margin: 3rem 0;
+    border-width: 2px;
   }
 </style>
