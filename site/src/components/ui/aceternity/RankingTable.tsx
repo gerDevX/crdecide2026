@@ -68,6 +68,31 @@ export const RankingTable = ({
         )}
       </div>
       
+      {/* Risk Level Legend */}
+      <div className="px-6 py-3 bg-slate-50 border-b border-slate-100">
+        <div className="flex flex-wrap items-center gap-4 text-xs">
+          <span className="text-slate-500 font-medium">Riesgo Fiscal:</span>
+          <div className="flex items-center gap-1.5">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-semibold">
+              🟢 BAJO
+            </span>
+            <span className="text-slate-400">No compromete finanzas</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 font-semibold">
+              🟠 MEDIO
+            </span>
+            <span className="text-slate-400">1-2 alertas</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-100 text-red-700 font-semibold">
+              🔴 ALTO
+            </span>
+            <span className="text-slate-400">Múltiples alertas</span>
+          </div>
+        </div>
+      </div>
+      
       <div className="divide-y divide-slate-100">
         {displayEntries.map((entry, idx) => (
           <motion.a
