@@ -6,7 +6,8 @@ import EvidenceLink from '../../components/ui/EvidenceLink.astro';
 import { 
   pillars, 
   getPillarCardData, 
-  getProposalsByPillar
+  getProposalsByPillar,
+  getPdfUrl
 } from '../../lib/data';
 import { PILLAR_ICONS, CRITICAL_PILLARS } from '../../lib/types';
 import type { PillarId } from '../../lib/types';
@@ -229,10 +230,7 @@ const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
             const hasMedal = index < 3;
             
             return (
-                  <a
-                    href={`/candidatos/${item.candidate.candidate_id}`}
-                class={`dashboard-candidate-card ${hasMedal ? 'top-three' : ''} ${isCritical ? 'pillar-critical' : ''}`}
-              >
+              <div class={`dashboard-candidate-card ${hasMedal ? 'top-three' : ''} ${isCritical ? 'pillar-critical' : ''}`}>
                 <!-- Header -->
                 <div class="dashboard-card-header">
                   <div class="dashboard-rank-container">
@@ -298,9 +296,21 @@ const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
                 
                 <!-- Footer -->
                 <div class="dashboard-card-footer">
-                  <span class="dashboard-view-profile">Ver perfil completo →</span>
+                  <a href={`/candidatos/${item.candidate.candidate_id}`} class="dashboard-view-profile">
+                    Ver perfil completo →
+                  </a>
+                  {bestProposal && (
+                    <a
+                      href={getPdfUrl(bestProposal.evidence.pdf_id, bestProposal.evidence.page)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="dashboard-view-plan"
+                    >
+                      📄 Ver plan (pág. {bestProposal.evidence.page})
+                    </a>
+                  )}
                 </div>
-              </a>
+              </div>
             );
           })}
       </div>
@@ -403,10 +413,7 @@ const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
             const hasMedal = index < 3;
           
           return (
-                  <a 
-                    href={`/candidatos/${item.candidate.candidate_id}`}
-                class={`express-candidate-card ${hasMedal ? 'top-three' : ''}`}
-                  >
+              <div class={`express-candidate-card ${hasMedal ? 'top-three' : ''}`}>
                 <div class="express-candidate-header">
                   <div class="express-rank-badge">
                     {hasMedal ? (
@@ -414,12 +421,12 @@ const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
                     ) : (
                       <span class="express-rank-number">{index + 1}</span>
                     )}
-                </div>
+                  </div>
                   
                   <div class="express-candidate-info">
                     <h3 class="express-candidate-name">{candidateName}</h3>
                     <p class="express-candidate-party">{item.candidate.party_name}</p>
-              </div>
+                  </div>
               
                   <div class={`express-score-badge ${scorePercent === 100 ? 'perfect' : scorePercent >= 75 ? 'high' : scorePercent >= 50 ? 'medium' : 'low'}`}>
                     <span class="express-score-number">{scorePercent}</span>
@@ -445,14 +452,26 @@ const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
                       <span class={`express-dim ${bestProposal.dimensions.funding ? 'active' : ''}`}>
                         💰 Fondos
                       </span>
-              </div>
-            </div>
+                    </div>
+                  </div>
                 )}
                 
-                <div class="express-view-more">
-                  Ver perfil completo →
+                <div class="express-card-footer">
+                  <a href={`/candidatos/${item.candidate.candidate_id}`} class="express-view-profile">
+                    Ver perfil completo →
+                  </a>
+                  {bestProposal && (
+                    <a
+                      href={getPdfUrl(bestProposal.evidence.pdf_id, bestProposal.evidence.page)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="express-view-plan"
+                    >
+                      📄 Ver plan (pág. {bestProposal.evidence.page})
+                    </a>
+                  )}
                 </div>
-              </a>
+              </div>
           );
         })}
       </div>
@@ -484,11 +503,227 @@ const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
     </div>
   </div>
 
+  <!-- ============================================
+       READING MODE 📖 - Modo Lectura (Adultos Mayores)
+       ============================================ -->
+  <div class="mode-reading-content">
+    <article class="reading-pilar-container">
+      
+      <!-- Navegación -->
+      <nav class="reading-nav">
+        <a href="/pilares" class="reading-back-link">← Volver a todos los pilares</a>
+      </nav>
+
+      <!-- Encabezado del Pilar -->
+      <header class="reading-pilar-header">
+        <div class="reading-header-badges">
+          <span class="reading-badge-id">{pillarId}</span>
+          {isCritical && <span class="reading-badge-critical">⭐ Pilar Crítico</span>}
+          <span class="reading-badge-weight">Peso: {weightPercent}%</span>
+        </div>
+        
+        <h1 class="reading-pilar-title">
+          <span class="reading-pilar-icon">{icon}</span>
+          {pillarData.pillar.pillar_name}
+        </h1>
+      </header>
+
+      <hr class="reading-divider" />
+
+      <!-- Descripción del Pilar -->
+      <section class="reading-section">
+        <h2 class="reading-section-title">📋 ¿Qué evalúa este pilar?</h2>
+        <p class="reading-description">
+          {PILLAR_DESCRIPTIONS[pillarId] || 'Información no disponible.'}
+        </p>
+      </section>
+
+      <!-- Impacto al Ciudadano -->
+      <section class={`reading-impact-box ${isCritical ? 'critical' : ''}`}>
+        <h2 class="reading-impact-title">👥 ¿Cómo le afecta a usted?</h2>
+        <p class="reading-impact-text">
+          {PILLAR_CITIZEN_IMPACT[pillarId] || ''}
+        </p>
+      </section>
+
+      <hr class="reading-divider" />
+
+      <!-- Promedio General -->
+      <section class="reading-section">
+        <h2 class="reading-section-title">📊 Promedio General</h2>
+        <div class="reading-avg-display">
+          <div class="reading-avg-score">
+            <span class="reading-avg-number">{avgPercent}</span>
+            <span class="reading-avg-percent">%</span>
+          </div>
+          <p class="reading-avg-explanation">
+            Este es el promedio de <strong>todos los candidatos</strong> en este pilar.
+            <br />
+            <span class="reading-avg-hint">
+              {avgPercent >= 75 ? '✅ En general, los candidatos proponen soluciones en esta área.' : 
+               avgPercent >= 50 ? '🟡 Algunos candidatos tienen propuestas, otros no.' : 
+               '🔴 Pocos candidatos abordan este tema con propuestas claras.'}
+            </span>
+          </p>
+        </div>
+        
+        <div class="reading-stats">
+          <div class="reading-stat">
+            <span class="reading-stat-value">{pillarData.topCandidates.length}</span>
+            <span class="reading-stat-label">candidatos evaluados</span>
+          </div>
+          <div class="reading-stat">
+            <span class="reading-stat-value">{proposals.length}</span>
+            <span class="reading-stat-label">propuestas analizadas</span>
+          </div>
+        </div>
+      </section>
+
+      <hr class="reading-divider" />
+
+      <!-- Leyenda -->
+      <section class="reading-legend">
+        <h2 class="reading-legend-title">📌 ¿Cómo interpretar los porcentajes?</h2>
+        <div class="reading-legend-items">
+          <div class="reading-legend-item">
+            <span class="reading-legend-dot perfect"></span>
+            <div>
+              <strong>100%</strong> — Propuesta completa con existencia, plazo, mecanismo y financiamiento definidos.
+            </div>
+          </div>
+          <div class="reading-legend-item">
+            <span class="reading-legend-dot high"></span>
+            <div>
+              <strong>75-99%</strong> — Propuesta bien desarrollada pero le falta algún detalle.
+            </div>
+          </div>
+          <div class="reading-legend-item">
+            <span class="reading-legend-dot medium"></span>
+            <div>
+              <strong>50-74%</strong> — Propuesta con información parcial o incompleta.
+            </div>
+          </div>
+          <div class="reading-legend-item">
+            <span class="reading-legend-dot low"></span>
+            <div>
+              <strong>0-49%</strong> — Propuesta muy vaga o sin detalles.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <hr class="reading-divider" />
+
+      <!-- Lista de Candidatos -->
+      <section class="reading-candidates-section">
+        <h2 class="reading-section-title">🏆 Ranking de Candidatos en este Pilar</h2>
+        <p class="reading-section-intro">
+          A continuación se muestran los candidatos ordenados por la calidad de sus propuestas en esta área.
+        </p>
+
+        <ol class="reading-candidates-list">
+          {pillarData.topCandidates.map((item, index) => {
+            const candidateProposals = proposalsByCandidate[item.candidate.candidate_id] || [];
+            const bestProposal = candidateProposals
+              .sort((a, b) => {
+                const scoreA = a.dimensions.existence + a.dimensions.when + a.dimensions.how + a.dimensions.funding;
+                const scoreB = b.dimensions.existence + b.dimensions.when + b.dimensions.how + b.dimensions.funding;
+                return scoreB - scoreA;
+              })[0];
+            
+            const scorePercent = Math.round((item.score.effective_score / 4) * 100);
+            const candidateName = getCandidateName(item.candidate);
+            const medals = ['🥇', '🥈', '🥉'];
+            const hasMedal = index < 3;
+            
+            let scoreClass = 'low';
+            if (scorePercent === 100) scoreClass = 'perfect';
+            else if (scorePercent >= 75) scoreClass = 'high';
+            else if (scorePercent >= 50) scoreClass = 'medium';
+            
+            return (
+              <li class={`reading-candidate-item ${hasMedal ? 'top-three' : ''}`}>
+                <div class="reading-candidate-header">
+                  <div class="reading-candidate-rank">
+                    {hasMedal ? (
+                      <span class="reading-medal">{medals[index]}</span>
+                    ) : (
+                      <span class="reading-rank-number">{index + 1}.</span>
+                    )}
+                  </div>
+                  
+                  <div class="reading-candidate-info">
+                    <h3 class="reading-candidate-name">{candidateName}</h3>
+                    <p class="reading-candidate-party">Partido: {item.candidate.party_name}</p>
+                  </div>
+                  
+                  <div class={`reading-candidate-score ${scoreClass}`}>
+                    <span class="reading-score-value">{scorePercent}%</span>
+                  </div>
+                </div>
+                
+                {bestProposal && (
+                  <div class="reading-proposal-box">
+                    <h4 class="reading-proposal-title">Propuesta destacada:</h4>
+                    <p class="reading-proposal-name">{bestProposal.proposal_title}</p>
+                    <p class="reading-proposal-text">{bestProposal.proposal_text}</p>
+                    
+                    <div class="reading-dimensions">
+                      <span class="reading-dimensions-title">Evaluación:</span>
+                      <span class={`reading-dim ${bestProposal.dimensions.existence ? 'active' : ''}`}>
+                        {bestProposal.dimensions.existence ? '✅' : '❌'} Existe
+                      </span>
+                      <span class={`reading-dim ${bestProposal.dimensions.when ? 'active' : ''}`}>
+                        {bestProposal.dimensions.when ? '✅' : '❌'} Cuándo
+                      </span>
+                      <span class={`reading-dim ${bestProposal.dimensions.how ? 'active' : ''}`}>
+                        {bestProposal.dimensions.how ? '✅' : '❌'} Cómo
+                      </span>
+                      <span class={`reading-dim ${bestProposal.dimensions.funding ? 'active' : ''}`}>
+                        {bestProposal.dimensions.funding ? '✅' : '❌'} Fondos
+                      </span>
+                    </div>
+                  </div>
+                )}
+                
+                <div class="reading-candidate-links">
+                  <a href={`/candidatos/${item.candidate.candidate_id}`} class="reading-link-profile">
+                    👤 Ver perfil completo del candidato
+                  </a>
+                  {bestProposal && (
+                    <a
+                      href={getPdfUrl(bestProposal.evidence.pdf_id, bestProposal.evidence.page)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="reading-link-plan"
+                    >
+                      📄 Ver en plan de gobierno (Pág. {bestProposal.evidence.page})
+                    </a>
+                  )}
+                </div>
+              </li>
+            );
+          })}
+        </ol>
+      </section>
+
+      <hr class="reading-divider" />
+
+      <!-- Navegación Final -->
+      <footer class="reading-footer">
+        <a href="/pilares" class="reading-nav-btn">← Ver todos los pilares</a>
+        <a href="/metodologia" class="reading-nav-btn">¿Cómo se calcula el puntaje? →</a>
+      </footer>
+
+    </article>
+  </div>
+
 </BaseLayout>
 
 <style>
   /* Mode visibility */
-  .mode-express-content {
+  .mode-express-content,
+  .mode-reading-content {
     display: none;
   }
   
@@ -500,7 +735,17 @@ const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
     display: block;
   }
   
-  html[data-mode="express"] .mode-dashboard-content {
+  html[data-mode="express"] .mode-dashboard-content,
+  html[data-mode="express"] .mode-reading-content {
+    display: none;
+  }
+  
+  html[data-mode="reading"] .mode-reading-content {
+    display: block;
+  }
+  
+  html[data-mode="reading"] .mode-dashboard-content,
+  html[data-mode="reading"] .mode-express-content {
     display: none;
   }
 
@@ -923,11 +1168,49 @@ const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
     color: #059669;
   }
   
-  .express-view-more {
-    font-size: 0.875rem;
+  .express-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e2e8f0;
+  }
+  
+  .express-view-profile {
+    font-size: 0.9rem;
     font-weight: 600;
     color: #0891b2;
-    text-align: right;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  
+  .express-view-profile:hover {
+    color: #0e7490;
+    text-decoration: underline;
+  }
+  
+  .express-view-plan {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #64748b;
+    text-decoration: none;
+    padding: 0.375rem 0.75rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+  }
+  
+  .express-view-plan:hover {
+    background: #e0f2fe;
+    border-color: #0891b2;
+    color: #0891b2;
   }
   
   /* Legend */
@@ -1556,6 +1839,11 @@ const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
   
   /* Card Footer */
   .dashboard-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
     margin-top: auto;
     padding-top: 1rem;
     border-top: 1px solid #f1f5f9;
@@ -1565,12 +1853,34 @@ const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
     font-size: 0.9375rem;
     font-weight: 600;
     color: #0891b2;
-    display: flex;
-    justify-content: flex-end;
+    text-decoration: none;
+    transition: color 0.2s;
   }
   
-  .dashboard-candidate-card:hover .dashboard-view-profile {
+  .dashboard-view-profile:hover {
     color: #0e7490;
+    text-decoration: underline;
+  }
+  
+  .dashboard-view-plan {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #64748b;
+    text-decoration: none;
+    padding: 0.5rem 0.875rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+  }
+  
+  .dashboard-view-plan:hover {
+    background: #e0f2fe;
+    border-color: #0891b2;
+    color: #0891b2;
   }
   
   /* Responsive */
@@ -1608,6 +1918,551 @@ const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
     
     .dashboard-legend-grid {
       grid-template-columns: 1fr;
+    }
+  }
+
+  /* ===========================================
+     READING MODE STYLES - Modo Lectura (Adultos Mayores)
+     Fuentes grandes, alto contraste, interlineado generoso
+     =========================================== */
+  
+  .reading-pilar-container {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+    font-family: Georgia, 'Times New Roman', serif !important;
+    font-size: 1.25rem;
+    line-height: 1.9;
+    color: #1e293b;
+  }
+  
+  .reading-pilar-container * {
+    font-family: Georgia, 'Times New Roman', serif !important;
+  }
+  
+  /* Navegación */
+  .reading-nav {
+    margin-bottom: 2rem;
+  }
+  
+  .reading-back-link {
+    display: inline-block;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1d4ed8;
+    text-decoration: none;
+    padding: 0.75rem 1.25rem;
+    border: 3px solid #1d4ed8;
+    border-radius: 0.75rem;
+    transition: all 0.2s;
+  }
+  
+  .reading-back-link:hover {
+    background: #eff6ff;
+    color: #1e40af;
+  }
+  
+  /* Header */
+  .reading-pilar-header {
+    margin-bottom: 1.5rem;
+  }
+  
+  .reading-header-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  
+  .reading-badge-id {
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 0.375rem 1rem;
+    background: #f1f5f9;
+    color: #475569;
+    border-radius: 0.5rem;
+  }
+  
+  .reading-badge-critical {
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 0.375rem 1rem;
+    background: #fef3c7;
+    color: #92400e;
+    border-radius: 0.5rem;
+  }
+  
+  .reading-badge-weight {
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 0.375rem 1rem;
+    background: #e0f2fe;
+    color: #0369a1;
+    border-radius: 0.5rem;
+  }
+  
+  .reading-pilar-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #1e293b;
+    line-height: 1.3;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .reading-pilar-icon {
+    font-size: 3rem;
+  }
+  
+  .reading-divider {
+    border: none;
+    border-top: 3px solid #94a3b8;
+    margin: 2.5rem 0;
+  }
+  
+  /* Secciones */
+  .reading-section {
+    margin-bottom: 2rem;
+  }
+  
+  .reading-section-title {
+    font-size: 1.75rem;
+    font-weight: bold;
+    color: #1e293b;
+    margin-bottom: 1rem;
+  }
+  
+  .reading-section-intro {
+    font-size: 1.125rem;
+    color: #475569;
+    margin-bottom: 1.5rem;
+  }
+  
+  .reading-description {
+    font-size: 1.25rem;
+    line-height: 1.9;
+    color: #334155;
+    padding: 1.25rem;
+    background: #f8fafc;
+    border-left: 5px solid #0891b2;
+    border-radius: 0.5rem;
+  }
+  
+  /* Impacto */
+  .reading-impact-box {
+    background: linear-gradient(135deg, #ecfeff, #f0fdf4);
+    border: 3px solid #a7f3d0;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .reading-impact-box.critical {
+    background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    border-color: #fcd34d;
+  }
+  
+  .reading-impact-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #1e293b;
+    margin-bottom: 0.75rem;
+  }
+  
+  .reading-impact-text {
+    font-size: 1.25rem;
+    line-height: 1.8;
+    color: #1e293b;
+  }
+  
+  /* Promedio */
+  .reading-avg-display {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+  
+  .reading-avg-score {
+    display: flex;
+    align-items: baseline;
+    gap: 0.125rem;
+  }
+  
+  .reading-avg-number {
+    font-size: 4.5rem;
+    font-weight: 800;
+    line-height: 1;
+    color: #0891b2;
+  }
+  
+  .reading-avg-percent {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #0891b2;
+  }
+  
+  .reading-avg-explanation {
+    flex: 1;
+    min-width: 200px;
+    font-size: 1.125rem;
+    line-height: 1.7;
+    color: #475569;
+  }
+  
+  .reading-avg-hint {
+    display: block;
+    margin-top: 0.5rem;
+    font-weight: 600;
+    font-size: 1.125rem;
+  }
+  
+  .reading-stats {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  
+  .reading-stat {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 1.5rem;
+    background: white;
+    border: 3px solid #e2e8f0;
+    border-radius: 0.75rem;
+  }
+  
+  .reading-stat-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #0891b2;
+    line-height: 1;
+  }
+  
+  .reading-stat-label {
+    font-size: 1rem;
+    color: #64748b;
+    margin-top: 0.25rem;
+  }
+  
+  /* Leyenda */
+  .reading-legend {
+    background: #fffbeb;
+    border: 3px solid #fcd34d;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .reading-legend-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #92400e;
+    margin-bottom: 1rem;
+  }
+  
+  .reading-legend-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .reading-legend-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 1.125rem;
+    color: #1e293b;
+  }
+  
+  .reading-legend-dot {
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 0.25rem;
+    flex-shrink: 0;
+    margin-top: 0.25rem;
+  }
+  
+  .reading-legend-dot.perfect {
+    background: linear-gradient(135deg, #10b981, #059669);
+  }
+  
+  .reading-legend-dot.high {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+  }
+  
+  .reading-legend-dot.medium {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+  }
+  
+  .reading-legend-dot.low {
+    background: #e2e8f0;
+  }
+  
+  /* Lista de Candidatos */
+  .reading-candidates-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .reading-candidate-item {
+    background: white;
+    border: 3px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 1.5rem;
+  }
+  
+  .reading-candidate-item.top-three {
+    border-color: #fcd34d;
+    background: linear-gradient(135deg, #fffbeb 0%, white 50%);
+  }
+  
+  .reading-candidate-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+  
+  .reading-candidate-rank {
+    flex-shrink: 0;
+  }
+  
+  .reading-medal {
+    font-size: 2.5rem;
+    line-height: 1;
+  }
+  
+  .reading-rank-number {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #64748b;
+  }
+  
+  .reading-candidate-info {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .reading-candidate-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 0.25rem 0;
+    line-height: 1.3;
+  }
+  
+  .reading-candidate-party {
+    font-size: 1.125rem;
+    color: #64748b;
+    margin: 0;
+  }
+  
+  .reading-candidate-score {
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.75rem;
+    flex-shrink: 0;
+  }
+  
+  .reading-candidate-score.perfect {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+  }
+  
+  .reading-candidate-score.high {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+  }
+  
+  .reading-candidate-score.medium {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+  }
+  
+  .reading-candidate-score.low {
+    background: #f1f5f9;
+    color: #64748b;
+  }
+  
+  .reading-score-value {
+    font-size: 1.5rem;
+    font-weight: 800;
+  }
+  
+  /* Propuesta */
+  .reading-proposal-box {
+    background: #f8fafc;
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  
+  .reading-proposal-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #64748b;
+    margin: 0 0 0.5rem 0;
+  }
+  
+  .reading-proposal-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 0.75rem 0;
+  }
+  
+  .reading-proposal-text {
+    font-size: 1.125rem;
+    line-height: 1.8;
+    color: #475569;
+    margin: 0 0 1rem 0;
+  }
+  
+  .reading-dimensions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+  }
+  
+  .reading-dimensions-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #64748b;
+  }
+  
+  .reading-dim {
+    font-size: 1rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.5rem;
+    background: #f1f5f9;
+    color: #64748b;
+  }
+  
+  .reading-dim.active {
+    background: #d1fae5;
+    color: #059669;
+  }
+  
+  /* Links */
+  .reading-candidate-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .reading-link-profile,
+  .reading-link-plan {
+    font-size: 1.125rem;
+    font-weight: 600;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.75rem;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  
+  .reading-link-profile {
+    background: #1d4ed8 !important;
+    color: white !important;
+    border: 3px solid #1d4ed8 !important;
+  }
+  
+  .reading-link-profile:hover {
+    background: #1e40af !important;
+    border-color: #1e40af !important;
+    color: white !important;
+  }
+  
+  .reading-link-plan {
+    background: white;
+    color: #1d4ed8;
+    border: 3px solid #1d4ed8;
+  }
+  
+  .reading-link-plan:hover {
+    background: #eff6ff;
+  }
+  
+  /* Footer */
+  .reading-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  
+  .reading-nav-btn {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1d4ed8;
+    padding: 1rem 1.5rem;
+    border: 3px solid #1d4ed8;
+    border-radius: 0.75rem;
+    background: white;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  
+  .reading-nav-btn:hover {
+    background: #eff6ff;
+    color: #1e40af;
+    border-color: #1e40af;
+  }
+  
+  /* Responsive para móvil */
+  @media (max-width: 640px) {
+    .reading-pilar-container {
+      padding: 2rem 1.25rem;
+      font-size: 1.125rem;
+    }
+    
+    .reading-pilar-title {
+      font-size: 1.75rem;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    
+    .reading-pilar-icon {
+      font-size: 2.5rem;
+    }
+    
+    .reading-avg-display {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .reading-avg-number {
+      font-size: 3.5rem;
+    }
+    
+    .reading-candidate-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .reading-candidate-links {
+      flex-direction: column;
+    }
+    
+    .reading-link-profile,
+    .reading-link-plan {
+      text-align: center;
+    }
+    
+    .reading-footer {
+      flex-direction: column;
+    }
+    
+    .reading-nav-btn {
+      text-align: center;
     }
   }
 </style>
