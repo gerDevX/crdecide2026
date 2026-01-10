@@ -1,0 +1,434 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Detalles Técnicos">
+  <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 prose prose-slate prose-lg">
+    
+    <h1 class="flex items-center gap-3">
+      <span>⚙️</span> Detalles Técnicos del Análisis
+    </h1>
+
+    <div class="not-prose bg-slate-100 border border-slate-300 rounded-xl p-4 mb-8">
+      <p class="text-slate-600 text-sm">
+        Esta página está dirigida a personas con conocimientos técnicos que deseen entender 
+        cómo funciona el sistema de análisis. Si buscas una explicación más general, 
+        visita la <a href="/metodologia" class="text-civic-600 hover:underline font-medium">página de metodología</a>.
+      </p>
+    </div>
+
+    <hr />
+
+    <h2>🐍 Stack Tecnológico</h2>
+    
+    <div class="not-prose grid md:grid-cols-2 gap-4 mt-4">
+      <div class="bg-gradient-to-br from-yellow-50 to-amber-50 border border-amber-200 rounded-xl p-5">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="text-3xl">🐍</span>
+          <div>
+            <p class="font-bold text-amber-900 text-lg">Python 3.10+</p>
+            <p class="text-sm text-amber-700">Lenguaje principal</p>
+          </div>
+        </div>
+        <p class="text-sm text-slate-600">
+          Scripts de procesamiento de PDFs, extracción de propuestas y cálculo de puntajes.
+        </p>
+      </div>
+      
+      <div class="bg-gradient-to-br from-orange-50 to-red-50 border border-orange-200 rounded-xl p-5">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="text-3xl">🚀</span>
+          <div>
+            <p class="font-bold text-orange-900 text-lg">Astro 4.x</p>
+            <p class="text-sm text-orange-700">Framework web</p>
+          </div>
+        </div>
+        <p class="text-sm text-slate-600">
+          Generador de sitios estáticos para la visualización de resultados.
+        </p>
+      </div>
+    </div>
+
+    <hr />
+
+    <h2>📄 Procesamiento de PDFs</h2>
+
+    <div class="not-prose space-y-4 mt-4">
+      <!-- PyMuPDF -->
+      <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+        <div class="flex items-start gap-4">
+          <div class="w-16 h-16 bg-red-100 rounded-xl flex items-center justify-center shrink-0">
+            <span class="text-2xl font-bold text-red-600">PDF</span>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-1">
+              <h3 class="font-bold text-slate-900 text-lg">PyMuPDF (fitz)</h3>
+              <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">Activo</span>
+            </div>
+            <p class="text-slate-600 text-sm mb-3">
+              Librería de alto rendimiento para lectura y manipulación de documentos PDF.
+            </p>
+            <div class="bg-slate-50 rounded-lg p-3 font-mono text-sm">
+              <code class="text-slate-700">pip install PyMuPDF</code>
+            </div>
+            <div class="mt-3 text-sm">
+              <p class="font-medium text-slate-700 mb-1">¿Para qué se usa?</p>
+              <ul class="text-slate-600 space-y-1 list-disc list-inside">
+                <li>Extracción de texto página por página</li>
+                <li>Detección de texto corrupto (fuentes mal embebidas)</li>
+                <li>Renderización de páginas como imágenes para OCR</li>
+              </ul>
+            </div>
+            <a href="https://pymupdf.readthedocs.io/" target="_blank" rel="noopener" 
+               class="inline-flex items-center gap-1 mt-3 text-sm text-blue-600 hover:underline">
+              📚 Documentación oficial →
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tesseract OCR -->
+      <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+        <div class="flex items-start gap-4">
+          <div class="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center shrink-0">
+            <span class="text-2xl">👁️</span>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-1">
+              <h3 class="font-bold text-slate-900 text-lg">Tesseract OCR</h3>
+              <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">v5.5.1</span>
+            </div>
+            <p class="text-slate-600 text-sm mb-3">
+              Motor de reconocimiento óptico de caracteres (OCR) de código abierto, mantenido por Google.
+            </p>
+            <div class="bg-slate-50 rounded-lg p-3 font-mono text-sm space-y-1">
+              <code class="text-slate-700 block"># macOS</code>
+              <code class="text-slate-700 block">brew install tesseract tesseract-lang</code>
+              <code class="text-slate-700 block mt-2"># Ubuntu/Debian</code>
+              <code class="text-slate-700 block">apt install tesseract-ocr tesseract-ocr-spa</code>
+            </div>
+            <div class="mt-3 text-sm">
+              <p class="font-medium text-slate-700 mb-1">¿Para qué se usa?</p>
+              <ul class="text-slate-600 space-y-1 list-disc list-inside">
+                <li>Lectura de PDFs con texto corrupto o escaneado</li>
+                <li>Extracción de texto de imágenes de páginas</li>
+                <li>Soporte multiidioma (español configurado)</li>
+              </ul>
+            </div>
+            <a href="https://github.com/tesseract-ocr/tesseract" target="_blank" rel="noopener" 
+               class="inline-flex items-center gap-1 mt-3 text-sm text-blue-600 hover:underline">
+              📚 Repositorio GitHub →
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- pytesseract -->
+      <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+        <div class="flex items-start gap-4">
+          <div class="w-16 h-16 bg-purple-100 rounded-xl flex items-center justify-center shrink-0">
+            <span class="text-2xl">🔗</span>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-1">
+              <h3 class="font-bold text-slate-900 text-lg">pytesseract</h3>
+              <span class="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">Python wrapper</span>
+            </div>
+            <p class="text-slate-600 text-sm mb-3">
+              Wrapper de Python para Tesseract OCR que facilita su integración.
+            </p>
+            <div class="bg-slate-50 rounded-lg p-3 font-mono text-sm">
+              <code class="text-slate-700">pip install pytesseract</code>
+            </div>
+            <a href="https://pypi.org/project/pytesseract/" target="_blank" rel="noopener" 
+               class="inline-flex items-center gap-1 mt-3 text-sm text-blue-600 hover:underline">
+              📚 PyPI →
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pillow -->
+      <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+        <div class="flex items-start gap-4">
+          <div class="w-16 h-16 bg-emerald-100 rounded-xl flex items-center justify-center shrink-0">
+            <span class="text-2xl">🖼️</span>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-1">
+              <h3 class="font-bold text-slate-900 text-lg">Pillow (PIL)</h3>
+              <span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">Procesamiento de imágenes</span>
+            </div>
+            <p class="text-slate-600 text-sm mb-3">
+              Fork moderno de Python Imaging Library para manipulación de imágenes.
+            </p>
+            <div class="bg-slate-50 rounded-lg p-3 font-mono text-sm">
+              <code class="text-slate-700">pip install Pillow</code>
+            </div>
+            <div class="mt-3 text-sm">
+              <p class="font-medium text-slate-700 mb-1">¿Para qué se usa?</p>
+              <ul class="text-slate-600 space-y-1 list-disc list-inside">
+                <li>Conversión de páginas PDF a imágenes PNG</li>
+                <li>Preparación de imágenes para OCR</li>
+              </ul>
+            </div>
+            <a href="https://pillow.readthedocs.io/" target="_blank" rel="noopener" 
+               class="inline-flex items-center gap-1 mt-3 text-sm text-blue-600 hover:underline">
+              📚 Documentación oficial →
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr />
+
+    <h2>⚙️ Configuración del OCR</h2>
+
+    <div class="not-prose bg-slate-900 rounded-xl p-5 mt-4 overflow-x-auto">
+      <pre class="text-sm text-slate-100 font-mono"><code set:text={`# Configuración en process_plans_v6.py
+
+# Resolución para renderizar páginas como imagen
+RENDER_DPI = 200
+
+# Configuración de Tesseract
+# --psm 1: Automatic page segmentation with OSD
+# -l spa: Idioma español
+TESSERACT_CONFIG = '--psm 1 -l spa'
+
+# Caracteres que indican fuentes corruptas
+CORRUPT_CHARS = set([
+    '\\uf0b7', '\\uf0a7', '\\uf0d8', '\\uf020', '\\uf06c', 
+    '\\uf06f', '\\uf073', '\\uf061', '\\uf065', '\\uf06e',
+    # ... más caracteres de fuentes privadas
+])
+
+# Umbral: si más del 2% del texto son caracteres corruptos, usar OCR
+CORRUPT_THRESHOLD = 0.02`}></code></pre>
+    </div>
+
+    <hr />
+
+    <h2>🔄 Flujo de Procesamiento</h2>
+
+    <div class="not-prose mt-4">
+      <div class="relative">
+        <!-- Timeline -->
+        <div class="absolute left-6 top-0 bottom-0 w-0.5 bg-slate-200"></div>
+        
+        <div class="space-y-6">
+          <div class="relative flex items-start gap-4">
+            <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold z-10 shrink-0">1</div>
+            <div class="bg-white border border-slate-200 rounded-xl p-4 flex-1 shadow-sm">
+              <h4 class="font-bold text-slate-900">Lectura del PDF</h4>
+              <p class="text-sm text-slate-600 mt-1">
+                <code class="bg-slate-100 px-1 rounded">fitz.open(pdf_path)</code> abre el documento PDF.
+              </p>
+            </div>
+          </div>
+          
+          <div class="relative flex items-start gap-4">
+            <div class="w-12 h-12 bg-amber-500 rounded-full flex items-center justify-center text-white font-bold z-10 shrink-0">2</div>
+            <div class="bg-white border border-slate-200 rounded-xl p-4 flex-1 shadow-sm">
+              <h4 class="font-bold text-slate-900">Detección de Texto Corrupto</h4>
+              <p class="text-sm text-slate-600 mt-1">
+                Se muestrean las primeras 10 páginas. Si &gt;2% son caracteres de fuentes privadas, se activa OCR.
+              </p>
+            </div>
+          </div>
+          
+          <div class="relative flex items-start gap-4">
+            <div class="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold z-10 shrink-0">3</div>
+            <div class="bg-white border border-slate-200 rounded-xl p-4 flex-1 shadow-sm">
+              <h4 class="font-bold text-slate-900">Extracción de Texto</h4>
+              <p class="text-sm text-slate-600 mt-1">
+                <strong>Modo normal:</strong> <code class="bg-slate-100 px-1 rounded">page.get_text()</code><br>
+                <strong>Modo OCR:</strong> Renderiza a imagen → Tesseract → texto
+              </p>
+            </div>
+          </div>
+          
+          <div class="relative flex items-start gap-4">
+            <div class="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center text-white font-bold z-10 shrink-0">4</div>
+            <div class="bg-white border border-slate-200 rounded-xl p-4 flex-1 shadow-sm">
+              <h4 class="font-bold text-slate-900">Búsqueda de Propuestas</h4>
+              <p class="text-sm text-slate-600 mt-1">
+                Se buscan keywords por pilar y se extraen propuestas con contexto.
+              </p>
+            </div>
+          </div>
+          
+          <div class="relative flex items-start gap-4">
+            <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white font-bold z-10 shrink-0">5</div>
+            <div class="bg-white border border-slate-200 rounded-xl p-4 flex-1 shadow-sm">
+              <h4 class="font-bold text-slate-900">Evaluación y Penalización</h4>
+              <p class="text-sm text-slate-600 mt-1">
+                Se evalúan las 4 dimensiones y se aplican penalizaciones fiscales y por omisión.
+              </p>
+            </div>
+          </div>
+          
+          <div class="relative flex items-start gap-4">
+            <div class="w-12 h-12 bg-slate-700 rounded-full flex items-center justify-center text-white font-bold z-10 shrink-0">6</div>
+            <div class="bg-white border border-slate-200 rounded-xl p-4 flex-1 shadow-sm">
+              <h4 class="font-bold text-slate-900">Generación de JSON</h4>
+              <p class="text-sm text-slate-600 mt-1">
+                Se exportan los resultados a archivos JSON que consume el sitio web.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr />
+
+    <h2>📊 Archivos de Datos Generados</h2>
+
+    <div class="not-prose overflow-x-auto mt-4">
+      <table class="min-w-full text-sm border border-slate-200">
+        <thead>
+          <tr class="bg-slate-50 border-b border-slate-200">
+            <th class="text-left py-3 px-4">Archivo</th>
+            <th class="text-left py-3 px-4">Descripción</th>
+            <th class="text-right py-3 px-4">Tamaño aprox.</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-slate-100">
+            <td class="py-3 px-4 font-mono text-sm">candidates.json</td>
+            <td class="py-3 px-4 text-slate-600">Datos de candidatos y partidos (editado manualmente)</td>
+            <td class="py-3 px-4 text-right">~5 KB</td>
+          </tr>
+          <tr class="border-b border-slate-100">
+            <td class="py-3 px-4 font-mono text-sm">pillars.json</td>
+            <td class="py-3 px-4 text-slate-600">Definición de los 10 pilares y pesos</td>
+            <td class="py-3 px-4 text-right">~2 KB</td>
+          </tr>
+          <tr class="border-b border-slate-100">
+            <td class="py-3 px-4 font-mono text-sm">proposals.json</td>
+            <td class="py-3 px-4 text-slate-600">Todas las propuestas extraídas con evidencia</td>
+            <td class="py-3 px-4 text-right">~150 KB</td>
+          </tr>
+          <tr class="border-b border-slate-100">
+            <td class="py-3 px-4 font-mono text-sm">candidate_scores.json</td>
+            <td class="py-3 px-4 text-slate-600">Puntajes por pilar y totales por candidato</td>
+            <td class="py-3 px-4 text-right">~100 KB</td>
+          </tr>
+          <tr class="border-b border-slate-100">
+            <td class="py-3 px-4 font-mono text-sm">ranking.json</td>
+            <td class="py-3 px-4 text-slate-600">Rankings ordenados (general, prioritario, crítico)</td>
+            <td class="py-3 px-4 text-right">~12 KB</td>
+          </tr>
+          <tr>
+            <td class="py-3 px-4 font-mono text-sm">detailed_analysis.json</td>
+            <td class="py-3 px-4 text-slate-600">Análisis detallado con fortalezas y debilidades</td>
+            <td class="py-3 px-4 text-right">~50 KB</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <hr />
+
+    <h2>🔧 Ejecución del Análisis</h2>
+
+    <div class="not-prose bg-slate-900 rounded-xl p-5 mt-4 overflow-x-auto">
+      <pre class="text-sm text-slate-100 font-mono"><code set:text={`# 1. Instalar dependencias
+pip install PyMuPDF Pillow pytesseract
+
+# 2. Instalar Tesseract (macOS)
+brew install tesseract tesseract-lang
+
+# 3. Ejecutar el análisis v6
+cd analysis/
+python process_plans_v6.py
+
+# Salida esperada:
+# ================================================================================
+# PROCESADOR DE PLANES v6.0 - NEUTRAL + ESTRICTO
+# 10 pilares | OCR automático | Penalizaciones por omisión
+# ================================================================================
+# 📄 ACRM...
+# 📄 CAC...
+# ...
+# ✅ PROCESO COMPLETADO`}></code></pre>
+    </div>
+
+    <hr />
+
+    <h2>📐 Constantes de Penalización</h2>
+
+    <div class="not-prose bg-slate-900 rounded-xl p-5 mt-4 overflow-x-auto">
+      <pre class="text-sm text-slate-100 font-mono"><code set:text={`# Penalizaciones fiscales (basadas en ley vigente)
+FISCAL_PENALTIES = {
+    "attacks_fiscal_rule": -2,      # Ataca la regla fiscal (Ley 9635)
+    "proposes_debt_increase": -1,   # Propone más deuda sin plan
+}
+
+# Penalizaciones por omisión (urgencias nacionales)
+OMISSION_PENALTIES = {
+    "ignores_security": -1,           # No menciona seguridad operativa
+    "ignores_ccss": -1,               # No menciona crisis CCSS
+    "ignores_employment": -0.5,       # No menciona empleo formal
+    "ignores_organized_crime": -0.5,  # No menciona crimen organizado
+    "missing_priority_pillar": -0.5,  # Por cada pilar prioritario faltante
+}
+
+# Pilares prioritarios (P3=Seguridad, P4=Salud, P1=Fiscal, P7=Reforma)
+PRIORITY_PILLARS = {"P3", "P4", "P1", "P7"}
+
+# Pesos por pilar
+PILLAR_WEIGHTS = {
+    "P1": 0.14,  # Finanzas
+    "P2": 0.11,  # Empleo
+    "P3": 0.18,  # Seguridad
+    "P4": 0.16,  # Salud
+    "P5": 0.10,  # Educación
+    "P6": 0.03,  # Ambiente
+    "P7": 0.12,  # Reforma
+    "P8": 0.05,  # Social
+    "P9": 0.02,  # Exterior
+    "P10": 0.09, # Infraestructura
+}`}></code></pre>
+    </div>
+
+    <hr />
+
+    <div class="not-prose flex flex-col sm:flex-row gap-4 mt-8">
+      <a href="/metodologia" class="flex-1 flex items-center justify-center gap-2 bg-civic-600 hover:bg-civic-700 text-white font-medium py-3 px-6 rounded-xl transition-colors">
+        ← Volver a Metodología
+      </a>
+      <a href="/ranking" class="flex-1 flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-3 px-6 rounded-xl transition-colors">
+        Ver Ranking →
+      </a>
+    </div>
+
+    <p class="text-sm text-slate-500 mt-12">
+      <em>Versión del análisis: v6 (Neutral + Estricto) · Enero 2026</em>
+    </p>
+
+  </article>
+</BaseLayout>
+
+<style>
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+  }
+  .prose p {
+    color: #475569;
+    line-height: 1.75;
+  }
+  .prose hr {
+    margin: 2rem 0;
+    border-color: #e2e8f0;
+  }
+  
+  code {
+    font-size: 0.875em;
+  }
+</style>

@@ -49,6 +49,103 @@ const fiscalStats = getFiscalStats();
 
     <hr />
 
+    <h2>🤖 ¿Cómo procesamos los planes?</h2>
+    
+    <div class="not-prose bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-xl p-6 mt-4">
+      <div class="flex items-start gap-4 mb-4">
+        <span class="text-4xl">⚙️</span>
+        <div>
+          <p class="text-lg text-slate-700 mb-2">
+            <strong class="text-purple-800">El análisis se realiza con un programa de computadora</strong> 
+            (un script de Python) que lee todos los PDFs de los planes de gobierno y extrae información de manera sistemática.
+          </p>
+          <p class="text-slate-600">
+            <em>¿Por qué así? Porque son 20 planes, algunos de más de 200 páginas. Leerlos todos manualmente tomaría semanas.</em>
+          </p>
+        </div>
+      </div>
+      
+      <h4 class="font-bold text-slate-800 mb-3 mt-6">📝 ¿Cómo funciona paso a paso?</h4>
+      
+      <div class="space-y-4">
+        <div class="flex items-start gap-3 bg-white rounded-lg p-4 shadow-sm">
+          <span class="flex items-center justify-center w-8 h-8 bg-purple-100 text-purple-700 rounded-full font-bold text-sm shrink-0">1</span>
+          <div>
+            <p class="font-semibold text-slate-800">Descargamos los PDFs oficiales</p>
+            <p class="text-sm text-slate-600">Directamente del Tribunal Supremo de Elecciones (TSE). Son documentos públicos.</p>
+          </div>
+        </div>
+        
+        <div class="flex items-start gap-3 bg-white rounded-lg p-4 shadow-sm">
+          <span class="flex items-center justify-center w-8 h-8 bg-purple-100 text-purple-700 rounded-full font-bold text-sm shrink-0">2</span>
+          <div>
+            <p class="font-semibold text-slate-800">El programa lee cada página</p>
+            <p class="text-sm text-slate-600">Extrae el texto y busca propuestas relacionadas con los 10 pilares nacionales (seguridad, salud, economía, etc.).</p>
+          </div>
+        </div>
+        
+        <div class="flex items-start gap-3 bg-white rounded-lg p-4 shadow-sm">
+          <span class="flex items-center justify-center w-8 h-8 bg-purple-100 text-purple-700 rounded-full font-bold text-sm shrink-0">3</span>
+          <div>
+            <p class="font-semibold text-slate-800">Evalúa cada propuesta con 4 preguntas</p>
+            <p class="text-sm text-slate-600">¿Existe? ¿Dice cuándo? ¿Dice cómo? ¿Dice con qué fondos? (las 4 dimensiones que explicamos abajo)</p>
+          </div>
+        </div>
+        
+        <div class="flex items-start gap-3 bg-white rounded-lg p-4 shadow-sm">
+          <span class="flex items-center justify-center w-8 h-8 bg-red-100 text-red-700 rounded-full font-bold text-sm shrink-0">4</span>
+          <div>
+            <p class="font-semibold text-slate-800">Aplica penalizaciones automáticas</p>
+            <p class="text-sm text-slate-600">Si detecta que un plan ataca la regla fiscal, propone más deuda o ignora urgencias nacionales, resta puntos.</p>
+          </div>
+        </div>
+        
+        <div class="flex items-start gap-3 bg-white rounded-lg p-4 shadow-sm">
+          <span class="flex items-center justify-center w-8 h-8 bg-emerald-100 text-emerald-700 rounded-full font-bold text-sm shrink-0">5</span>
+          <div>
+            <p class="font-semibold text-slate-800">Genera los puntajes y el ranking</p>
+            <p class="text-sm text-slate-600">Cada candidato obtiene un puntaje basado en qué tan completas son sus propuestas, ajustado por penalizaciones.</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mt-6 bg-amber-50 border border-amber-200 rounded-lg p-4">
+        <div class="flex items-start gap-3">
+          <span class="text-2xl">💡</span>
+          <div>
+            <p class="font-semibold text-amber-800">¿Por qué es importante que sea automático?</p>
+            <p class="text-sm text-amber-700 mt-1">
+              Porque <strong>todos los planes se evalúan con las mismas reglas</strong>. No hay favoritismos ni 
+              interpretaciones personales. El programa aplica exactamente los mismos criterios a todos los candidatos.
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div class="flex items-start gap-3">
+          <span class="text-2xl">🔍</span>
+          <div>
+            <p class="font-semibold text-blue-800">OCR para documentos problemáticos</p>
+            <p class="text-sm text-blue-700 mt-1">
+              Algunos PDFs vienen con texto "corrupto" (caracteres ilegibles). En esos casos, el programa 
+              <strong>convierte cada página en imagen y lee el texto visualmente</strong>, como lo haría un humano.
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mt-4 pt-4 border-t border-purple-200">
+        <a href="/tecnico" class="inline-flex items-center gap-2 text-purple-700 hover:text-purple-900 font-medium transition-colors">
+          <span>⚙️</span>
+          <span>Ver detalles técnicos completos (librerías, código, configuración)</span>
+          <span>→</span>
+        </a>
+      </div>
+    </div>
+
+    <hr />
+
     <h2>¿Qué son los pilares?</h2>
     <p>
       Organizamos las propuestas en <strong>10 áreas temáticas</strong> fundamentales para el país.
@@ -410,10 +507,10 @@ const fiscalStats = getFiscalStats();
       <div class="grid sm:grid-cols-2 gap-4">
         <div>
           <p class="font-medium text-red-700 mb-2">Penalizaciones fiscales:</p>
-          <ul class="text-sm text-slate-600 space-y-1">
+      <ul class="text-sm text-slate-600 space-y-1">
             <li>• <strong>{fiscalStats.attackFiscalRule}</strong> de {fiscalStats.total} atacan la regla fiscal</li>
             <li>• <strong>{fiscalStats.proposeDebt}</strong> de {fiscalStats.total} proponen más deuda</li>
-          </ul>
+      </ul>
         </div>
         <div>
           <p class="font-medium text-amber-700 mb-2">Penalizaciones por omisión:</p>
@@ -431,6 +528,51 @@ const fiscalStats = getFiscalStats();
           <span>🟢 <strong>{fiscalStats.lowRisk}</strong> BAJO</span>
           <span>🟠 <strong>{fiscalStats.mediumRisk}</strong> MEDIO</span>
           <span>🔴 <strong>{fiscalStats.highRisk}</strong> ALTO</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="not-prose bg-indigo-50 border border-indigo-200 rounded-xl p-6 mt-6">
+      <h4 class="font-bold text-lg mb-4 flex items-center gap-2 text-indigo-800">
+        <span>🎯</span> ¿Por qué estas reglas y no otras?
+      </h4>
+      
+      <div class="space-y-4 text-slate-700">
+        <p>
+          Las penalizaciones <strong>no son arbitrarias</strong>. Se basan en dos principios claros:
+        </p>
+        
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-white rounded-lg p-4 border border-indigo-100">
+            <p class="font-semibold text-red-700 mb-2">🔴 Penalizaciones fiscales</p>
+            <p class="text-sm">
+              Se basan en <strong>la ley vigente</strong>. La regla fiscal (Ley 9635) existe para proteger 
+              las finanzas del país. Atacarla o ignorarla tiene consecuencias reales para todos los costarricenses.
+            </p>
+          </div>
+          
+          <div class="bg-white rounded-lg p-4 border border-indigo-100">
+            <p class="font-semibold text-amber-700 mb-2">🟠 Penalizaciones por omisión</p>
+            <p class="text-sm">
+              Se basan en <strong>la realidad del país</strong>. Si Costa Rica enfrenta una crisis de seguridad, 
+              de salud, o de empleo, un plan de gobierno debería al menos mencionarlo. Ignorar los problemas 
+              no los hace desaparecer.
+            </p>
+          </div>
+        </div>
+        
+        <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-4 mt-4">
+          <div class="flex items-start gap-3">
+            <span class="text-2xl">✅</span>
+            <div>
+              <p class="font-semibold text-emerald-800">¿Qué NO penalizamos?</p>
+              <p class="text-sm text-emerald-700 mt-1">
+                <strong>Posiciones ideológicas legítimas.</strong> Proponer más impuestos, o menos impuestos, 
+                o una visión de izquierda, o de derecha, o de centro... nada de eso resta puntos. 
+                Este análisis no juzga ideología.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

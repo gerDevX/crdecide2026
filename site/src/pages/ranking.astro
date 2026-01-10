@@ -62,22 +62,22 @@ const fiscalStats = getFiscalStats();
         <div class="bg-red-50 border border-red-200 rounded-lg p-4">
           <h3 class="font-semibold text-red-800 mb-3">🔴 Penalizaciones Fiscales</h3>
           <div class="space-y-3 text-sm">
-            <div class="flex items-center gap-2">
-              <span class="text-lg">⚠️</span>
-              <div>
-                <span class="font-medium text-red-700">Ataca regla fiscal:</span>
-                <span class="text-red-600 font-bold"> -2 puntos</span>
-                <p class="text-xs text-red-600/80">{fiscalStats.attackFiscalRule} partidos afectados</p>
-              </div>
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="text-lg">💰</span>
-              <div>
-                <span class="font-medium text-red-700">Propone más deuda:</span>
-                <span class="text-red-600 font-bold"> -1 punto</span>
-                <p class="text-xs text-red-600/80">{fiscalStats.proposeDebt} partidos afectados</p>
-              </div>
-            </div>
+        <div class="flex items-center gap-2">
+          <span class="text-lg">⚠️</span>
+          <div>
+            <span class="font-medium text-red-700">Ataca regla fiscal:</span>
+            <span class="text-red-600 font-bold"> -2 puntos</span>
+            <p class="text-xs text-red-600/80">{fiscalStats.attackFiscalRule} partidos afectados</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-lg">💰</span>
+          <div>
+            <span class="font-medium text-red-700">Propone más deuda:</span>
+            <span class="text-red-600 font-bold"> -1 punto</span>
+            <p class="text-xs text-red-600/80">{fiscalStats.proposeDebt} partidos afectados</p>
+          </div>
+        </div>
           </div>
         </div>
         
@@ -109,9 +109,9 @@ const fiscalStats = getFiscalStats();
                 <span class="text-xs text-amber-600/80 ml-1">({fiscalStats.ignoreEmployment} afectados)</span>
               </div>
             </div>
-            <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2">
               <span>🔫</span>
-              <div>
+          <div>
                 <span class="font-medium text-amber-700">Ignora crimen organizado:</span>
                 <span class="text-amber-600 font-bold"> -0.5 puntos</span>
                 <span class="text-xs text-amber-600/80 ml-1">({fiscalStats.ignoreOrganizedCrime} afectados)</span>

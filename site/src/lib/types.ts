@@ -188,8 +188,8 @@ export interface Ranking {
   critical_pillars: string[];
   penalties_applied: {
     fiscal: {
-      attacks_fiscal_rule: number;
-      proposes_debt_increase: number;
+    attacks_fiscal_rule: number;
+    proposes_debt_increase: number;
     };
     omissions: {
       ignores_security_operations: number;

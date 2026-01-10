@@ -153,9 +153,9 @@ REGLAS DE NEUTRALIDAD Y EVIDENCIA
 - No hagas inferencias económicas ni políticas.
 - No completes información ausente.
 - Todo dato debe tener:
-  - pdf_id
-  - página (1-indexed)
-  - snippet textual (≤ 240 caracteres)
+- pdf_id
+- página (1-indexed)
+- snippet textual (≤ 240 caracteres)
 - Si un pilar NO aparece en el documento, crea una propuesta placeholder con todas las dimensiones en 0.
 
 ====================================================================
@@ -179,59 +179,59 @@ SALIDAS REQUERIDAS (6 ARCHIVOS JSON)
 
 A) candidates.json
 [
-  {
-    "candidate_id": "string_slug",
-    "candidate_name": "string",
-    "party_name": "string",
-    "pdf_id": "string",
-    "pdf_title": "string",
-    "pdf_url": "string"
-  }
+{
+"candidate_id": "string_slug",
+"candidate_name": "string",
+"party_name": "string",
+"pdf_id": "string",
+"pdf_title": "string",
+"pdf_url": "string"
+}
 ]
 
 B) pillars.json
 [
-  { "pillar_id": "P1", "pillar_name": "...", "weight": 0.15 }
+{ "pillar_id": "P1", "pillar_name": "...", "weight": 0.15 }
 ]
 
 C) proposals.json
 [
-  {
-    "proposal_id": "unique_string",
-    "candidate_id": "string_slug",
+{
+"proposal_id": "unique_string",
+"candidate_id": "string_slug",
     "pillar_id": "P1..P10",
-    "proposal_title": "string_short",
-    "proposal_text": "resumen fiel sin agregar información",
-    "dimensions": {
-      "existence": 0,
-      "when": 0,
-      "how": 0,
-      "funding": 0
-    },
-    "extracted_fields": {
-      "when_text": "string | no_especificado",
-      "how_text": "string | no_especificado",
-      "funding_text": "string | no_especificado"
-    },
-    "evidence": {
-      "pdf_id": "string",
-      "page": 1,
-      "snippet": "string <= 240"
+"proposal_title": "string_short",
+"proposal_text": "resumen fiel sin agregar información",
+"dimensions": {
+"existence": 0,
+"when": 0,
+"how": 0,
+"funding": 0
+},
+"extracted_fields": {
+"when_text": "string | no_especificado",
+"how_text": "string | no_especificado",
+"funding_text": "string | no_especificado"
+},
+"evidence": {
+"pdf_id": "string",
+"page": 1,
+"snippet": "string <= 240"
     }
-  }
+}
 ]
 
 D) candidate_scores.json
 [
-  {
-    "candidate_id": "string_slug",
-    "pillar_scores": [
-      {
-        "pillar_id": "P1",
-        "raw_score": 0-4,
-        "effective_score": 0-4,
-        "normalized": 0.0-1.0,
-        "weighted": 0.0-1.0,
+{
+"candidate_id": "string_slug",
+"pillar_scores": [
+{
+"pillar_id": "P1",
+"raw_score": 0-4,
+"effective_score": 0-4,
+"normalized": 0.0-1.0,
+"weighted": 0.0-1.0,
         "penalties": []
       }
     ],
@@ -245,16 +245,16 @@ D) candidate_scores.json
       "total_penalty": 0.0,
       "evidence": []
     },
-    "overall": {
+"overall": {
       "raw_sum": 0-40,
       "effective_sum": 0-40,
-      "weighted_sum": 0.0-1.0,
+"weighted_sum": 0.0-1.0,
       "priority_weighted_sum": 0.0-1.0,
       "critical_weighted_sum": 0.0-1.0,
       "fiscal_penalty_applied": 0.0,
-      "notes": "observaciones neutrales sin juicio"
-    }
-  }
+"notes": "observaciones neutrales sin juicio"
+}
+}
 ]
 
 E) detailed_analysis.json
@@ -296,15 +296,15 @@ F) ranking.json
     "proposes_debt_increase": -0.05,
     "proposes_tax_increase": -0.03
   },
-  "ranking_overall_weighted": [
+"ranking_overall_weighted": [
     { "rank": 1, "candidate_id": "string", "weighted_sum": 0.0, "fiscal_penalty": 0.0 }
   ],
   "ranking_priority_weighted": [
     { "rank": 1, "candidate_id": "string", "priority_weighted_sum": 0.0 }
-  ],
-  "ranking_critical_weighted": [
+],
+"ranking_critical_weighted": [
     { "rank": 1, "candidate_id": "string", "critical_weighted_sum": 0.0 }
-  ]
+]
 }
 
 ====================================================================
@@ -313,12 +313,12 @@ SALIDA FINAL
 
 Devuelve UN SOLO objeto JSON con estas claves exactas:
 {
-  "candidates.json": [...],
-  "pillars.json": [...],
-  "proposals.json": [...],
-  "candidate_scores.json": [...],
+"candidates.json": [...],
+"pillars.json": [...],
+"proposals.json": [...],
+"candidate_scores.json": [...],
   "detailed_analysis.json": [...],
-  "ranking.json": {...}
+"ranking.json": {...}
 }
 
 No agregues texto fuera del JSON.
