@@ -103,7 +103,7 @@ const currentPath = Astro.url.pathname;
 
       <!-- Mode Selector + Mobile Menu -->
       <div class="flex items-center gap-2">
-        <!-- Mode Selector -->
+        <!-- Age/Mode Selector -->
         <div class="relative">
           <button
             id="mode-selector-btn"
@@ -112,42 +112,40 @@ const currentPath = Astro.url.pathname;
             aria-expanded="false"
           >
             <span id="current-mode-icon">📊</span>
-            <span id="current-mode-label" class="hidden sm:inline">Dashboard</span>
+            <span id="current-mode-label" class="hidden sm:inline">36-49</span>
             <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
             </svg>
           </button>
           <div
             id="mode-dropdown"
-            class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-slate-200 hidden z-50 overflow-hidden"
+            class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-slate-200 hidden z-50 overflow-hidden"
           >
+            <div class="px-3 py-2 border-b border-slate-100">
+              <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Tu rango de edad</p>
+            </div>
             <div class="p-2">
-              <button data-mode="express" class="mode-dropdown-option">
+              <button data-age="18-35" data-mode="express" class="mode-dropdown-option">
                 <span class="text-lg">🚀</span>
                 <div class="flex-1 text-left">
-                  <div class="font-medium text-slate-900">Express</div>
+                  <div class="font-medium text-slate-900">18-35 años</div>
                   <div class="text-xs text-slate-500">Rápido y visual</div>
                 </div>
               </button>
-              <button data-mode="dashboard" class="mode-dropdown-option">
+              <button data-age="36-49" data-mode="dashboard" class="mode-dropdown-option">
                 <span class="text-lg">📊</span>
                 <div class="flex-1 text-left">
-                  <div class="font-medium text-slate-900">Dashboard</div>
+                  <div class="font-medium text-slate-900">36-49 años</div>
                   <div class="text-xs text-slate-500">Completo con detalles</div>
                 </div>
               </button>
-              <button data-mode="reading" class="mode-dropdown-option">
+              <button data-age="50+" data-mode="reading" class="mode-dropdown-option">
                 <span class="text-lg">📖</span>
                 <div class="flex-1 text-left">
-                  <div class="font-medium text-slate-900">Lectura</div>
-                  <div class="text-xs text-slate-500">Texto grande, sin distracciones</div>
+                  <div class="font-medium text-slate-900">50+ años</div>
+                  <div class="text-xs text-slate-500">Texto grande y claro</div>
                 </div>
               </button>
-            </div>
-            <div class="border-t border-slate-100 p-2">
-              <a href="/metodologia" class="block px-3 py-2 text-sm text-slate-600 hover:bg-slate-50 rounded-lg">
-                ¿Cómo funciona?
-              </a>
             </div>
           </div>
         </div>
@@ -222,11 +220,18 @@ const currentPath = Astro.url.pathname;
 </header>
 
 <script>
-  // Mode configuration
-  const modeConfig: Record<string, { icon: string; label: string }> = {
-    express: { icon: '🚀', label: 'Express' },
-    dashboard: { icon: '📊', label: 'Dashboard' },
-    reading: { icon: '📖', label: 'Lectura' },
+  // Age configuration (primary) with corresponding mode
+  const ageConfig: Record<string, { icon: string; label: string; mode: string }> = {
+    '18-35': { icon: '🚀', label: 'Modo Visual Rápido', mode: 'express' },
+    '36-49': { icon: '📊', label: 'Modo Visual Detallado', mode: 'dashboard' },
+    '50+': { icon: '📖', label: 'Modo Lectura', mode: 'reading' },
+  };
+
+  // Mode to age mapping
+  const modeToAge: Record<string, string> = {
+    express: '18-35',
+    dashboard: '36-49',
+    reading: '50+',
   };
 
   // Mode selector
@@ -236,10 +241,13 @@ const currentPath = Astro.url.pathname;
   const modeLabel = document.getElementById('current-mode-label');
   const modeOptions = document.querySelectorAll('.mode-dropdown-option');
 
-  // Update label from stored value
+  // Update label from stored value (prefer age, fallback to mode)
+  const storedAge = localStorage.getItem('costarica-decide-age-group');
   const storedMode = localStorage.getItem('costarica-decide-mode') || 'dashboard';
-  if (storedMode && modeIcon && modeLabel) {
-    const config = modeConfig[storedMode] || modeConfig.dashboard;
+  const currentAge = storedAge || modeToAge[storedMode] || '36-49';
+  
+  if (modeIcon && modeLabel) {
+    const config = ageConfig[currentAge] || ageConfig['36-49'];
     modeIcon.textContent = config.icon;
     modeLabel.textContent = config.label;
   }
@@ -250,25 +258,24 @@ const currentPath = Astro.url.pathname;
     modeDropdown?.classList.toggle('hidden');
   });
 
-  // Mode selection
+  // Age/Mode selection
   modeOptions.forEach(opt => {
     opt.addEventListener('click', (e) => {
-      const mode = (e.currentTarget as HTMLElement).dataset.mode;
-      if (mode) {
+      const target = e.currentTarget as HTMLElement;
+      const age = target.dataset.age;
+      const mode = target.dataset.mode;
+      
+      if (age && mode) {
+        // Set age group (primary)
+        localStorage.setItem('costarica-decide-age-group', age);
+        document.documentElement.setAttribute('data-age-group', age);
+        
+        // Set mode
         localStorage.setItem('costarica-decide-mode', mode);
         document.documentElement.setAttribute('data-mode', mode);
         
-        // Also set age group for backward compatibility
-        const ageMap: Record<string, string> = {
-          express: '18-35',
-          dashboard: '36-49',
-          reading: '50+',
-        };
-        localStorage.setItem('costarica-decide-age-group', ageMap[mode]);
-        document.documentElement.setAttribute('data-age-group', ageMap[mode]);
-        
         // Update UI
-        const config = modeConfig[mode];
+        const config = ageConfig[age];
         if (modeIcon) modeIcon.textContent = config.icon;
         if (modeLabel) modeLabel.textContent = config.label;
         
