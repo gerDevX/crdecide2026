@@ -15,17 +15,23 @@ const sortedPillarData = [...pillarData].sort((a, b) =>
 <section class="py-4">
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
     {sortedPillarData.map((data, index) => {
-      const topCandidate = data.topCandidates[0];
       const isPriority = data.pillar && PRIORITY_PILLARS.includes(data.pillar.pillar_id as PillarId);
+      
+      // Get top 5 candidates with full info
+      const top5Candidates = data.topCandidates.slice(0, 5).map(tc => ({
+        name: tc.candidate?.party_name || 'N/A',
+        candidateName: tc.candidate?.candidate_name !== 'Por determinar' && tc.candidate?.candidate_name !== 'no_especificado'
+          ? tc.candidate?.candidate_name
+          : undefined,
+        score: tc.score.effective_score,
+        id: tc.candidate?.candidate_id || '',
+      }));
       
       return (
         <PillarCard
           pillar={data.pillar}
           avgScore={data.avgScore}
-          topCandidate={topCandidate ? {
-            name: topCandidate.candidate?.party_name?.split(' ').slice(0, 2).join(' ') || 'N/A',
-            score: topCandidate.score.effective_score,
-          } : undefined}
+          topCandidates={top5Candidates}
           isPriority={isPriority}
           rank={index + 1}
         />

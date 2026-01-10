@@ -26,15 +26,20 @@ const rankingData = getRankingWithCandidates().map((entry, index) => ({
 const fiscalStats = getFiscalStats();
 
 // Prepare data for Aceternity components
-const rankingEntries = getRankingWithCandidates().slice(0, 10).map((entry, idx) => ({
-  id: entry.candidate_id,
-  name: entry.candidate?.party_name || entry.candidate_id.toUpperCase(),
-  party: entry.candidate?.pdf_id || entry.candidate_id.toUpperCase(),
-  score: Math.round((entry.weighted_sum || 0) * 100),
-  rank: idx + 1,
-  riskLevel: (entry.analysis?.risk_level || 'BAJO') as "BAJO" | "MEDIO" | "ALTO",
-  penalty: (entry as any).total_penalties || 0,
-}));
+const rankingEntries = getRankingWithCandidates().slice(0, 10).map((entry, idx) => {
+  const candidateName = entry.candidate?.candidate_name;
+  const hasValidName = candidateName && candidateName !== 'Por determinar' && candidateName !== 'no_especificado';
+  
+  return {
+    id: entry.candidate_id,
+    name: hasValidName ? candidateName : entry.candidate?.party_name || entry.candidate_id.toUpperCase(),
+    party: entry.candidate?.party_name || entry.candidate_id.toUpperCase(),
+    score: Math.round((entry.weighted_sum || 0) * 100),
+    rank: idx + 1,
+    riskLevel: (entry.analysis?.risk_level || 'BAJO') as "BAJO" | "MEDIO" | "ALTO",
+    penalty: (entry as any).total_penalties || 0,
+  };
+});
 
 const statsData = [
   { value: candidates.length, label: "Candidatos", gradient: "from-cyan-600 to-blue-600" },
