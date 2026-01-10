@@ -34,7 +34,7 @@ if (!score) {
 const weightedPercent = Math.round(score.overall.weighted_sum * 100);
 const criticalPercent = Math.round(score.overall.critical_weighted_sum * 100);
 const priorityPercent = Math.round(score.overall.priority_weighted_sum * 100);
-const fiscalPenalty = score.overall.fiscal_penalty_applied;
+const totalPenalties = score.overall.total_penalties_applied;
 const riskLevel = (analysis?.risk_level || 'BAJO') as FiscalRiskLevel;
 const fiscalFlags = score.fiscal_analysis?.flags;
 
@@ -45,12 +45,30 @@ const proposalsByPillar = proposals.reduce((acc, p) => {
   return acc;
 }, {} as Record<string, typeof proposals>);
 
-// Get active penalties
+// Get active penalties (v6: removed proposes_tax_increase)
 const activePenalties = [
   fiscalFlags?.attacks_fiscal_rule && 'attacks_fiscal_rule',
   fiscalFlags?.proposes_debt_increase && 'proposes_debt_increase',
-  fiscalFlags?.proposes_tax_increase && 'proposes_tax_increase',
 ].filter(Boolean) as string[];
+
+// Get omission penalties from omission_analysis
+const omissionAnalysis = score.omission_analysis;
+const omissionPenalties: string[] = [];
+if (omissionAnalysis?.urgency_coverage) {
+  if (!omissionAnalysis.urgency_coverage.security_operations?.covered) {
+    omissionPenalties.push('ignores_security');
+  }
+  if (!omissionAnalysis.urgency_coverage.ccss_crisis?.covered) {
+    omissionPenalties.push('ignores_ccss');
+  }
+  if (!omissionAnalysis.urgency_coverage.formal_employment?.covered) {
+    omissionPenalties.push('ignores_employment');
+  }
+  if (!omissionAnalysis.urgency_coverage.organized_crime?.covered) {
+    omissionPenalties.push('ignores_organized_crime');
+  }
+}
+omissionAnalysis?.missing_pillars?.forEach(p => omissionPenalties.push('missing_priority_pillar'));
 ---
 
 <BaseLayout title={candidate.party_name}>
@@ -97,11 +115,11 @@ const activePenalties = [
           <div class="text-2xl font-bold text-purple-700">{priorityPercent}%</div>
           <div class="text-sm text-slate-500">Pilares prioritarios</div>
         </div>
-        <div class={`rounded-lg p-4 ${fiscalPenalty < 0 ? 'bg-red-50' : 'bg-green-50'}`}>
-          <div class={`text-2xl font-bold ${fiscalPenalty < 0 ? 'text-red-600' : 'text-green-600'}`}>
-            {fiscalPenalty}
+        <div class={`rounded-lg p-4 ${totalPenalties < 0 ? 'bg-red-50' : 'bg-green-50'}`}>
+          <div class={`text-2xl font-bold ${totalPenalties < 0 ? 'text-red-600' : 'text-green-600'}`}>
+            {totalPenalties}
           </div>
-          <div class="text-sm text-slate-500">Penalización fiscal</div>
+          <div class="text-sm text-slate-500">Penalización total</div>
         </div>
       </div>
       
@@ -125,13 +143,12 @@ const activePenalties = [
       </div>
     </header>
 
-    <!-- Fiscal Analysis Section -->
+    <!-- Fiscal Alerts Section -->
     {activePenalties.length > 0 && (
       <section class="card p-6 mb-8 bg-red-50 border-red-200">
         <h2 class="text-xl font-bold text-red-800 mb-4">⚠️ Alertas Fiscales</h2>
         <p class="text-sm text-red-700 mb-4">
-          Este plan de gobierno tiene <strong>{activePenalties.length}</strong> bandera(s) roja(s) 
-          que afectan su puntaje:
+          Este plan de gobierno tiene <strong>{activePenalties.length}</strong> bandera(s) roja(s) fiscal(es):
         </p>
         <div class="grid gap-3">
           {activePenalties.map(flag => (
@@ -156,6 +173,28 @@ const activePenalties = [
             </div>
           </div>
         )}
+      </section>
+    )}
+
+    <!-- Omission Alerts Section -->
+    {omissionPenalties.length > 0 && (
+      <section class="card p-6 mb-8 bg-amber-50 border-amber-200">
+        <h2 class="text-xl font-bold text-amber-800 mb-4">⚠️ Urgencias Nacionales No Abordadas</h2>
+        <p class="text-sm text-amber-700 mb-4">
+          Este plan de gobierno no menciona <strong>{omissionPenalties.length}</strong> tema(s) crítico(s) 
+          para Costa Rica:
+        </p>
+        <div class="grid gap-3">
+          {omissionPenalties.map(flag => (
+            <div class="flex items-start gap-3 bg-white p-3 rounded-lg border border-amber-200">
+              <span class="text-2xl">{PENALTY_LABELS[flag]?.emoji}</span>
+              <div>
+                <h4 class="font-semibold text-amber-800">{PENALTY_LABELS[flag]?.label}</h4>
+                <p class="text-sm text-amber-600">{PENALTY_LABELS[flag]?.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </section>
     )}
 

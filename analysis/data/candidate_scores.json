@@ -12,25 +12,32 @@
           {
             "type": "proposes_debt_increase",
             "value": -1,
-            "reason": "Propone aumentar deuda pública",
+            "reason": "Propone aumentar deuda pública sin plan de sostenibilidad",
             "evidence": "permitan desarrollar infraestructura pública sin incrementar la deuda directa del gobierno central. -​ Mantener la Estabilidad Monetaria: Coordinar políticas que favorez"
           }
         ]
       },
       {
         "pillar_id": "P2",
-        "raw_score": 2,
-        "effective_score": 2,
-        "normalized": 0.5,
-        "weighted": 0.055,
-        "penalties": []
+        "raw_score": 1,
+        "effective_score": 0.5,
+        "normalized": 0.125,
+        "weighted": 0.0138,
+        "penalties": [
+          {
+            "type": "ignores_formal_employment",
+            "value": -0.5,
+            "reason": "No aborda: Empleo formal",
+            "evidence": "Término no encontrado en el documento"
+          }
+        ]
       },
       {
         "pillar_id": "P3",
-        "raw_score": 3,
-        "effective_score": 3,
-        "normalized": 0.75,
-        "weighted": 0.135,
+        "raw_score": 2,
+        "effective_score": 2,
+        "normalized": 0.5,
+        "weighted": 0.09,
         "penalties": []
       },
       {
@@ -83,10 +90,10 @@
       },
       {
         "pillar_id": "P10",
-        "raw_score": 1,
-        "effective_score": 1,
-        "normalized": 0.25,
-        "weighted": 0.0225,
+        "raw_score": 2,
+        "effective_score": 2,
+        "normalized": 0.5,
+        "weighted": 0.045,
         "penalties": []
       }
     ],
@@ -94,7 +101,6 @@
       "flags": {
         "attacks_fiscal_rule": false,
         "proposes_debt_increase": true,
-        "proposes_tax_increase": false,
         "shows_fiscal_responsibility": true
       },
       "total_penalty": -1,
@@ -102,14 +108,57 @@
         "permitan desarrollar infraestructura pública sin incrementar la deuda directa del gobierno central. -​ Mantener la Estabilidad Monetaria: Coordinar políticas que favorez"
       ]
     },
+    "omission_analysis": {
+      "urgency_coverage": {
+        "security_operations": {
+          "covered": true,
+          "terms_found": [
+            "policía",
+            "OIJ",
+            "inteligencia",
+            "patrullaje",
+            "operativo",
+            "vigilancia"
+          ],
+          "description": "Seguridad operativa"
+        },
+        "ccss_crisis": {
+          "covered": true,
+          "terms_found": [
+            "CCSS",
+            "listas de espera"
+          ],
+          "description": "Crisis de la CCSS"
+        },
+        "formal_employment": {
+          "covered": false,
+          "terms_found": [],
+          "description": "Empleo formal"
+        },
+        "organized_crime": {
+          "covered": true,
+          "terms_found": [
+            "crimen organizado",
+            "narcotráfico",
+            "sicariato",
+            "extorsión",
+            "lavado de dinero"
+          ],
+          "description": "Crimen organizado"
+        }
+      },
+      "urgency_penalty": -0.5,
+      "missing_pillars": [],
+      "pillar_penalty": 0
+    },
     "overall": {
-      "raw_sum": 18,
-      "effective_sum": 17,
-      "weighted_sum": 0.49,
-      "priority_weighted_sum": 0.34,
-      "critical_weighted_sum": 0.445,
-      "fiscal_penalty_applied": -1,
-      "notes": "⚠️ PROPONE MÁS DEUDA (-1) | ✅ Muestra responsabilidad fiscal | Sin propuestas: P8, P9"
+      "raw_sum": 17,
+      "effective_sum": 15.5,
+      "weighted_sum": 0.4263,
+      "priority_weighted_sum": 0.295,
+      "critical_weighted_sum": 0.3588,
+      "total_penalties_applied": -1.5,
+      "notes": "🟠 PROPONE MÁS DEUDA (-1) | ✅ Responsabilidad fiscal | ⚠️ Omite: formal_employment"
     }
   },
   {
@@ -125,13 +174,13 @@
           {
             "type": "attacks_fiscal_rule",
             "value": -2,
-            "reason": "Propone flexibilizar/reformar la regla fiscal",
+            "reason": "Propone flexibilizar/reformar la regla fiscal (Ley 9635)",
             "evidence": "ad y violencia. Se trata de modernizar prácticas, eliminar cuellos de botella y articular 9 El país que queremos controles que protejan sin paralizar. Este programa no parte de cero. Costa Rica no ini"
           },
           {
             "type": "proposes_debt_increase",
             "value": -1,
-            "reason": "Propone aumentar deuda pública",
+            "reason": "Propone aumentar deuda pública sin plan de sostenibilidad",
             "evidence": "iliten la movilidad de las personas. Retomar para financiar, negociar e intervenir las rutas nacionales prioritarias: • Ruta 1. En dos tramos: 1) SJ-San Ramón. Ampliación en al menos cuatro carriles p"
           }
         ]
@@ -213,7 +262,6 @@
       "flags": {
         "attacks_fiscal_rule": true,
         "proposes_debt_increase": true,
-        "proposes_tax_increase": false,
         "shows_fiscal_responsibility": true
       },
       "total_penalty": -3,
@@ -222,14 +270,65 @@
         "iliten la movilidad de las personas. Retomar para financiar, negociar e intervenir las rutas nacionales prioritarias: • Ruta 1. En dos tramos: 1) SJ-San Ramón. Ampliación en al menos cuatro carriles p"
       ]
     },
+    "omission_analysis": {
+      "urgency_coverage": {
+        "security_operations": {
+          "covered": true,
+          "terms_found": [
+            "policía",
+            "fuerza pública",
+            "OIJ",
+            "inteligencia",
+            "patrullaje",
+            "operativo",
+            "vigilancia"
+          ],
+          "description": "Seguridad operativa"
+        },
+        "ccss_crisis": {
+          "covered": true,
+          "terms_found": [
+            "CCSS",
+            "Caja Costarricense",
+            "listas de espera",
+            "IVM",
+            "régimen de pensiones"
+          ],
+          "description": "Crisis de la CCSS"
+        },
+        "formal_employment": {
+          "covered": true,
+          "terms_found": [
+            "empleo formal",
+            "formalización",
+            "trabajo decente"
+          ],
+          "description": "Empleo formal"
+        },
+        "organized_crime": {
+          "covered": true,
+          "terms_found": [
+            "crimen organizado",
+            "narcotráfico",
+            "sicariato",
+            "lavado de dinero",
+            "cartel"
+          ],
+          "description": "Crimen organizado"
+        }
+      },
+      "urgency_penalty": 0,
+      "missing_pillars": [],
+      "pillar_penalty": 0
+    },
     "overall": {
       "raw_sum": 25,
       "effective_sum": 22,
       "weighted_sum": 0.53,
       "priority_weighted_sum": 0.275,
       "critical_weighted_sum": 0.405,
-      "fiscal_penalty_applied": -3,
-      "notes": "⚠️ ATACA REGLA FISCAL (-2) | ⚠️ PROPONE MÁS DEUDA (-1) | ✅ Muestra responsabilidad fiscal"
+      "total_penalties_applied": -3,
+      "notes": "🔴 ATACA REGLA FISCAL (-2) | 🟠 PROPONE MÁS DEUDA (-1) | ✅ Responsabilidad fiscal"
     }
   },
   {
@@ -245,14 +344,8 @@
           {
             "type": "attacks_fiscal_rule",
             "value": -2,
-            "reason": "Propone flexibilizar/reformar la regla fiscal",
+            "reason": "Propone flexibilizar/reformar la regla fiscal (Ley 9635)",
             "evidence": "” / 53 − La Problemática: Un sistema que necesita reformarse, no destruirse / 53 − Un diagnóstico honesto para soluciones reales / 54 − Nuestras Soluciones: Nueve pilares para un sistema de salud mode"
-          },
-          {
-            "type": "proposes_tax_increase",
-            "value": -1,
-            "reason": "Propone aumentar impuestos al pueblo",
-            "evidence": "for­ taleciendo la administración tributaria. 2. Reforma tributaria progresiva: Donde quienes más tienen aporten más, sin afectar a la clase media y a las PYMES. 3. Renegociació"
           }
         ]
       },
@@ -333,14 +426,60 @@
       "flags": {
         "attacks_fiscal_rule": true,
         "proposes_debt_increase": false,
-        "proposes_tax_increase": true,
         "shows_fiscal_responsibility": true
       },
-      "total_penalty": -3,
+      "total_penalty": -2,
       "evidence": [
-        "” / 53 − La Problemática: Un sistema que necesita reformarse, no destruirse / 53 − Un diagnóstico honesto para soluciones reales / 54 − Nuestras Soluciones: Nueve pilares para un sistema de salud mode",
-        "for­ taleciendo la administración tributaria. 2. Reforma tributaria progresiva: Donde quienes más tienen aporten más, sin afectar a la clase media y a las PYMES. 3. Renegociació"
+        "” / 53 − La Problemática: Un sistema que necesita reformarse, no destruirse / 53 − Un diagnóstico honesto para soluciones reales / 54 − Nuestras Soluciones: Nueve pilares para un sistema de salud mode"
       ]
+    },
+    "omission_analysis": {
+      "urgency_coverage": {
+        "security_operations": {
+          "covered": true,
+          "terms_found": [
+            "policía",
+            "fuerza pública",
+            "OIJ",
+            "inteligencia",
+            "patrullaje",
+            "operativo",
+            "vigilancia"
+          ],
+          "description": "Seguridad operativa"
+        },
+        "ccss_crisis": {
+          "covered": true,
+          "terms_found": [
+            "CCSS",
+            "Caja Costarricense",
+            "listas de espera"
+          ],
+          "description": "Crisis de la CCSS"
+        },
+        "formal_employment": {
+          "covered": true,
+          "terms_found": [
+            "empleo formal",
+            "formalización"
+          ],
+          "description": "Empleo formal"
+        },
+        "organized_crime": {
+          "covered": true,
+          "terms_found": [
+            "crimen organizado",
+            "narcotráfico",
+            "sicariato",
+            "extorsión",
+            "cartel"
+          ],
+          "description": "Crimen organizado"
+        }
+      },
+      "urgency_penalty": 0,
+      "missing_pillars": [],
+      "pillar_penalty": 0
     },
     "overall": {
       "raw_sum": 26,
@@ -348,8 +487,8 @@
       "weighted_sum": 0.585,
       "priority_weighted_sum": 0.305,
       "critical_weighted_sum": 0.4625,
-      "fiscal_penalty_applied": -3,
-      "notes": "⚠️ ATACA REGLA FISCAL (-2) | ⚠️ PROPONE MÁS IMPUESTOS (-1) | ✅ Muestra responsabilidad fiscal"
+      "total_penalties_applied": -2,
+      "notes": "🔴 ATACA REGLA FISCAL (-2) | ✅ Responsabilidad fiscal"
     }
   },
   {
@@ -357,10 +496,10 @@
     "pillar_scores": [
       {
         "pillar_id": "P1",
-        "raw_score": 1,
-        "effective_score": 1,
-        "normalized": 0.25,
-        "weighted": 0.035,
+        "raw_score": 2,
+        "effective_score": 2,
+        "normalized": 0.5,
+        "weighted": 0.07,
         "penalties": []
       },
       {
@@ -440,20 +579,65 @@
       "flags": {
         "attacks_fiscal_rule": false,
         "proposes_debt_increase": false,
-        "proposes_tax_increase": false,
         "shows_fiscal_responsibility": true
       },
       "total_penalty": 0,
       "evidence": []
     },
+    "omission_analysis": {
+      "urgency_coverage": {
+        "security_operations": {
+          "covered": true,
+          "terms_found": [
+            "policía",
+            "fuerza pública",
+            "inteligencia",
+            "patrullaje",
+            "operativo",
+            "vigilancia",
+            "control territorial"
+          ],
+          "description": "Seguridad operativa"
+        },
+        "ccss_crisis": {
+          "covered": true,
+          "terms_found": [
+            "CCSS",
+            "Caja Costarricense",
+            "listas de espera"
+          ],
+          "description": "Crisis de la CCSS"
+        },
+        "formal_employment": {
+          "covered": true,
+          "terms_found": [
+            "formalización",
+            "informalidad laboral"
+          ],
+          "description": "Empleo formal"
+        },
+        "organized_crime": {
+          "covered": true,
+          "terms_found": [
+            "crimen organizado",
+            "narcotráfico",
+            "cartel"
+          ],
+          "description": "Crimen organizado"
+        }
+      },
+      "urgency_penalty": 0,
+      "missing_pillars": [],
+      "pillar_penalty": 0
+    },
     "overall": {
-      "raw_sum": 16,
-      "effective_sum": 16,
-      "weighted_sum": 0.53,
-      "priority_weighted_sum": 0.38,
-      "critical_weighted_sum": 0.485,
-      "fiscal_penalty_applied": 0,
-      "notes": "✅ Muestra responsabilidad fiscal | Sin propuestas: P6, P8, P9"
+      "raw_sum": 17,
+      "effective_sum": 17,
+      "weighted_sum": 0.565,
+      "priority_weighted_sum": 0.415,
+      "critical_weighted_sum": 0.52,
+      "total_penalties_applied": 0,
+      "notes": "✅ Responsabilidad fiscal"
     }
   },
   {
@@ -469,20 +653,14 @@
           {
             "type": "attacks_fiscal_rule",
             "value": -2,
-            "reason": "Propone flexibilizar/reformar la regla fiscal",
+            "reason": "Propone flexibilizar/reformar la regla fiscal (Ley 9635)",
             "evidence": ". Los métodos tradicionales de medición tienden a excluir a un gran contingente de la población y, a pesar de esta odiosa exclusión, la pobreza medida por la línea de pobreza y categorizada por grupos"
           },
           {
             "type": "proposes_debt_increase",
             "value": -1,
-            "reason": "Propone aumentar deuda pública",
+            "reason": "Propone aumentar deuda pública sin plan de sostenibilidad",
             "evidence": "e, flota y bicicletas eléctricas. ●​ Autorizar la emisión de bonos verdes para financiar proyectos de descarbonización y transporte sostenible, incluyendo un marco le"
-          },
-          {
-            "type": "proposes_tax_increase",
-            "value": -1,
-            "reason": "Propone aumentar impuestos al pueblo",
-            "evidence": "n lo dispuesto en el artículo 7 de la Ley 5909 de Reforma Tributaria de 1976, por medio de la cual se otorgan fuentes de financiamiento del FEES. ●​ Garantizar el aumento del financiamiento para la un"
           }
         ]
       },
@@ -563,14 +741,63 @@
       "flags": {
         "attacks_fiscal_rule": true,
         "proposes_debt_increase": true,
-        "proposes_tax_increase": true,
         "shows_fiscal_responsibility": true
       },
-      "total_penalty": -4,
+      "total_penalty": -3,
       "evidence": [
         ". Los métodos tradicionales de medición tienden a excluir a un gran contingente de la población y, a pesar de esta odiosa exclusión, la pobreza medida por la línea de pobreza y categorizada por grupos",
         "e, flota y bicicletas eléctricas. ●​ Autorizar la emisión de bonos verdes para financiar proyectos de descarbonización y transporte sostenible, incluyendo un marco le"
       ]
+    },
+    "omission_analysis": {
+      "urgency_coverage": {
+        "security_operations": {
+          "covered": true,
+          "terms_found": [
+            "policía",
+            "fuerza pública",
+            "OIJ",
+            "inteligencia",
+            "patrullaje",
+            "operativo",
+            "vigilancia"
+          ],
+          "description": "Seguridad operativa"
+        },
+        "ccss_crisis": {
+          "covered": true,
+          "terms_found": [
+            "CCSS",
+            "Caja Costarricense",
+            "listas de espera",
+            "IVM"
+          ],
+          "description": "Crisis de la CCSS"
+        },
+        "formal_employment": {
+          "covered": true,
+          "terms_found": [
+            "empleo formal",
+            "formalización",
+            "informalidad laboral"
+          ],
+          "description": "Empleo formal"
+        },
+        "organized_crime": {
+          "covered": true,
+          "terms_found": [
+            "crimen organizado",
+            "narcotráfico",
+            "sicariato",
+            "lavado de dinero",
+            "cartel"
+          ],
+          "description": "Crimen organizado"
+        }
+      },
+      "urgency_penalty": 0,
+      "missing_pillars": [],
+      "pillar_penalty": 0
     },
     "overall": {
       "raw_sum": 31,
@@ -578,8 +805,8 @@
       "weighted_sum": 0.65,
       "priority_weighted_sum": 0.345,
       "critical_weighted_sum": 0.5025,
-      "fiscal_penalty_applied": -4,
-      "notes": "⚠️ ATACA REGLA FISCAL (-2) | ⚠️ PROPONE MÁS DEUDA (-1) | ⚠️ PROPONE MÁS IMPUESTOS (-1) | ✅ Muestra responsabilidad fiscal"
+      "total_penalties_applied": -3,
+      "notes": "🔴 ATACA REGLA FISCAL (-2) | 🟠 PROPONE MÁS DEUDA (-1) | ✅ Responsabilidad fiscal"
     }
   },
   {
@@ -587,7 +814,7 @@
     "pillar_scores": [
       {
         "pillar_id": "P1",
-        "raw_score": 0,
+        "raw_score": 2,
         "effective_score": 0,
         "normalized": 0.0,
         "weighted": 0.0,
@@ -595,14 +822,8 @@
           {
             "type": "attacks_fiscal_rule",
             "value": -2,
-            "reason": "Propone flexibilizar/reformar la regla fiscal",
+            "reason": "Propone flexibilizar/reformar la regla fiscal (Ley 9635)",
             "evidence": "menor inflación y confianza al inversionista. La Regla Fiscal seguirá siendo el marco para contener gasto corriente y alcanzar superávits primarios que reduzcan la deuda/PIB, sin aumentar impuestos ge"
-          },
-          {
-            "type": "proposes_tax_increase",
-            "value": -1,
-            "reason": "Propone aumentar impuestos al pueblo",
-            "evidence": "perávits primarios que reduzcan la deuda/PIB, sin aumentar impuestos generales, sino recortando despilfarro. Para ello realizaremos una auditoría del presupuesto que el"
           }
         ]
       },
@@ -616,18 +837,18 @@
       },
       {
         "pillar_id": "P3",
-        "raw_score": 1,
-        "effective_score": 1,
-        "normalized": 0.25,
-        "weighted": 0.045,
+        "raw_score": 3,
+        "effective_score": 3,
+        "normalized": 0.75,
+        "weighted": 0.135,
         "penalties": []
       },
       {
         "pillar_id": "P4",
-        "raw_score": 1,
-        "effective_score": 1,
-        "normalized": 0.25,
-        "weighted": 0.04,
+        "raw_score": 2,
+        "effective_score": 2,
+        "normalized": 0.5,
+        "weighted": 0.08,
         "penalties": []
       },
       {
@@ -648,10 +869,10 @@
       },
       {
         "pillar_id": "P7",
-        "raw_score": 3,
-        "effective_score": 3,
-        "normalized": 0.75,
-        "weighted": 0.09,
+        "raw_score": 2,
+        "effective_score": 2,
+        "normalized": 0.5,
+        "weighted": 0.06,
         "penalties": []
       },
       {
@@ -683,23 +904,68 @@
       "flags": {
         "attacks_fiscal_rule": true,
         "proposes_debt_increase": false,
-        "proposes_tax_increase": true,
         "shows_fiscal_responsibility": true
       },
-      "total_penalty": -3,
+      "total_penalty": -2,
       "evidence": [
-        "menor inflación y confianza al inversionista. La Regla Fiscal seguirá siendo el marco para contener gasto corriente y alcanzar superávits primarios que reduzcan la deuda/PIB, sin aumentar impuestos ge",
-        "perávits primarios que reduzcan la deuda/PIB, sin aumentar impuestos generales, sino recortando despilfarro. Para ello realizaremos una auditoría del presupuesto que el"
+        "menor inflación y confianza al inversionista. La Regla Fiscal seguirá siendo el marco para contener gasto corriente y alcanzar superávits primarios que reduzcan la deuda/PIB, sin aumentar impuestos ge"
       ]
     },
+    "omission_analysis": {
+      "urgency_coverage": {
+        "security_operations": {
+          "covered": true,
+          "terms_found": [
+            "policía",
+            "fuerza pública",
+            "OIJ",
+            "inteligencia",
+            "patrullaje",
+            "operativo",
+            "vigilancia",
+            "control territorial"
+          ],
+          "description": "Seguridad operativa"
+        },
+        "ccss_crisis": {
+          "covered": true,
+          "terms_found": [
+            "CCSS",
+            "listas de espera",
+            "IVM"
+          ],
+          "description": "Crisis de la CCSS"
+        },
+        "formal_employment": {
+          "covered": true,
+          "terms_found": [
+            "formalización",
+            "cotizante"
+          ],
+          "description": "Empleo formal"
+        },
+        "organized_crime": {
+          "covered": true,
+          "terms_found": [
+            "crimen organizado",
+            "narcotráfico",
+            "sicariato"
+          ],
+          "description": "Crimen organizado"
+        }
+      },
+      "urgency_penalty": 0,
+      "missing_pillars": [],
+      "pillar_penalty": 0
+    },
     "overall": {
-      "raw_sum": 14,
-      "effective_sum": 14,
-      "weighted_sum": 0.3775,
-      "priority_weighted_sum": 0.175,
-      "critical_weighted_sum": 0.28,
-      "fiscal_penalty_applied": -3,
-      "notes": "⚠️ ATACA REGLA FISCAL (-2) | ⚠️ PROPONE MÁS IMPUESTOS (-1) | ✅ Muestra responsabilidad fiscal | Sin propuestas: P1, P8, P9"
+      "raw_sum": 18,
+      "effective_sum": 16,
+      "weighted_sum": 0.4775,
+      "priority_weighted_sum": 0.275,
+      "critical_weighted_sum": 0.38,
+      "total_penalties_applied": -2,
+      "notes": "🔴 ATACA REGLA FISCAL (-2) | ✅ Responsabilidad fiscal"
     }
   },
   {
@@ -715,7 +981,7 @@
           {
             "type": "attacks_fiscal_rule",
             "value": -2,
-            "reason": "Propone flexibilizar/reformar la regla fiscal",
+            "reason": "Propone flexibilizar/reformar la regla fiscal (Ley 9635)",
             "evidence": "eléctrico, valorado en 0.4 billones. ◦ En Empleo: Eliminar el desempleo aumentando un 16% la planilla de las grandes empresas (1.6 billones adicionales en salarios), contratando a las 165 mil personas"
           }
         ]
@@ -742,7 +1008,14 @@
         "effective_score": 0,
         "normalized": 0.0,
         "weighted": 0.0,
-        "penalties": []
+        "penalties": [
+          {
+            "type": "missing_priority_pillar",
+            "value": -0.5,
+            "reason": "Sin propuesta concreta en pilar prioritario P4",
+            "pillar_id": "P4"
+          }
+        ]
       },
       {
         "pillar_id": "P5",
@@ -766,7 +1039,14 @@
         "effective_score": 0,
         "normalized": 0.0,
         "weighted": 0.0,
-        "penalties": []
+        "penalties": [
+          {
+            "type": "missing_priority_pillar",
+            "value": -0.5,
+            "reason": "Sin propuesta concreta en pilar prioritario P7",
+            "pillar_id": "P7"
+          }
+        ]
       },
       {
         "pillar_id": "P8",
@@ -787,23 +1067,16 @@
       {
         "pillar_id": "P10",
         "raw_score": 1,
-        "effective_score": 0,
-        "normalized": 0.0,
-        "weighted": 0.0,
-        "penalties": [
-          {
-            "type": "urgency_omission",
-            "value": -1,
-            "reason": "No propone mecanismos privados de financiamiento para infraestructura"
-          }
-        ]
+        "effective_score": 1,
+        "normalized": 0.25,
+        "weighted": 0.0225,
+        "penalties": []
       }
     ],
     "fiscal_analysis": {
       "flags": {
         "attacks_fiscal_rule": true,
         "proposes_debt_increase": false,
-        "proposes_tax_increase": false,
         "shows_fiscal_responsibility": true
       },
       "total_penalty": -2,
@@ -811,14 +1084,58 @@
         "eléctrico, valorado en 0.4 billones. ◦ En Empleo: Eliminar el desempleo aumentando un 16% la planilla de las grandes empresas (1.6 billones adicionales en salarios), contratando a las 165 mil personas"
       ]
     },
+    "omission_analysis": {
+      "urgency_coverage": {
+        "security_operations": {
+          "covered": true,
+          "terms_found": [
+            "policía",
+            "OIJ",
+            "patrullaje"
+          ],
+          "description": "Seguridad operativa"
+        },
+        "ccss_crisis": {
+          "covered": true,
+          "terms_found": [
+            "CCSS",
+            "Caja Costarricense",
+            "IVM"
+          ],
+          "description": "Crisis de la CCSS"
+        },
+        "formal_employment": {
+          "covered": true,
+          "terms_found": [
+            "empleo formal"
+          ],
+          "description": "Empleo formal"
+        },
+        "organized_crime": {
+          "covered": true,
+          "terms_found": [
+            "crimen organizado",
+            "narcotráfico",
+            "sicariato"
+          ],
+          "description": "Crimen organizado"
+        }
+      },
+      "urgency_penalty": 0,
+      "missing_pillars": [
+        "P4",
+        "P7"
+      ],
+      "pillar_penalty": -1.0
+    },
     "overall": {
       "raw_sum": 11,
-      "effective_sum": 8,
-      "weighted_sum": 0.19,
+      "effective_sum": 9,
+      "weighted_sum": 0.2125,
       "priority_weighted_sum": 0.045,
       "critical_weighted_sum": 0.175,
-      "fiscal_penalty_applied": -2,
-      "notes": "⚠️ ATACA REGLA FISCAL (-2) | ✅ Muestra responsabilidad fiscal | Penalizados: P10 | Sin propuestas: P4, P7, P8, P9"
+      "total_penalties_applied": -3.0,
+      "notes": "🔴 ATACA REGLA FISCAL (-2) | ✅ Responsabilidad fiscal | ❌ Sin propuesta: P4, P7"
     }
   },
   {
@@ -834,13 +1151,13 @@
           {
             "type": "attacks_fiscal_rule",
             "value": -2,
-            "reason": "Propone flexibilizar/reformar la regla fiscal",
+            "reason": "Propone flexibilizar/reformar la regla fiscal (Ley 9635)",
             "evidence": "se y menos oportunidades de aprendizaje integral. Reformarlo, dotarlo de eficiencia y orientarlo hacia una verdadera cultura de servicio al ciudadano no es una opción, sino una condición indispensable"
           },
           {
             "type": "proposes_debt_increase",
             "value": -1,
-            "reason": "Propone aumentar deuda pública",
+            "reason": "Propone aumentar deuda pública sin plan de sostenibilidad",
             "evidence": "desigualdad, financiados con eficiencia y no con más deuda. • Cultura de servicio ciudadano: instituciones que respondan rápido, transparente y con calidad. T"
           }
         ]
@@ -895,10 +1212,10 @@
       },
       {
         "pillar_id": "P8",
-        "raw_score": 0,
-        "effective_score": 0,
-        "normalized": 0.0,
-        "weighted": 0.0,
+        "raw_score": 1,
+        "effective_score": 1,
+        "normalized": 0.25,
+        "weighted": 0.0125,
         "penalties": []
       },
       {
@@ -922,7 +1239,6 @@
       "flags": {
         "attacks_fiscal_rule": true,
         "proposes_debt_increase": true,
-        "proposes_tax_increase": false,
         "shows_fiscal_responsibility": true
       },
       "total_penalty": -3,
@@ -931,14 +1247,62 @@
         "desigualdad, financiados con eficiencia y no con más deuda. • Cultura de servicio ciudadano: instituciones que respondan rápido, transparente y con calidad. T"
       ]
     },
+    "omission_analysis": {
+      "urgency_coverage": {
+        "security_operations": {
+          "covered": true,
+          "terms_found": [
+            "policía",
+            "fuerza pública",
+            "OIJ",
+            "inteligencia",
+            "patrullaje",
+            "operativo",
+            "vigilancia",
+            "control territorial"
+          ],
+          "description": "Seguridad operativa"
+        },
+        "ccss_crisis": {
+          "covered": true,
+          "terms_found": [
+            "CCSS",
+            "Caja Costarricense",
+            "listas de espera"
+          ],
+          "description": "Crisis de la CCSS"
+        },
+        "formal_employment": {
+          "covered": true,
+          "terms_found": [
+            "empleo formal",
+            "formalización",
+            "informalidad laboral"
+          ],
+          "description": "Empleo formal"
+        },
+        "organized_crime": {
+          "covered": true,
+          "terms_found": [
+            "crimen organizado",
+            "narcotráfico",
+            "cartel"
+          ],
+          "description": "Crimen organizado"
+        }
+      },
+      "urgency_penalty": 0,
+      "missing_pillars": [],
+      "pillar_penalty": 0
+    },
     "overall": {
-      "raw_sum": 24,
-      "effective_sum": 21,
-      "weighted_sum": 0.555,
+      "raw_sum": 25,
+      "effective_sum": 22,
+      "weighted_sum": 0.5675,
       "priority_weighted_sum": 0.305,
       "critical_weighted_sum": 0.4625,
-      "fiscal_penalty_applied": -3,
-      "notes": "⚠️ ATACA REGLA FISCAL (-2) | ⚠️ PROPONE MÁS DEUDA (-1) | ✅ Muestra responsabilidad fiscal | Sin propuestas: P8"
+      "total_penalties_applied": -3,
+      "notes": "🔴 ATACA REGLA FISCAL (-2) | 🟠 PROPONE MÁS DEUDA (-1) | ✅ Responsabilidad fiscal"
     }
   },
   {
@@ -954,8 +1318,14 @@
           {
             "type": "attacks_fiscal_rule",
             "value": -2,
-            "reason": "Propone flexibilizar/reformar la regla fiscal",
+            "reason": "Propone flexibilizar/reformar la regla fiscal (Ley 9635)",
             "evidence": "tión y docencia en la educación y la cultura vii. Modificar la estructura del sistema educativo viii. Modificar la estructura de la atención de la criminalidad ix. Mejorar la infraestructura en carret"
+          },
+          {
+            "type": "missing_priority_pillar",
+            "value": -0.5,
+            "reason": "Sin propuesta concreta en pilar prioritario P1",
+            "pillar_id": "P1"
           }
         ]
       },
@@ -981,7 +1351,14 @@
         "effective_score": 0,
         "normalized": 0.0,
         "weighted": 0.0,
-        "penalties": []
+        "penalties": [
+          {
+            "type": "missing_priority_pillar",
+            "value": -0.5,
+            "reason": "Sin propuesta concreta en pilar prioritario P4",
+            "pillar_id": "P4"
+          }
+        ]
       },
       {
         "pillar_id": "P5",
@@ -1036,7 +1413,6 @@
       "flags": {
         "attacks_fiscal_rule": true,
         "proposes_debt_increase": false,
-        "proposes_tax_increase": false,
         "shows_fiscal_responsibility": true
       },
       "total_penalty": -2,
@@ -1044,14 +1420,63 @@
         "tión y docencia en la educación y la cultura vii. Modificar la estructura del sistema educativo viii. Modificar la estructura de la atención de la criminalidad ix. Mejorar la infraestructura en carret"
       ]
     },
+    "omission_analysis": {
+      "urgency_coverage": {
+        "security_operations": {
+          "covered": true,
+          "terms_found": [
+            "policía",
+            "fuerza pública",
+            "OIJ",
+            "inteligencia",
+            "patrullaje",
+            "operativo",
+            "vigilancia"
+          ],
+          "description": "Seguridad operativa"
+        },
+        "ccss_crisis": {
+          "covered": true,
+          "terms_found": [
+            "CCSS",
+            "Caja Costarricense",
+            "listas de espera",
+            "IVM",
+            "régimen de pensiones"
+          ],
+          "description": "Crisis de la CCSS"
+        },
+        "formal_employment": {
+          "covered": true,
+          "terms_found": [
+            "empleo formal"
+          ],
+          "description": "Empleo formal"
+        },
+        "organized_crime": {
+          "covered": true,
+          "terms_found": [
+            "crimen organizado",
+            "narcotráfico"
+          ],
+          "description": "Crimen organizado"
+        }
+      },
+      "urgency_penalty": 0,
+      "missing_pillars": [
+        "P4",
+        "P1"
+      ],
+      "pillar_penalty": -1.0
+    },
     "overall": {
       "raw_sum": 13,
       "effective_sum": 13,
       "weighted_sum": 0.315,
       "priority_weighted_sum": 0.15,
       "critical_weighted_sum": 0.23,
-      "fiscal_penalty_applied": -2,
-      "notes": "⚠️ ATACA REGLA FISCAL (-2) | ✅ Muestra responsabilidad fiscal | Sin propuestas: P1, P4, P9"
+      "total_penalties_applied": -3.0,
+      "notes": "🔴 ATACA REGLA FISCAL (-2) | ✅ Responsabilidad fiscal | ❌ Sin propuesta: P4, P1"
     }
   },
   {
@@ -1067,13 +1492,13 @@
           {
             "type": "attacks_fiscal_rule",
             "value": -2,
-            "reason": "Propone flexibilizar/reformar la regla fiscal",
+            "reason": "Propone flexibilizar/reformar la regla fiscal (Ley 9635)",
             "evidence": "implementación de programas de formación dual. ● Reformar el Consejo Nacional de Producción para asegurar que las instituciones públicas compren productos agrícolas nacionales. ● Desarrollar infraestr"
           },
           {
             "type": "proposes_debt_increase",
             "value": -1,
-            "reason": "Propone aumentar deuda pública",
+            "reason": "Propone aumentar deuda pública sin plan de sostenibilidad",
             "evidence": "iler por inversión en infraestructura propia, sin aumentar la deuda pública directa 12.1. Esquema de titularización: BOLT El proyecto se financiará bajo el modelo BOLT"
           }
         ]
@@ -1155,7 +1580,6 @@
       "flags": {
         "attacks_fiscal_rule": true,
         "proposes_debt_increase": true,
-        "proposes_tax_increase": false,
         "shows_fiscal_responsibility": true
       },
       "total_penalty": -3,
@@ -1164,14 +1588,60 @@
         "iler por inversión en infraestructura propia, sin aumentar la deuda pública directa 12.1. Esquema de titularización: BOLT El proyecto se financiará bajo el modelo BOLT"
       ]
     },
+    "omission_analysis": {
+      "urgency_coverage": {
+        "security_operations": {
+          "covered": true,
+          "terms_found": [
+            "policía",
+            "OIJ",
+            "inteligencia",
+            "operativo",
+            "vigilancia",
+            "control territorial"
+          ],
+          "description": "Seguridad operativa"
+        },
+        "ccss_crisis": {
+          "covered": true,
+          "terms_found": [
+            "CCSS",
+            "Caja Costarricense",
+            "listas de espera",
+            "régimen de pensiones"
+          ],
+          "description": "Crisis de la CCSS"
+        },
+        "formal_employment": {
+          "covered": true,
+          "terms_found": [
+            "empleo formal",
+            "formalización",
+            "informalidad laboral"
+          ],
+          "description": "Empleo formal"
+        },
+        "organized_crime": {
+          "covered": true,
+          "terms_found": [
+            "crimen organizado",
+            "narcotráfico"
+          ],
+          "description": "Crimen organizado"
+        }
+      },
+      "urgency_penalty": 0,
+      "missing_pillars": [],
+      "pillar_penalty": 0
+    },
     "overall": {
       "raw_sum": 26,
       "effective_sum": 23,
       "weighted_sum": 0.6025,
       "priority_weighted_sum": 0.345,
       "critical_weighted_sum": 0.475,
-      "fiscal_penalty_applied": -3,
-      "notes": "⚠️ ATACA REGLA FISCAL (-2) | ⚠️ PROPONE MÁS DEUDA (-1) | ✅ Muestra responsabilidad fiscal | Sin propuestas: P9"
+      "total_penalties_applied": -3,
+      "notes": "🔴 ATACA REGLA FISCAL (-2) | 🟠 PROPONE MÁS DEUDA (-1) | ✅ Responsabilidad fiscal"
     }
   },
   {
@@ -1187,7 +1657,7 @@
           {
             "type": "proposes_debt_increase",
             "value": -1,
-            "reason": "Propone aumentar deuda pública",
+            "reason": "Propone aumentar deuda pública sin plan de sostenibilidad",
             "evidence": "los cambios para que se siga pagando, sin generar más deuda y estableciendo directrices que garanticen el uso del pago de deuda en proyectos de mejora tanto en"
           }
         ]
@@ -1269,7 +1739,6 @@
       "flags": {
         "attacks_fiscal_rule": false,
         "proposes_debt_increase": true,
-        "proposes_tax_increase": false,
         "shows_fiscal_responsibility": true
       },
       "total_penalty": -1,
@@ -1277,14 +1746,62 @@
         "los cambios para que se siga pagando, sin generar más deuda y estableciendo directrices que garanticen el uso del pago de deuda en proyectos de mejora tanto en"
       ]
     },
+    "omission_analysis": {
+      "urgency_coverage": {
+        "security_operations": {
+          "covered": true,
+          "terms_found": [
+            "policía",
+            "fuerza pública",
+            "inteligencia",
+            "patrullaje",
+            "operativo",
+            "vigilancia",
+            "control territorial"
+          ],
+          "description": "Seguridad operativa"
+        },
+        "ccss_crisis": {
+          "covered": true,
+          "terms_found": [
+            "CCSS",
+            "Caja Costarricense",
+            "régimen de pensiones"
+          ],
+          "description": "Crisis de la CCSS"
+        },
+        "formal_employment": {
+          "covered": true,
+          "terms_found": [
+            "empleo formal",
+            "formalización",
+            "informalidad laboral",
+            "cotizante"
+          ],
+          "description": "Empleo formal"
+        },
+        "organized_crime": {
+          "covered": true,
+          "terms_found": [
+            "crimen organizado",
+            "narcotráfico",
+            "lavado de dinero"
+          ],
+          "description": "Crimen organizado"
+        }
+      },
+      "urgency_penalty": 0,
+      "missing_pillars": [],
+      "pillar_penalty": 0
+    },
     "overall": {
       "raw_sum": 23,
       "effective_sum": 22,
       "weighted_sum": 0.5575,
       "priority_weighted_sum": 0.33,
       "critical_weighted_sum": 0.4625,
-      "fiscal_penalty_applied": -1,
-      "notes": "⚠️ PROPONE MÁS DEUDA (-1) | ✅ Muestra responsabilidad fiscal"
+      "total_penalties_applied": -1,
+      "notes": "🟠 PROPONE MÁS DEUDA (-1) | ✅ Responsabilidad fiscal"
     }
   },
   {
@@ -1300,7 +1817,7 @@
           {
             "type": "attacks_fiscal_rule",
             "value": -2,
-            "reason": "Propone flexibilizar/reformar la regla fiscal",
+            "reason": "Propone flexibilizar/reformar la regla fiscal (Ley 9635)",
             "evidence": "rgo plazo 5.2.2.4 Revisión de la aplicación de la Regla Fiscal para la inversión social Recuperaremos los programas de equidad para el acceso a la educación (Comedores estudian:les, Transporte estudia"
           }
         ]
@@ -1382,7 +1899,6 @@
       "flags": {
         "attacks_fiscal_rule": true,
         "proposes_debt_increase": false,
-        "proposes_tax_increase": false,
         "shows_fiscal_responsibility": true
       },
       "total_penalty": -2,
@@ -1390,14 +1906,63 @@
         "rgo plazo 5.2.2.4 Revisión de la aplicación de la Regla Fiscal para la inversión social Recuperaremos los programas de equidad para el acceso a la educación (Comedores estudian:les, Transporte estudia"
       ]
     },
+    "omission_analysis": {
+      "urgency_coverage": {
+        "security_operations": {
+          "covered": true,
+          "terms_found": [
+            "policía",
+            "fuerza pública",
+            "OIJ",
+            "inteligencia",
+            "patrullaje",
+            "operativo",
+            "vigilancia"
+          ],
+          "description": "Seguridad operativa"
+        },
+        "ccss_crisis": {
+          "covered": true,
+          "terms_found": [
+            "CCSS",
+            "Caja Costarricense",
+            "listas de espera",
+            "IVM"
+          ],
+          "description": "Crisis de la CCSS"
+        },
+        "formal_employment": {
+          "covered": true,
+          "terms_found": [
+            "empleo formal",
+            "formalización",
+            "trabajo decente"
+          ],
+          "description": "Empleo formal"
+        },
+        "organized_crime": {
+          "covered": true,
+          "terms_found": [
+            "crimen organizado",
+            "narcotráfico",
+            "sicariato",
+            "lavado de dinero"
+          ],
+          "description": "Crimen organizado"
+        }
+      },
+      "urgency_penalty": 0,
+      "missing_pillars": [],
+      "pillar_penalty": 0
+    },
     "overall": {
       "raw_sum": 20,
       "effective_sum": 18,
       "weighted_sum": 0.4775,
       "priority_weighted_sum": 0.23,
       "critical_weighted_sum": 0.3875,
-      "fiscal_penalty_applied": -2,
-      "notes": "⚠️ ATACA REGLA FISCAL (-2) | ✅ Muestra responsabilidad fiscal | Sin propuestas: P8, P9"
+      "total_penalties_applied": -2,
+      "notes": "🔴 ATACA REGLA FISCAL (-2) | ✅ Responsabilidad fiscal"
     }
   },
   {
@@ -1406,30 +1971,24 @@
       {
         "pillar_id": "P1",
         "raw_score": 3,
-        "effective_score": 0,
-        "normalized": 0.0,
-        "weighted": 0.0,
+        "effective_score": 1,
+        "normalized": 0.25,
+        "weighted": 0.035,
         "penalties": [
           {
             "type": "attacks_fiscal_rule",
             "value": -2,
-            "reason": "Propone flexibilizar/reformar la regla fiscal",
+            "reason": "Propone flexibilizar/reformar la regla fiscal (Ley 9635)",
             "evidence": "...............................................49 Eliminaremos los impuestos que pesan sobre el trabajo e incentivaremos la contratación ..............................................................."
-          },
-          {
-            "type": "proposes_tax_increase",
-            "value": -1,
-            "reason": "Propone aumentar impuestos al pueblo",
-            "evidence": "e necesaria. En nuestro gobierno impulsaremos una reforma tributaria selectiva y progresiva para aliviar el costo de vida mediante la reducción del impuesto sobre los alquileres de vivienda. En primer"
           }
         ]
       },
       {
         "pillar_id": "P2",
-        "raw_score": 3,
-        "effective_score": 3,
-        "normalized": 0.75,
-        "weighted": 0.0825,
+        "raw_score": 2,
+        "effective_score": 2,
+        "normalized": 0.5,
+        "weighted": 0.055,
         "penalties": []
       },
       {
@@ -1501,23 +2060,73 @@
       "flags": {
         "attacks_fiscal_rule": true,
         "proposes_debt_increase": false,
-        "proposes_tax_increase": true,
         "shows_fiscal_responsibility": true
       },
-      "total_penalty": -3,
+      "total_penalty": -2,
       "evidence": [
-        "...............................................49 Eliminaremos los impuestos que pesan sobre el trabajo e incentivaremos la contratación ...............................................................",
-        "e necesaria. En nuestro gobierno impulsaremos una reforma tributaria selectiva y progresiva para aliviar el costo de vida mediante la reducción del impuesto sobre los alquileres de vivienda. En primer"
+        "...............................................49 Eliminaremos los impuestos que pesan sobre el trabajo e incentivaremos la contratación ..............................................................."
       ]
     },
+    "omission_analysis": {
+      "urgency_coverage": {
+        "security_operations": {
+          "covered": true,
+          "terms_found": [
+            "policía",
+            "fuerza pública",
+            "OIJ",
+            "inteligencia",
+            "patrullaje",
+            "operativo",
+            "vigilancia",
+            "control territorial"
+          ],
+          "description": "Seguridad operativa"
+        },
+        "ccss_crisis": {
+          "covered": true,
+          "terms_found": [
+            "CCSS",
+            "Caja Costarricense",
+            "listas de espera",
+            "IVM",
+            "régimen de pensiones"
+          ],
+          "description": "Crisis de la CCSS"
+        },
+        "formal_employment": {
+          "covered": true,
+          "terms_found": [
+            "empleo formal",
+            "formalización",
+            "informalidad laboral",
+            "cotizante"
+          ],
+          "description": "Empleo formal"
+        },
+        "organized_crime": {
+          "covered": true,
+          "terms_found": [
+            "crimen organizado",
+            "narcotráfico",
+            "sicariato",
+            "lavado de dinero"
+          ],
+          "description": "Crimen organizado"
+        }
+      },
+      "urgency_penalty": 0,
+      "missing_pillars": [],
+      "pillar_penalty": 0
+    },
     "overall": {
-      "raw_sum": 29,
+      "raw_sum": 28,
       "effective_sum": 26,
-      "weighted_sum": 0.6675,
-      "priority_weighted_sum": 0.385,
-      "critical_weighted_sum": 0.5425,
-      "fiscal_penalty_applied": -3,
-      "notes": "⚠️ ATACA REGLA FISCAL (-2) | ⚠️ PROPONE MÁS IMPUESTOS (-1) | ✅ Muestra responsabilidad fiscal"
+      "weighted_sum": 0.675,
+      "priority_weighted_sum": 0.42,
+      "critical_weighted_sum": 0.55,
+      "total_penalties_applied": -2,
+      "notes": "🔴 ATACA REGLA FISCAL (-2) | ✅ Responsabilidad fiscal"
     }
   },
   {
@@ -1533,7 +2142,7 @@
           {
             "type": "proposes_debt_increase",
             "value": -1,
-            "reason": "Propone aumentar deuda pública",
+            "reason": "Propone aumentar deuda pública sin plan de sostenibilidad",
             "evidence": "s público- privadas, concesiones internacionales, emisión de bonos para infraestructura, y cooperación con organismos multilaterales. Existen antecedentes exitosos de"
           }
         ]
@@ -1615,7 +2224,6 @@
       "flags": {
         "attacks_fiscal_rule": false,
         "proposes_debt_increase": true,
-        "proposes_tax_increase": false,
         "shows_fiscal_responsibility": true
       },
       "total_penalty": -1,
@@ -1623,14 +2231,63 @@
         "s público- privadas, concesiones internacionales, emisión de bonos para infraestructura, y cooperación con organismos multilaterales. Existen antecedentes exitosos de"
       ]
     },
+    "omission_analysis": {
+      "urgency_coverage": {
+        "security_operations": {
+          "covered": true,
+          "terms_found": [
+            "policía",
+            "fuerza pública",
+            "OIJ",
+            "inteligencia",
+            "patrullaje",
+            "operativo",
+            "vigilancia"
+          ],
+          "description": "Seguridad operativa"
+        },
+        "ccss_crisis": {
+          "covered": true,
+          "terms_found": [
+            "CCSS",
+            "Caja Costarricense",
+            "listas de espera",
+            "régimen de pensiones"
+          ],
+          "description": "Crisis de la CCSS"
+        },
+        "formal_employment": {
+          "covered": true,
+          "terms_found": [
+            "empleo formal",
+            "formalización"
+          ],
+          "description": "Empleo formal"
+        },
+        "organized_crime": {
+          "covered": true,
+          "terms_found": [
+            "crimen organizado",
+            "narcotráfico",
+            "sicariato",
+            "extorsión",
+            "cartel"
+          ],
+          "description": "Crimen organizado"
+        }
+      },
+      "urgency_penalty": 0,
+      "missing_pillars": [],
+      "pillar_penalty": 0
+    },
     "overall": {
       "raw_sum": 26,
       "effective_sum": 25,
       "weighted_sum": 0.66,
       "priority_weighted_sum": 0.385,
       "critical_weighted_sum": 0.5425,
-      "fiscal_penalty_applied": -1,
-      "notes": "⚠️ PROPONE MÁS DEUDA (-1) | ✅ Muestra responsabilidad fiscal"
+      "total_penalties_applied": -1,
+      "notes": "🟠 PROPONE MÁS DEUDA (-1) | ✅ Responsabilidad fiscal"
     }
   },
   {
@@ -1646,20 +2303,14 @@
           {
             "type": "attacks_fiscal_rule",
             "value": -2,
-            "reason": "Propone flexibilizar/reformar la regla fiscal",
+            "reason": "Propone flexibilizar/reformar la regla fiscal (Ley 9635)",
             "evidence": "er las demandas ciudadanas, y con la finalidad de flexibilizar la gestión pública, se crearon instituciones desconcentradas y descentralizadas que, al ser vitales para el país, con el paso de los años"
           },
           {
             "type": "proposes_debt_increase",
             "value": -1,
-            "reason": "Propone aumentar deuda pública",
+            "reason": "Propone aumentar deuda pública sin plan de sostenibilidad",
             "evidence": "estó para el año 2024, alrededor de 39 colones se financiaron con deuda, lo cual implica que, con ingresos corrientes, principalmente impuestos, se recolectaron alrededor de 61 colones. Pero el asunto"
-          },
-          {
-            "type": "proposes_tax_increase",
-            "value": -1,
-            "reason": "Propone aumentar impuestos al pueblo",
-            "evidence": "aestructura social y programas de capacitación. • Reforma tributaria estructural y lucha contra la evasión: Modernizar el sistema tributario cerrando vacíos legales y revisando exoneraciones para recu"
           }
         ]
       },
@@ -1740,14 +2391,62 @@
       "flags": {
         "attacks_fiscal_rule": true,
         "proposes_debt_increase": true,
-        "proposes_tax_increase": true,
         "shows_fiscal_responsibility": true
       },
-      "total_penalty": -4,
+      "total_penalty": -3,
       "evidence": [
         "er las demandas ciudadanas, y con la finalidad de flexibilizar la gestión pública, se crearon instituciones desconcentradas y descentralizadas que, al ser vitales para el país, con el paso de los años",
         "estó para el año 2024, alrededor de 39 colones se financiaron con deuda, lo cual implica que, con ingresos corrientes, principalmente impuestos, se recolectaron alrededor de 61 colones. Pero el asunto"
       ]
+    },
+    "omission_analysis": {
+      "urgency_coverage": {
+        "security_operations": {
+          "covered": true,
+          "terms_found": [
+            "policía",
+            "fuerza pública",
+            "OIJ",
+            "inteligencia",
+            "patrullaje",
+            "operativo",
+            "vigilancia"
+          ],
+          "description": "Seguridad operativa"
+        },
+        "ccss_crisis": {
+          "covered": true,
+          "terms_found": [
+            "CCSS",
+            "Caja Costarricense",
+            "listas de espera",
+            "IVM",
+            "régimen de pensiones"
+          ],
+          "description": "Crisis de la CCSS"
+        },
+        "formal_employment": {
+          "covered": true,
+          "terms_found": [
+            "empleo formal",
+            "formalización",
+            "informalidad laboral"
+          ],
+          "description": "Empleo formal"
+        },
+        "organized_crime": {
+          "covered": true,
+          "terms_found": [
+            "crimen organizado",
+            "narcotráfico",
+            "cartel"
+          ],
+          "description": "Crimen organizado"
+        }
+      },
+      "urgency_penalty": 0,
+      "missing_pillars": [],
+      "pillar_penalty": 0
     },
     "overall": {
       "raw_sum": 27,
@@ -1755,8 +2454,8 @@
       "weighted_sum": 0.6225,
       "priority_weighted_sum": 0.345,
       "critical_weighted_sum": 0.5025,
-      "fiscal_penalty_applied": -4,
-      "notes": "⚠️ ATACA REGLA FISCAL (-2) | ⚠️ PROPONE MÁS DEUDA (-1) | ⚠️ PROPONE MÁS IMPUESTOS (-1) | ✅ Muestra responsabilidad fiscal"
+      "total_penalties_applied": -3,
+      "notes": "🔴 ATACA REGLA FISCAL (-2) | 🟠 PROPONE MÁS DEUDA (-1) | ✅ Responsabilidad fiscal"
     }
   },
   {
@@ -1772,10 +2471,10 @@
       },
       {
         "pillar_id": "P2",
-        "raw_score": 4,
-        "effective_score": 4,
-        "normalized": 1.0,
-        "weighted": 0.11,
+        "raw_score": 3,
+        "effective_score": 3,
+        "normalized": 0.75,
+        "weighted": 0.0825,
         "penalties": []
       },
       {
@@ -1804,34 +2503,34 @@
       },
       {
         "pillar_id": "P6",
-        "raw_score": 3,
-        "effective_score": 3,
-        "normalized": 0.75,
-        "weighted": 0.0225,
+        "raw_score": 2,
+        "effective_score": 2,
+        "normalized": 0.5,
+        "weighted": 0.015,
         "penalties": []
       },
       {
         "pillar_id": "P7",
-        "raw_score": 3,
-        "effective_score": 3,
-        "normalized": 0.75,
-        "weighted": 0.09,
+        "raw_score": 2,
+        "effective_score": 2,
+        "normalized": 0.5,
+        "weighted": 0.06,
         "penalties": []
       },
       {
         "pillar_id": "P8",
-        "raw_score": 0,
-        "effective_score": 0,
-        "normalized": 0.0,
-        "weighted": 0.0,
+        "raw_score": 3,
+        "effective_score": 3,
+        "normalized": 0.75,
+        "weighted": 0.0375,
         "penalties": []
       },
       {
         "pillar_id": "P9",
-        "raw_score": 0,
-        "effective_score": 0,
-        "normalized": 0.0,
-        "weighted": 0.0,
+        "raw_score": 3,
+        "effective_score": 3,
+        "normalized": 0.75,
+        "weighted": 0.015,
         "penalties": []
       },
       {
@@ -1847,20 +2546,63 @@
       "flags": {
         "attacks_fiscal_rule": false,
         "proposes_debt_increase": false,
-        "proposes_tax_increase": false,
-        "shows_fiscal_responsibility": true
+        "shows_fiscal_responsibility": false
       },
       "total_penalty": 0,
       "evidence": []
     },
+    "omission_analysis": {
+      "urgency_coverage": {
+        "security_operations": {
+          "covered": true,
+          "terms_found": [
+            "policía",
+            "inteligencia",
+            "patrullaje",
+            "operativo",
+            "vigilancia",
+            "control territorial"
+          ],
+          "description": "Seguridad operativa"
+        },
+        "ccss_crisis": {
+          "covered": true,
+          "terms_found": [
+            "CCSS",
+            "Caja Costarricense",
+            "listas de espera",
+            "IVM"
+          ],
+          "description": "Crisis de la CCSS"
+        },
+        "formal_employment": {
+          "covered": true,
+          "terms_found": [
+            "formalización"
+          ],
+          "description": "Empleo formal"
+        },
+        "organized_crime": {
+          "covered": true,
+          "terms_found": [
+            "crimen organizado",
+            "sicariato"
+          ],
+          "description": "Crimen organizado"
+        }
+      },
+      "urgency_penalty": 0,
+      "missing_pillars": [],
+      "pillar_penalty": 0
+    },
     "overall": {
-      "raw_sum": 25,
-      "effective_sum": 25,
-      "weighted_sum": 0.725,
-      "priority_weighted_sum": 0.45,
-      "critical_weighted_sum": 0.635,
-      "fiscal_penalty_applied": 0,
-      "notes": "✅ Muestra responsabilidad fiscal | Sin propuestas: P8, P9"
+      "raw_sum": 28,
+      "effective_sum": 28,
+      "weighted_sum": 0.7125,
+      "priority_weighted_sum": 0.42,
+      "critical_weighted_sum": 0.5775,
+      "total_penalties_applied": 0,
+      "notes": ""
     }
   },
   {
@@ -1876,7 +2618,7 @@
           {
             "type": "attacks_fiscal_rule",
             "value": -2,
-            "reason": "Propone flexibilizar/reformar la regla fiscal",
+            "reason": "Propone flexibilizar/reformar la regla fiscal (Ley 9635)",
             "evidence": "as demandas del siglo XXI, para esto modernizar y flexibilizar el currículo educativo favorece una formación integral y acorde a cada estudiante, fomentando el desarrollo de habilidades esenciales com"
           }
         ]
@@ -1891,10 +2633,10 @@
       },
       {
         "pillar_id": "P3",
-        "raw_score": 3,
-        "effective_score": 3,
-        "normalized": 0.75,
-        "weighted": 0.135,
+        "raw_score": 2,
+        "effective_score": 2,
+        "normalized": 0.5,
+        "weighted": 0.09,
         "penalties": []
       },
       {
@@ -1958,7 +2700,6 @@
       "flags": {
         "attacks_fiscal_rule": true,
         "proposes_debt_increase": false,
-        "proposes_tax_increase": false,
         "shows_fiscal_responsibility": true
       },
       "total_penalty": -2,
@@ -1966,14 +2707,58 @@
         "as demandas del siglo XXI, para esto modernizar y flexibilizar el currículo educativo favorece una formación integral y acorde a cada estudiante, fomentando el desarrollo de habilidades esenciales com"
       ]
     },
+    "omission_analysis": {
+      "urgency_coverage": {
+        "security_operations": {
+          "covered": true,
+          "terms_found": [
+            "policía",
+            "fuerza pública",
+            "OIJ",
+            "inteligencia",
+            "operativo",
+            "vigilancia"
+          ],
+          "description": "Seguridad operativa"
+        },
+        "ccss_crisis": {
+          "covered": true,
+          "terms_found": [
+            "CCSS",
+            "Caja Costarricense",
+            "listas de espera"
+          ],
+          "description": "Crisis de la CCSS"
+        },
+        "formal_employment": {
+          "covered": true,
+          "terms_found": [
+            "empleo formal",
+            "informalidad laboral"
+          ],
+          "description": "Empleo formal"
+        },
+        "organized_crime": {
+          "covered": true,
+          "terms_found": [
+            "crimen organizado",
+            "narcotráfico"
+          ],
+          "description": "Crimen organizado"
+        }
+      },
+      "urgency_penalty": 0,
+      "missing_pillars": [],
+      "pillar_penalty": 0
+    },
     "overall": {
-      "raw_sum": 26,
-      "effective_sum": 24,
-      "weighted_sum": 0.6125,
-      "priority_weighted_sum": 0.34,
-      "critical_weighted_sum": 0.4725,
-      "fiscal_penalty_applied": -2,
-      "notes": "⚠️ ATACA REGLA FISCAL (-2) | ✅ Muestra responsabilidad fiscal | Sin propuestas: P9"
+      "raw_sum": 25,
+      "effective_sum": 23,
+      "weighted_sum": 0.5675,
+      "priority_weighted_sum": 0.295,
+      "critical_weighted_sum": 0.4275,
+      "total_penalties_applied": -2,
+      "notes": "🔴 ATACA REGLA FISCAL (-2) | ✅ Responsabilidad fiscal"
     }
   },
   {
@@ -1985,14 +2770,21 @@
         "effective_score": 0,
         "normalized": 0.0,
         "weighted": 0.0,
-        "penalties": []
+        "penalties": [
+          {
+            "type": "missing_priority_pillar",
+            "value": -0.5,
+            "reason": "Sin propuesta concreta en pilar prioritario P1",
+            "pillar_id": "P1"
+          }
+        ]
       },
       {
         "pillar_id": "P2",
-        "raw_score": 2,
-        "effective_score": 2,
-        "normalized": 0.5,
-        "weighted": 0.055,
+        "raw_score": 0,
+        "effective_score": 0,
+        "normalized": 0.0,
+        "weighted": 0.0,
         "penalties": []
       },
       {
@@ -2013,10 +2805,10 @@
       },
       {
         "pillar_id": "P5",
-        "raw_score": 1,
-        "effective_score": 1,
-        "normalized": 0.25,
-        "weighted": 0.025,
+        "raw_score": 2,
+        "effective_score": 2,
+        "normalized": 0.5,
+        "weighted": 0.05,
         "penalties": []
       },
       {
@@ -2033,7 +2825,14 @@
         "effective_score": 0,
         "normalized": 0.0,
         "weighted": 0.0,
-        "penalties": []
+        "penalties": [
+          {
+            "type": "missing_priority_pillar",
+            "value": -0.5,
+            "reason": "Sin propuesta concreta en pilar prioritario P7",
+            "pillar_id": "P7"
+          }
+        ]
       },
       {
         "pillar_id": "P8",
@@ -2057,33 +2856,72 @@
         "effective_score": 0,
         "normalized": 0.0,
         "weighted": 0.0,
-        "penalties": [
-          {
-            "type": "urgency_omission",
-            "value": -1,
-            "reason": "No propone mecanismos privados de financiamiento para infraestructura"
-          }
-        ]
+        "penalties": []
       }
     ],
     "fiscal_analysis": {
       "flags": {
         "attacks_fiscal_rule": false,
         "proposes_debt_increase": false,
-        "proposes_tax_increase": false,
         "shows_fiscal_responsibility": false
       },
       "total_penalty": 0,
       "evidence": []
     },
+    "omission_analysis": {
+      "urgency_coverage": {
+        "security_operations": {
+          "covered": true,
+          "terms_found": [
+            "policía",
+            "fuerza pública",
+            "inteligencia",
+            "operativo",
+            "vigilancia"
+          ],
+          "description": "Seguridad operativa"
+        },
+        "ccss_crisis": {
+          "covered": true,
+          "terms_found": [
+            "CCSS",
+            "Caja Costarricense",
+            "listas de espera",
+            "régimen de pensiones"
+          ],
+          "description": "Crisis de la CCSS"
+        },
+        "formal_employment": {
+          "covered": true,
+          "terms_found": [
+            "formalización"
+          ],
+          "description": "Empleo formal"
+        },
+        "organized_crime": {
+          "covered": true,
+          "terms_found": [
+            "crimen organizado",
+            "sicariato"
+          ],
+          "description": "Crimen organizado"
+        }
+      },
+      "urgency_penalty": 0,
+      "missing_pillars": [
+        "P1",
+        "P7"
+      ],
+      "pillar_penalty": -1.0
+    },
     "overall": {
-      "raw_sum": 8,
-      "effective_sum": 8,
-      "weighted_sum": 0.2575,
+      "raw_sum": 7,
+      "effective_sum": 7,
+      "weighted_sum": 0.2275,
       "priority_weighted_sum": 0.17,
-      "critical_weighted_sum": 0.25,
-      "fiscal_penalty_applied": 0,
-      "notes": "Penalizados: P10 | Sin propuestas: P1, P7, P8, P9, P10"
+      "critical_weighted_sum": 0.22,
+      "total_penalties_applied": -1.0,
+      "notes": "❌ Sin propuesta: P1, P7"
     }
   },
   {
@@ -2092,30 +2930,24 @@
       {
         "pillar_id": "P1",
         "raw_score": 3,
-        "effective_score": 0,
-        "normalized": 0.0,
-        "weighted": 0.0,
+        "effective_score": 1,
+        "normalized": 0.25,
+        "weighted": 0.035,
         "penalties": [
           {
             "type": "attacks_fiscal_rule",
             "value": -2,
-            "reason": "Propone flexibilizar/reformar la regla fiscal",
+            "reason": "Propone flexibilizar/reformar la regla fiscal (Ley 9635)",
             "evidence": "n ser un fin en sí mismo. Se propone modernizar y reformar el Estado para dotarlo de mayor agilidad, transparencia y capacidad de respuesta, al tiempo que se renuevan y amplían los mecanismos de parti"
-          },
-          {
-            "type": "proposes_tax_increase",
-            "value": -1,
-            "reason": "Propone aumentar impuestos al pueblo",
-            "evidence": "s dentro del mismo marco fiscal, sin necesidad de aumentar impuestos, pero elevando significativamente el retorno social y económico del gasto público. Se trata de real"
           }
         ]
       },
       {
         "pillar_id": "P2",
-        "raw_score": 3,
-        "effective_score": 3,
-        "normalized": 0.75,
-        "weighted": 0.0825,
+        "raw_score": 2,
+        "effective_score": 2,
+        "normalized": 0.5,
+        "weighted": 0.055,
         "penalties": []
       },
       {
@@ -2128,10 +2960,10 @@
       },
       {
         "pillar_id": "P4",
-        "raw_score": 2,
-        "effective_score": 2,
-        "normalized": 0.5,
-        "weighted": 0.08,
+        "raw_score": 3,
+        "effective_score": 3,
+        "normalized": 0.75,
+        "weighted": 0.12,
         "penalties": []
       },
       {
@@ -2187,23 +3019,71 @@
       "flags": {
         "attacks_fiscal_rule": true,
         "proposes_debt_increase": false,
-        "proposes_tax_increase": true,
         "shows_fiscal_responsibility": true
       },
-      "total_penalty": -3,
+      "total_penalty": -2,
       "evidence": [
-        "n ser un fin en sí mismo. Se propone modernizar y reformar el Estado para dotarlo de mayor agilidad, transparencia y capacidad de respuesta, al tiempo que se renuevan y amplían los mecanismos de parti",
-        "s dentro del mismo marco fiscal, sin necesidad de aumentar impuestos, pero elevando significativamente el retorno social y económico del gasto público. Se trata de real"
+        "n ser un fin en sí mismo. Se propone modernizar y reformar el Estado para dotarlo de mayor agilidad, transparencia y capacidad de respuesta, al tiempo que se renuevan y amplían los mecanismos de parti"
       ]
+    },
+    "omission_analysis": {
+      "urgency_coverage": {
+        "security_operations": {
+          "covered": true,
+          "terms_found": [
+            "policía",
+            "fuerza pública",
+            "OIJ",
+            "inteligencia",
+            "patrullaje",
+            "operativo",
+            "vigilancia",
+            "control territorial"
+          ],
+          "description": "Seguridad operativa"
+        },
+        "ccss_crisis": {
+          "covered": true,
+          "terms_found": [
+            "CCSS",
+            "Caja Costarricense",
+            "listas de espera",
+            "IVM"
+          ],
+          "description": "Crisis de la CCSS"
+        },
+        "formal_employment": {
+          "covered": true,
+          "terms_found": [
+            "empleo formal",
+            "formalización"
+          ],
+          "description": "Empleo formal"
+        },
+        "organized_crime": {
+          "covered": true,
+          "terms_found": [
+            "crimen organizado",
+            "narcotráfico",
+            "sicariato",
+            "extorsión",
+            "lavado de dinero"
+          ],
+          "description": "Crimen organizado"
+        }
+      },
+      "urgency_penalty": 0,
+      "missing_pillars": [],
+      "pillar_penalty": 0
     },
     "overall": {
       "raw_sum": 23,
-      "effective_sum": 20,
-      "weighted_sum": 0.4975,
-      "priority_weighted_sum": 0.23,
-      "critical_weighted_sum": 0.3625,
-      "fiscal_penalty_applied": -3,
-      "notes": "⚠️ ATACA REGLA FISCAL (-2) | ⚠️ PROPONE MÁS IMPUESTOS (-1) | ✅ Muestra responsabilidad fiscal"
+      "effective_sum": 21,
+      "weighted_sum": 0.545,
+      "priority_weighted_sum": 0.305,
+      "critical_weighted_sum": 0.41,
+      "total_penalties_applied": -2,
+      "notes": "🔴 ATACA REGLA FISCAL (-2) | ✅ Responsabilidad fiscal"
     }
   },
   {
@@ -2212,21 +3092,15 @@
       {
         "pillar_id": "P1",
         "raw_score": 3,
-        "effective_score": 1,
-        "normalized": 0.25,
-        "weighted": 0.035,
+        "effective_score": 2,
+        "normalized": 0.5,
+        "weighted": 0.07,
         "penalties": [
           {
             "type": "proposes_debt_increase",
             "value": -1,
-            "reason": "Propone aumentar deuda pública",
+            "reason": "Propone aumentar deuda pública sin plan de sostenibilidad",
             "evidence": "de los espacios. • Alianzas público-privadas para financiar y mantener proyectos de recuperación urbana y comunitaria. Operatividad desde la Presidencia La seguridad del territorio no se legisla, se e"
-          },
-          {
-            "type": "proposes_tax_increase",
-            "value": -1,
-            "reason": "Propone aumentar impuestos al pueblo",
-            "evidence": "n del sistema de gestión de residuos no requerirá nuevos impuestos ni leyes, sino liderazgo, coordinación y un uso más inteligente de los recursos ya disponibles. Cos"
           }
         ]
       },
@@ -2307,23 +3181,69 @@
       "flags": {
         "attacks_fiscal_rule": false,
         "proposes_debt_increase": true,
-        "proposes_tax_increase": true,
         "shows_fiscal_responsibility": true
       },
-      "total_penalty": -2,
+      "total_penalty": -1,
       "evidence": [
-        "de los espacios. • Alianzas público-privadas para financiar y mantener proyectos de recuperación urbana y comunitaria. Operatividad desde la Presidencia La seguridad del territorio no se legisla, se e",
-        "n del sistema de gestión de residuos no requerirá nuevos impuestos ni leyes, sino liderazgo, coordinación y un uso más inteligente de los recursos ya disponibles. Cos"
+        "de los espacios. • Alianzas público-privadas para financiar y mantener proyectos de recuperación urbana y comunitaria. Operatividad desde la Presidencia La seguridad del territorio no se legisla, se e"
       ]
+    },
+    "omission_analysis": {
+      "urgency_coverage": {
+        "security_operations": {
+          "covered": true,
+          "terms_found": [
+            "policía",
+            "fuerza pública",
+            "OIJ",
+            "inteligencia",
+            "patrullaje",
+            "operativo",
+            "vigilancia",
+            "control territorial"
+          ],
+          "description": "Seguridad operativa"
+        },
+        "ccss_crisis": {
+          "covered": true,
+          "terms_found": [
+            "CCSS",
+            "Caja Costarricense",
+            "listas de espera",
+            "IVM",
+            "régimen de pensiones"
+          ],
+          "description": "Crisis de la CCSS"
+        },
+        "formal_employment": {
+          "covered": true,
+          "terms_found": [
+            "empleo formal",
+            "formalización"
+          ],
+          "description": "Empleo formal"
+        },
+        "organized_crime": {
+          "covered": true,
+          "terms_found": [
+            "crimen organizado",
+            "narcotráfico"
+          ],
+          "description": "Crimen organizado"
+        }
+      },
+      "urgency_penalty": 0,
+      "missing_pillars": [],
+      "pillar_penalty": 0
     },
     "overall": {
       "raw_sum": 22,
-      "effective_sum": 20,
-      "weighted_sum": 0.5375,
-      "priority_weighted_sum": 0.295,
-      "critical_weighted_sum": 0.4525,
-      "fiscal_penalty_applied": -2,
-      "notes": "⚠️ PROPONE MÁS DEUDA (-1) | ⚠️ PROPONE MÁS IMPUESTOS (-1) | ✅ Muestra responsabilidad fiscal | Sin propuestas: P9"
+      "effective_sum": 21,
+      "weighted_sum": 0.5725,
+      "priority_weighted_sum": 0.33,
+      "critical_weighted_sum": 0.4875,
+      "total_penalties_applied": -1,
+      "notes": "🟠 PROPONE MÁS DEUDA (-1) | ✅ Responsabilidad fiscal"
     }
   }
 ]

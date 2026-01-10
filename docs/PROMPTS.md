@@ -4,7 +4,7 @@ Este documento contiene los prompts utilizados para generar las dos partes princ
 
 ---
 
-## Prompt 1: Análisis de Planes de Gobierno (v4)
+## Prompt 1: Análisis de Planes de Gobierno (v6)
 
 > **Objetivo**: Procesar PDFs de planes de gobierno y generar datos estructurados en JSON con análisis fiscal
 
@@ -73,31 +73,59 @@ Si falta información en cualquier dimensión, usar exactamente:
 "no_especificado"
 
 ====================================================================
-ANÁLISIS FISCAL
+SISTEMA DE PENALIZACIONES v6 (NEUTRAL + ESTRICTO)
 ====================================================================
 
-Para cada candidato, evaluar:
+NOTA IMPORTANTE: El sistema v6 ELIMINA la penalización por "proponer
+más impuestos" porque representaba un sesgo ideológico. Solo se
+mantienen penalizaciones OBJETIVAS basadas en ley vigente.
+
+PENALIZACIONES FISCALES (Objetivas - Basadas en Ley)
+-----------------------------------------------------
 
 1. attacks_fiscal_rule (boolean)
    ¿Propone eliminar, flexibilizar o atacar la regla fiscal vigente?
-   Penalización: -0.10
+   Penalización: -2
 
 2. proposes_debt_increase (boolean)
    ¿Propone aumentar la deuda pública sin plan de sostenibilidad?
-   Penalización: -0.05
+   Penalización: -1
 
-3. proposes_tax_increase (boolean)
-   ¿Propone crear nuevos impuestos o aumentar los existentes?
-   Penalización: -0.03
-
-4. shows_fiscal_responsibility (boolean)
+3. shows_fiscal_responsibility (boolean)
    ¿Demuestra compromiso explícito con la sostenibilidad fiscal?
    (No genera penalización, es indicador positivo)
 
+PENALIZACIONES POR OMISIÓN (Basadas en Urgencias Nacionales)
+-------------------------------------------------------------
+
+Estas penalizaciones se aplican cuando un candidato IGNORA temas
+urgentes para Costa Rica en su plan de gobierno:
+
+4. ignores_security (boolean)
+   ¿NO menciona seguridad operativa en medio de crisis de violencia?
+   Penalización: -1
+
+5. ignores_ccss (boolean)
+   ¿NO menciona la crisis de la CCSS (listas de espera, sostenibilidad)?
+   Penalización: -1
+
+6. ignores_employment (boolean)
+   ¿NO menciona empleo/desempleo con tasa superior al 10%?
+   Penalización: -0.5
+
+7. ignores_organized_crime (boolean)
+   ¿NO menciona crimen organizado, narcotráfico o sicariato?
+   Penalización: -0.5
+
+8. missing_priority_pillar (por cada pilar)
+   ¿NO tiene propuesta concreta (score > 1) en pilar prioritario?
+   Pilares prioritarios: P1, P3, P4, P7
+   Penalización: -0.5 por cada pilar faltante
+
 NIVEL DE RIESGO FISCAL:
-- ALTO: attacks_fiscal_rule = true O total_penalty >= 0.10
-- MEDIO: total_penalty > 0 AND < 0.10
-- BAJO: total_penalty = 0
+- ALTO: attacks_fiscal_rule = true O total_penalty >= 3
+- MEDIO: total_penalty >= 1.5 AND < 3
+- BAJO: total_penalty < 1.5
 
 ====================================================================
 COBERTURA DE URGENCIAS NACIONALES
@@ -523,27 +551,39 @@ FORMATO DE RESPUESTA
 
 1. **10 pilares**: La implementación actual usa 10 pilares (se agregó P10: Infraestructura).
 
-2. **Análisis fiscal**: Se agregó un sistema completo de análisis fiscal con:
-   - FiscalFlags (attacks_fiscal_rule, proposes_debt_increase, etc.)
-   - FiscalPenalty aplicada al weighted_sum
-   - FiscalRiskLevel (ALTO, MEDIO, BAJO)
-   - detailed_analysis.json con fortalezas, debilidades y riesgo
+2. **Sistema de penalizaciones v6**:
+   - **Eliminado**: `proposes_tax_increase` (era sesgo ideológico)
+   - **Mantenido**: `attacks_fiscal_rule` (-2), `proposes_debt_increase` (-1)
+   - **Agregado**: Penalizaciones por omisión de urgencias nacionales
+   - **Agregado**: `OmissionAnalysis` en candidate_scores.json
+   - Script de recálculo: `analysis/recalculate_scores_v6.py`
 
 3. **3 tipos de ranking**: 
    - ranking_overall_weighted (general)
-   - ranking_priority_weighted (pilares prioritarios)
-   - ranking_critical_weighted (pilares críticos)
+   - ranking_priority_weighted (pilares prioritarios: P3, P4, P1, P7)
+   - ranking_critical_weighted (pilares críticos: P3, P4, P1, P7, P2, P5)
 
 4. **3 Modos visuales**: Reemplazan el antiguo selector de edad:
    - Express 🚀 (antes 18-35)
    - Dashboard 📊 (antes 36-49)
    - Lectura 📖 (antes 50+)
 
-5. **FiscalRiskBadge.astro**: Nuevo componente para mostrar riesgo fiscal.
+5. **Componentes para penalizaciones**:
+   - `FiscalRiskBadge.astro`: Muestra nivel de riesgo
+   - Funciones en `data.ts`: `getAllPenalties()`, `getOmissionAnalysis()`
+
+### Historial de Versiones del Sistema
+
+| Versión | Cambios |
+|---------|---------|
+| v1-v3 | Versiones iniciales |
+| v4 | Análisis fiscal con 3 penalizaciones |
+| v5 | Penalizaciones fiscales más estrictas |
+| v6 | Sistema neutral (sin sesgo) + penalizaciones por omisión |
 
 ### Extensiones Futuras
 
 - Agregar búsqueda de propuestas
-- Implementar filtros por nivel de riesgo fiscal
+- Implementar filtros por tipo de penalización
 - Agregar gráficos de comparación temporal (si hay actualizaciones)
 - Implementar dark mode para modo Lectura

@@ -46,10 +46,10 @@ const sizeClasses = {
   lg: 'text-base px-4 py-2',
 };
 
+// v6: Removed proposes_tax_increase (was ideological bias)
 const activeFlags = fiscalFlags ? [
   fiscalFlags.attacks_fiscal_rule && 'attacks_fiscal_rule',
   fiscalFlags.proposes_debt_increase && 'proposes_debt_increase',
-  fiscalFlags.proposes_tax_increase && 'proposes_tax_increase',
 ].filter(Boolean) as string[] : [];
 ---
 

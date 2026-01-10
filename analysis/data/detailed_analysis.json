@@ -2,86 +2,62 @@
   {
     "pdf_id": "ACRM",
     "total_pages": 66,
-    "fiscal_responsibility": {
+    "version": "v6_neutral_strict",
+    "fiscal_flags": {
       "attacks_fiscal_rule": false,
       "proposes_debt_increase": true,
-      "proposes_tax_increase": false,
       "shows_fiscal_responsibility": true
     },
     "fiscal_evidence": [
       "permitan desarrollar infraestructura pública sin incrementar la deuda directa del gobierno central. -​ Mantener la Estabilidad Monetaria: Coordinar políticas que favorez"
     ],
     "urgency_coverage": {
-      "seguridad_operativa": {
+      "security_operations": {
         "covered": true,
-        "mentions": [
-          "policía (3)",
-          "OIJ (1)",
-          "inteligencia (22)",
-          "patrullaje (8)",
-          "operativo (1)"
-        ]
+        "terms_found": [
+          "policía",
+          "OIJ",
+          "inteligencia",
+          "patrullaje",
+          "operativo",
+          "vigilancia"
+        ],
+        "description": "Seguridad operativa"
       },
-      "salud_ccss": {
+      "ccss_crisis": {
         "covered": true,
-        "mentions": [
-          "CCSS (18)",
-          "hospital (8)",
-          "lista de espera (1)",
-          "EBAIS (4)"
-        ]
+        "terms_found": [
+          "CCSS",
+          "listas de espera"
+        ],
+        "description": "Crisis de la CCSS"
       },
-      "inversion_extranjera": {
-        "covered": true,
-        "mentions": [
-          "inversión extranjera (3)",
-          "IED (16)"
-        ]
+      "formal_employment": {
+        "covered": false,
+        "terms_found": [],
+        "description": "Empleo formal"
       },
-      "empleo": {
+      "organized_crime": {
         "covered": true,
-        "mentions": [
-          "empleo (8)",
-          "trabajo (9)",
-          "capacitación (5)"
-        ]
-      },
-      "educacion": {
-        "covered": true,
-        "mentions": [
-          "educación (39)",
-          "MEP (3)",
-          "deserción (4)",
-          "calidad educativa (1)",
-          "docente (9)"
-        ]
-      },
-      "infraestructura_APP": {
-        "covered": true,
-        "mentions": [
-          "APP (2)",
-          "alianza público-privada (2)"
-        ]
-      },
-      "crimen_organizado": {
-        "covered": true,
-        "mentions": [
-          "crimen organizado (9)",
-          "narcotráfico (8)",
-          "sicariato (2)",
-          "extorsión (8)",
-          "lavado (4)"
-        ]
+        "terms_found": [
+          "crimen organizado",
+          "narcotráfico",
+          "sicariato",
+          "extorsión",
+          "lavado de dinero"
+        ],
+        "description": "Crimen organizado"
       }
     },
+    "missing_priority_pillars": [],
     "strengths": [
-      "Aborda seguridad con enfoque operativo",
-      "Aborda salud y CCSS",
-      "Considera inversión extranjera para empleo",
-      "Propone APP para infraestructura",
+      "✅ Aborda: Seguridad operativa",
+      "✅ Aborda: Crisis de la CCSS",
+      "✅ Aborda: Crimen organizado",
       "✅ Demuestra responsabilidad fiscal"
     ],
     "weaknesses": [
+      "⚠️ No aborda: Empleo formal",
       "🟠 Propone aumentar deuda pública"
     ],
     "risk_level": "MEDIO",
@@ -90,10 +66,10 @@
   {
     "pdf_id": "CAC",
     "total_pages": 202,
-    "fiscal_responsibility": {
+    "version": "v6_neutral_strict",
+    "fiscal_flags": {
       "attacks_fiscal_rule": true,
       "proposes_debt_increase": true,
-      "proposes_tax_increase": false,
       "shows_fiscal_responsibility": true
     },
     "fiscal_evidence": [
@@ -101,249 +77,192 @@
       "iliten la movilidad de las personas. Retomar para financiar, negociar e intervenir las rutas nacionales prioritarias: • Ruta 1. En dos tramos: 1) SJ-San Ramón. Ampliación en al menos cuatro carriles p"
     ],
     "urgency_coverage": {
-      "seguridad_operativa": {
+      "security_operations": {
         "covered": true,
-        "mentions": [
-          "policía (17)",
-          "fuerza pública (3)",
-          "OIJ (3)",
-          "inteligencia (29)",
-          "patrullaje (1)",
-          "operativo (8)"
-        ]
+        "terms_found": [
+          "policía",
+          "fuerza pública",
+          "OIJ",
+          "inteligencia",
+          "patrullaje",
+          "operativo",
+          "vigilancia"
+        ],
+        "description": "Seguridad operativa"
       },
-      "salud_ccss": {
+      "ccss_crisis": {
         "covered": true,
-        "mentions": [
-          "CCSS (13)",
-          "hospital (28)",
-          "EBAIS (6)",
-          "seguridad social (3)"
-        ]
+        "terms_found": [
+          "CCSS",
+          "Caja Costarricense",
+          "listas de espera",
+          "IVM",
+          "régimen de pensiones"
+        ],
+        "description": "Crisis de la CCSS"
       },
-      "inversion_extranjera": {
+      "formal_employment": {
         "covered": true,
-        "mentions": [
-          "inversión extranjera (1)",
-          "IED (54)"
-        ]
+        "terms_found": [
+          "empleo formal",
+          "formalización",
+          "trabajo decente"
+        ],
+        "description": "Empleo formal"
       },
-      "empleo": {
+      "organized_crime": {
         "covered": true,
-        "mentions": [
-          "empleo (50)",
-          "trabajo (50)",
-          "informalidad (1)",
-          "capacitación (28)"
-        ]
-      },
-      "educacion": {
-        "covered": true,
-        "mentions": [
-          "educación (98)",
-          "MEP (16)",
-          "calidad educativa (1)",
-          "docente (33)"
-        ]
-      },
-      "infraestructura_APP": {
-        "covered": true,
-        "mentions": [
-          "APP (1)",
-          "concesión (9)",
-          "inversión privada (2)"
-        ]
-      },
-      "crimen_organizado": {
-        "covered": true,
-        "mentions": [
-          "crimen organizado (12)",
-          "narcotráfico (3)",
-          "sicariato (1)",
-          "lavado (3)"
-        ]
+        "terms_found": [
+          "crimen organizado",
+          "narcotráfico",
+          "sicariato",
+          "lavado de dinero",
+          "cartel"
+        ],
+        "description": "Crimen organizado"
       }
     },
+    "missing_priority_pillars": [],
     "strengths": [
-      "Aborda seguridad con enfoque operativo",
-      "Aborda salud y CCSS",
-      "Considera inversión extranjera para empleo",
-      "Propone APP para infraestructura",
+      "✅ Aborda: Seguridad operativa",
+      "✅ Aborda: Crisis de la CCSS",
+      "✅ Aborda: Empleo formal",
+      "✅ Aborda: Crimen organizado",
       "✅ Demuestra responsabilidad fiscal"
     ],
     "weaknesses": [
       "🔴 ATACA REGLA FISCAL - Riesgo alto para finanzas públicas",
       "🟠 Propone aumentar deuda pública"
     ],
-    "risk_level": "ALTO",
+    "risk_level": "MEDIO",
     "candidate_id": "claudia-dobles"
   },
   {
     "pdf_id": "CDS",
     "total_pages": 155,
-    "fiscal_responsibility": {
+    "version": "v6_neutral_strict",
+    "fiscal_flags": {
       "attacks_fiscal_rule": true,
       "proposes_debt_increase": false,
-      "proposes_tax_increase": true,
       "shows_fiscal_responsibility": true
     },
     "fiscal_evidence": [
-      "” / 53 − La Problemática: Un sistema que necesita reformarse, no destruirse / 53 − Un diagnóstico honesto para soluciones reales / 54 − Nuestras Soluciones: Nueve pilares para un sistema de salud mode",
-      "for­ taleciendo la administración tributaria. 2. Reforma tributaria progresiva: Donde quienes más tienen aporten más, sin afectar a la clase media y a las PYMES. 3. Renegociació"
+      "” / 53 − La Problemática: Un sistema que necesita reformarse, no destruirse / 53 − Un diagnóstico honesto para soluciones reales / 54 − Nuestras Soluciones: Nueve pilares para un sistema de salud mode"
     ],
     "urgency_coverage": {
-      "seguridad_operativa": {
+      "security_operations": {
         "covered": true,
-        "mentions": [
-          "policía (12)",
-          "fuerza pública (9)",
-          "OIJ (9)",
-          "inteligencia (35)",
-          "patrullaje (3)",
-          "operativo (9)"
-        ]
+        "terms_found": [
+          "policía",
+          "fuerza pública",
+          "OIJ",
+          "inteligencia",
+          "patrullaje",
+          "operativo",
+          "vigilancia"
+        ],
+        "description": "Seguridad operativa"
       },
-      "salud_ccss": {
+      "ccss_crisis": {
         "covered": true,
-        "mentions": [
-          "CCSS (30)",
-          "hospital (15)",
-          "lista de espera (1)",
-          "EBAIS (6)",
-          "seguridad social (4)"
-        ]
+        "terms_found": [
+          "CCSS",
+          "Caja Costarricense",
+          "listas de espera"
+        ],
+        "description": "Crisis de la CCSS"
       },
-      "inversion_extranjera": {
+      "formal_employment": {
         "covered": true,
-        "mentions": [
-          "inversión extranjera (1)",
-          "IED (58)"
-        ]
+        "terms_found": [
+          "empleo formal",
+          "formalización"
+        ],
+        "description": "Empleo formal"
       },
-      "empleo": {
+      "organized_crime": {
         "covered": true,
-        "mentions": [
-          "empleo (49)",
-          "desempleo (5)",
-          "trabajo (33)",
-          "informalidad (2)",
-          "capacitación (24)"
-        ]
-      },
-      "educacion": {
-        "covered": true,
-        "mentions": [
-          "educación (124)",
-          "MEP (19)",
-          "deserción (6)",
-          "calidad educativa (1)",
-          "docente (38)"
-        ]
-      },
-      "infraestructura_APP": {
-        "covered": true,
-        "mentions": [
-          "APP (10)",
-          "concesión (4)"
-        ]
-      },
-      "crimen_organizado": {
-        "covered": true,
-        "mentions": [
-          "crimen organizado (10)",
-          "narcotráfico (4)",
-          "sicariato (2)",
-          "extorsión (1)"
-        ]
+        "terms_found": [
+          "crimen organizado",
+          "narcotráfico",
+          "sicariato",
+          "extorsión",
+          "cartel"
+        ],
+        "description": "Crimen organizado"
       }
     },
+    "missing_priority_pillars": [],
     "strengths": [
-      "Aborda seguridad con enfoque operativo",
-      "Aborda salud y CCSS",
-      "Considera inversión extranjera para empleo",
-      "Propone APP para infraestructura",
+      "✅ Aborda: Seguridad operativa",
+      "✅ Aborda: Crisis de la CCSS",
+      "✅ Aborda: Empleo formal",
+      "✅ Aborda: Crimen organizado",
       "✅ Demuestra responsabilidad fiscal"
     ],
     "weaknesses": [
-      "🔴 ATACA REGLA FISCAL - Riesgo alto para finanzas públicas",
-      "🟠 Propone aumentar impuestos al pueblo"
+      "🔴 ATACA REGLA FISCAL - Riesgo alto para finanzas públicas"
     ],
-    "risk_level": "ALTO",
+    "risk_level": "MEDIO",
     "candidate_id": "ana-virginia-calzada"
   },
   {
     "pdf_id": "CR1",
     "total_pages": 66,
-    "fiscal_responsibility": {
+    "version": "v6_neutral_strict",
+    "fiscal_flags": {
       "attacks_fiscal_rule": false,
       "proposes_debt_increase": false,
-      "proposes_tax_increase": false,
       "shows_fiscal_responsibility": true
     },
     "fiscal_evidence": [],
     "urgency_coverage": {
-      "seguridad_operativa": {
+      "security_operations": {
         "covered": true,
-        "mentions": [
-          "policía (6)",
-          "fuerza pública (3)",
-          "inteligencia (4)",
-          "patrullaje (2)",
-          "operativo (5)"
-        ]
+        "terms_found": [
+          "policía",
+          "fuerza pública",
+          "inteligencia",
+          "patrullaje",
+          "operativo",
+          "vigilancia",
+          "control territorial"
+        ],
+        "description": "Seguridad operativa"
       },
-      "salud_ccss": {
+      "ccss_crisis": {
         "covered": true,
-        "mentions": [
-          "CCSS (12)",
-          "hospital (4)",
-          "seguridad social (1)"
-        ]
+        "terms_found": [
+          "CCSS",
+          "Caja Costarricense",
+          "listas de espera"
+        ],
+        "description": "Crisis de la CCSS"
       },
-      "inversion_extranjera": {
+      "formal_employment": {
         "covered": true,
-        "mentions": [
-          "IED (13)"
-        ]
+        "terms_found": [
+          "formalización",
+          "informalidad laboral"
+        ],
+        "description": "Empleo formal"
       },
-      "empleo": {
+      "organized_crime": {
         "covered": true,
-        "mentions": [
-          "empleo (33)",
-          "desempleo (2)",
-          "trabajo (32)",
-          "informalidad (3)",
-          "capacitación (9)"
-        ]
-      },
-      "educacion": {
-        "covered": true,
-        "mentions": [
-          "educación (18)",
-          "MEP (3)",
-          "deserción (2)"
-        ]
-      },
-      "infraestructura_APP": {
-        "covered": true,
-        "mentions": [
-          "APP (2)",
-          "concesión (8)"
-        ]
-      },
-      "crimen_organizado": {
-        "covered": true,
-        "mentions": [
-          "crimen organizado (3)",
-          "narcotráfico (3)"
-        ]
+        "terms_found": [
+          "crimen organizado",
+          "narcotráfico",
+          "cartel"
+        ],
+        "description": "Crimen organizado"
       }
     },
+    "missing_priority_pillars": [],
     "strengths": [
-      "Aborda seguridad con enfoque operativo",
-      "Aborda salud y CCSS",
-      "Considera inversión extranjera para empleo",
-      "Propone APP para infraestructura",
+      "✅ Aborda: Seguridad operativa",
+      "✅ Aborda: Crisis de la CCSS",
+      "✅ Aborda: Empleo formal",
+      "✅ Aborda: Crimen organizado",
       "✅ Demuestra responsabilidad fiscal"
     ],
     "weaknesses": [],
@@ -353,267 +272,207 @@
   {
     "pdf_id": "FA",
     "total_pages": 192,
-    "fiscal_responsibility": {
+    "version": "v6_neutral_strict",
+    "fiscal_flags": {
       "attacks_fiscal_rule": true,
       "proposes_debt_increase": true,
-      "proposes_tax_increase": true,
       "shows_fiscal_responsibility": true
     },
     "fiscal_evidence": [
       ". Los métodos tradicionales de medición tienden a excluir a un gran contingente de la población y, a pesar de esta odiosa exclusión, la pobreza medida por la línea de pobreza y categorizada por grupos",
-      "e, flota y bicicletas eléctricas. ●​ Autorizar la emisión de bonos verdes para financiar proyectos de descarbonización y transporte sostenible, incluyendo un marco le",
-      "n lo dispuesto en el artículo 7 de la Ley 5909 de Reforma Tributaria de 1976, por medio de la cual se otorgan fuentes de financiamiento del FEES. ●​ Garantizar el aumento del financiamiento para la un"
+      "e, flota y bicicletas eléctricas. ●​ Autorizar la emisión de bonos verdes para financiar proyectos de descarbonización y transporte sostenible, incluyendo un marco le"
     ],
     "urgency_coverage": {
-      "seguridad_operativa": {
+      "security_operations": {
         "covered": true,
-        "mentions": [
-          "policía (7)",
-          "fuerza pública (6)",
-          "OIJ (3)",
-          "inteligencia (21)",
-          "patrullaje (1)",
-          "operativo (17)"
-        ]
+        "terms_found": [
+          "policía",
+          "fuerza pública",
+          "OIJ",
+          "inteligencia",
+          "patrullaje",
+          "operativo",
+          "vigilancia"
+        ],
+        "description": "Seguridad operativa"
       },
-      "salud_ccss": {
+      "ccss_crisis": {
         "covered": true,
-        "mentions": [
-          "CCSS (33)",
-          "hospital (14)",
-          "EBAIS (1)",
-          "seguridad social (22)"
-        ]
+        "terms_found": [
+          "CCSS",
+          "Caja Costarricense",
+          "listas de espera",
+          "IVM"
+        ],
+        "description": "Crisis de la CCSS"
       },
-      "inversion_extranjera": {
+      "formal_employment": {
         "covered": true,
-        "mentions": [
-          "inversión extranjera (6)",
-          "zona franca (1)",
-          "IED (79)",
-          "nearshoring (1)",
-          "multinacional (2)"
-        ]
+        "terms_found": [
+          "empleo formal",
+          "formalización",
+          "informalidad laboral"
+        ],
+        "description": "Empleo formal"
       },
-      "empleo": {
+      "organized_crime": {
         "covered": true,
-        "mentions": [
-          "empleo (103)",
-          "desempleo (14)",
-          "trabajo (160)",
-          "informalidad (4)",
-          "capacitación (36)"
-        ]
-      },
-      "educacion": {
-        "covered": true,
-        "mentions": [
-          "educación (184)",
-          "MEP (34)",
-          "deserción (4)",
-          "calidad educativa (1)",
-          "docente (49)"
-        ]
-      },
-      "infraestructura_APP": {
-        "covered": true,
-        "mentions": [
-          "concesión (7)"
-        ]
-      },
-      "crimen_organizado": {
-        "covered": true,
-        "mentions": [
-          "crimen organizado (25)",
-          "narcotráfico (5)",
-          "sicariato (4)",
-          "lavado (1)"
-        ]
+        "terms_found": [
+          "crimen organizado",
+          "narcotráfico",
+          "sicariato",
+          "lavado de dinero",
+          "cartel"
+        ],
+        "description": "Crimen organizado"
       }
     },
+    "missing_priority_pillars": [],
     "strengths": [
-      "Aborda seguridad con enfoque operativo",
-      "Aborda salud y CCSS",
-      "Considera inversión extranjera para empleo",
-      "Propone APP para infraestructura",
+      "✅ Aborda: Seguridad operativa",
+      "✅ Aborda: Crisis de la CCSS",
+      "✅ Aborda: Empleo formal",
+      "✅ Aborda: Crimen organizado",
       "✅ Demuestra responsabilidad fiscal"
     ],
     "weaknesses": [
       "🔴 ATACA REGLA FISCAL - Riesgo alto para finanzas públicas",
-      "🟠 Propone aumentar deuda pública",
-      "🟠 Propone aumentar impuestos al pueblo"
+      "🟠 Propone aumentar deuda pública"
     ],
-    "risk_level": "ALTO",
+    "risk_level": "MEDIO",
     "candidate_id": "frente-amplio-ariel-robles-barrantes"
   },
   {
     "pdf_id": "PA",
     "total_pages": 42,
-    "fiscal_responsibility": {
+    "version": "v6_neutral_strict",
+    "fiscal_flags": {
       "attacks_fiscal_rule": true,
       "proposes_debt_increase": false,
-      "proposes_tax_increase": true,
       "shows_fiscal_responsibility": true
     },
     "fiscal_evidence": [
-      "menor inflación y confianza al inversionista. La Regla Fiscal seguirá siendo el marco para contener gasto corriente y alcanzar superávits primarios que reduzcan la deuda/PIB, sin aumentar impuestos ge",
-      "perávits primarios que reduzcan la deuda/PIB, sin aumentar impuestos generales, sino recortando despilfarro. Para ello realizaremos una auditoría del presupuesto que el"
+      "menor inflación y confianza al inversionista. La Regla Fiscal seguirá siendo el marco para contener gasto corriente y alcanzar superávits primarios que reduzcan la deuda/PIB, sin aumentar impuestos ge"
     ],
     "urgency_coverage": {
-      "seguridad_operativa": {
+      "security_operations": {
         "covered": true,
-        "mentions": [
-          "policía (8)",
-          "fuerza pública (3)",
-          "OIJ (6)",
-          "inteligencia (23)",
-          "patrullaje (1)",
-          "operativo (6)"
-        ]
+        "terms_found": [
+          "policía",
+          "fuerza pública",
+          "OIJ",
+          "inteligencia",
+          "patrullaje",
+          "operativo",
+          "vigilancia",
+          "control territorial"
+        ],
+        "description": "Seguridad operativa"
       },
-      "salud_ccss": {
+      "ccss_crisis": {
         "covered": true,
-        "mentions": [
-          "CCSS (11)",
-          "hospital (5)",
-          "EBAIS (6)",
-          "seguridad social (2)"
-        ]
+        "terms_found": [
+          "CCSS",
+          "listas de espera",
+          "IVM"
+        ],
+        "description": "Crisis de la CCSS"
       },
-      "inversion_extranjera": {
+      "formal_employment": {
         "covered": true,
-        "mentions": [
-          "inversión extranjera (2)",
-          "IED (10)",
-          "nearshoring (1)"
-        ]
+        "terms_found": [
+          "formalización",
+          "cotizante"
+        ],
+        "description": "Empleo formal"
       },
-      "empleo": {
+      "organized_crime": {
         "covered": true,
-        "mentions": [
-          "empleo (28)",
-          "desempleo (2)",
-          "trabajo (5)",
-          "informalidad (2)",
-          "capacitación (9)"
-        ]
-      },
-      "educacion": {
-        "covered": true,
-        "mentions": [
-          "educación (52)",
-          "MEP (5)",
-          "calidad educativa (3)",
-          "docente (9)"
-        ]
-      },
-      "infraestructura_APP": {
-        "covered": true,
-        "mentions": [
-          "APP (5)",
-          "alianza público-privada (1)",
-          "concesión (2)"
-        ]
-      },
-      "crimen_organizado": {
-        "covered": true,
-        "mentions": [
-          "crimen organizado (10)",
-          "narcotráfico (7)",
-          "sicariato (1)"
-        ]
+        "terms_found": [
+          "crimen organizado",
+          "narcotráfico",
+          "sicariato"
+        ],
+        "description": "Crimen organizado"
       }
     },
+    "missing_priority_pillars": [],
     "strengths": [
-      "Aborda seguridad con enfoque operativo",
-      "Aborda salud y CCSS",
-      "Considera inversión extranjera para empleo",
-      "Propone APP para infraestructura",
+      "✅ Aborda: Seguridad operativa",
+      "✅ Aborda: Crisis de la CCSS",
+      "✅ Aborda: Empleo formal",
+      "✅ Aborda: Crimen organizado",
       "✅ Demuestra responsabilidad fiscal"
     ],
     "weaknesses": [
-      "🔴 ATACA REGLA FISCAL - Riesgo alto para finanzas públicas",
-      "🟠 Propone aumentar impuestos al pueblo"
+      "🔴 ATACA REGLA FISCAL - Riesgo alto para finanzas públicas"
     ],
-    "risk_level": "ALTO",
+    "risk_level": "MEDIO",
     "candidate_id": "jose-aguilar-ussegl"
   },
   {
     "pdf_id": "PDLCT",
     "total_pages": 39,
-    "fiscal_responsibility": {
+    "version": "v6_neutral_strict",
+    "fiscal_flags": {
       "attacks_fiscal_rule": true,
       "proposes_debt_increase": false,
-      "proposes_tax_increase": false,
       "shows_fiscal_responsibility": true
     },
     "fiscal_evidence": [
       "eléctrico, valorado en 0.4 billones. ◦ En Empleo: Eliminar el desempleo aumentando un 16% la planilla de las grandes empresas (1.6 billones adicionales en salarios), contratando a las 165 mil personas"
     ],
     "urgency_coverage": {
-      "seguridad_operativa": {
+      "security_operations": {
         "covered": true,
-        "mentions": [
-          "policía (2)",
-          "OIJ (2)",
-          "patrullaje (1)"
-        ]
+        "terms_found": [
+          "policía",
+          "OIJ",
+          "patrullaje"
+        ],
+        "description": "Seguridad operativa"
       },
-      "salud_ccss": {
+      "ccss_crisis": {
         "covered": true,
-        "mentions": [
-          "CCSS (11)",
-          "hospital (3)",
-          "lista de espera (1)",
-          "seguridad social (1)"
-        ]
+        "terms_found": [
+          "CCSS",
+          "Caja Costarricense",
+          "IVM"
+        ],
+        "description": "Crisis de la CCSS"
       },
-      "inversion_extranjera": {
+      "formal_employment": {
         "covered": true,
-        "mentions": [
-          "inversión extranjera (2)",
-          "IED (23)"
-        ]
+        "terms_found": [
+          "empleo formal"
+        ],
+        "description": "Empleo formal"
       },
-      "empleo": {
+      "organized_crime": {
         "covered": true,
-        "mentions": [
-          "empleo (36)",
-          "desempleo (7)",
-          "trabajo (55)"
-        ]
-      },
-      "educacion": {
-        "covered": true,
-        "mentions": [
-          "educación (33)",
-          "MEP (2)",
-          "docente (1)"
-        ]
-      },
-      "infraestructura_APP": {
-        "covered": false,
-        "mentions": []
-      },
-      "crimen_organizado": {
-        "covered": true,
-        "mentions": [
-          "crimen organizado (2)",
-          "narcotráfico (4)",
-          "sicariato (1)",
-          "lavado (1)"
-        ]
+        "terms_found": [
+          "crimen organizado",
+          "narcotráfico",
+          "sicariato"
+        ],
+        "description": "Crimen organizado"
       }
     },
+    "missing_priority_pillars": [
+      "P4",
+      "P7"
+    ],
     "strengths": [
-      "Aborda seguridad con enfoque operativo",
-      "Aborda salud y CCSS",
-      "Considera inversión extranjera para empleo",
+      "✅ Aborda: Seguridad operativa",
+      "✅ Aborda: Crisis de la CCSS",
+      "✅ Aborda: Empleo formal",
+      "✅ Aborda: Crimen organizado",
       "✅ Demuestra responsabilidad fiscal"
     ],
     "weaknesses": [
-      "No propone mecanismos privados para infraestructura",
-      "🔴 ATACA REGLA FISCAL - Riesgo alto para finanzas públicas"
+      "🔴 ATACA REGLA FISCAL - Riesgo alto para finanzas públicas",
+      "❌ Sin propuesta en pilar prioritario P4",
+      "❌ Sin propuesta en pilar prioritario P7"
     ],
     "risk_level": "MEDIO",
     "candidate_id": "david-hernandez-brenes"
@@ -621,10 +480,10 @@
   {
     "pdf_id": "PEL",
     "total_pages": 64,
-    "fiscal_responsibility": {
+    "version": "v6_neutral_strict",
+    "fiscal_flags": {
       "attacks_fiscal_rule": true,
       "proposes_debt_increase": true,
-      "proposes_tax_increase": false,
       "shows_fiscal_responsibility": true
     },
     "fiscal_evidence": [
@@ -632,168 +491,131 @@
       "desigualdad, financiados con eficiencia y no con más deuda. • Cultura de servicio ciudadano: instituciones que respondan rápido, transparente y con calidad. T"
     ],
     "urgency_coverage": {
-      "seguridad_operativa": {
+      "security_operations": {
         "covered": true,
-        "mentions": [
-          "policía (7)",
-          "fuerza pública (1)",
-          "OIJ (1)",
-          "inteligencia (5)",
-          "patrullaje (1)",
-          "operativo (1)"
-        ]
+        "terms_found": [
+          "policía",
+          "fuerza pública",
+          "OIJ",
+          "inteligencia",
+          "patrullaje",
+          "operativo",
+          "vigilancia",
+          "control territorial"
+        ],
+        "description": "Seguridad operativa"
       },
-      "salud_ccss": {
+      "ccss_crisis": {
         "covered": true,
-        "mentions": [
-          "CCSS (10)",
-          "hospital (12)",
-          "lista de espera (2)",
-          "EBAIS (10)",
-          "seguridad social (1)"
-        ]
+        "terms_found": [
+          "CCSS",
+          "Caja Costarricense",
+          "listas de espera"
+        ],
+        "description": "Crisis de la CCSS"
       },
-      "inversion_extranjera": {
+      "formal_employment": {
         "covered": true,
-        "mentions": [
-          "inversión extranjera (1)",
-          "IED (5)"
-        ]
+        "terms_found": [
+          "empleo formal",
+          "formalización",
+          "informalidad laboral"
+        ],
+        "description": "Empleo formal"
       },
-      "empleo": {
+      "organized_crime": {
         "covered": true,
-        "mentions": [
-          "empleo (23)",
-          "desempleo (6)",
-          "trabajo (7)",
-          "informalidad (6)",
-          "capacitación (8)"
-        ]
-      },
-      "educacion": {
-        "covered": true,
-        "mentions": [
-          "educación (26)",
-          "deserción (1)",
-          "calidad educativa (2)",
-          "docente (6)"
-        ]
-      },
-      "infraestructura_APP": {
-        "covered": true,
-        "mentions": [
-          "APP (2)",
-          "inversión privada (1)"
-        ]
-      },
-      "crimen_organizado": {
-        "covered": true,
-        "mentions": [
-          "crimen organizado (3)",
-          "narcotráfico (2)",
-          "lavado (1)"
-        ]
+        "terms_found": [
+          "crimen organizado",
+          "narcotráfico",
+          "cartel"
+        ],
+        "description": "Crimen organizado"
       }
     },
+    "missing_priority_pillars": [],
     "strengths": [
-      "Aborda seguridad con enfoque operativo",
-      "Aborda salud y CCSS",
-      "Considera inversión extranjera para empleo",
-      "Propone APP para infraestructura",
+      "✅ Aborda: Seguridad operativa",
+      "✅ Aborda: Crisis de la CCSS",
+      "✅ Aborda: Empleo formal",
+      "✅ Aborda: Crimen organizado",
       "✅ Demuestra responsabilidad fiscal"
     ],
     "weaknesses": [
       "🔴 ATACA REGLA FISCAL - Riesgo alto para finanzas públicas",
       "🟠 Propone aumentar deuda pública"
     ],
-    "risk_level": "ALTO",
+    "risk_level": "MEDIO",
     "candidate_id": "marco-rodriguez"
   },
   {
     "pdf_id": "PEN",
     "total_pages": 102,
-    "fiscal_responsibility": {
+    "version": "v6_neutral_strict",
+    "fiscal_flags": {
       "attacks_fiscal_rule": true,
       "proposes_debt_increase": false,
-      "proposes_tax_increase": false,
       "shows_fiscal_responsibility": true
     },
     "fiscal_evidence": [
       "tión y docencia en la educación y la cultura vii. Modificar la estructura del sistema educativo viii. Modificar la estructura de la atención de la criminalidad ix. Mejorar la infraestructura en carret"
     ],
     "urgency_coverage": {
-      "seguridad_operativa": {
+      "security_operations": {
         "covered": true,
-        "mentions": [
-          "policía (14)",
-          "fuerza pública (1)",
-          "OIJ (3)",
-          "inteligencia (8)",
-          "patrullaje (3)",
-          "operativo (1)"
-        ]
+        "terms_found": [
+          "policía",
+          "fuerza pública",
+          "OIJ",
+          "inteligencia",
+          "patrullaje",
+          "operativo",
+          "vigilancia"
+        ],
+        "description": "Seguridad operativa"
       },
-      "salud_ccss": {
+      "ccss_crisis": {
         "covered": true,
-        "mentions": [
-          "CCSS (8)",
-          "hospital (4)",
-          "lista de espera (1)",
-          "seguridad social (3)"
-        ]
+        "terms_found": [
+          "CCSS",
+          "Caja Costarricense",
+          "listas de espera",
+          "IVM",
+          "régimen de pensiones"
+        ],
+        "description": "Crisis de la CCSS"
       },
-      "inversion_extranjera": {
+      "formal_employment": {
         "covered": true,
-        "mentions": [
-          "inversión extranjera (5)",
-          "IED (32)"
-        ]
+        "terms_found": [
+          "empleo formal"
+        ],
+        "description": "Empleo formal"
       },
-      "empleo": {
+      "organized_crime": {
         "covered": true,
-        "mentions": [
-          "empleo (41)",
-          "desempleo (7)",
-          "trabajo (26)",
-          "informalidad (2)",
-          "capacitación (9)"
-        ]
-      },
-      "educacion": {
-        "covered": true,
-        "mentions": [
-          "educación (61)",
-          "MEP (6)",
-          "calidad educativa (1)",
-          "docente (9)"
-        ]
-      },
-      "infraestructura_APP": {
-        "covered": true,
-        "mentions": [
-          "APP (1)",
-          "alianza público-privada (2)",
-          "concesión (3)"
-        ]
-      },
-      "crimen_organizado": {
-        "covered": true,
-        "mentions": [
-          "crimen organizado (4)",
-          "narcotráfico (6)",
-          "lavado (1)"
-        ]
+        "terms_found": [
+          "crimen organizado",
+          "narcotráfico"
+        ],
+        "description": "Crimen organizado"
       }
     },
+    "missing_priority_pillars": [
+      "P4",
+      "P1"
+    ],
     "strengths": [
-      "Aborda seguridad con enfoque operativo",
-      "Aborda salud y CCSS",
-      "Considera inversión extranjera para empleo",
-      "Propone APP para infraestructura",
+      "✅ Aborda: Seguridad operativa",
+      "✅ Aborda: Crisis de la CCSS",
+      "✅ Aborda: Empleo formal",
+      "✅ Aborda: Crimen organizado",
       "✅ Demuestra responsabilidad fiscal"
     ],
     "weaknesses": [
-      "🔴 ATACA REGLA FISCAL - Riesgo alto para finanzas públicas"
+      "🔴 ATACA REGLA FISCAL - Riesgo alto para finanzas públicas",
+      "❌ Sin propuesta en pilar prioritario P4",
+      "❌ Sin propuesta en pilar prioritario P1"
     ],
     "risk_level": "MEDIO",
     "candidate_id": "claudio-alpizar"
@@ -801,10 +623,10 @@
   {
     "pdf_id": "PIN",
     "total_pages": 56,
-    "fiscal_responsibility": {
+    "version": "v6_neutral_strict",
+    "fiscal_flags": {
       "attacks_fiscal_rule": true,
       "proposes_debt_increase": true,
-      "proposes_tax_increase": false,
       "shows_fiscal_responsibility": true
     },
     "fiscal_evidence": [
@@ -812,244 +634,192 @@
       "iler por inversión en infraestructura propia, sin aumentar la deuda pública directa 12.1. Esquema de titularización: BOLT El proyecto se financiará bajo el modelo BOLT"
     ],
     "urgency_coverage": {
-      "seguridad_operativa": {
+      "security_operations": {
         "covered": true,
-        "mentions": [
-          "policía (15)",
-          "OIJ (1)",
-          "inteligencia (6)",
-          "operativo (3)"
-        ]
+        "terms_found": [
+          "policía",
+          "OIJ",
+          "inteligencia",
+          "operativo",
+          "vigilancia",
+          "control territorial"
+        ],
+        "description": "Seguridad operativa"
       },
-      "salud_ccss": {
+      "ccss_crisis": {
         "covered": true,
-        "mentions": [
-          "CCSS (8)",
-          "hospital (5)",
-          "EBAIS (3)",
-          "seguridad social (5)"
-        ]
+        "terms_found": [
+          "CCSS",
+          "Caja Costarricense",
+          "listas de espera",
+          "régimen de pensiones"
+        ],
+        "description": "Crisis de la CCSS"
       },
-      "inversion_extranjera": {
+      "formal_employment": {
         "covered": true,
-        "mentions": [
-          "inversión extranjera (5)",
-          "zona franca (2)",
-          "IED (15)",
-          "multinacional (1)"
-        ]
+        "terms_found": [
+          "empleo formal",
+          "formalización",
+          "informalidad laboral"
+        ],
+        "description": "Empleo formal"
       },
-      "empleo": {
+      "organized_crime": {
         "covered": true,
-        "mentions": [
-          "empleo (17)",
-          "desempleo (2)",
-          "trabajo (9)",
-          "informalidad (3)",
-          "capacitación (6)"
-        ]
-      },
-      "educacion": {
-        "covered": true,
-        "mentions": [
-          "educación (17)",
-          "MEP (6)",
-          "docente (12)"
-        ]
-      },
-      "infraestructura_APP": {
-        "covered": true,
-        "mentions": [
-          "concesión (2)"
-        ]
-      },
-      "crimen_organizado": {
-        "covered": true,
-        "mentions": [
-          "crimen organizado (8)",
-          "narcotráfico (2)"
-        ]
+        "terms_found": [
+          "crimen organizado",
+          "narcotráfico"
+        ],
+        "description": "Crimen organizado"
       }
     },
+    "missing_priority_pillars": [],
     "strengths": [
-      "Aborda seguridad con enfoque operativo",
-      "Aborda salud y CCSS",
-      "Considera inversión extranjera para empleo",
-      "Propone APP para infraestructura",
+      "✅ Aborda: Seguridad operativa",
+      "✅ Aborda: Crisis de la CCSS",
+      "✅ Aborda: Empleo formal",
+      "✅ Aborda: Crimen organizado",
       "✅ Demuestra responsabilidad fiscal"
     ],
     "weaknesses": [
       "🔴 ATACA REGLA FISCAL - Riesgo alto para finanzas públicas",
       "🟠 Propone aumentar deuda pública"
     ],
-    "risk_level": "ALTO",
+    "risk_level": "MEDIO",
     "candidate_id": "luis-amadorjimenez"
   },
   {
     "pdf_id": "PJSC",
     "total_pages": 54,
-    "fiscal_responsibility": {
+    "version": "v6_neutral_strict",
+    "fiscal_flags": {
       "attacks_fiscal_rule": false,
       "proposes_debt_increase": true,
-      "proposes_tax_increase": false,
       "shows_fiscal_responsibility": true
     },
     "fiscal_evidence": [
       "los cambios para que se siga pagando, sin generar más deuda y estableciendo directrices que garanticen el uso del pago de deuda en proyectos de mejora tanto en"
     ],
     "urgency_coverage": {
-      "seguridad_operativa": {
+      "security_operations": {
         "covered": true,
-        "mentions": [
-          "policía (9)",
-          "fuerza pública (1)",
-          "inteligencia (1)",
-          "patrullaje (1)",
-          "operativo (3)"
-        ]
+        "terms_found": [
+          "policía",
+          "fuerza pública",
+          "inteligencia",
+          "patrullaje",
+          "operativo",
+          "vigilancia",
+          "control territorial"
+        ],
+        "description": "Seguridad operativa"
       },
-      "salud_ccss": {
+      "ccss_crisis": {
         "covered": true,
-        "mentions": [
-          "CCSS (12)",
-          "hospital (6)",
-          "EBAIS (3)",
-          "seguridad social (10)"
-        ]
+        "terms_found": [
+          "CCSS",
+          "Caja Costarricense",
+          "régimen de pensiones"
+        ],
+        "description": "Crisis de la CCSS"
       },
-      "inversion_extranjera": {
+      "formal_employment": {
         "covered": true,
-        "mentions": [
-          "IED (15)",
-          "multinacional (1)"
-        ]
+        "terms_found": [
+          "empleo formal",
+          "formalización",
+          "informalidad laboral",
+          "cotizante"
+        ],
+        "description": "Empleo formal"
       },
-      "empleo": {
+      "organized_crime": {
         "covered": true,
-        "mentions": [
-          "empleo (30)",
-          "desempleo (8)",
-          "trabajo (25)",
-          "informalidad (2)",
-          "capacitación (10)"
-        ]
-      },
-      "educacion": {
-        "covered": true,
-        "mentions": [
-          "educación (44)",
-          "MEP (5)",
-          "deserción (1)",
-          "docente (11)"
-        ]
-      },
-      "infraestructura_APP": {
-        "covered": true,
-        "mentions": [
-          "concesión (1)"
-        ]
-      },
-      "crimen_organizado": {
-        "covered": true,
-        "mentions": [
-          "crimen organizado (2)",
-          "narcotráfico (4)",
-          "lavado (2)"
-        ]
+        "terms_found": [
+          "crimen organizado",
+          "narcotráfico",
+          "lavado de dinero"
+        ],
+        "description": "Crimen organizado"
       }
     },
+    "missing_priority_pillars": [],
     "strengths": [
-      "Aborda seguridad con enfoque operativo",
-      "Aborda salud y CCSS",
-      "Considera inversión extranjera para empleo",
-      "Propone APP para infraestructura",
+      "✅ Aborda: Seguridad operativa",
+      "✅ Aborda: Crisis de la CCSS",
+      "✅ Aborda: Empleo formal",
+      "✅ Aborda: Crimen organizado",
       "✅ Demuestra responsabilidad fiscal"
     ],
     "weaknesses": [
       "🟠 Propone aumentar deuda pública"
     ],
-    "risk_level": "MEDIO",
+    "risk_level": "BAJO",
     "candidate_id": "walter-hernandez"
   },
   {
     "pdf_id": "PLN",
     "total_pages": 58,
-    "fiscal_responsibility": {
+    "version": "v6_neutral_strict",
+    "fiscal_flags": {
       "attacks_fiscal_rule": true,
       "proposes_debt_increase": false,
-      "proposes_tax_increase": false,
       "shows_fiscal_responsibility": true
     },
     "fiscal_evidence": [
       "rgo plazo 5.2.2.4 Revisión de la aplicación de la Regla Fiscal para la inversión social Recuperaremos los programas de equidad para el acceso a la educación (Comedores estudian:les, Transporte estudia"
     ],
     "urgency_coverage": {
-      "seguridad_operativa": {
+      "security_operations": {
         "covered": true,
-        "mentions": [
-          "policía (6)",
-          "fuerza pública (3)",
-          "OIJ (5)",
-          "inteligencia (11)",
-          "patrullaje (1)",
-          "operativo (7)"
-        ]
+        "terms_found": [
+          "policía",
+          "fuerza pública",
+          "OIJ",
+          "inteligencia",
+          "patrullaje",
+          "operativo",
+          "vigilancia"
+        ],
+        "description": "Seguridad operativa"
       },
-      "salud_ccss": {
+      "ccss_crisis": {
         "covered": true,
-        "mentions": [
-          "CCSS (8)",
-          "hospital (10)",
-          "EBAIS (8)",
-          "seguridad social (1)"
-        ]
+        "terms_found": [
+          "CCSS",
+          "Caja Costarricense",
+          "listas de espera",
+          "IVM"
+        ],
+        "description": "Crisis de la CCSS"
       },
-      "inversion_extranjera": {
+      "formal_employment": {
         "covered": true,
-        "mentions": [
-          "inversión extranjera (3)",
-          "IED (13)",
-          "multinacional (1)"
-        ]
+        "terms_found": [
+          "empleo formal",
+          "formalización",
+          "trabajo decente"
+        ],
+        "description": "Empleo formal"
       },
-      "empleo": {
+      "organized_crime": {
         "covered": true,
-        "mentions": [
-          "empleo (24)",
-          "trabajo (17)",
-          "informalidad (1)",
-          "capacitación (14)"
-        ]
-      },
-      "educacion": {
-        "covered": true,
-        "mentions": [
-          "educación (60)",
-          "MEP (3)",
-          "docente (10)"
-        ]
-      },
-      "infraestructura_APP": {
-        "covered": true,
-        "mentions": [
-          "APP (4)"
-        ]
-      },
-      "crimen_organizado": {
-        "covered": true,
-        "mentions": [
-          "crimen organizado (2)",
-          "narcotráfico (5)",
-          "sicariato (1)",
-          "lavado (1)"
-        ]
+        "terms_found": [
+          "crimen organizado",
+          "narcotráfico",
+          "sicariato",
+          "lavado de dinero"
+        ],
+        "description": "Crimen organizado"
       }
     },
+    "missing_priority_pillars": [],
     "strengths": [
-      "Aborda seguridad con enfoque operativo",
-      "Aborda salud y CCSS",
-      "Considera inversión extranjera para empleo",
-      "Propone APP para infraestructura",
+      "✅ Aborda: Seguridad operativa",
+      "✅ Aborda: Crisis de la CCSS",
+      "✅ Aborda: Empleo formal",
+      "✅ Aborda: Crimen organizado",
       "✅ Demuestra responsabilidad fiscal"
     ],
     "weaknesses": [
@@ -1061,369 +831,273 @@
   {
     "pdf_id": "PLP",
     "total_pages": 175,
-    "fiscal_responsibility": {
+    "version": "v6_neutral_strict",
+    "fiscal_flags": {
       "attacks_fiscal_rule": true,
       "proposes_debt_increase": false,
-      "proposes_tax_increase": true,
       "shows_fiscal_responsibility": true
     },
     "fiscal_evidence": [
-      "...............................................49 Eliminaremos los impuestos que pesan sobre el trabajo e incentivaremos la contratación ...............................................................",
-      "e necesaria. En nuestro gobierno impulsaremos una reforma tributaria selectiva y progresiva para aliviar el costo de vida mediante la reducción del impuesto sobre los alquileres de vivienda. En primer"
+      "...............................................49 Eliminaremos los impuestos que pesan sobre el trabajo e incentivaremos la contratación ..............................................................."
     ],
     "urgency_coverage": {
-      "seguridad_operativa": {
+      "security_operations": {
         "covered": true,
-        "mentions": [
-          "policía (72)",
-          "fuerza pública (22)",
-          "OIJ (9)",
-          "inteligencia (20)",
-          "patrullaje (7)",
-          "operativo (19)"
-        ]
+        "terms_found": [
+          "policía",
+          "fuerza pública",
+          "OIJ",
+          "inteligencia",
+          "patrullaje",
+          "operativo",
+          "vigilancia",
+          "control territorial"
+        ],
+        "description": "Seguridad operativa"
       },
-      "salud_ccss": {
+      "ccss_crisis": {
         "covered": true,
-        "mentions": [
-          "CCSS (41)",
-          "hospital (12)",
-          "EBAIS (4)",
-          "seguridad social (10)"
-        ]
+        "terms_found": [
+          "CCSS",
+          "Caja Costarricense",
+          "listas de espera",
+          "IVM",
+          "régimen de pensiones"
+        ],
+        "description": "Crisis de la CCSS"
       },
-      "inversion_extranjera": {
+      "formal_employment": {
         "covered": true,
-        "mentions": [
-          "inversión extranjera (19)",
-          "zona franca (1)",
-          "IED (94)",
-          "nearshoring (4)",
-          "multinacional (7)"
-        ]
+        "terms_found": [
+          "empleo formal",
+          "formalización",
+          "informalidad laboral",
+          "cotizante"
+        ],
+        "description": "Empleo formal"
       },
-      "empleo": {
+      "organized_crime": {
         "covered": true,
-        "mentions": [
-          "empleo (71)",
-          "desempleo (2)",
-          "trabajo (51)",
-          "informalidad (13)",
-          "capacitación (46)"
-        ]
-      },
-      "educacion": {
-        "covered": true,
-        "mentions": [
-          "educación (185)",
-          "MEP (36)",
-          "calidad educativa (4)",
-          "docente (30)"
-        ]
-      },
-      "infraestructura_APP": {
-        "covered": true,
-        "mentions": [
-          "APP (11)",
-          "alianza público-privada (2)",
-          "concesión (21)",
-          "inversión privada (8)"
-        ]
-      },
-      "crimen_organizado": {
-        "covered": true,
-        "mentions": [
-          "crimen organizado (22)",
-          "narcotráfico (8)",
-          "sicariato (2)",
-          "lavado (7)"
-        ]
+        "terms_found": [
+          "crimen organizado",
+          "narcotráfico",
+          "sicariato",
+          "lavado de dinero"
+        ],
+        "description": "Crimen organizado"
       }
     },
+    "missing_priority_pillars": [],
     "strengths": [
-      "Aborda seguridad con enfoque operativo",
-      "Aborda salud y CCSS",
-      "Considera inversión extranjera para empleo",
-      "Propone APP para infraestructura",
+      "✅ Aborda: Seguridad operativa",
+      "✅ Aborda: Crisis de la CCSS",
+      "✅ Aborda: Empleo formal",
+      "✅ Aborda: Crimen organizado",
       "✅ Demuestra responsabilidad fiscal"
     ],
     "weaknesses": [
-      "🔴 ATACA REGLA FISCAL - Riesgo alto para finanzas públicas",
-      "🟠 Propone aumentar impuestos al pueblo"
+      "🔴 ATACA REGLA FISCAL - Riesgo alto para finanzas públicas"
     ],
-    "risk_level": "ALTO",
+    "risk_level": "MEDIO",
     "candidate_id": "elicer-feinzaig-mintz"
   },
   {
     "pdf_id": "PNG",
     "total_pages": 210,
-    "fiscal_responsibility": {
+    "version": "v6_neutral_strict",
+    "fiscal_flags": {
       "attacks_fiscal_rule": false,
       "proposes_debt_increase": true,
-      "proposes_tax_increase": false,
       "shows_fiscal_responsibility": true
     },
     "fiscal_evidence": [
       "s público- privadas, concesiones internacionales, emisión de bonos para infraestructura, y cooperación con organismos multilaterales. Existen antecedentes exitosos de"
     ],
     "urgency_coverage": {
-      "seguridad_operativa": {
+      "security_operations": {
         "covered": true,
-        "mentions": [
-          "policía (28)",
-          "fuerza pública (16)",
-          "OIJ (4)",
-          "inteligencia (15)",
-          "patrullaje (1)",
-          "operativo (5)"
-        ]
+        "terms_found": [
+          "policía",
+          "fuerza pública",
+          "OIJ",
+          "inteligencia",
+          "patrullaje",
+          "operativo",
+          "vigilancia"
+        ],
+        "description": "Seguridad operativa"
       },
-      "salud_ccss": {
+      "ccss_crisis": {
         "covered": true,
-        "mentions": [
-          "CCSS (43)",
-          "hospital (10)",
-          "seguridad social (7)"
-        ]
+        "terms_found": [
+          "CCSS",
+          "Caja Costarricense",
+          "listas de espera",
+          "régimen de pensiones"
+        ],
+        "description": "Crisis de la CCSS"
       },
-      "inversion_extranjera": {
+      "formal_employment": {
         "covered": true,
-        "mentions": [
-          "inversión extranjera (3)",
-          "zona franca (2)",
-          "IED (104)",
-          "multinacional (1)"
-        ]
+        "terms_found": [
+          "empleo formal",
+          "formalización"
+        ],
+        "description": "Empleo formal"
       },
-      "empleo": {
+      "organized_crime": {
         "covered": true,
-        "mentions": [
-          "empleo (91)",
-          "desempleo (11)",
-          "trabajo (61)",
-          "capacitación (21)"
-        ]
-      },
-      "educacion": {
-        "covered": true,
-        "mentions": [
-          "educación (131)",
-          "MEP (3)",
-          "deserción (2)",
-          "calidad educativa (1)",
-          "docente (8)"
-        ]
-      },
-      "infraestructura_APP": {
-        "covered": true,
-        "mentions": [
-          "APP (5)",
-          "alianza público-privada (1)",
-          "concesión (45)",
-          "inversión privada (8)"
-        ]
-      },
-      "crimen_organizado": {
-        "covered": true,
-        "mentions": [
-          "crimen organizado (9)",
-          "narcotráfico (14)",
-          "sicariato (1)",
-          "extorsión (4)",
-          "lavado (1)"
-        ]
+        "terms_found": [
+          "crimen organizado",
+          "narcotráfico",
+          "sicariato",
+          "extorsión",
+          "cartel"
+        ],
+        "description": "Crimen organizado"
       }
     },
+    "missing_priority_pillars": [],
     "strengths": [
-      "Aborda seguridad con enfoque operativo",
-      "Aborda salud y CCSS",
-      "Considera inversión extranjera para empleo",
-      "Propone APP para infraestructura",
+      "✅ Aborda: Seguridad operativa",
+      "✅ Aborda: Crisis de la CCSS",
+      "✅ Aborda: Empleo formal",
+      "✅ Aborda: Crimen organizado",
       "✅ Demuestra responsabilidad fiscal"
     ],
     "weaknesses": [
       "🟠 Propone aumentar deuda pública"
     ],
-    "risk_level": "MEDIO",
+    "risk_level": "BAJO",
     "candidate_id": "fernando-zamora-castellanos"
   },
   {
     "pdf_id": "PNR",
     "total_pages": 213,
-    "fiscal_responsibility": {
+    "version": "v6_neutral_strict",
+    "fiscal_flags": {
       "attacks_fiscal_rule": true,
       "proposes_debt_increase": true,
-      "proposes_tax_increase": true,
       "shows_fiscal_responsibility": true
     },
     "fiscal_evidence": [
       "er las demandas ciudadanas, y con la finalidad de flexibilizar la gestión pública, se crearon instituciones desconcentradas y descentralizadas que, al ser vitales para el país, con el paso de los años",
-      "estó para el año 2024, alrededor de 39 colones se financiaron con deuda, lo cual implica que, con ingresos corrientes, principalmente impuestos, se recolectaron alrededor de 61 colones. Pero el asunto",
-      "aestructura social y programas de capacitación. • Reforma tributaria estructural y lucha contra la evasión: Modernizar el sistema tributario cerrando vacíos legales y revisando exoneraciones para recu"
+      "estó para el año 2024, alrededor de 39 colones se financiaron con deuda, lo cual implica que, con ingresos corrientes, principalmente impuestos, se recolectaron alrededor de 61 colones. Pero el asunto"
     ],
     "urgency_coverage": {
-      "seguridad_operativa": {
+      "security_operations": {
         "covered": true,
-        "mentions": [
-          "policía (16)",
-          "fuerza pública (3)",
-          "OIJ (30)",
-          "inteligencia (28)",
-          "patrullaje (1)",
-          "operativo (9)"
-        ]
+        "terms_found": [
+          "policía",
+          "fuerza pública",
+          "OIJ",
+          "inteligencia",
+          "patrullaje",
+          "operativo",
+          "vigilancia"
+        ],
+        "description": "Seguridad operativa"
       },
-      "salud_ccss": {
+      "ccss_crisis": {
         "covered": true,
-        "mentions": [
-          "CCSS (27)",
-          "hospital (52)",
-          "lista de espera (1)",
-          "EBAIS (10)",
-          "seguridad social (17)"
-        ]
+        "terms_found": [
+          "CCSS",
+          "Caja Costarricense",
+          "listas de espera",
+          "IVM",
+          "régimen de pensiones"
+        ],
+        "description": "Crisis de la CCSS"
       },
-      "inversion_extranjera": {
+      "formal_employment": {
         "covered": true,
-        "mentions": [
-          "inversión extranjera (9)",
-          "zona franca (5)",
-          "IED (96)",
-          "multinacional (7)"
-        ]
+        "terms_found": [
+          "empleo formal",
+          "formalización",
+          "informalidad laboral"
+        ],
+        "description": "Empleo formal"
       },
-      "empleo": {
+      "organized_crime": {
         "covered": true,
-        "mentions": [
-          "empleo (117)",
-          "desempleo (9)",
-          "trabajo (68)",
-          "informalidad (9)",
-          "capacitación (37)"
-        ]
-      },
-      "educacion": {
-        "covered": true,
-        "mentions": [
-          "educación (150)",
-          "MEP (25)",
-          "deserción (2)",
-          "calidad educativa (3)",
-          "docente (33)"
-        ]
-      },
-      "infraestructura_APP": {
-        "covered": true,
-        "mentions": [
-          "APP (4)",
-          "concesión (2)",
-          "inversión privada (3)"
-        ]
-      },
-      "crimen_organizado": {
-        "covered": true,
-        "mentions": [
-          "crimen organizado (10)",
-          "narcotráfico (10)"
-        ]
+        "terms_found": [
+          "crimen organizado",
+          "narcotráfico",
+          "cartel"
+        ],
+        "description": "Crimen organizado"
       }
     },
+    "missing_priority_pillars": [],
     "strengths": [
-      "Aborda seguridad con enfoque operativo",
-      "Aborda salud y CCSS",
-      "Considera inversión extranjera para empleo",
-      "Propone APP para infraestructura",
+      "✅ Aborda: Seguridad operativa",
+      "✅ Aborda: Crisis de la CCSS",
+      "✅ Aborda: Empleo formal",
+      "✅ Aborda: Crimen organizado",
       "✅ Demuestra responsabilidad fiscal"
     ],
     "weaknesses": [
       "🔴 ATACA REGLA FISCAL - Riesgo alto para finanzas públicas",
-      "🟠 Propone aumentar deuda pública",
-      "🟠 Propone aumentar impuestos al pueblo"
+      "🟠 Propone aumentar deuda pública"
     ],
-    "risk_level": "ALTO",
+    "risk_level": "MEDIO",
     "candidate_id": "fabricio-alvarado-munoz"
   },
   {
     "pdf_id": "PPSO",
-    "total_pages": 87,
-    "fiscal_responsibility": {
+    "total_pages": 85,
+    "version": "v6_neutral_strict",
+    "fiscal_flags": {
       "attacks_fiscal_rule": false,
       "proposes_debt_increase": false,
-      "proposes_tax_increase": false,
-      "shows_fiscal_responsibility": true
+      "shows_fiscal_responsibility": false
     },
     "fiscal_evidence": [],
     "urgency_coverage": {
-      "seguridad_operativa": {
+      "security_operations": {
         "covered": true,
-        "mentions": [
-          "policía (10)",
-          "fuerza pública (1)",
-          "OIJ (2)",
-          "inteligencia (24)",
-          "patrullaje (1)",
-          "operativo (8)"
-        ]
+        "terms_found": [
+          "policía",
+          "inteligencia",
+          "patrullaje",
+          "operativo",
+          "vigilancia",
+          "control territorial"
+        ],
+        "description": "Seguridad operativa"
       },
-      "salud_ccss": {
+      "ccss_crisis": {
         "covered": true,
-        "mentions": [
-          "CCSS (22)",
-          "hospital (6)",
-          "EBAIS (3)",
-          "seguridad social (14)"
-        ]
+        "terms_found": [
+          "CCSS",
+          "Caja Costarricense",
+          "listas de espera",
+          "IVM"
+        ],
+        "description": "Crisis de la CCSS"
       },
-      "inversion_extranjera": {
+      "formal_employment": {
         "covered": true,
-        "mentions": [
-          "inversión extranjera (7)",
-          "IED (25)"
-        ]
+        "terms_found": [
+          "formalización"
+        ],
+        "description": "Empleo formal"
       },
-      "empleo": {
+      "organized_crime": {
         "covered": true,
-        "mentions": [
-          "empleo (30)",
-          "desempleo (4)",
-          "trabajo (23)",
-          "informalidad (2)",
-          "capacitación (18)"
-        ]
-      },
-      "educacion": {
-        "covered": true,
-        "mentions": [
-          "educación (59)",
-          "MEP (11)",
-          "docente (23)"
-        ]
-      },
-      "infraestructura_APP": {
-        "covered": true,
-        "mentions": [
-          "APP (2)",
-          "alianza público-privada (2)",
-          "concesión (8)",
-          "inversión privada (1)"
-        ]
-      },
-      "crimen_organizado": {
-        "covered": true,
-        "mentions": [
-          "crimen organizado (13)",
-          "narcotráfico (9)",
-          "sicariato (3)",
-          "lavado (2)"
-        ]
+        "terms_found": [
+          "crimen organizado",
+          "sicariato"
+        ],
+        "description": "Crimen organizado"
       }
     },
+    "missing_priority_pillars": [],
     "strengths": [
-      "Aborda seguridad con enfoque operativo",
-      "Aborda salud y CCSS",
-      "Considera inversión extranjera para empleo",
-      "Propone APP para infraestructura",
-      "✅ Demuestra responsabilidad fiscal"
+      "✅ Aborda: Seguridad operativa",
+      "✅ Aborda: Crisis de la CCSS",
+      "✅ Aborda: Empleo formal",
+      "✅ Aborda: Crimen organizado"
     ],
     "weaknesses": [],
     "risk_level": "BAJO",
@@ -1432,83 +1106,60 @@
   {
     "pdf_id": "PSD",
     "total_pages": 125,
-    "fiscal_responsibility": {
+    "version": "v6_neutral_strict",
+    "fiscal_flags": {
       "attacks_fiscal_rule": true,
       "proposes_debt_increase": false,
-      "proposes_tax_increase": false,
       "shows_fiscal_responsibility": true
     },
     "fiscal_evidence": [
       "as demandas del siglo XXI, para esto modernizar y flexibilizar el currículo educativo favorece una formación integral y acorde a cada estudiante, fomentando el desarrollo de habilidades esenciales com"
     ],
     "urgency_coverage": {
-      "seguridad_operativa": {
+      "security_operations": {
         "covered": true,
-        "mentions": [
-          "policía (14)",
-          "fuerza pública (1)",
-          "OIJ (1)",
-          "inteligencia (5)",
-          "operativo (11)"
-        ]
+        "terms_found": [
+          "policía",
+          "fuerza pública",
+          "OIJ",
+          "inteligencia",
+          "operativo",
+          "vigilancia"
+        ],
+        "description": "Seguridad operativa"
       },
-      "salud_ccss": {
+      "ccss_crisis": {
         "covered": true,
-        "mentions": [
-          "CCSS (24)",
-          "hospital (7)",
-          "EBAIS (3)",
-          "seguridad social (5)"
-        ]
+        "terms_found": [
+          "CCSS",
+          "Caja Costarricense",
+          "listas de espera"
+        ],
+        "description": "Crisis de la CCSS"
       },
-      "inversion_extranjera": {
+      "formal_employment": {
         "covered": true,
-        "mentions": [
-          "inversión extranjera (6)",
-          "zona franca (2)",
-          "IED (42)",
-          "nearshoring (2)"
-        ]
+        "terms_found": [
+          "empleo formal",
+          "informalidad laboral"
+        ],
+        "description": "Empleo formal"
       },
-      "empleo": {
+      "organized_crime": {
         "covered": true,
-        "mentions": [
-          "empleo (59)",
-          "desempleo (10)",
-          "trabajo (31)",
-          "informalidad (6)",
-          "capacitación (30)"
-        ]
-      },
-      "educacion": {
-        "covered": true,
-        "mentions": [
-          "educación (117)",
-          "MEP (15)",
-          "deserción (9)",
-          "calidad educativa (1)",
-          "docente (38)"
-        ]
-      },
-      "infraestructura_APP": {
-        "covered": true,
-        "mentions": [
-          "APP (5)"
-        ]
-      },
-      "crimen_organizado": {
-        "covered": true,
-        "mentions": [
-          "crimen organizado (11)",
-          "narcotráfico (8)"
-        ]
+        "terms_found": [
+          "crimen organizado",
+          "narcotráfico"
+        ],
+        "description": "Crimen organizado"
       }
     },
+    "missing_priority_pillars": [],
     "strengths": [
-      "Aborda seguridad con enfoque operativo",
-      "Aborda salud y CCSS",
-      "Considera inversión extranjera para empleo",
-      "Propone APP para infraestructura",
+      "✅ Aborda: Seguridad operativa",
+      "✅ Aborda: Crisis de la CCSS",
+      "✅ Aborda: Empleo formal",
+      "✅ Aborda: Crimen organizado",
       "✅ Demuestra responsabilidad fiscal"
     ],
     "weaknesses": [
@@ -1520,263 +1171,206 @@
   {
     "pdf_id": "PUCD",
     "total_pages": 20,
-    "fiscal_responsibility": {
+    "version": "v6_neutral_strict",
+    "fiscal_flags": {
       "attacks_fiscal_rule": false,
       "proposes_debt_increase": false,
-      "proposes_tax_increase": false,
       "shows_fiscal_responsibility": false
     },
     "fiscal_evidence": [],
     "urgency_coverage": {
-      "seguridad_operativa": {
+      "security_operations": {
         "covered": true,
-        "mentions": [
-          "policía (2)",
-          "fuerza pública (3)",
-          "inteligencia (5)",
-          "operativo (2)"
-        ]
+        "terms_found": [
+          "policía",
+          "fuerza pública",
+          "inteligencia",
+          "operativo",
+          "vigilancia"
+        ],
+        "description": "Seguridad operativa"
       },
-      "salud_ccss": {
+      "ccss_crisis": {
         "covered": true,
-        "mentions": [
-          "CCSS (2)",
-          "hospital (2)",
-          "EBAIS (1)",
-          "seguridad social (4)"
-        ]
+        "terms_found": [
+          "CCSS",
+          "Caja Costarricense",
+          "listas de espera",
+          "régimen de pensiones"
+        ],
+        "description": "Crisis de la CCSS"
       },
-      "inversion_extranjera": {
+      "formal_employment": {
         "covered": true,
-        "mentions": [
-          "IED (4)"
-        ]
+        "terms_found": [
+          "formalización"
+        ],
+        "description": "Empleo formal"
       },
-      "empleo": {
+      "organized_crime": {
         "covered": true,
-        "mentions": [
-          "empleo (3)",
-          "trabajo (6)",
-          "capacitación (3)"
-        ]
-      },
-      "educacion": {
-        "covered": true,
-        "mentions": [
-          "educación (21)",
-          "docente (8)"
-        ]
-      },
-      "infraestructura_APP": {
-        "covered": false,
-        "mentions": []
-      },
-      "crimen_organizado": {
-        "covered": true,
-        "mentions": [
-          "crimen organizado (2)",
-          "sicariato (1)"
-        ]
+        "terms_found": [
+          "crimen organizado",
+          "sicariato"
+        ],
+        "description": "Crimen organizado"
       }
     },
+    "missing_priority_pillars": [
+      "P1",
+      "P7"
+    ],
     "strengths": [
-      "Aborda seguridad con enfoque operativo",
-      "Aborda salud y CCSS",
-      "Considera inversión extranjera para empleo"
+      "✅ Aborda: Seguridad operativa",
+      "✅ Aborda: Crisis de la CCSS",
+      "✅ Aborda: Empleo formal",
+      "✅ Aborda: Crimen organizado"
     ],
     "weaknesses": [
-      "No propone mecanismos privados para infraestructura"
+      "❌ Sin propuesta en pilar prioritario P1",
+      "❌ Sin propuesta en pilar prioritario P7"
     ],
-    "risk_level": "BAJO",
+    "risk_level": "MEDIO",
     "candidate_id": "boris-molina"
   },
   {
     "pdf_id": "PUSC",
     "total_pages": 123,
-    "fiscal_responsibility": {
+    "version": "v6_neutral_strict",
+    "fiscal_flags": {
       "attacks_fiscal_rule": true,
       "proposes_debt_increase": false,
-      "proposes_tax_increase": true,
       "shows_fiscal_responsibility": true
     },
     "fiscal_evidence": [
-      "n ser un fin en sí mismo. Se propone modernizar y reformar el Estado para dotarlo de mayor agilidad, transparencia y capacidad de respuesta, al tiempo que se renuevan y amplían los mecanismos de parti",
-      "s dentro del mismo marco fiscal, sin necesidad de aumentar impuestos, pero elevando significativamente el retorno social y económico del gasto público. Se trata de real"
+      "n ser un fin en sí mismo. Se propone modernizar y reformar el Estado para dotarlo de mayor agilidad, transparencia y capacidad de respuesta, al tiempo que se renuevan y amplían los mecanismos de parti"
     ],
     "urgency_coverage": {
-      "seguridad_operativa": {
+      "security_operations": {
         "covered": true,
-        "mentions": [
-          "policía (22)",
-          "fuerza pública (4)",
-          "OIJ (7)",
-          "inteligencia (47)",
-          "patrullaje (2)",
-          "operativo (12)"
-        ]
+        "terms_found": [
+          "policía",
+          "fuerza pública",
+          "OIJ",
+          "inteligencia",
+          "patrullaje",
+          "operativo",
+          "vigilancia",
+          "control territorial"
+        ],
+        "description": "Seguridad operativa"
       },
-      "salud_ccss": {
+      "ccss_crisis": {
         "covered": true,
-        "mentions": [
-          "CCSS (12)",
-          "hospital (27)",
-          "EBAIS (14)",
-          "seguridad social (9)"
-        ]
+        "terms_found": [
+          "CCSS",
+          "Caja Costarricense",
+          "listas de espera",
+          "IVM"
+        ],
+        "description": "Crisis de la CCSS"
       },
-      "inversion_extranjera": {
+      "formal_employment": {
         "covered": true,
-        "mentions": [
-          "inversión extranjera (5)",
-          "zona franca (6)",
-          "IED (36)",
-          "multinacional (9)"
-        ]
+        "terms_found": [
+          "empleo formal",
+          "formalización"
+        ],
+        "description": "Empleo formal"
       },
-      "empleo": {
+      "organized_crime": {
         "covered": true,
-        "mentions": [
-          "empleo (47)",
-          "desempleo (1)",
-          "trabajo (24)",
-          "informalidad (7)",
-          "capacitación (36)"
-        ]
-      },
-      "educacion": {
-        "covered": true,
-        "mentions": [
-          "educación (75)",
-          "MEP (16)",
-          "deserción (1)",
-          "calidad educativa (4)",
-          "docente (17)"
-        ]
-      },
-      "infraestructura_APP": {
-        "covered": true,
-        "mentions": [
-          "APP (3)",
-          "alianza público-privada (7)",
-          "concesión (20)",
-          "inversión privada (1)"
-        ]
-      },
-      "crimen_organizado": {
-        "covered": true,
-        "mentions": [
-          "crimen organizado (25)",
-          "narcotráfico (6)",
-          "sicariato (2)",
-          "extorsión (2)",
-          "lavado (1)"
-        ]
+        "terms_found": [
+          "crimen organizado",
+          "narcotráfico",
+          "sicariato",
+          "extorsión",
+          "lavado de dinero"
+        ],
+        "description": "Crimen organizado"
       }
     },
+    "missing_priority_pillars": [],
     "strengths": [
-      "Aborda seguridad con enfoque operativo",
-      "Aborda salud y CCSS",
-      "Considera inversión extranjera para empleo",
-      "Propone APP para infraestructura",
+      "✅ Aborda: Seguridad operativa",
+      "✅ Aborda: Crisis de la CCSS",
+      "✅ Aborda: Empleo formal",
+      "✅ Aborda: Crimen organizado",
       "✅ Demuestra responsabilidad fiscal"
     ],
     "weaknesses": [
-      "🔴 ATACA REGLA FISCAL - Riesgo alto para finanzas públicas",
-      "🟠 Propone aumentar impuestos al pueblo"
+      "🔴 ATACA REGLA FISCAL - Riesgo alto para finanzas públicas"
     ],
-    "risk_level": "ALTO",
+    "risk_level": "MEDIO",
     "candidate_id": "juan-carlos-hidalgo"
   },
   {
     "pdf_id": "UP",
     "total_pages": 127,
-    "fiscal_responsibility": {
+    "version": "v6_neutral_strict",
+    "fiscal_flags": {
       "attacks_fiscal_rule": false,
       "proposes_debt_increase": true,
-      "proposes_tax_increase": true,
       "shows_fiscal_responsibility": true
     },
     "fiscal_evidence": [
-      "de los espacios. • Alianzas público-privadas para financiar y mantener proyectos de recuperación urbana y comunitaria. Operatividad desde la Presidencia La seguridad del territorio no se legisla, se e",
-      "n del sistema de gestión de residuos no requerirá nuevos impuestos ni leyes, sino liderazgo, coordinación y un uso más inteligente de los recursos ya disponibles. Cos"
+      "de los espacios. • Alianzas público-privadas para financiar y mantener proyectos de recuperación urbana y comunitaria. Operatividad desde la Presidencia La seguridad del territorio no se legisla, se e"
     ],
     "urgency_coverage": {
-      "seguridad_operativa": {
+      "security_operations": {
         "covered": true,
-        "mentions": [
-          "policía (25)",
-          "fuerza pública (3)",
-          "OIJ (2)",
-          "inteligencia (19)",
-          "patrullaje (4)",
-          "operativo (6)"
-        ]
+        "terms_found": [
+          "policía",
+          "fuerza pública",
+          "OIJ",
+          "inteligencia",
+          "patrullaje",
+          "operativo",
+          "vigilancia",
+          "control territorial"
+        ],
+        "description": "Seguridad operativa"
       },
-      "salud_ccss": {
+      "ccss_crisis": {
         "covered": true,
-        "mentions": [
-          "CCSS (27)",
-          "hospital (26)",
-          "EBAIS (11)",
-          "seguridad social (5)"
-        ]
+        "terms_found": [
+          "CCSS",
+          "Caja Costarricense",
+          "listas de espera",
+          "IVM",
+          "régimen de pensiones"
+        ],
+        "description": "Crisis de la CCSS"
       },
-      "inversion_extranjera": {
+      "formal_employment": {
         "covered": true,
-        "mentions": [
-          "inversión extranjera (3)",
-          "IED (35)",
-          "multinacional (1)"
-        ]
+        "terms_found": [
+          "empleo formal",
+          "formalización"
+        ],
+        "description": "Empleo formal"
       },
-      "empleo": {
+      "organized_crime": {
         "covered": true,
-        "mentions": [
-          "empleo (84)",
-          "desempleo (7)",
-          "trabajo (32)",
-          "informalidad (8)",
-          "capacitación (16)"
-        ]
-      },
-      "educacion": {
-        "covered": true,
-        "mentions": [
-          "educación (67)",
-          "MEP (20)",
-          "deserción (4)",
-          "docente (10)"
-        ]
-      },
-      "infraestructura_APP": {
-        "covered": true,
-        "mentions": [
-          "APP (11)",
-          "alianza público-privada (2)",
-          "concesión (2)",
-          "inversión privada (4)"
-        ]
-      },
-      "crimen_organizado": {
-        "covered": true,
-        "mentions": [
-          "crimen organizado (10)",
-          "narcotráfico (8)"
-        ]
+        "terms_found": [
+          "crimen organizado",
+          "narcotráfico"
+        ],
+        "description": "Crimen organizado"
       }
     },
+    "missing_priority_pillars": [],
     "strengths": [
-      "Aborda seguridad con enfoque operativo",
-      "Aborda salud y CCSS",
-      "Considera inversión extranjera para empleo",
-      "Propone APP para infraestructura",
+      "✅ Aborda: Seguridad operativa",
+      "✅ Aborda: Crisis de la CCSS",
+      "✅ Aborda: Empleo formal",
+      "✅ Aborda: Crimen organizado",
       "✅ Demuestra responsabilidad fiscal"
     ],
     "weaknesses": [
-      "🟠 Propone aumentar deuda pública",
-      "🟠 Propone aumentar impuestos al pueblo"
+      "🟠 Propone aumentar deuda pública"
     ],
-    "risk_level": "ALTO",
+    "risk_level": "BAJO",
     "candidate_id": "natalia-diaz"
   }
 ]

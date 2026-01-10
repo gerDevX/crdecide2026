@@ -96,16 +96,27 @@ Cada propuesta se evalúa con 4 preguntas binarias (0/1):
 
 **Puntaje máximo por propuesta**: 4 puntos
 
-### Análisis Fiscal
+### Sistema de Penalizaciones v6 (Neutral + Estricto)
 
-Se evalúan indicadores de responsabilidad fiscal:
+#### Penalizaciones Fiscales (Objetivas - Basadas en Ley Vigente)
 
 | Indicador | Descripción | Penalización |
 |-----------|-------------|--------------|
-| attacks_fiscal_rule | Ataca o flexibiliza la regla fiscal | -0.10 |
-| proposes_debt_increase | Propone aumentar deuda | -0.05 |
-| proposes_tax_increase | Propone nuevos impuestos | -0.03 |
+| attacks_fiscal_rule | Ataca o flexibiliza la regla fiscal | -2 |
+| proposes_debt_increase | Propone aumentar deuda sin plan de sostenibilidad | -1 |
 | shows_fiscal_responsibility | Muestra compromiso fiscal | Ninguna (positivo) |
+
+> **Nota**: Se eliminó `proposes_tax_increase` porque representaba un sesgo ideológico.
+
+#### Penalizaciones por Omisión (Basadas en Urgencias de CR)
+
+| Indicador | Descripción | Penalización |
+|-----------|-------------|--------------|
+| ignores_security | No menciona seguridad operativa | -1 |
+| ignores_ccss | No menciona crisis de la CCSS | -1 |
+| ignores_employment | No menciona empleo/desempleo | -0.5 |
+| ignores_organized_crime | No menciona crimen organizado | -0.5 |
+| missing_priority_pillar | Falta propuesta en P1, P3, P4 o P7 | -0.5 (por cada uno) |
 
 ### Niveles de Riesgo Fiscal
 
@@ -294,6 +305,8 @@ npm run preview    # Preview del build
 | v2 | Enero 2026 | Estructura con 20 candidatos |
 | v3 | Enero 2026 | Scoring estructural sin penalizaciones |
 | v4 | Enero 2026 | Análisis fiscal completo + 10 pilares |
+| v5 | Enero 2026 | Penalizaciones fiscales estrictas |
+| v6 | Enero 2026 | Sistema neutral + estricto (sin sesgo ideológico, con omisiones) |
 
 ---
 

@@ -28,7 +28,7 @@ const ranking = getRankingWithCandidates().slice(0, limit);
         const score = entry.weighted_sum || 0;
         const scorePercent = Math.round(score * 100);
         const riskLevel = (entry.analysis?.risk_level || 'BAJO') as FiscalRiskLevel;
-        const fiscalPenalty = (entry as any).fiscal_penalty || 0;
+        const fiscalPenalty = (entry as any).total_penalties || 0;
         
         return (
           <a

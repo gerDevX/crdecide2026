@@ -2,7 +2,22 @@
 
 Referencia rápida de la estructura de datos JSON del proyecto.
 
-**Versión 4.0** - Análisis fiscal completo + 10 pilares nacionales.
+**Versión 6.0** - Sistema de penalizaciones neutral y estricto.
+
+---
+
+## Cambios en v6 (Respecto a v5)
+
+| Cambio | Descripción | Razón |
+|--------|-------------|-------|
+| ❌ **Eliminado** | `proposes_tax_increase` | Era sesgo ideológico |
+| ✅ **Mantenido** | `attacks_fiscal_rule` (-2) | Objetivo: ataca ley vigente |
+| ✅ **Mantenido** | `proposes_debt_increase` (-1) | Objetivo: contexto de déficit |
+| ➕ **Agregado** | `ignores_security` (-1) | No menciona seguridad operativa |
+| ➕ **Agregado** | `ignores_ccss` (-1) | No menciona crisis de CCSS |
+| ➕ **Agregado** | `ignores_employment` (-0.5) | No menciona empleo |
+| ➕ **Agregado** | `ignores_organized_crime` (-0.5) | No menciona crimen organizado |
+| ➕ **Agregado** | `missing_priority_pillar` (-0.5) | Por cada pilar prioritario sin propuesta |
 
 ---
 
@@ -18,18 +33,6 @@ interface Candidate {
   pdf_id: string;           // ID del PDF (uppercase: "PLN", "FA")
   pdf_title: string;        // Título del plan de gobierno
   pdf_url: string;          // Ruta al PDF o "no_especificado"
-}
-```
-
-**Ejemplo:**
-```json
-{
-  "candidate_id": "alvaro-ramos",
-  "candidate_name": "Álvaro Ramos",
-  "party_name": "Liberación Nacional",
-  "pdf_id": "PLN",
-  "pdf_title": "Plan de Gobierno 2026–2030",
-  "pdf_url": "https://tse.go.cr/planes/pln.pdf"
 }
 ```
 
@@ -52,16 +55,16 @@ type PillarId = 'P1' | 'P2' | 'P3' | 'P4' | 'P5' | 'P6' | 'P7' | 'P8' | 'P9' | '
 **Pesos:**
 | Pilar | Nombre | Peso |
 |-------|--------|------|
-| P1 | Sostenibilidad fiscal | 0.15 |
-| P2 | Empleo y competitividad | 0.12 |
+| P1 | Sostenibilidad fiscal | 0.14 |
+| P2 | Empleo y competitividad | 0.11 |
 | P3 | Seguridad ciudadana | 0.18 |
-| P4 | Salud pública (CCSS) | 0.15 |
-| P5 | Educación | 0.12 |
-| P6 | Ambiente | 0.04 |
+| P4 | Salud pública (CCSS) | 0.16 |
+| P5 | Educación | 0.10 |
+| P6 | Ambiente | 0.03 |
 | P7 | Reforma del Estado | 0.12 |
 | P8 | Política social | 0.05 |
 | P9 | Política exterior | 0.02 |
-| P10 | Infraestructura/APPs | 0.05 |
+| P10 | Infraestructura/APPs | 0.09 |
 
 ---
 
@@ -101,44 +104,18 @@ interface Evidence {
 }
 ```
 
-**Ejemplo:**
-```json
-{
-  "proposal_id": "pln-a1b2c3d4",
-  "candidate_id": "alvaro-ramos",
-  "pillar_id": "P1",
-  "proposal_title": "Reforma tributaria progresiva",
-  "proposal_text": "Modificar la estructura del impuesto sobre la renta...",
-  "dimensions": {
-    "existence": 1,
-    "when": 1,
-    "how": 1,
-    "funding": 1
-  },
-  "extracted_fields": {
-    "when_text": "primer año de gobierno",
-    "how_text": "reforma a la Ley del Impuesto sobre la Renta",
-    "funding_text": "reasignación de exoneraciones fiscales"
-  },
-  "evidence": {
-    "pdf_id": "PLN",
-    "page": 23,
-    "snippet": "...modificar la estructura del impuesto sobre la renta..."
-  }
-}
-```
-
 ---
 
 ## candidate_scores.json
 
-Array de puntajes calculados por candidato, incluyendo análisis fiscal.
+Array de puntajes calculados por candidato, incluyendo análisis fiscal y de omisiones.
 
 ```typescript
 interface CandidateScore {
   candidate_id: string;
   pillar_scores: PillarScore[];
   fiscal_analysis: FiscalAnalysis;
+  omission_analysis: OmissionAnalysis;  // NUEVO en v6
   overall: Overall;
 }
 
@@ -148,15 +125,25 @@ interface PillarScore {
   effective_score: number;     // raw_score con ajustes
   normalized: number;          // 0.0-1.0 (effective/4)
   weighted: number;            // normalized * peso_pilar
-  penalties: FiscalPenalty[];  // Penalizaciones aplicadas
+  penalties: Penalty[];        // Penalizaciones aplicadas
 }
 
-interface FiscalPenalty {
-  type: 'attacks_fiscal_rule' | 'proposes_debt_increase' | 'proposes_tax_increase' | 'urgency_omission';
+interface Penalty {
+  type: PenaltyType;
   value: number;               // Valor negativo
   reason: string;              // Explicación
   evidence?: string;           // Texto de evidencia
 }
+
+// Tipos de penalización (v6)
+type PenaltyType = 
+  | 'attacks_fiscal_rule'      // Ataca la regla fiscal
+  | 'proposes_debt_increase'   // Propone más deuda
+  | 'ignores_security'         // No menciona seguridad
+  | 'ignores_ccss'             // No menciona CCSS
+  | 'ignores_employment'       // No menciona empleo
+  | 'ignores_organized_crime'  // No menciona crimen organizado
+  | 'missing_priority_pillar'; // Falta pilar prioritario
 
 interface FiscalAnalysis {
   flags: FiscalFlags;
@@ -164,57 +151,34 @@ interface FiscalAnalysis {
   evidence: string[];
 }
 
+// NOTA: proposes_tax_increase fue ELIMINADO (sesgo ideológico)
 interface FiscalFlags {
   attacks_fiscal_rule: boolean;      // ¿Ataca la regla fiscal?
-  proposes_debt_increase: boolean;   // ¿Propone más deuda?
-  proposes_tax_increase: boolean;    // ¿Propone más impuestos?
+  proposes_debt_increase: boolean;   // ¿Propone más deuda sin plan?
   shows_fiscal_responsibility: boolean; // ¿Muestra responsabilidad fiscal?
 }
 
-interface Overall {
-  raw_sum: number;                   // Suma de raw_scores (0-40)
-  effective_sum: number;             // Suma efectiva con ajustes
-  weighted_sum: number;              // Suma ponderada (0.0-1.0)
-  priority_weighted_sum: number;     // Solo pilares prioritarios
-  critical_weighted_sum: number;     // Solo pilares críticos
-  fiscal_penalty_applied: number;    // Total de penalizaciones fiscales
-  notes: string;                     // Observaciones técnicas neutrales
+// NUEVO en v6: Análisis de omisiones
+interface OmissionAnalysis {
+  ignores_security: boolean;          // No menciona seguridad operativa
+  ignores_ccss: boolean;              // No menciona crisis de CCSS
+  ignores_employment: boolean;        // No menciona empleo
+  ignores_organized_crime: boolean;   // No menciona crimen organizado
+  missing_priority_pillars: string[]; // Pilares prioritarios sin propuesta
+  total_penalty: number;              // Suma de penalizaciones por omisión
+  details: string[];                  // Descripciones de las omisiones
 }
-```
 
-**Ejemplo:**
-```json
-{
-  "candidate_id": "alvaro-ramos",
-  "pillar_scores": [
-    {
-      "pillar_id": "P1",
-      "raw_score": 4,
-      "effective_score": 4,
-      "normalized": 1.0,
-      "weighted": 0.15,
-      "penalties": []
-    }
-  ],
-  "fiscal_analysis": {
-    "flags": {
-      "attacks_fiscal_rule": false,
-      "proposes_debt_increase": false,
-      "proposes_tax_increase": false,
-      "shows_fiscal_responsibility": true
-    },
-    "total_penalty": 0,
-    "evidence": []
-  },
-  "overall": {
-    "raw_sum": 28,
-    "effective_sum": 28,
-    "weighted_sum": 0.82,
-    "priority_weighted_sum": 0.68,
-    "critical_weighted_sum": 0.72,
-    "fiscal_penalty_applied": 0,
-    "notes": "Sin propuestas identificadas: P9"
-  }
+interface Overall {
+  raw_sum: number;                      // Suma de raw_scores (0-40)
+  effective_sum: number;                // Suma efectiva con ajustes
+  weighted_sum: number;                 // Suma ponderada (0.0-1.0)
+  priority_weighted_sum: number;        // Solo pilares prioritarios
+  critical_weighted_sum: number;        // Solo pilares críticos
+  fiscal_penalty_applied: number;       // Penalizaciones fiscales
+  omission_penalty_applied: number;     // Penalizaciones por omisión (NUEVO)
+  total_penalty_applied: number;        // Total de penalizaciones (NUEVO)
+  notes: string;                        // Observaciones técnicas neutrales
 }
 ```
 
@@ -222,7 +186,7 @@ interface Overall {
 
 ## detailed_analysis.json
 
-Array de análisis detallado por candidato (fortalezas, debilidades, riesgo).
+Array de análisis detallado por candidato.
 
 ```typescript
 interface DetailedAnalysis {
@@ -231,59 +195,28 @@ interface DetailedAnalysis {
   total_pages: number;
   fiscal_responsibility: FiscalFlags;
   fiscal_evidence: string[];
-  urgency_coverage: UrgencyCoverage;
+  urgency_coverage: UrgencyCoverageMap;
   strengths: string[];           // Fortalezas identificadas
-  weaknesses: string[];          // Debilidades identificadas
+  weaknesses: string[];          // Debilidades (incluye omisiones v6)
   risk_level: FiscalRiskLevel;   // 'ALTO' | 'MEDIO' | 'BAJO'
 }
 
-interface UrgencyCoverage {
-  seguridad_operativa: Coverage;
-  salud_ccss: Coverage;
-  inversion_extranjera: Coverage;
-  empleo: Coverage;
-  educacion: Coverage;
-  infraestructura_APP: Coverage;
-  crimen_organizado: Coverage;
+interface UrgencyCoverageMap {
+  seguridad_operativa: UrgencyCoverage;
+  salud_ccss: UrgencyCoverage;
+  inversion_extranjera: UrgencyCoverage;
+  empleo: UrgencyCoverage;
+  educacion: UrgencyCoverage;
+  infraestructura_APP: UrgencyCoverage;
+  crimen_organizado: UrgencyCoverage;
 }
 
-interface Coverage {
+interface UrgencyCoverage {
   covered: boolean;
   mentions: string[];
 }
 
 type FiscalRiskLevel = 'ALTO' | 'MEDIO' | 'BAJO';
-```
-
-**Ejemplo:**
-```json
-{
-  "candidate_id": "alvaro-ramos",
-  "pdf_id": "PLN",
-  "total_pages": 45,
-  "fiscal_responsibility": {
-    "attacks_fiscal_rule": false,
-    "proposes_debt_increase": false,
-    "proposes_tax_increase": false,
-    "shows_fiscal_responsibility": true
-  },
-  "fiscal_evidence": [],
-  "urgency_coverage": {
-    "seguridad_operativa": {
-      "covered": true,
-      "mentions": ["Fortalecimiento de la policía nacional..."]
-    }
-  },
-  "strengths": [
-    "Plan fiscal detallado con fuentes de financiamiento",
-    "Propuestas de seguridad con plazos definidos"
-  ],
-  "weaknesses": [
-    "No menciona política exterior",
-    "Ambiente recibe poca atención"
-  ],
-  "risk_level": "BAJO"
-}
 ```
 
 ---
@@ -294,14 +227,20 @@ Rankings ordenados de candidatos.
 
 ```typescript
 interface Ranking {
-  method_version: string;                    // "v4"
+  method_version: string;                    // "v6_neutral_strict"
   weights: Record<string, number>;           // Pesos por pilar
   priority_pillars: string[];                // ['P3', 'P4', 'P1', 'P7']
   critical_pillars: string[];                // ['P3', 'P4', 'P1', 'P7', 'P2', 'P5']
   penalties_applied: {
-    attacks_fiscal_rule: number;             // -0.10
-    proposes_debt_increase: number;          // -0.05
-    proposes_tax_increase: number;           // -0.03
+    // Fiscales (objetivas)
+    attacks_fiscal_rule: number;             // -2
+    proposes_debt_increase: number;          // -1
+    // Por omisión (NUEVO v6)
+    ignores_security: number;                // -1
+    ignores_ccss: number;                    // -1
+    ignores_employment: number;              // -0.5
+    ignores_organized_crime: number;         // -0.5
+    missing_priority_pillar: number;         // -0.5 (por cada uno)
   };
   ranking_overall_weighted: RankingEntry[];  // Ranking general
   ranking_priority_weighted: RankingEntry[]; // Ranking pilares prioritarios
@@ -312,76 +251,42 @@ interface RankingEntry {
   rank: number;                              // Posición (1-20)
   candidate_id: string;                      // ID del candidato
   weighted_sum?: number;                     // Para overall
-  fiscal_penalty?: number;                   // Penalización fiscal aplicada
+  fiscal_penalty?: number;                   // Penalización fiscal
+  omission_penalty?: number;                 // Penalización por omisión (NUEVO)
+  total_penalty?: number;                    // Total de penalizaciones (NUEVO)
   priority_weighted_sum?: number;            // Para priority
   critical_weighted_sum?: number;            // Para critical
 }
 ```
 
-**Ejemplo:**
-```json
-{
-  "method_version": "v4",
-  "weights": {
-    "P1": 0.15, "P2": 0.12, "P3": 0.18, "P4": 0.15, "P5": 0.12,
-    "P6": 0.04, "P7": 0.12, "P8": 0.05, "P9": 0.02, "P10": 0.05
-  },
-  "priority_pillars": ["P3", "P4", "P1", "P7"],
-  "critical_pillars": ["P3", "P4", "P1", "P7", "P2", "P5"],
-  "penalties_applied": {
-    "attacks_fiscal_rule": -0.10,
-    "proposes_debt_increase": -0.05,
-    "proposes_tax_increase": -0.03
-  },
-  "ranking_overall_weighted": [
-    { "rank": 1, "candidate_id": "alvaro-ramos", "weighted_sum": 0.82, "fiscal_penalty": 0 },
-    { "rank": 2, "candidate_id": "claudia-dobles", "weighted_sum": 0.78, "fiscal_penalty": -0.05 }
-  ],
-  "ranking_priority_weighted": [
-    { "rank": 1, "candidate_id": "alvaro-ramos", "priority_weighted_sum": 0.68 }
-  ],
-  "ranking_critical_weighted": [
-    { "rank": 1, "candidate_id": "alvaro-ramos", "critical_weighted_sum": 0.72 }
-  ]
-}
-```
-
 ---
 
-## Relaciones
+## Sistema de Penalizaciones v6
 
-```
-candidates.json ←──── candidate_id ────→ proposals.json
-                                              ↓
-                                         pillar_id
-                                              ↓
-pillars.json ←───── pillar_id ─────→ candidate_scores.json
-                                              ↓
-                                         candidate_id
-                                              ↓
-                                      ranking.json
+### Penalizaciones Fiscales (Objetivas - Basadas en Ley)
 
-candidates.json ←──── candidate_id ────→ detailed_analysis.json
-```
+| Tipo | Descripción | Penalización |
+|------|-------------|--------------|
+| `attacks_fiscal_rule` | Propone eliminar/flexibilizar la regla fiscal | **-2** |
+| `proposes_debt_increase` | Propone aumentar deuda sin plan de sostenibilidad | **-1** |
 
----
+### Penalizaciones por Omisión (Basadas en Urgencias de CR)
 
-## Ubicación de Archivos
+| Tipo | Descripción | Penalización |
+|------|-------------|--------------|
+| `ignores_security` | No menciona seguridad operativa | **-1** |
+| `ignores_ccss` | No menciona crisis de la CCSS | **-1** |
+| `ignores_employment` | No menciona empleo/desempleo | **-0.5** |
+| `ignores_organized_crime` | No menciona crimen organizado | **-0.5** |
+| `missing_priority_pillar` | Falta propuesta en P1, P3, P4 o P7 | **-0.5** (por cada uno) |
 
-```
-analysis/
-├── data/
-│   ├── candidates.json           # 20 candidatos
-│   ├── pillars.json              # 10 pilares
-│   ├── proposals.json            # Propuestas por candidato/pilar
-│   ├── candidate_scores.json     # Scores + análisis fiscal
-│   ├── detailed_analysis.json    # Fortalezas, debilidades, riesgo
-│   └── ranking.json              # Rankings ponderados (3 tipos)
-└── planes/
-    ├── PLN.pdf
-    ├── FA.pdf
-    └── ... (20 PDFs)
-```
+### Criterios de Riesgo Fiscal
+
+| Nivel | Emoji | Criterio |
+|-------|-------|----------|
+| **ALTO** | 🔴 | `attacks_fiscal_rule = true` O `total_penalty >= 3` |
+| **MEDIO** | 🟠 | `total_penalty >= 1.5` AND `< 3` |
+| **BAJO** | 🟢 | `total_penalty < 1.5` |
 
 ---
 
@@ -410,26 +315,6 @@ const CRITICAL_PILLARS: PillarId[] = ['P3', 'P4', 'P1', 'P7', 'P2', 'P5'];
 
 ---
 
-## Penalizaciones Fiscales
-
-| Tipo | Descripción | Penalización |
-|------|-------------|--------------|
-| attacks_fiscal_rule | Propone eliminar/flexibilizar la regla fiscal | -0.10 |
-| proposes_debt_increase | Propone aumentar deuda sin plan de sostenibilidad | -0.05 |
-| proposes_tax_increase | Propone aumentar impuestos | -0.03 |
-
----
-
-## Niveles de Riesgo Fiscal
-
-| Nivel | Emoji | Descripción |
-|-------|-------|-------------|
-| ALTO | 🔴 | Alto riesgo: ataca regla fiscal o propone deuda excesiva |
-| MEDIO | 🟠 | Riesgo moderado: algunas propuestas con impacto fiscal |
-| BAJO | 🟢 | Bajo riesgo: fiscalmente responsable |
-
----
-
 ## Metadata de Pilares (UI)
 
 ```typescript
@@ -442,4 +327,22 @@ const PILLAR_COLORS: Record<PillarId, string> = {
   P1: 'emerald', P2: 'blue', P3: 'red', P4: 'pink', P5: 'amber',
   P6: 'green', P7: 'purple', P8: 'orange', P9: 'cyan', P10: 'slate'
 };
+```
+
+---
+
+## Ubicación de Archivos
+
+```
+analysis/
+├── data/
+│   ├── candidates.json           # 20 candidatos
+│   ├── pillars.json              # 10 pilares
+│   ├── proposals.json            # Propuestas por candidato/pilar
+│   ├── candidate_scores.json     # Scores + análisis fiscal + omisiones
+│   ├── detailed_analysis.json    # Fortalezas, debilidades, riesgo
+│   └── ranking.json              # Rankings ponderados (3 tipos)
+├── planes/
+│   └── ... (20 PDFs)
+└── recalculate_scores_v6.py      # Script de recálculo
 ```

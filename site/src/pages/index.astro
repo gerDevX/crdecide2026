@@ -90,19 +90,32 @@ const fiscalStats = getFiscalStats();
         </div>
         
         <div class="card p-4 mt-4 bg-slate-50 border-slate-200">
-          <h3 class="font-semibold text-slate-800 mb-2">Banderas rojas detectadas:</h3>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
-            <div class="flex items-center gap-2">
-              <span>⚠️</span>
-              <span><strong>{fiscalStats.attackFiscalRule}</strong> atacan la regla fiscal</span>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div>
+              <h3 class="font-semibold text-red-800 mb-2">🔴 Penalizaciones fiscales:</h3>
+              <div class="space-y-2 text-sm">
+                <div class="flex items-center gap-2">
+                  <span>⚠️</span>
+                  <span><strong>{fiscalStats.attackFiscalRule}</strong> atacan la regla fiscal</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span>💰</span>
+                  <span><strong>{fiscalStats.proposeDebt}</strong> proponen más deuda</span>
+                </div>
+              </div>
             </div>
-            <div class="flex items-center gap-2">
-              <span>💰</span>
-              <span><strong>{fiscalStats.proposeDebt}</strong> proponen más deuda</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <span>📈</span>
-              <span><strong>{fiscalStats.proposeTax}</strong> proponen más impuestos</span>
+            <div>
+              <h3 class="font-semibold text-amber-800 mb-2">🟠 Omisiones de urgencias:</h3>
+              <div class="space-y-2 text-sm">
+                <div class="flex items-center gap-2">
+                  <span>🚨</span>
+                  <span><strong>{fiscalStats.ignoreSecurity}</strong> ignoran seguridad operativa</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span>🏥</span>
+                  <span><strong>{fiscalStats.ignoreCCSS}</strong> ignoran crisis CCSS</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -119,8 +132,8 @@ const fiscalStats = getFiscalStats();
           <p class="text-slate-600 text-sm mt-1">Pilares</p>
         </div>
         <div class="card p-5 text-center">
-          <span class="text-3xl font-bold text-gradient">3</span>
-          <p class="text-slate-600 text-sm mt-1">Penalizaciones</p>
+          <span class="text-3xl font-bold text-gradient">6</span>
+          <p class="text-slate-600 text-sm mt-1">Tipos de penalización</p>
         </div>
         <div class="card p-5 text-center">
           <span class="text-3xl font-bold text-gradient">4</span>

@@ -58,27 +58,63 @@ export interface Proposal {
 }
 
 // ============================================
-// PENALIZACIONES FISCALES
+// PENALIZACIONES (SISTEMA NEUTRAL v6)
 // ============================================
 
-export interface FiscalPenalty {
-  type: 'attacks_fiscal_rule' | 'proposes_debt_increase' | 'proposes_tax_increase' | 'urgency_omission';
+// Tipos de penalización fiscal (objetivas - basadas en ley)
+export type FiscalPenaltyType = 
+  | 'attacks_fiscal_rule'      // Ataca la regla fiscal vigente
+  | 'proposes_debt_increase';  // Propone más deuda sin plan
+
+// Tipos de penalización por omisión (basadas en urgencias de CR)
+export type OmissionPenaltyType = 
+  | 'ignores_security'         // No menciona seguridad operativa
+  | 'ignores_ccss'             // No menciona crisis de CCSS
+  | 'ignores_employment'       // No menciona empleo/desempleo
+  | 'ignores_organized_crime'  // No menciona crimen organizado
+  | 'missing_priority_pillar'; // Falta propuesta en pilar prioritario
+
+// Todos los tipos de penalización
+export type PenaltyType = FiscalPenaltyType | OmissionPenaltyType;
+
+export interface Penalty {
+  type: PenaltyType;
   value: number;
   reason: string;
   evidence?: string;
 }
 
+// ============================================
+// BANDERAS FISCALES (sin proposes_tax_increase - era sesgo ideológico)
+// ============================================
+
 export interface FiscalFlags {
-  attacks_fiscal_rule: boolean;
-  proposes_debt_increase: boolean;
-  proposes_tax_increase: boolean;
-  shows_fiscal_responsibility: boolean;
+  attacks_fiscal_rule: boolean;      // ¿Ataca la regla fiscal?
+  proposes_debt_increase: boolean;   // ¿Propone más deuda sin plan?
+  shows_fiscal_responsibility: boolean; // ¿Muestra responsabilidad fiscal?
 }
 
 export interface FiscalAnalysis {
   flags: FiscalFlags;
   total_penalty: number;
   evidence: string[];
+}
+
+// ============================================
+// COBERTURA DE URGENCIAS NACIONALES
+// ============================================
+
+export interface UrgencyCoverageItem {
+  covered: boolean;
+  terms_found: string[];
+  description: string;
+}
+
+export interface UrgencyCoverageMap {
+  security_operations: UrgencyCoverageItem;
+  ccss_crisis: UrgencyCoverageItem;
+  formal_employment: UrgencyCoverageItem;
+  organized_crime: UrgencyCoverageItem;
 }
 
 // ============================================
@@ -91,42 +127,77 @@ export interface PillarScore {
   effective_score: number;
   normalized: number;
   weighted: number;
-  penalties: FiscalPenalty[];
+  penalties: Penalty[];
 }
 
 export interface CandidateScore {
   candidate_id: string;
   pillar_scores: PillarScore[];
   fiscal_analysis: FiscalAnalysis;
+  omission_analysis: OmissionAnalysisV6;
   overall: {
     raw_sum: number;
     effective_sum: number;
     weighted_sum: number;
     priority_weighted_sum: number;
     critical_weighted_sum: number;
-    fiscal_penalty_applied: number;
+    total_penalties_applied: number;
     notes: string;
   };
 }
+
+// ============================================
+// ANÁLISIS DE OMISIONES (v6)
+// ============================================
+
+export interface OmissionAnalysisV6 {
+  urgency_coverage: UrgencyCoverageMap;
+  urgency_penalty: number;
+  missing_pillars: PillarId[];
+  pillar_penalty: number;
+}
+
+// Mantener compatibilidad con código existente
+export interface OmissionAnalysis {
+  ignores_security: boolean;
+  ignores_ccss: boolean;
+  ignores_employment: boolean;
+  ignores_organized_crime: boolean;
+  missing_priority_pillars: PillarId[];
+  total_penalty: number;
+}
+
+// ============================================
+// RANKING
+// ============================================
 
 export interface RankingEntry {
   rank: number;
   candidate_id: string;
   weighted_sum?: number;
-  fiscal_penalty?: number;
+  total_penalties?: number;
   priority_weighted_sum?: number;
   critical_weighted_sum?: number;
 }
 
 export interface Ranking {
   method_version: string;
+  description?: string;
   weights: Record<string, number>;
   priority_pillars: string[];
   critical_pillars: string[];
   penalties_applied: {
-    attacks_fiscal_rule: number;
-    proposes_debt_increase: number;
-    proposes_tax_increase: number;
+    fiscal: {
+      attacks_fiscal_rule: number;
+      proposes_debt_increase: number;
+    };
+    omissions: {
+      ignores_security_operations: number;
+      ignores_ccss_crisis: number;
+      ignores_formal_employment: number;
+      ignores_organized_crime: number;
+      missing_priority_pillar: number;
+    };
   };
   ranking_overall_weighted: RankingEntry[];
   ranking_priority_weighted: RankingEntry[];
@@ -137,26 +208,15 @@ export interface Ranking {
 // ANÁLISIS DETALLADO
 // ============================================
 
-export interface UrgencyCoverage {
-  covered: boolean;
-  mentions: string[];
-}
-
 export interface DetailedAnalysis {
   candidate_id: string;
   pdf_id: string;
   total_pages: number;
-  fiscal_responsibility: FiscalFlags;
+  version: string;
+  fiscal_flags: FiscalFlags;
   fiscal_evidence: string[];
-  urgency_coverage: {
-    seguridad_operativa: UrgencyCoverage;
-    salud_ccss: UrgencyCoverage;
-    inversion_extranjera: UrgencyCoverage;
-    empleo: UrgencyCoverage;
-    educacion: UrgencyCoverage;
-    infraestructura_APP: UrgencyCoverage;
-    crimen_organizado: UrgencyCoverage;
-  };
+  urgency_coverage: UrgencyCoverageMap;
+  missing_priority_pillars: PillarId[];
   strengths: string[];
   weaknesses: string[];
   risk_level: FiscalRiskLevel;
@@ -232,6 +292,25 @@ export const PRIORITY_PILLARS: PillarId[] = ['P3', 'P4', 'P1', 'P7'];
 export const CRITICAL_PILLARS: PillarId[] = ['P3', 'P4', 'P1', 'P7', 'P2', 'P5'];
 
 // ============================================
+// CONSTANTES DE PENALIZACIÓN (v6 - Neutral + Estricto)
+// ============================================
+
+// Penalizaciones fiscales (objetivas - basadas en ley vigente)
+export const FISCAL_PENALTIES: Record<FiscalPenaltyType, number> = {
+  attacks_fiscal_rule: -2,      // Ataca ley vigente = penalización fuerte
+  proposes_debt_increase: -1,   // Más deuda en contexto de déficit
+};
+
+// Penalizaciones por omisión (basadas en urgencias nacionales de CR)
+export const OMISSION_PENALTIES: Record<OmissionPenaltyType, number> = {
+  ignores_security: -1,         // No menciona seguridad en contexto de crisis
+  ignores_ccss: -1,             // No menciona CCSS en contexto de crisis
+  ignores_employment: -0.5,     // No menciona empleo en contexto de desempleo alto
+  ignores_organized_crime: -0.5,// No menciona crimen organizado
+  missing_priority_pillar: -0.5,// Falta propuesta en pilar prioritario (P1,P3,P4,P7)
+};
+
+// ============================================
 // CONSTANTES DE RIESGO FISCAL
 // ============================================
 
@@ -247,7 +326,7 @@ export const FISCAL_RISK_EMOJI: Record<FiscalRiskLevel, string> = {
   BAJO: '🟢',
 };
 
-export const PENALTY_LABELS: Record<string, { emoji: string; label: string; description: string }> = {
+export const PENALTY_LABELS: Record<PenaltyType, { emoji: string; label: string; description: string }> = {
   attacks_fiscal_rule: {
     emoji: '⚠️',
     label: 'Ataca regla fiscal',
@@ -258,9 +337,29 @@ export const PENALTY_LABELS: Record<string, { emoji: string; label: string; desc
     label: 'Más deuda',
     description: 'Propone aumentar la deuda pública sin plan de sostenibilidad',
   },
-  proposes_tax_increase: {
-    emoji: '📈',
-    label: 'Más impuestos',
-    description: 'Propone aumentar impuestos al pueblo costarricense',
+  ignores_security: {
+    emoji: '🚨',
+    label: 'Ignora seguridad',
+    description: 'No menciona seguridad operativa en medio de crisis de violencia',
+  },
+  ignores_ccss: {
+    emoji: '🏥',
+    label: 'Ignora CCSS',
+    description: 'No aborda la crisis de la Caja Costarricense de Seguro Social',
+  },
+  ignores_employment: {
+    emoji: '💼',
+    label: 'Ignora empleo',
+    description: 'No menciona empleo/desempleo con tasa superior al 10%',
+  },
+  ignores_organized_crime: {
+    emoji: '🔫',
+    label: 'Ignora crimen organizado',
+    description: 'No menciona narcotráfico ni crimen organizado',
+  },
+  missing_priority_pillar: {
+    emoji: '📋',
+    label: 'Falta pilar prioritario',
+    description: 'No tiene propuesta concreta en un pilar prioritario (P1, P3, P4, P7)',
   },
 };

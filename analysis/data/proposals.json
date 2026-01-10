@@ -23,49 +23,49 @@
     }
   },
   {
-    "proposal_id": "acrm-3962f98f",
+    "proposal_id": "acrm-e6f9acc3",
     "candidate_id": "ronny-castillo-gonzalez",
     "pillar_id": "P2",
-    "proposal_title": "Nuestra visión se enraíza en los principios de soberanía …",
-    "proposal_text": "Nuestra visión se enraíza en los principios de soberanía financiera, inclusión y meritocracia de capital, buscando crear los instrumentos necesarios para que las empresas, emprendedores y ciudadanos tengan acceso a un ecosistema de financiamiento diverso, transparente y al servicio del desarrollo nacional. 5.2.2.​ Visión para el Sistema Financiero: Un ecosistema financiero moderno y completo que posicione a Costa Rica como un hub de innovación financiera regional, donde convivan armónicamente la",
+    "proposal_title": "Emitir en la primera semana un decreto que establezca la …",
+    "proposal_text": "Emitir en la primera semana un decreto que establezca la obligatoriedad de concursos públicos, meritocráticos y auditados para todos los puestos de confianza, la publicación de salarios y la declaración jurada de intereses de todo alto funcionario",
     "dimensions": {
       "existence": 1,
       "when": 0,
       "how": 0,
-      "funding": 1
+      "funding": 0
     },
     "extracted_fields": {
       "when_text": "no_especificado",
       "how_text": "no_especificado",
-      "funding_text": "istema de financiamiento diverso, transparente y al servicio del desarroll"
+      "funding_text": "no_especificado"
     },
     "evidence": {
       "pdf_id": "ACRM",
-      "page": 36,
-      "snippet": "Nuestra visión se enraíza en los principios de soberanía financiera, inclusión y meritocracia de capital, buscando crear los instrumentos necesarios para que las empresas, emprendedores y ciudadanos tengan acceso a un ecosistema de finan…"
+      "page": 61,
+      "snippet": "Emitir en la primera semana un decreto que establezca la obligatoriedad de concursos públicos, meritocráticos y auditados para todos los puestos de confianza, la publicación de salarios y la declaración jurada de intereses de todo alto f…"
     }
   },
   {
-    "proposal_id": "acrm-efff1b59",
+    "proposal_id": "acrm-0a55aae2",
     "candidate_id": "ronny-castillo-gonzalez",
     "pillar_id": "P3",
-    "proposal_title": "Establecer definiciones claras para los distintos tipos d…",
-    "proposal_text": "Establecer definiciones claras para los distintos tipos de activos virtuales (valor, utilidad, activo, pago), los requisitos de registro e información para las plataformas de intercambio (exchanges), y los protocolos de prevención de lavado de dinero y financiamiento al terrorismo (LA/FT), garantizando la seguridad de los inversionistas",
+    "proposal_title": "Frente a la crisis actual, implementaremos un modelo de s…",
+    "proposal_text": "Frente a la crisis actual, implementaremos un modelo de seguridad integral basado en evidencia, inteligencia y tecnología, que incluya tribunales especializados de alta eficiencia para delitos violentos, narcotráfico y corrupción",
     "dimensions": {
       "existence": 1,
       "when": 0,
       "how": 1,
-      "funding": 1
+      "funding": 0
     },
     "extracted_fields": {
       "when_text": "no_especificado",
-      "how_text": "Establecer definiciones claras para los distintos tipos de a",
-      "funding_text": "dinero y financiamiento al terrorismo (LA/FT), garantizando la seguridad"
+      "how_text": "s actual, implementaremos un modelo de seguridad integral basado en evidenc",
+      "funding_text": "no_especificado"
     },
     "evidence": {
       "pdf_id": "ACRM",
-      "page": 37,
-      "snippet": "Establecer definiciones claras para los distintos tipos de activos virtuales (valor, utilidad, activo, pago), los requisitos de registro e información para las plataformas de intercambio (exchanges), y los protocolos de prevención de lav…"
+      "page": 26,
+      "snippet": "Frente a la crisis actual, implementaremos un modelo de seguridad integral basado en evidencia, inteligencia y tecnología, que incluya tribunales especializados de alta eficiencia para delitos violentos, narcotráfico y corrupción"
     }
   },
   {
@@ -207,26 +207,26 @@
     }
   },
   {
-    "proposal_id": "acrm-33e102ce",
+    "proposal_id": "acrm-ccd853ec",
     "candidate_id": "ronny-castillo-gonzalez",
     "pillar_id": "P10",
-    "proposal_title": "Reactivar el proyecto de tren Limón (CR) - Chiriquí (PA) …",
-    "proposal_text": "Reactivar el proyecto de tren Limón (CR) - Chiriquí (PA) para transporte de carga y pasajeros, integrando la logística del Caribe con el Pacífico",
+    "proposal_title": "Creemos en el antiestablecimiento para romper con la buro…",
+    "proposal_text": "Creemos en el antiestablecimiento para romper con la burocracia y los intereses creados que han mantenido la frontera como una barrera, y en la economía regenerativa para desarrollar corredores verdes y cadenas productivas sostenibles que trascienden las fronteras políticas. 5.4.4.​ Situación Actual y Justificación: A pesar de su proximidad y complementariedad económica, Costa Rica y Panamá operan como economías desconectadas: -​ Infraestructura Desarticulada: La ruta Interamericana presenta gra",
     "dimensions": {
       "existence": 1,
       "when": 0,
-      "how": 0,
+      "how": 1,
       "funding": 0
     },
     "extracted_fields": {
       "when_text": "no_especificado",
-      "how_text": "no_especificado",
+      "how_text": "jetivo 1: Crear un Corredor Logístico Integrado Costa Rica-Panamá",
       "funding_text": "no_especificado"
     },
     "evidence": {
       "pdf_id": "ACRM",
       "page": 42,
-      "snippet": "Reactivar el proyecto de tren Limón (CR) - Chiriquí (PA) para transporte de carga y pasajeros, integrando la logística del Caribe con el Pacífico"
+      "snippet": "Creemos en el antiestablecimiento para romper con la burocracia y los intereses creados que han mantenido la frontera como una barrera, y en la economía regenerativa para desarrollar corredores verdes y cadenas productivas sostenibles qu…"
     }
   },
   {
@@ -253,26 +253,26 @@
     }
   },
   {
-    "proposal_id": "cac-e65d2da9",
+    "proposal_id": "cac-c53b6d76",
     "candidate_id": "claudia-dobles",
     "pillar_id": "P2",
-    "proposal_title": "Impulsar emprendimientos de empresarios locales y naciona…",
-    "proposal_text": "Impulsar emprendimientos de empresarios locales y nacionales para desarrollar negocios sostenibles en el sector turismo por medio del acceso a financiamiento competitivo que reconozca prácticas de sostenibilidad",
+    "proposal_title": "Además, fortalecer el componente relativo a las políticas…",
+    "proposal_text": "Además, fortalecer el componente relativo a las políticas de empleo y empresariedad y su vinculación con la Red Nacional de Cuido y Desarrollo Infantil (REDCUDI), el Sistema Nacional de Cuidados y Apoyos (SINCA) y otros programas. 50 Programa de gobierno",
     "dimensions": {
       "existence": 1,
       "when": 0,
-      "how": 0,
-      "funding": 1
+      "how": 1,
+      "funding": 0
     },
     "extracted_fields": {
       "when_text": "no_especificado",
-      "how_text": "no_especificado",
-      "funding_text": "acceso a financiamiento competitivo que reconozca prácticas de sostenibil"
+      "how_text": "ramas. 50 Programa de gobierno",
+      "funding_text": "no_especificado"
     },
     "evidence": {
       "pdf_id": "CAC",
-      "page": 163,
-      "snippet": "Impulsar emprendimientos de empresarios locales y nacionales para desarrollar negocios sostenibles en el sector turismo por medio del acceso a financiamiento competitivo que reconozca prácticas de sostenibilidad"
+      "page": 50,
+      "snippet": "Además, fortalecer el componente relativo a las políticas de empleo y empresariedad y su vinculación con la Red Nacional de Cuido y Desarrollo Infantil (REDCUDI), el Sistema Nacional de Cuidados y Apoyos (SINCA) y otros programas. 50 Pro…"
     }
   },
   {
@@ -690,26 +690,26 @@
     }
   },
   {
-    "proposal_id": "cr1-21031dab",
+    "proposal_id": "cr1-a6323310",
     "candidate_id": "douglas-caamano-q",
     "pillar_id": "P1",
-    "proposal_title": "El proyecto fue tan visionario que permitirá aumentar sig…",
-    "proposal_text": "El proyecto fue tan visionario que permitirá aumentar significativamente la recaudación del estado, con tan solo el 10% ya que desarrollara una cultura tributaria entre los costarricenses con el hecho de que todos y todas nos acostumbraremos a solicitar el comprobante o factura electrónica, toda vez que en cada oportunidad de compra, estaremos aumentando en un 3% de esa compra el fondo para nuestra propia pensión complementaria Por otra parte es un proyecto totalmente solidario, ya que el 3% de ",
+    "proposal_title": "51 • Crear la Estrategia Nacional de Energía Soberana, re…",
+    "proposal_text": "51 • Crear la Estrategia Nacional de Energía Soberana, reduciendo dependencia de combustibles importados. • Modernizar el ICE para garantizar eficiencia y tarifas competitivas. • Permitir el aprovechamiento responsable de recursos naturales con regulación estricta. • Impulsar incentivos fiscales para proyectos de energías limpias y producción sostenible. • Establecer programas de pago por servicios ambientales con justicia regional",
     "dimensions": {
       "existence": 1,
       "when": 0,
-      "how": 0,
+      "how": 1,
       "funding": 0
     },
     "extracted_fields": {
       "when_text": "no_especificado",
-      "how_text": "no_especificado",
+      "how_text": "51 • Crear la Estrategia Nacional de Energía Soberana, reducien",
       "funding_text": "no_especificado"
     },
     "evidence": {
       "pdf_id": "CR1",
-      "page": 16,
-      "snippet": "El proyecto fue tan visionario que permitirá aumentar significativamente la recaudación del estado, con tan solo el 10% ya que desarrollara una cultura tributaria entre los costarricenses con el hecho de que todos y todas nos acostumbrar…"
+      "page": 51,
+      "snippet": "51 • Crear la Estrategia Nacional de Energía Soberana, reduciendo dependencia de combustibles importados. • Modernizar el ICE para garantizar eficiencia y tarifas competitivas. • Permitir el aprovechamiento responsable de recursos natura…"
     }
   },
   {
@@ -966,11 +966,11 @@
     }
   },
   {
-    "proposal_id": "fa-38de670a",
+    "proposal_id": "fa-02013404",
     "candidate_id": "frente-amplio-ariel-robles-barrantes",
     "pillar_id": "P3",
-    "proposal_title": "esfuerzos deben ser un trabajo en conjunto entre los sist…",
-    "proposal_text": "esfuerzos deben ser un trabajo en conjunto entre los sistemas de educación, seguridad y salud para potenciar el acceso gradual y oportuno al desarrollo humano, por esto, es necesario revisar los alcances que tienen actualmente los programas de inversión social, con el propósito de ampliar su cobertura, en conjunto con las instituciones encargadas. ●​ Destinar al menos el 50% de los recursos generados por Ley del Impuesto a las Personas Jurídicas y la Ley del Impuesto a los Casinos, para financia",
+    "proposal_title": "Estos programas deben fomentar que las personas con esta …",
+    "proposal_text": "Estos programas deben fomentar que las personas con esta formación se conviertan en líderes en sus propias comunidades, para promover un desarrollo contextualizado. ●​ Dotar a las instituciones encargadas del financiamiento estatal de la ciencia y la tecnología de los mecanismos y recursos necesarios para garantizar que los beneficios de esas actividades lleguen efectivamente, en el menor plazo posible, a toda la población que los necesita, para mejorar su calidad de vida, en especial a través d",
     "dimensions": {
       "existence": 1,
       "when": 0,
@@ -979,13 +979,13 @@
     },
     "extracted_fields": {
       "when_text": "no_especificado",
-      "how_text": "cutará un programa de promoción de la cultura de paz y la convivencia d",
-      "funding_text": "nos, para financiar programas de seguridad preventiva dirigidos a pob"
+      "how_text": "especial a través del entramado de micro, pequeñas y medianas empresas",
+      "funding_text": "gadas del financiamiento estatal de la ciencia y la tecnología de los meca"
     },
     "evidence": {
       "pdf_id": "FA",
-      "page": 142,
-      "snippet": "esfuerzos deben ser un trabajo en conjunto entre los sistemas de educación, seguridad y salud para potenciar el acceso gradual y oportuno al desarrollo humano, por esto, es necesario revisar los alcances que tienen actualmente los progra…"
+      "page": 96,
+      "snippet": "Estos programas deben fomentar que las personas con esta formación se conviertan en líderes en sus propias comunidades, para promover un desarrollo contextualizado. ●​ Dotar a las instituciones encargadas del financiamiento estatal de la…"
     }
   },
   {
@@ -1058,11 +1058,11 @@
     }
   },
   {
-    "proposal_id": "fa-29c16efb",
+    "proposal_id": "fa-2904bfb4",
     "candidate_id": "frente-amplio-ariel-robles-barrantes",
     "pillar_id": "P7",
-    "proposal_title": "●​ Implementación de un plan nacional de digitalización d…",
-    "proposal_text": "●​ Implementación de un plan nacional de digitalización del sistema eléctrico, incluyendo medidores inteligentes, automatización y plataformas de atención. ●​ Incorporación de almacenamiento, redes inteligentes, generación distribuida y modernización de la red de transmisión. ●​ Creación de una comisión interinstitucional del sector energía para identificar proyectos viables de investigación energética en universidades públicas. ●​ Convenios con UCR, UNA, TEC, UNED y UTN para desarrollar tecnolo",
+    "proposal_title": "Se deberá contemplar, entre otras ayudas, financiamiento,…",
+    "proposal_text": "Se deberá contemplar, entre otras ayudas, financiamiento, asesoría técnica, promoción e inteligencia comercial. ●​ Impulsar la modernización de los puertos de Moín y Caldera mediante la inyección de recursos nuevos que permitan la inversión en infraestructura, revisión de los modelos de gestión portuaria y una mayor eficiencia en la prestación de los servicios. ●​ Impulsar las exportaciones de las micro, pequeñas y medianas empresas, mediante un programa de acompañamiento empresarial ejecutado e",
     "dimensions": {
       "existence": 1,
       "when": 0,
@@ -1071,13 +1071,13 @@
     },
     "extracted_fields": {
       "when_text": "no_especificado",
-      "how_text": "lanzar el Programa Nacional de Clústeres para promover el desarrollo económic",
-      "funding_text": "porte. ●​ Financiamiento público de investigación y aplicación piloto de t"
+      "how_text": "y Caldera mediante la inyección de recursos nuevos que permitan la inversión en i",
+      "funding_text": "s ayudas, financiamiento, asesoría técnica, promoción e inteligencia comer"
     },
     "evidence": {
       "pdf_id": "FA",
-      "page": 114,
-      "snippet": "●​ Implementación de un plan nacional de digitalización del sistema eléctrico, incluyendo medidores inteligentes, automatización y plataformas de atención. ●​ Incorporación de almacenamiento, redes inteligentes, generación distribuida y …"
+      "page": 69,
+      "snippet": "Se deberá contemplar, entre otras ayudas, financiamiento, asesoría técnica, promoción e inteligencia comercial. ●​ Impulsar la modernización de los puertos de Moín y Caldera mediante la inyección de recursos nuevos que permitan la invers…"
     }
   },
   {
@@ -1150,32 +1150,78 @@
     }
   },
   {
-    "proposal_id": "pa-13d7beed",
+    "proposal_id": "pa-e9cbd1c7",
     "candidate_id": "jose-aguilar-ussegl",
     "pillar_id": "P1",
-    "proposal_title": "Sin propuesta identificada para este pilar",
-    "proposal_text": "El documento no contiene propuestas concretas para este pilar.",
+    "proposal_title": "El programa combina las siguientes acciones: 1.​ Programa…",
+    "proposal_text": "El programa combina las siguientes acciones: 1.​ Programas sectoriales de innovación abierta, con Vouchers 4.0 para inversión por sector y madurez digital 2.​ Fondo Soberano de Innovación enfocado en transformación digital y “IA para el bien común”. 3.​ Compra Pública de Innovación equivalente al 3% del gasto de capital, mediante concursos basados en desafíos, y un programa de soluciones tecnológicas para el Estado (GovTech). 4.​ Sandboxes regulatorios multisector (finanzas abiertas, salud digit",
     "dimensions": {
-      "existence": 0,
+      "existence": 1,
       "when": 0,
-      "how": 0,
+      "how": 1,
       "funding": 0
     },
     "extracted_fields": {
       "when_text": "no_especificado",
-      "how_text": "no_especificado",
+      "how_text": "íos, y un programa de soluciones tecnológicas para el Estado (GovTech).",
       "funding_text": "no_especificado"
     },
     "evidence": {
       "pdf_id": "PA",
-      "page": 1,
-      "snippet": "Sin contenido para este pilar."
+      "page": 29,
+      "snippet": "El programa combina las siguientes acciones: 1.​ Programas sectoriales de innovación abierta, con Vouchers 4.0 para inversión por sector y madurez digital 2.​ Fondo Soberano de Innovación enfocado en transformación digital y “IA para el …"
+    }
+  },
+  {
+    "proposal_id": "pa-87884adb",
+    "candidate_id": "jose-aguilar-ussegl",
+    "pillar_id": "P2",
+    "proposal_title": "La estrategia incluye no solo al sistema formal, con énfa…",
+    "proposal_text": "La estrategia incluye no solo al sistema formal, con énfasis en la juventud, sino también programas de reskilling y upskilling para la fuerza laboral activa, de manera que la automatización sea una oportunidad de mayor productividad y no una amenaza de sustitución laboral. 3)​ Pertinencia con la Economía​ Establecer una relación estrecha y dinámica entre el sistema educativo y el sector productivo, para que la formación responda a las necesidades de cada subregión y potencie la competitividad de",
+    "dimensions": {
+      "existence": 1,
+      "when": 0,
+      "how": 1,
+      "funding": 0
+    },
+    "extracted_fields": {
+      "when_text": "no_especificado",
+      "how_text": "Economía​ Establecer una relación estrecha y dinámica entre el sistema",
+      "funding_text": "no_especificado"
+    },
+    "evidence": {
+      "pdf_id": "PA",
+      "page": 14,
+      "snippet": "La estrategia incluye no solo al sistema formal, con énfasis en la juventud, sino también programas de reskilling y upskilling para la fuerza laboral activa, de manera que la automatización sea una oportunidad de mayor productividad y no…"
+    }
+  },
+  {
+    "proposal_id": "pa-ee5e3170",
+    "candidate_id": "jose-aguilar-ussegl",
+    "pillar_id": "P3",
+    "proposal_title": "Con estas herramientas, el Estado se vuelve más transpare…",
+    "proposal_text": "Con estas herramientas, el Estado se vuelve más transparente, la ciudadanía recupera confianza en las instituciones y la política deja de ser un asunto de pocos para convertirse en una construcción colectiva y cotidiana. 5.​ Oficina Nacional de Datos e Interoperabilidad (ONDI), sin crear más burocracia ni nuevas instituciones con cargo al presupuesto, integrando unidades existentes y reorganizando funciones actuales para modernizar las áreas existentes. 6.​ Portal único del Estado con transparen",
+    "dimensions": {
+      "existence": 1,
+      "when": 0,
+      "how": 1,
+      "funding": 1
+    },
+    "extracted_fields": {
+      "when_text": "no_especificado",
+      "how_text": "icial. ●​ Reforma a la Ley de Datos Personales. ●​ Reforma de contrat",
+      "funding_text": "cargo al presupuesto, integrando unidades existentes y reorganizando f"
+    },
+    "evidence": {
+      "pdf_id": "PA",
+      "page": 27,
+      "snippet": "Con estas herramientas, el Estado se vuelve más transparente, la ciudadanía recupera confianza en las instituciones y la política deja de ser un asunto de pocos para convertirse en una construcción colectiva y cotidiana. 5.​ Oficina Naci…"
     }
   },
   {
     "proposal_id": "pa-aad16317",
     "candidate_id": "jose-aguilar-ussegl",
-    "pillar_id": "P2",
+    "pillar_id": "P4",
     "proposal_title": "Ejecutaremos un Programa de “Segunda Oportunidad” educati…",
     "proposal_text": "Ejecutaremos un Programa de “Segunda Oportunidad” educativa que permita y fomente la reinserción de jóvenes que desertaron del sistema, con becas y tutorías comunitarias, y programas de salud mental y prevención de adicciones accesibles desde escuelas y EBAIS. d)​ Oportunidades de empleo juvenil: Incentivos laborales para empresas que contraten jóvenes de zonas vulnerables, con acompañamiento de mentoría",
     "dimensions": {
@@ -1193,52 +1239,6 @@
       "pdf_id": "PA",
       "page": 12,
       "snippet": "Ejecutaremos un Programa de “Segunda Oportunidad” educativa que permita y fomente la reinserción de jóvenes que desertaron del sistema, con becas y tutorías comunitarias, y programas de salud mental y prevención de adicciones accesibles …"
-    }
-  },
-  {
-    "proposal_id": "pa-bd9e7709",
-    "candidate_id": "jose-aguilar-ussegl",
-    "pillar_id": "P3",
-    "proposal_title": "Con liderazgo firme desde la Presidencia, un comando técn…",
-    "proposal_text": "Con liderazgo firme desde la Presidencia, un comando técnico y político especializado en la Vicepresidencia y una estrategia financiera responsable e innovadora, lideraremos la activación del Consejo de Seguridad ampliado (Ley 7410) con un centro de mando en Casa Presidencial para coordinar y articular los tres poderes de la república y la integración de otros actores claves como las municipalidades, el OIJ, la empresa privada, las comunidades organizadas, ONGs y más. 7",
-    "dimensions": {
-      "existence": 1,
-      "when": 0,
-      "how": 0,
-      "funding": 0
-    },
-    "extracted_fields": {
-      "when_text": "no_especificado",
-      "how_text": "no_especificado",
-      "funding_text": "no_especificado"
-    },
-    "evidence": {
-      "pdf_id": "PA",
-      "page": 8,
-      "snippet": "Con liderazgo firme desde la Presidencia, un comando técnico y político especializado en la Vicepresidencia y una estrategia financiera responsable e innovadora, lideraremos la activación del Consejo de Seguridad ampliado (Ley 7410) con …"
-    }
-  },
-  {
-    "proposal_id": "pa-2fd6262a",
-    "candidate_id": "jose-aguilar-ussegl",
-    "pillar_id": "P4",
-    "proposal_title": "Más y mejor personal de salud, bien distribuido Impulsare…",
-    "proposal_text": "Más y mejor personal de salud, bien distribuido Impulsaremos ampliar la formación de especialistas prioritarios con becas financiadas por la CCSS, vinculadas al compromiso de servicio en la red pública y regiones con mayor necesidad",
-    "dimensions": {
-      "existence": 1,
-      "when": 0,
-      "how": 0,
-      "funding": 0
-    },
-    "extracted_fields": {
-      "when_text": "no_especificado",
-      "how_text": "no_especificado",
-      "funding_text": "no_especificado"
-    },
-    "evidence": {
-      "pdf_id": "PA",
-      "page": 24,
-      "snippet": "Más y mejor personal de salud, bien distribuido Impulsaremos ampliar la formación de especialistas prioritarios con becas financiadas por la CCSS, vinculadas al compromiso de servicio en la red pública y regiones con mayor necesidad"
     }
   },
   {
@@ -1288,26 +1288,26 @@
     }
   },
   {
-    "proposal_id": "pa-ee5e3170",
+    "proposal_id": "pa-a04ad561",
     "candidate_id": "jose-aguilar-ussegl",
     "pillar_id": "P7",
-    "proposal_title": "Con estas herramientas, el Estado se vuelve más transpare…",
-    "proposal_text": "Con estas herramientas, el Estado se vuelve más transparente, la ciudadanía recupera confianza en las instituciones y la política deja de ser un asunto de pocos para convertirse en una construcción colectiva y cotidiana. 5.​ Oficina Nacional de Datos e Interoperabilidad (ONDI), sin crear más burocracia ni nuevas instituciones con cargo al presupuesto, integrando unidades existentes y reorganizando funciones actuales para modernizar las áreas existentes. 6.​ Portal único del Estado con transparen",
+    "proposal_title": "Además, la evidencia internacional, y estudios locales de…",
+    "proposal_text": "Además, la evidencia internacional, y estudios locales del Prosic, muestran que una digitalización integral puede generar ahorros equivalentes a cerca del 3% del PIB anual, recursos que se convertirán en un círculo virtuoso: parte de esos ahorros se reinvertirán para sostener y ampliar el ecosistema digital, financiando así de manera autosostenible la modernización del Estado. 6",
     "dimensions": {
       "existence": 1,
       "when": 0,
-      "how": 1,
+      "how": 0,
       "funding": 1
     },
     "extracted_fields": {
       "when_text": "no_especificado",
-      "how_text": "icial. ●​ Reforma a la Ley de Datos Personales. ●​ Reforma de contrat",
-      "funding_text": "cargo al presupuesto, integrando unidades existentes y reorganizando f"
+      "how_text": "no_especificado",
+      "funding_text": "cerca del 3% del PIB anual, recursos que se convertirán en un círculo"
     },
     "evidence": {
       "pdf_id": "PA",
-      "page": 27,
-      "snippet": "Con estas herramientas, el Estado se vuelve más transparente, la ciudadanía recupera confianza en las instituciones y la política deja de ser un asunto de pocos para convertirse en una construcción colectiva y cotidiana. 5.​ Oficina Naci…"
+      "page": 30,
+      "snippet": "Además, la evidencia internacional, y estudios locales del Prosic, muestran que una digitalización integral puede generar ahorros equivalentes a cerca del 3% del PIB anual, recursos que se convertirán en un círculo virtuoso: parte de eso…"
     }
   },
   {
@@ -1403,34 +1403,34 @@
     }
   },
   {
-    "proposal_id": "pdlct-672f1fc8",
+    "proposal_id": "pdlct-52caf1b5",
     "candidate_id": "david-hernandez-brenes",
     "pillar_id": "P2",
-    "proposal_title": "Con los 15 billones de colones que hoy se reparten los du…",
-    "proposal_text": "Con los 15 billones de colones que hoy se reparten los dueños de las grandes empresas, se podrían resolver en un solo año los principales problemas sociales del país: ◦ En Salud: Duplicar el presupuesto anual de la CCSS, que hoy es de 6.5 billones. ◦ En Vivienda: Cubrir el déficit habitacional de 150 mil viviendas, otorgando bonos completos (con terreno incluido) por 2.8 billones de colones. ◦ En Educación: Duplicar el presupuesto del MEP (2.6 billones) y de las universidades públicas (0.5 billo",
+    "proposal_title": "Es por eso que desde el Partido de la Clase Tra- bajadora…",
+    "proposal_text": "Es por eso que desde el Partido de la Clase Tra- bajadora lucharemos por garantizar en primer lugar, el derecho a la pensión de toda persona trabajadora, y en segundo lugar que estas pen- siones les permitan vivir una vejez digna, y para ello proponemos: - Bajar la edad de pensionarse de los hombres a los 60 años y las mujeres a los 55. - Establecer el número mínimo de cuotas en 300 (25 años), sin posibilidad de aumentarlas. - Establecer una pensión a los 60 años para toda persona que no tenga l",
     "dimensions": {
       "existence": 1,
       "when": 0,
-      "how": 0,
-      "funding": 1
+      "how": 1,
+      "funding": 0
     },
     "extracted_fields": {
       "when_text": "no_especificado",
-      "how_text": "no_especificado",
-      "funding_text": "ansporte: Financiar completamente el proyecto del tren eléctrico, val"
+      "how_text": "los 55. - Establecer el número mínimo de cuotas en 300 (25 años), sin",
+      "funding_text": "no_especificado"
     },
     "evidence": {
       "pdf_id": "PDLCT",
-      "page": 7,
-      "snippet": "Con los 15 billones de colones que hoy se reparten los dueños de las grandes empresas, se podrían resolver en un solo año los principales problemas sociales del país: ◦ En Salud: Duplicar el presupuesto anual de la CCSS, que hoy es de 6.…"
+      "page": 15,
+      "snippet": "Es por eso que desde el Partido de la Clase Tra- bajadora lucharemos por garantizar en primer lugar, el derecho a la pensión de toda persona trabajadora, y en segundo lugar que estas pen- siones les permitan vivir una vejez digna, y para…"
     }
   },
   {
-    "proposal_id": "pdlct-8a09ca0e",
+    "proposal_id": "pdlct-3b57de46",
     "candidate_id": "david-hernandez-brenes",
     "pillar_id": "P3",
-    "proposal_title": "Cárcel a los patronos que incumplan estas obligaciones. -…",
-    "proposal_text": "Cárcel a los patronos que incumplan estas obligaciones. - Por el derecho a formar sindicatos y a ser electas como representantes. - ¡Abajo la Ley de Migración! Por la regulariza- ción migratoria inmediata de la clase trabaja- dora y sus familias. - Derecho a votar y a ser electas en los puestos de elección popular. - Acceso efectivo a los trámites y protección real para las personas refugiadas, así como acceso pleno a todos sus derechos de salud, educación y laboral. - Amnistía para las personas",
+    "proposal_title": "Libre acceso a los sindicatos o repre- sentantes obreras …",
+    "proposal_text": "Libre acceso a los sindicatos o repre- sentantes obreras para fiscalizar esta proble- mática. - La expropiación inmediata de las empresas donde haya defunciones por siniestralidad laboral provocada por malas prácticas empre- sariales. - Derogatoria inmediata del despido libre, todo despido debe ser negociado y aprobado por la persona, el sindicato y el MTSS. - Definir como delitos graves y fijar penas de cárcel por la utilización de las empresas de agrotóxicos prohibidos. - Una reforma radical d",
     "dimensions": {
       "existence": 1,
       "when": 0,
@@ -1444,8 +1444,8 @@
     },
     "evidence": {
       "pdf_id": "PDLCT",
-      "page": 23,
-      "snippet": "Cárcel a los patronos que incumplan estas obligaciones. - Por el derecho a formar sindicatos y a ser electas como representantes. - ¡Abajo la Ley de Migración! Por la regulariza- ción migratoria inmediata de la clase trabaja- dora y sus …"
+      "page": 13,
+      "snippet": "Libre acceso a los sindicatos o repre- sentantes obreras para fiscalizar esta proble- mática. - La expropiación inmediata de las empresas donde haya defunciones por siniestralidad laboral provocada por malas prácticas empre- sariales. - …"
     }
   },
   {
@@ -1771,13 +1771,13 @@
     }
   },
   {
-    "proposal_id": "pel-3c08ec38",
+    "proposal_id": "pel-0d20e526",
     "candidate_id": "marco-rodriguez",
     "pillar_id": "P8",
-    "proposal_title": "Sin propuesta identificada para este pilar",
-    "proposal_text": "El documento no contiene propuestas concretas para este pilar.",
+    "proposal_title": "IGUALDAD, EQUIDAD Y DERECHOS. o Políticas laborales y eco…",
+    "proposal_text": "IGUALDAD, EQUIDAD Y DERECHOS. o Políticas laborales y económicas: • Incentivos fiscales a empresas que contraten mujeres, adultos mayores y personas con discapacidad y poblaciones vulnerables. • Creación de un “Sello de Igualdad” para reconocer a instituciones públicas y empresas privadas que reduzcan las brechas de género. • Programas de capacitación y emprendimiento femenino en áreas STEM, digitalización y agroindustria. o Reformas institucionales y legales: • Revisar y aplicar de forma obliga",
     "dimensions": {
-      "existence": 0,
+      "existence": 1,
       "when": 0,
       "how": 0,
       "funding": 0
@@ -1789,8 +1789,8 @@
     },
     "evidence": {
       "pdf_id": "PEL",
-      "page": 1,
-      "snippet": "Sin contenido para este pilar."
+      "page": 53,
+      "snippet": "IGUALDAD, EQUIDAD Y DERECHOS. o Políticas laborales y económicas: • Incentivos fiscales a empresas que contraten mujeres, adultos mayores y personas con discapacidad y poblaciones vulnerables. • Creación de un “Sello de Igualdad” para re…"
     }
   },
   {
@@ -2093,11 +2093,11 @@
     }
   },
   {
-    "proposal_id": "pin-41369d17",
+    "proposal_id": "pin-118f38fc",
     "candidate_id": "luis-amadorjimenez",
     "pillar_id": "P2",
-    "proposal_title": "5 ● Implementar canales de coordinación e interlocución c…",
-    "proposal_text": "5 ● Implementar canales de coordinación e interlocución con actores clave y otras partes interesadas en los asuntos nacionales, incluyendo reuniones periódicas con la academia, sectores empresariales y productivos, sociedad civil, organizaciones territoriales, sindicales, sin fines de lucro, gobiernos locales y organismos multilaterales, entre otros. ● Desarrollar una estrategia de comunicación gubernamental transparente que cubra avances, desafíos y demás decisiones de política pública que resu",
+    "proposal_title": "17 Oriente y de Asia, para así reducir la dependencia y v…",
+    "proposal_text": "17 Oriente y de Asia, para así reducir la dependencia y vulnerabilidad ante cambios en la política comercial internacional. ● Desarrollar un plan para diversificar la actividad exportadora, promoviendo la incorporación de las PYMES y la incursión en nuevos sectores como la agroindustria, los servicios de software y digitales y los servicios de salud. ● Liderar la estrategia nacional de facilitación del comercio, con el fin de establecer las coordinaciones interinstitucionales y acciones priorita",
     "dimensions": {
       "existence": 1,
       "when": 0,
@@ -2106,13 +2106,13 @@
     },
     "extracted_fields": {
       "when_text": "no_especificado",
-      "how_text": "5 ● Implementar canales de coordinación e interlocución con actor",
+      "how_text": "el fin de establecer las coordinaciones interinstitucionales y accione",
       "funding_text": "no_especificado"
     },
     "evidence": {
       "pdf_id": "PIN",
-      "page": 5,
-      "snippet": "5 ● Implementar canales de coordinación e interlocución con actores clave y otras partes interesadas en los asuntos nacionales, incluyendo reuniones periódicas con la academia, sectores empresariales y productivos, sociedad civil, organi…"
+      "page": 17,
+      "snippet": "17 Oriente y de Asia, para así reducir la dependencia y vulnerabilidad ante cambios en la política comercial internacional. ● Desarrollar un plan para diversificar la actividad exportadora, promoviendo la incorporación de las PYMES y la …"
     }
   },
   {
@@ -2553,11 +2553,11 @@
     }
   },
   {
-    "proposal_id": "pln-9c33076e",
+    "proposal_id": "pln-28a34166",
     "candidate_id": "alvaro-ramos",
     "pillar_id": "P2",
-    "proposal_title": "Es crucial crear una norma que unifique y regule la impor…",
-    "proposal_text": "Es crucial crear una norma que unifique y regule la importación de insumos biológicos para I+D, simplificando la tramitología para impulsar el sector biotecnológico. 2.2.2.8 Creación de la Ventanilla Única de I+D (COMEX–Ministerio de Ciencia, Tecnología, Innovación, Tecnología y Telecomunicaciones (MICITT) –Ministerio de Salud– Ministerio de Economía, Industria y Comercio (MEIC)–Ministerio de Planificación y Política Económica (MIDEPLAN) para agilizar permisos, ensayos, importación de insumos y ",
+    "proposal_title": "44 o Programa de educación en el hogar del daño que puede…",
+    "proposal_text": "44 o Programa de educación en el hogar del daño que puede causar el bullying. o Seguridad Ciudadana o Estrategia interinstitucional de prevención y choque. o Centros comunales con formación para el trabajo. o Refuerzo policial comunitario. o Reforzamiento de leyes con sanción a actos de vandalismo. o Presupuestos para incrementar policías y patrullas. o Política de mano más fuerte, con apoyo económico de entidades gubernamentales. 7.3.2 Salud o Servicios hospitalarios para cirugías menores y con",
     "dimensions": {
       "existence": 1,
       "when": 0,
@@ -2566,13 +2566,13 @@
     },
     "extracted_fields": {
       "when_text": "no_especificado",
-      "how_text": "s crucial crear una norma que unifique y regule la importación de ins",
-      "funding_text": "linario y financiamiento mixto (Estado, sector privado, organismos multila"
+      "how_text": "44 o Programa de educación en el hogar del daño que puede causar e",
+      "funding_text": "acceso a financiamiento blando y acompañamiento técnico. o Creación de pl"
     },
     "evidence": {
       "pdf_id": "PLN",
-      "page": 19,
-      "snippet": "Es crucial crear una norma que unifique y regule la importación de insumos biológicos para I+D, simplificando la tramitología para impulsar el sector biotecnológico. 2.2.2.8 Creación de la Ventanilla Única de I+D (COMEX–Ministerio de Cie…"
+      "page": 44,
+      "snippet": "44 o Programa de educación en el hogar del daño que puede causar el bullying. o Seguridad Ciudadana o Estrategia interinstitucional de prevención y choque. o Centros comunales con formación para el trabajo. o Refuerzo policial comunitari…"
     }
   },
   {
@@ -2783,26 +2783,26 @@
     }
   },
   {
-    "proposal_id": "plp-4d9e6124",
+    "proposal_id": "plp-86de8f49",
     "candidate_id": "elicer-feinzaig-mintz",
     "pillar_id": "P2",
-    "proposal_title": "Desde el Poder Ejecutivo, se establecerá un Programa Naci…",
-    "proposal_text": "Desde el Poder Ejecutivo, se establecerá un Programa Nacional de Financiamiento Inclusivo para MIPYMES, articulado por el Ministerio de Economía, Industria y Comercio (MEIC), en coordinación con el Sistema de Banca para el Desarrollo (SBD), el Banco Central y el Instituto Nacional de Aprendizaje (INA)",
+    "proposal_title": "Con Ciudad Gobierno, mejor coordinación del Ejecutivo y r…",
+    "proposal_text": "Con Ciudad Gobierno, mejor coordinación del Ejecutivo y reglas simples, el gobierno será un aliado —no un obstáculo— del ciudadano, del productor, del creador y del inversor. ¡Así ganaremos libertad para trabajar, producir y soñar en grande! A lo largo de varias décadas nuestro país ha logrado desarrollar una exitosa política de atracción de inversión extranjera directa, sin embargo, no hemos logrado establecer con la misma claridad una política exitosa para potenciar un ecosistema empresarial l",
     "dimensions": {
       "existence": 1,
       "when": 0,
       "how": 1,
-      "funding": 1
+      "funding": 0
     },
     "extracted_fields": {
       "when_text": "no_especificado",
-      "how_text": "lecerá un Programa Nacional de Financiamiento Inclusivo para MIPYMES, articul",
-      "funding_text": "cional de Financiamiento Inclusivo para MIPYMES, articulado por el Ministe"
+      "how_text": "s logrado establecer con la misma claridad una política exitosa para p",
+      "funding_text": "no_especificado"
     },
     "evidence": {
       "pdf_id": "PLP",
-      "page": 39,
-      "snippet": "Desde el Poder Ejecutivo, se establecerá un Programa Nacional de Financiamiento Inclusivo para MIPYMES, articulado por el Ministerio de Economía, Industria y Comercio (MEIC), en coordinación con el Sistema de Banca para el Desarrollo (SB…"
+      "page": 36,
+      "snippet": "Con Ciudad Gobierno, mejor coordinación del Ejecutivo y reglas simples, el gobierno será un aliado —no un obstáculo— del ciudadano, del productor, del creador y del inversor. ¡Así ganaremos libertad para trabajar, producir y soñar en gra…"
     }
   },
   {
@@ -2852,11 +2852,11 @@
     }
   },
   {
-    "proposal_id": "plp-ea765531",
+    "proposal_id": "plp-4d9e6124",
     "candidate_id": "elicer-feinzaig-mintz",
     "pillar_id": "P5",
-    "proposal_title": "A través del Ministerio de Economía, Industria y Comercio…",
-    "proposal_text": "A través del Ministerio de Economía, Industria y Comercio (MEIC), estableceremos una política de articulación público-privada que fortalezca la red de financiamiento temprano, integrando incubadoras, aceleradoras, universidades, fondos de inversión y banca de desarrollo",
+    "proposal_title": "Desde el Poder Ejecutivo, se establecerá un Programa Naci…",
+    "proposal_text": "Desde el Poder Ejecutivo, se establecerá un Programa Nacional de Financiamiento Inclusivo para MIPYMES, articulado por el Ministerio de Economía, Industria y Comercio (MEIC), en coordinación con el Sistema de Banca para el Desarrollo (SBD), el Banco Central y el Instituto Nacional de Aprendizaje (INA)",
     "dimensions": {
       "existence": 1,
       "when": 0,
@@ -2865,13 +2865,13 @@
     },
     "extracted_fields": {
       "when_text": "no_especificado",
-      "how_text": "A través del Ministerio de Economía, Industria y Comercio (ME",
-      "funding_text": "la red de financiamiento temprano, integrando incubadoras, aceleradoras, u"
+      "how_text": "lecerá un Programa Nacional de Financiamiento Inclusivo para MIPYMES, articul",
+      "funding_text": "cional de Financiamiento Inclusivo para MIPYMES, articulado por el Ministe"
     },
     "evidence": {
       "pdf_id": "PLP",
-      "page": 40,
-      "snippet": "A través del Ministerio de Economía, Industria y Comercio (MEIC), estableceremos una política de articulación público-privada que fortalezca la red de financiamiento temprano, integrando incubadoras, aceleradoras, universidades, fondos d…"
+      "page": 39,
+      "snippet": "Desde el Poder Ejecutivo, se establecerá un Programa Nacional de Financiamiento Inclusivo para MIPYMES, articulado por el Ministerio de Economía, Industria y Comercio (MEIC), en coordinación con el Sistema de Banca para el Desarrollo (SB…"
     }
   },
   {
@@ -2944,26 +2944,26 @@
     }
   },
   {
-    "proposal_id": "plp-5a4a0f50",
+    "proposal_id": "plp-b0ca7e04",
     "candidate_id": "elicer-feinzaig-mintz",
     "pillar_id": "P9",
-    "proposal_title": "Apostamos por establecer alianzas estratégicas bilaterale…",
-    "proposal_text": "Apostamos por establecer alianzas estratégicas bilaterales y multilaterales que impulsen el desarrollo humano y aprovechen la experiencia de países líderes en ciencia, tecnología e innovación",
+    "proposal_title": "El ICODER, en conjunto con municipalidades y procurando r…",
+    "proposal_text": "El ICODER, en conjunto con municipalidades y procurando recursos de organismos multilaterales, diseñará un portafolio de proyectos elegibles en el que la empresa privada participe en construcción, equipamiento y mantenimiento a cambio de beneficios fiscales y reconocimiento social. - Bajo el modelo de concesión desarrollaremos un Centro Nacional de Alto Rendimiento, moderno y sostenible, que sirva como plataforma para atletas de élite y como espacio de formación para decenas de federaciones. - E",
     "dimensions": {
       "existence": 1,
       "when": 0,
-      "how": 1,
-      "funding": 0
+      "how": 0,
+      "funding": 1
     },
     "extracted_fields": {
       "when_text": "no_especificado",
-      "how_text": "tamos por establecer alianzas estratégicas bilaterales y multilaterale",
-      "funding_text": "no_especificado"
+      "how_text": "no_especificado",
+      "funding_text": "modelo de concesión desarrollaremos un Centro Nacional de Alto Rendim"
     },
     "evidence": {
       "pdf_id": "PLP",
-      "page": 32,
-      "snippet": "Apostamos por establecer alianzas estratégicas bilaterales y multilaterales que impulsen el desarrollo humano y aprovechen la experiencia de países líderes en ciencia, tecnología e innovación"
+      "page": 31,
+      "snippet": "El ICODER, en conjunto con municipalidades y procurando recursos de organismos multilaterales, diseñará un portafolio de proyectos elegibles en el que la empresa privada participe en construcción, equipamiento y mantenimiento a cambio de…"
     }
   },
   {
@@ -2990,11 +2990,11 @@
     }
   },
   {
-    "proposal_id": "png-85dd2e4c",
+    "proposal_id": "png-dec2fcb2",
     "candidate_id": "fernando-zamora-castellanos",
     "pillar_id": "P1",
-    "proposal_title": "30 -Realizar un inventario de equipo y vehículos subutili…",
-    "proposal_text": "30 -Realizar un inventario de equipo y vehículos subutilizados en otras dependencias de la administración pública, para utilizarlos de inmediato en el combate a la delincuencia. -Trasladar inmediata y efectivamente a la Fuerza pública, todos los recursos del impuesto a la exportación de banano y el de personas jurídicas. -Implementar el inicio inmediato del programa de centro de información policial unificada. -Aumento y reasignación de recursos públicos para elevar en aproximadamente un 25% el ",
+    "proposal_title": "Por tanto, se deben establecer reglas fiscales claras y r…",
+    "proposal_text": "Por tanto, se deben establecer reglas fiscales claras y rígidas para Implementar normas presupuestarias, que limiten el déficit fiscal y aseguren que el endeudamiento se mantenga dentro de un marco responsable, evitando la acumulación de deuda que comprometa la capacidad de pago futura",
     "dimensions": {
       "existence": 1,
       "when": 0,
@@ -3003,13 +3003,13 @@
     },
     "extracted_fields": {
       "when_text": "no_especificado",
-      "how_text": "diato del programa de centro de información policial unificada. -Aument",
-      "funding_text": "un 25% el presupuesto de la seguridad y acercarlo al porcentaje del 1%"
+      "how_text": "se deben establecer reglas fiscales claras y rígidas para Implementar",
+      "funding_text": "ar normas presupuestarias, que limiten el déficit fiscal y aseguren que"
     },
     "evidence": {
       "pdf_id": "PNG",
-      "page": 32,
-      "snippet": "30 -Realizar un inventario de equipo y vehículos subutilizados en otras dependencias de la administración pública, para utilizarlos de inmediato en el combate a la delincuencia. -Trasladar inmediata y efectivamente a la Fuerza pública, t…"
+      "page": 175,
+      "snippet": "Por tanto, se deben establecer reglas fiscales claras y rígidas para Implementar normas presupuestarias, que limiten el déficit fiscal y aseguren que el endeudamiento se mantenga dentro de un marco responsable, evitando la acumulación de…"
     }
   },
   {
@@ -3036,11 +3036,11 @@
     }
   },
   {
-    "proposal_id": "png-0a5e3a46",
+    "proposal_id": "png-85dd2e4c",
     "candidate_id": "fernando-zamora-castellanos",
     "pillar_id": "P3",
-    "proposal_title": "Propuestas concretas:  Desarrollar el turismo rural: bas…",
-    "proposal_text": "Propuestas concretas:  Desarrollar el turismo rural: basado en la identidad cultural y agrícola de la comunidad rural:  Promover experiencias auténticas relacionadas con la agricultura local, el desarrollo ganadero y las fiestas patronales, permitiendo que los turistas contribuyan directamente a la economía local fortaleciendo la identidad costarricense que está en contracción.  Fortalecer la infraestructura en zonas rurales: Mejorar caminos, acceso a servicios básicos y condiciones de vida e",
+    "proposal_title": "30 -Realizar un inventario de equipo y vehículos subutili…",
+    "proposal_text": "30 -Realizar un inventario de equipo y vehículos subutilizados en otras dependencias de la administración pública, para utilizarlos de inmediato en el combate a la delincuencia. -Trasladar inmediata y efectivamente a la Fuerza pública, todos los recursos del impuesto a la exportación de banano y el de personas jurídicas. -Implementar el inicio inmediato del programa de centro de información policial unificada. -Aumento y reasignación de recursos públicos para elevar en aproximadamente un 25% el ",
     "dimensions": {
       "existence": 1,
       "when": 0,
@@ -3049,13 +3049,13 @@
     },
     "extracted_fields": {
       "when_text": "no_especificado",
-      "how_text": "rísticas: Implementar políticas de seguridad pública para garantizar la",
-      "funding_text": "íticas de cooperación internacional con los mayores países de los que proviene el tur"
+      "how_text": "diato del programa de centro de información policial unificada. -Aument",
+      "funding_text": "un 25% el presupuesto de la seguridad y acercarlo al porcentaje del 1%"
     },
     "evidence": {
       "pdf_id": "PNG",
-      "page": 179,
-      "snippet": "Propuestas concretas:  Desarrollar el turismo rural: basado en la identidad cultural y agrícola de la comunidad rural:  Promover experiencias auténticas relacionadas con la agricultura local, el desarrollo ganadero y las fiestas patron…"
+      "page": 32,
+      "snippet": "30 -Realizar un inventario de equipo y vehículos subutilizados en otras dependencias de la administración pública, para utilizarlos de inmediato en el combate a la delincuencia. -Trasladar inmediata y efectivamente a la Fuerza pública, t…"
     }
   },
   {
@@ -3312,11 +3312,11 @@
     }
   },
   {
-    "proposal_id": "pnr-726aabe8",
+    "proposal_id": "pnr-624aa551",
     "candidate_id": "fabricio-alvarado-munoz",
     "pillar_id": "P5",
-    "proposal_title": "PLAN DE GOBIERNO PERÍODO CONSTITUCIONAL 2026 - 2030 92 ám…",
-    "proposal_text": "PLAN DE GOBIERNO PERÍODO CONSTITUCIONAL 2026 - 2030 92 ámbito de negocios, lo que implicará el conocimiento esencial sobre el manejo del dinero, tarjetas de crédito y débito, ahorro, gestión de deudas, inversión, presupuesto de proyectos, financiamiento de actividades productivas y responsabilidades financieras ciudadanas, entre otros. • Promover un Programa de inducción pedagógica para padres y tutores (escuela para padres), con el fin de conectarlos con la educación de la enseñanza práctica pr",
+    "proposal_title": "Para ello, se plantea implementar, cuando menos, cuatro p…",
+    "proposal_text": "Para ello, se plantea implementar, cuando menos, cuatro proyectos nuevos de esta naturaleza por año, con financiamiento híbrido, público-privado. • Incentivar a los dueños de empresas turísticas en la búsqueda de la Certificación para la Sostenibilidad Turística (CST), en aras del buen uso de los recursos naturales y sociales. • Propiciar un buen ambiente para el desarrollo de asociaciones entre las diferentes empresas turísticas de las diferentes regiones, con el fin de mejorar la organización ",
     "dimensions": {
       "existence": 1,
       "when": 0,
@@ -3325,13 +3325,13 @@
     },
     "extracted_fields": {
       "when_text": "no_especificado",
-      "how_text": "omover un Programa de inducción pedagógica para padres y tutores (escue",
-      "funding_text": "royectos, financiamiento de actividades productivas y responsabilidades fi"
+      "how_text": "nacional, a través de la educación técnica y la capacitación profesiona",
+      "funding_text": "año, con financiamiento híbrido, público-privado. • Incentivar a los dueñ"
     },
     "evidence": {
       "pdf_id": "PNR",
-      "page": 94,
-      "snippet": "PLAN DE GOBIERNO PERÍODO CONSTITUCIONAL 2026 - 2030 92 ámbito de negocios, lo que implicará el conocimiento esencial sobre el manejo del dinero, tarjetas de crédito y débito, ahorro, gestión de deudas, inversión, presupuesto de proyectos…"
+      "page": 50,
+      "snippet": "Para ello, se plantea implementar, cuando menos, cuatro proyectos nuevos de esta naturaleza por año, con financiamiento híbrido, público-privado. • Incentivar a los dueños de empresas turísticas en la búsqueda de la Certificación para la…"
     }
   },
   {
@@ -3358,11 +3358,11 @@
     }
   },
   {
-    "proposal_id": "pnr-4c501ed1",
+    "proposal_id": "pnr-6d0b661e",
     "candidate_id": "fabricio-alvarado-munoz",
     "pillar_id": "P7",
-    "proposal_title": "Estableceremos límites claros y no negociables frente a c…",
-    "proposal_text": "Estableceremos límites claros y no negociables frente a cualquier medida internacional que atente contra la soberanía productiva y la producción alimentaria del país. • Brindaremos acceso a financiamiento para todo el sector productivo y de la agricultura, bajo la urgencia de una reforma al Sistema de Banca para el Desarrollo identificando y eliminando las trabas burocráticas. • Avanzaremos con la simplificación y digitalización de los procesos para la solicitud y aprobación de créditos",
+    "proposal_title": "Se estima una recaudación aproximada de más de 28.000 mil…",
+    "proposal_text": "Se estima una recaudación aproximada de más de 28.000 millones de colones. • Promover un Programa de digitalización y transparencia de los indicadores de deuda para informar a los inversionistas internacionales de las mejoras en cada indicador, de cara a nuevas inversiones y operaciones de deuda. • Renegociar la deuda interna y externa de las instituciones públicas con las tesorerías de las instituciones públicas, a mayores plazos y condiciones más blandas, en estricto respeto de las competencia",
     "dimensions": {
       "existence": 1,
       "when": 0,
@@ -3371,13 +3371,13 @@
     },
     "extracted_fields": {
       "when_text": "no_especificado",
-      "how_text": "ia de una reforma al Sistema de Banca para el Desarrollo identificand",
-      "funding_text": "acceso a financiamiento para todo el sector productivo y de la agricultur"
+      "how_text": "omover un Programa de digitalización y transparencia de los indicadores",
+      "funding_text": "ón de los recursos públicos"
     },
     "evidence": {
       "pdf_id": "PNR",
-      "page": 81,
-      "snippet": "Estableceremos límites claros y no negociables frente a cualquier medida internacional que atente contra la soberanía productiva y la producción alimentaria del país. • Brindaremos acceso a financiamiento para todo el sector productivo y…"
+      "page": 43,
+      "snippet": "Se estima una recaudación aproximada de más de 28.000 millones de colones. • Promover un Programa de digitalización y transparencia de los indicadores de deuda para informar a los inversionistas internacionales de las mejoras en cada ind…"
     }
   },
   {
@@ -3427,11 +3427,11 @@
     }
   },
   {
-    "proposal_id": "pnr-342c2770",
+    "proposal_id": "pnr-cdd13289",
     "candidate_id": "fabricio-alvarado-munoz",
     "pillar_id": "P10",
-    "proposal_title": "A partir de los elementos esbozados y que reflejan un dia…",
-    "proposal_text": "A partir de los elementos esbozados y que reflejan un diagnóstico sesudo de la situación actual del país en materia de infraestructura vial y movilidad, vivienda e infraestructura educativa y hospitalaria, los objetivos estratégicos de Nueva República en estas materias son los siguientes: Ø Promover el desarrollo de infraestructura, nacional y regional, como estrategia para la reactivación económica y generación de empleo, mediante la simplificación de trámites y la utilización de herramientas a",
+    "proposal_title": "Se propone implementar, cuando menos, cuatro proyectos nu…",
+    "proposal_text": "Se propone implementar, cuando menos, cuatro proyectos nuevos de esta naturaleza por año, con financiamiento híbrido, público-privado. • Generar una intervención integral que sume acciones del IMAS, INA, Ministerio de Educación, IAFA, ICD, Ministerio de Trabajo, para generar empleo y trabajo digno a las familias de las regiones periféricas. • Promover el trabajo articulado del ICT para la declaratoria turística y el certificado de sostenibilidad turística de proyectos de esta naturaleza que se d",
     "dimensions": {
       "existence": 1,
       "when": 0,
@@ -3440,21 +3440,21 @@
     },
     "extracted_fields": {
       "when_text": "no_especificado",
-      "how_text": "e empleo, mediante la simplificación de trámites y la utilización de herramientas asoc",
-      "funding_text": "como las APP. Ø Implementar un sistema de gestión vial, que pe"
+      "how_text": "e propone implementar, cuando menos, cuatro proyectos nuevos de esta na",
+      "funding_text": "año, con financiamiento híbrido, público-privado. • Generar una intervenc"
     },
     "evidence": {
       "pdf_id": "PNR",
-      "page": 58,
-      "snippet": "A partir de los elementos esbozados y que reflejan un diagnóstico sesudo de la situación actual del país en materia de infraestructura vial y movilidad, vivienda e infraestructura educativa y hospitalaria, los objetivos estratégicos de N…"
+      "page": 46,
+      "snippet": "Se propone implementar, cuando menos, cuatro proyectos nuevos de esta naturaleza por año, con financiamiento híbrido, público-privado. • Generar una intervención integral que sume acciones del IMAS, INA, Ministerio de Educación, IAFA, IC…"
     }
   },
   {
-    "proposal_id": "ppso-651f72e2",
+    "proposal_id": "ppso-a1a9db8b",
     "candidate_id": "laura-fernandez-delgado",
     "pillar_id": "P1",
-    "proposal_title": "Evaluación como uno orientado hacia la obtención de resul…",
-    "proposal_text": "Evaluación como uno orientado hacia la obtención de resultados, por medio del . . diseñ . 0 = Implementar en su totalidad Hacienda iseño e implementación de una Diaital bi Sor los | Ñ , . oy igital para gestionar mejor los impuestos metodología estandarizada de evaluación gita! para 9 ejo p Y de i A el presupuesto de la república. e impacto de las políticas y programas prioritarios como un mecanismo . , f : : = Poner a funcionar a cabalidad la undamental para la garantizar la calidad, . o , o a ",
+    "proposal_title": "35 • MļšŹĵūÔŤӌŹĽӌšŤŅƕýðųŅӌöýӌŤýĒŅŤļÔӌÔӌĵÔӌaýƕӌ General de…",
+    "proposal_text": "35 • MļšŹĵūÔŤӌŹĽӌšŤŅƕýðųŅӌöýӌŤýĒŅŤļÔӌÔӌĵÔӌaýƕӌ General de la Administración Pública que ūĞļšĵĞǢţŹýӌ ĵŅūӌ šŤŅðýöĞļĞýĽųŅūӌ administrativos y fortalezca los mecanismos de control y transparencia derivados de ella, mediante la digitalización de los trámites, la eliminación de duplicidades normativas y la incorporación öýӌĵŅūӌšŤĞĽðĞšĞŅūӌöýӌýǢðĞýĽðĞÔӌƕӌŤýĽöĞðĞņĽӌöýӌ cuentas real, ðŅĽӌýĵӌǢĽӌöýӌļýĮŅŤÔŤӌĵÔӌðÔĵĞöÔöӌ ƕӌ ŅšŅŤųŹĽĞöÔöӌ ýĽӌ ĵÔӌ šŤýƎĞūĞņĽӌ öýӌ ĵŅūӌ servicios públicos. • • #ýūÔŤŤŅĵĵÔŤӌ ýӌ ĞļšŹĵū",
     "dimensions": {
       "existence": 1,
       "when": 0,
@@ -3463,44 +3463,44 @@
     },
     "extracted_fields": {
       "when_text": "no_especificado",
-      "how_text": "amitar un proyecto de ley cuyo objetivo sea el de establecer la obligatorie",
-      "funding_text": "de i A el presupuesto de la república. e impacto de las políticas y pro"
+      "how_text": "de ella, mediante la digitalización de los trámites, la eliminación de duplicidades n",
+      "funding_text": "stos y el presupuesto de la república. • • Poner a funcionar a cabalida"
     },
     "evidence": {
       "pdf_id": "PPSO",
       "page": 39,
-      "snippet": "Evaluación como uno orientado hacia la obtención de resultados, por medio del . . diseñ . 0 = Implementar en su totalidad Hacienda iseño e implementación de una Diaital bi Sor los | Ñ , . oy igital para gestionar mejor los impuestos meto…"
+      "snippet": "35 • MļšŹĵūÔŤӌŹĽӌšŤŅƕýðųŅӌöýӌŤýĒŅŤļÔӌÔӌĵÔӌaýƕӌ General de la Administración Pública que ūĞļšĵĞǢţŹýӌ ĵŅūӌ šŤŅðýöĞļĞýĽųŅūӌ administrativos y fortalezca los mecanismos de control y transparencia derivados de ella, mediante la digitalización…"
     }
   },
   {
-    "proposal_id": "ppso-808ccfaf",
+    "proposal_id": "ppso-fea45dc9",
     "candidate_id": "laura-fernandez-delgado",
     "pillar_id": "P2",
-    "proposal_title": "Mano dura al contrabando, evasión medicamentos y la valor…",
-    "proposal_text": "Mano dura al contrabando, evasión medicamentos y la valoración de la regu- y elusión lación que se estime necesaria para la reducción de precios de medicamentos. = Desarrollar y operacionalizar la Estrategia Nacional contra el Contrabando = Impulsar la reforma normativa para la 2027-2037, en la cual se implementarán reducción del precio de los servicios profe- acciones estratégicas y tácticas intensivas sionales mediante la eliminación de las en tecnología (escáneres y drones, entre tarifas míni",
+    "proposal_title": "• Sistema de educación superior mediante el planteamiento…",
+    "proposal_text": "• Sistema de educación superior mediante el planteamiento de un presupuesto basado en resultados que persiga una distribución más justa de los recursos, permita una mayor cobertura educativa, vincule la oferta educativa con el mercado de trabajo actual • Sistema de educación superior mediante el planteamiento de un presupuesto basado en resultados que persiga una distribución más justa de los recursos, permita una mayor cobertura educativa, vincule la oferta educativa con el mercado de trabajo a",
     "dimensions": {
       "existence": 1,
-      "when": 1,
+      "when": 0,
       "how": 1,
       "funding": 1
     },
     "extracted_fields": {
-      "when_text": "2027-2037",
-      "how_text": "sionales mediante la eliminación de las en tecnología (escáneres y drones, entre t",
-      "funding_text": "sión y de financiamiento para la reducción del precio de los medica- difer"
+      "when_text": "no_especificado",
+      "how_text": "superior mediante el planteamiento de un presupuesto basado en resultados que persig",
+      "funding_text": "nto de un presupuesto basado en resultados que persiga una distribución"
     },
     "evidence": {
       "pdf_id": "PPSO",
-      "page": 40,
-      "snippet": "Mano dura al contrabando, evasión medicamentos y la valoración de la regu- y elusión lación que se estime necesaria para la reducción de precios de medicamentos. = Desarrollar y operacionalizar la Estrategia Nacional contra el Contraband…"
+      "page": 78,
+      "snippet": "• Sistema de educación superior mediante el planteamiento de un presupuesto basado en resultados que persiga una distribución más justa de los recursos, permita una mayor cobertura educativa, vincule la oferta educativa con el mercado de…"
     }
   },
   {
-    "proposal_id": "ppso-12adf9a7",
+    "proposal_id": "ppso-206136f3",
     "candidate_id": "laura-fernandez-delgado",
     "pillar_id": "P3",
-    "proposal_title": "Ciberdefensa, pensamiento de especialistas y crimi- ciber…",
-    "proposal_text": "Ciberdefensa, pensamiento de especialistas y crimi- ciberseguridad y entornos digitales nológicos orientada a la investigación ESPE aplicada, el análisis de datos y la formu- lación de políticas públicas basadas en = Fortalecer el marco institucional de evidencia. ciberseguridad: robustecer el Centro Nacional de Respuesta a Incidentes + Establecer un equipo nacional anti- Cibernéticos (CSIRT-CR), otorgándole corupción e independiente, que integre autoridad vinculante, presupuesto a la Contralorí",
+    "proposal_title": "Cobertura nacional de justicia y ŤýųŅŤĽŅӌöýӌĵÔӌðŅĽǢÔĽƞÔӌý…",
+    "proposal_text": "Cobertura nacional de justicia y ŤýųŅŤĽŅӌöýӌĵÔӌðŅĽǢÔĽƞÔӌýĽӌýĵӌ sistema judicial y seguridad humana. • Establecer la obligatoriedad de rendición öýӌ ðŹýĽųÔūӌ öýӌ ļÔēĞūųŤÔöŅūӔӌ ĮŹýðýūӌ ƕӌ ǢūðÔĵýūӔӌ öýӌ ĒŅŤļÔӌ ųÔĵӌ ţŹýӌ öýĽӌ ðŹýĽųÔūӌ Ôĵӌ país de los resultados de su trabajo, y se establezca un régimen de sanciones. • • iŅöĞǢðÔŤӌ ĵÔӌ ĒŅŤļÔӌ öýӌ ýĵýððĞņĽӌ öýӌ ļÔēĞū- trados, de forma tal que se establezca un plazo que no supere los 10 años en el cargo. ūĠӌ ļĞūļŅӔӌ öýǢĽĞŤӌ ūĞӌ ýĵӌ šŤŅðýūŅӌ ŤýĒŅŤļÔöŅӌ a",
     "dimensions": {
       "existence": 1,
       "when": 0,
@@ -3509,21 +3509,21 @@
     },
     "extracted_fields": {
       "when_text": "no_especificado",
-      "how_text": "identes + Establecer un equipo nacional anti- Cibernéticos (CSIRT-CR),",
-      "funding_text": "nculante, presupuesto a la Contraloría General de la República, propio"
+      "how_text": "delitos, mediante la ĞĽðŅŤšŅŤÔðĞņĽӌöýӌļýðÔĽĞūļŅūӌţŹýӌēÔŤÔĽųĞðýĽӌ celeridad procesal, la justicia efe",
+      "funding_text": "mpliar la cooperación internacional con DEA, y fortalecer alianzas con Interpol, Euro"
     },
     "evidence": {
       "pdf_id": "PPSO",
-      "page": 36,
-      "snippet": "Ciberdefensa, pensamiento de especialistas y crimi- ciberseguridad y entornos digitales nológicos orientada a la investigación ESPE aplicada, el análisis de datos y la formu- lación de políticas públicas basadas en = Fortalecer el marco …"
+      "page": 29,
+      "snippet": "Cobertura nacional de justicia y ŤýųŅŤĽŅӌöýӌĵÔӌðŅĽǢÔĽƞÔӌýĽӌýĵӌ sistema judicial y seguridad humana. • Establecer la obligatoriedad de rendición öýӌ ðŹýĽųÔūӌ öýӌ ļÔēĞūųŤÔöŅūӔӌ ĮŹýðýūӌ ƕӌ ǢūðÔĵýūӔӌ öýӌ ĒŅŤļÔӌ ųÔĵӌ ţŹýӌ öýĽӌ ðŹýĽųÔūӌ Ôĵӌ pa…"
     }
   },
   {
-    "proposal_id": "ppso-f2195383",
+    "proposal_id": "ppso-0bd6a420",
     "candidate_id": "laura-fernandez-delgado",
     "pillar_id": "P4",
-    "proposal_title": "Estas auditorías deberán ser periódicas y monitoreo que e…",
-    "proposal_text": "Estas auditorías deberán ser periódicas y monitoreo que evalúen las mejoras en con participación de entes independientes, accesibilidad, cobertura, oportunidad, garantizando que la información sirva de asegurando que cada proyecto genere base para decisiones estratégicas. verdadero valor público y que los recursos se destinen a las prioridades reales de la \"» Establecer un nuevo modelo de población. financiamiento de la CCSS mediante la presentación de una propuesta de Ley de = Promover y mejora",
+    "proposal_title": "66 • Diseñar e impulsar el Programa “Talentos Ticos”, ori…",
+    "proposal_text": "66 • Diseñar e impulsar el Programa “Talentos Ticos”, orientado a potenciar el deporte de ÔĵųŅӌŤýĽöĞļĞýĽųŅӌýĽӌŅūųÔӌĞðÔӔӌļýöĞÔĽųýӌĵÔӌ ĞöýĽųĞǢðÔðĞņĽӌƕӌöýūÔŤŤŅĵĵŅӌöýӌĮņƎýĽýūӌÔųĵýųÔūӔӌ la concesión de becas internacionales en disciplinas estratégicas, el acceso a formación universitaria para las personas deportistas y la profesionalización del deporte a través de la capacitación de ýĽųŤýĽÔöŅŤýūӌ ðýŤųĞǢðÔöŅūӌ ƕӌ ļþöĞðŅūӌ ýūšý- cializados en medicina deportiva. • Implementar en alianza con la CCSS la ",
     "dimensions": {
       "existence": 1,
       "when": 0,
@@ -3532,21 +3532,21 @@
     },
     "extracted_fields": {
       "when_text": "no_especificado",
-      "how_text": "e la CCSS mediante la presentación de una propuesta de Ley de = Promover y mejorar e",
-      "funding_text": "oblación. financiamiento de la CCSS mediante la presentación de una propue"
+      "how_text": "ţŹĞĵýŤýūӌ mediante la construcción del Proyecto Ciudad Gobierno",
+      "funding_text": "ýųÔūӔӌ la concesión de becas internacionales en disciplinas estratégi"
     },
     "evidence": {
       "pdf_id": "PPSO",
-      "page": 58,
-      "snippet": "Estas auditorías deberán ser periódicas y monitoreo que evalúen las mejoras en con participación de entes independientes, accesibilidad, cobertura, oportunidad, garantizando que la información sirva de asegurando que cada proyecto genere…"
+      "page": 70,
+      "snippet": "66 • Diseñar e impulsar el Programa “Talentos Ticos”, orientado a potenciar el deporte de ÔĵųŅӌŤýĽöĞļĞýĽųŅӌýĽӌŅūųÔӌĞðÔӔӌļýöĞÔĽųýӌĵÔӌ ĞöýĽųĞǢðÔðĞņĽӌƕӌöýūÔŤŤŅĵĵŅӌöýӌĮņƎýĽýūӌÔųĵýųÔūӔӌ la concesión de becas internacionales en disciplinas est…"
     }
   },
   {
-    "proposal_id": "ppso-8c36c54b",
+    "proposal_id": "ppso-86064bf0",
     "candidate_id": "laura-fernandez-delgado",
     "pillar_id": "P5",
-    "proposal_title": "= Actualizar el marco normativo: aprobar » Fomentar el de…",
-    "proposal_text": "= Actualizar el marco normativo: aprobar » Fomentar el desarrollo tecnológico una Ley Marco de Ciberseguridad que nacional: impulsar fondos concursables tipifique nuevas modalidades de delitos para startups y universidades que digitales (ransomware, fraudes con lA, desarrollen soluciones propias de suplantación de identidad masiva), ciberseguridad. establezca sanciones proporcionales y protocolos obligatorios para entidades = Cooperación internacional activa: públicas y privadas. reforzar conven",
+    "proposal_title": "33 ƒ ðųŹÔĵĞƞÔŤӌýĵӌļÔŤðŅӌĽŅŤļÔųĞƎŅӕӌÔšŤŅïÔŤӌ ŹĽÔӌaýƕӌiÔŤðŅ…",
+    "proposal_text": "33 ƒ ðųŹÔĵĞƞÔŤӌýĵӌļÔŤðŅӌĽŅŤļÔųĞƎŅӕӌÔšŤŅïÔŤӌ ŹĽÔӌaýƕӌiÔŤðŅӌöýӌĞïýŤūýēŹŤĞöÔöӌţŹýӌ ųĞšĞǢţŹýӌĽŹýƎÔūӌļŅöÔĵĞöÔöýūӌöýӌöýĵĞųŅūӌ öĞēĞųÔĵýūӌ ԁŤÔĽūŅļƏÔŤýӔӌ ĒŤÔŹöýūӌ ðŅĽӌ MӔӌ suplantación de identidad masiva), establezca sanciones proporcionales y protocolos obligatorios para entidades públicas y privadas. ƒ ÔšÔðĞųÔðĞņĽӌ ƕӌ ųÔĵýĽųŅӌ ýūšýðĞÔĵĞƞÔöŅӕӌ lanzar un programa nacional de formación en ciberseguridad con becas, ðýŤųĞǢðÔðĞŅĽýūӌĞĽųýŤĽÔðĞŅĽÔĵýūӌƕӌÔĵĞÔĽƞÔūӌ con universidades para formar talento ĵŅðÔĵӓӌŤĞŅ",
     "dimensions": {
       "existence": 1,
       "when": 0,
@@ -3555,113 +3555,67 @@
     },
     "extracted_fields": {
       "when_text": "no_especificado",
-      "how_text": "lanzar un programa nacional de en redes globales de inteligencia y formación",
-      "funding_text": "tidades = Cooperación internacional activa: públicas y privadas. reforzar convenios y"
+      "how_text": "lanzar un programa nacional de formación en ciberseguridad con becas, ðýŤųĞǢð",
+      "funding_text": "njuntos y cooperación internacional especializada"
     },
     "evidence": {
       "pdf_id": "PPSO",
       "page": 37,
-      "snippet": "= Actualizar el marco normativo: aprobar » Fomentar el desarrollo tecnológico una Ley Marco de Ciberseguridad que nacional: impulsar fondos concursables tipifique nuevas modalidades de delitos para startups y universidades que digitales …"
+      "snippet": "33 ƒ ðųŹÔĵĞƞÔŤӌýĵӌļÔŤðŅӌĽŅŤļÔųĞƎŅӕӌÔšŤŅïÔŤӌ ŹĽÔӌaýƕӌiÔŤðŅӌöýӌĞïýŤūýēŹŤĞöÔöӌţŹýӌ ųĞšĞǢţŹýӌĽŹýƎÔūӌļŅöÔĵĞöÔöýūӌöýӌöýĵĞųŅūӌ öĞēĞųÔĵýūӌ ԁŤÔĽūŅļƏÔŤýӔӌ ĒŤÔŹöýūӌ ðŅĽӌ MӔӌ suplantación de identidad masiva), establezca sanciones proporcionales y p…"
     }
   },
   {
-    "proposal_id": "ppso-d0073d3f",
+    "proposal_id": "ppso-6fc7f3d6",
     "candidate_id": "laura-fernandez-delgado",
     "pillar_id": "P6",
-    "proposal_title": "Ademós, mediante el Programa de Pago por Resultados, En r…",
-    "proposal_text": "Ademós, mediante el Programa de Pago por Resultados, En relación con la gestión de residuos, el desafío se otorgaron 4444 millones adicionales como se encuentra en la recuperación de materiales pago retroactivo por reducciones de reciclables, que registraron en 2023 el emisiones forestales entre 2018 y 2019, porcentaje más alto de recuperación de los beneficiando a más de 49.500 hectáreas",
+    "proposal_title": "Se posicionarán öýūųĞĽŅūӌöýӌÔĵųŅӌƎÔĵŅŤӌýðŅĵņēĞðŅӌƕӌðĞýĽųĠ…",
+    "proposal_text": "Se posicionarán öýūųĞĽŅūӌöýӌÔĵųŅӌƎÔĵŅŤӌýðŅĵņēĞðŅӌƕӌðĞýĽųĠǢðŅӌ ðŅļŅӌ ýĵӌ ÔŤţŹýӌ jÔðĞŅĽÔĵӌ ÔĵŅӌ ¼ýŤöýӌ ýĽӌ BŹÔĽÔðÔūųýӔӌ ýĵӌ ÔŤţŹýӌ MĽųýŤĽÔðĞŅĽÔĵӌ aÔӌ ļĞūųÔöӌýĽӌĵÔӌƞŅĽÔӌŤŹĽðÔӔӌƕӌĵŅūӌĚŹļýöÔĵýūӌ de Gandoca-Manzanillo en el Caribe Sur, como espacios ideales para estudios de biodiversidad, conservación, cambio ðĵĞļÕųĞðŅӌƕӌöýūÔŤŤŅĵĵŅӌūŅūųýĽĞïĵý Nuestra riqueza desde los mares • Replantear el modelo de administración, ŤýēŹĵÔðĞņĽӌƕӌšŤŅļŅðĞņĽӌöýĵӌūýðųŅŤӌšýūţŹý- roӔӌšýūţŹýŤŅӌųŹŤĠūųĞðŅӌƕӌÔðŹĠðŅĵÔӌļýöĞÔĽųýӌĵÔ",
     "dimensions": {
       "existence": 1,
       "when": 0,
       "how": 1,
-      "funding": 1
+      "funding": 0
     },
     "extracted_fields": {
       "when_text": "no_especificado",
-      "how_text": "Ademós, mediante el Programa de Pago por Resultados, En relación con la gestió",
-      "funding_text": "otorgaron 4444 millones adicionales como se encuentra en la recuperación"
+      "how_text": "pesqueras a través de la facilitación de créditos blandos y ŅųŤŅūӌ šŤŅē",
+      "funding_text": "no_especificado"
     },
     "evidence": {
       "pdf_id": "PPSO",
-      "page": 18,
-      "snippet": "Ademós, mediante el Programa de Pago por Resultados, En relación con la gestión de residuos, el desafío se otorgaron 4444 millones adicionales como se encuentra en la recuperación de materiales pago retroactivo por reducciones de recicla…"
+      "page": 46,
+      "snippet": "Se posicionarán öýūųĞĽŅūӌöýӌÔĵųŅӌƎÔĵŅŤӌýðŅĵņēĞðŅӌƕӌðĞýĽųĠǢðŅӌ ðŅļŅӌ ýĵӌ ÔŤţŹýӌ jÔðĞŅĽÔĵӌ ÔĵŅӌ ¼ýŤöýӌ ýĽӌ BŹÔĽÔðÔūųýӔӌ ýĵӌ ÔŤţŹýӌ MĽųýŤĽÔðĞŅĽÔĵӌ aÔӌ ļĞūųÔöӌýĽӌĵÔӌƞŅĽÔӌŤŹĽðÔӔӌƕӌĵŅūӌĚŹļýöÔĵýūӌ de Gandoca-Manzanillo en el Caribe Sur, como es…"
     }
   },
   {
-    "proposal_id": "ppso-deab5b88",
+    "proposal_id": "ppso-df671f3d",
     "candidate_id": "laura-fernandez-delgado",
     "pillar_id": "P7",
-    "proposal_title": "= Permitir la navegabilidad adecuada de Alcantarillados (…",
-    "proposal_text": "= Permitir la navegabilidad adecuada de Alcantarillados (AyA) en el uso eficiente de los esteros, ríos, manglares y atracaderos a recursos y en el accionar colaborativo para el partir de la creación del “Programa Nacional financiamiento de la infraestructura hídrica de Dragado”, el cual articulará un trabajo necesaria para las familias y las empresas. integral entre el Gobierno Central y los Gobiernos Locales. = Garantizar los recursos hídricos necesarios a lo largo y ancho de nuestro país a par",
+    "proposal_title": "34 Modernización del Estado, gobierno ýǢðĞýĽųýӌ ƕӌ ĵŹðĚÔӌ…",
+    "proposal_text": "34 Modernización del Estado, gobierno ýǢðĞýĽųýӌ ƕӌ ĵŹðĚÔӌ ðŅĽųŤÔӌ ĵÔӌ corrupción • MļšŹĵūÔŤӌŹĽӌšŤŅƕýðųŅӌöýӌŤýĒŅŤļÔӌÔӌĵÔӌaýƕӌ General de la Administración Pública que ūĞļšĵĞǢţŹýӌ ĵŅūӌ šŤŅðýöĞļĞýĽųŅūӌ administrativos y fortalezca los mecanismos de control y transparencia derivados de ella, mediante la digitalización de los trámites, la eliminación de duplicidades normativas y la incorporación öýӌĵŅūӌšŤĞĽðĞšĞŅūӌöýӌýǢðĞýĽðĞÔӌƕӌŤýĽöĞðĞņĽӌöýӌ cuentas real, ðŅĽӌýĵӌǢĽӌöýӌļýĮŅŤÔŤӌĵÔӌðÔĵĞöÔöӌ ƕӌ ŅšŅŤųŹĽĞö",
     "dimensions": {
       "existence": 1,
       "when": 0,
       "how": 1,
-      "funding": 1
+      "funding": 0
     },
     "extracted_fields": {
       "when_text": "no_especificado",
-      "how_text": "y hídrico mediante el replanteamiento de los auditoría de los contratos de gestión de l",
-      "funding_text": "Nacional financiamiento de la infraestructura hídrica de Dragado”, el cua"
+      "how_text": "de ella, mediante la digitalización de los trámites, la eliminación de duplicidades n",
+      "funding_text": "no_especificado"
     },
     "evidence": {
       "pdf_id": "PPSO",
-      "page": 52,
-      "snippet": "= Permitir la navegabilidad adecuada de Alcantarillados (AyA) en el uso eficiente de los esteros, ríos, manglares y atracaderos a recursos y en el accionar colaborativo para el partir de la creación del “Programa Nacional financiamiento …"
+      "page": 38,
+      "snippet": "34 Modernización del Estado, gobierno ýǢðĞýĽųýӌ ƕӌ ĵŹðĚÔӌ ðŅĽųŤÔӌ ĵÔӌ corrupción • MļšŹĵūÔŤӌŹĽӌšŤŅƕýðųŅӌöýӌŤýĒŅŤļÔӌÔӌĵÔӌaýƕӌ General de la Administración Pública que ūĞļšĵĞǢţŹýӌ ĵŅūӌ šŤŅðýöĞļĞýĽųŅūӌ administrativos y fortalezca los mecan…"
     }
   },
   {
-    "proposal_id": "ppso-78a5ed96",
+    "proposal_id": "ppso-32811635",
     "candidate_id": "laura-fernandez-delgado",
     "pillar_id": "P8",
-    "proposal_title": "Sin propuesta identificada para este pilar",
-    "proposal_text": "El documento no contiene propuestas concretas para este pilar.",
-    "dimensions": {
-      "existence": 0,
-      "when": 0,
-      "how": 0,
-      "funding": 0
-    },
-    "extracted_fields": {
-      "when_text": "no_especificado",
-      "how_text": "no_especificado",
-      "funding_text": "no_especificado"
-    },
-    "evidence": {
-      "pdf_id": "PPSO",
-      "page": 1,
-      "snippet": "Sin contenido para este pilar."
-    }
-  },
-  {
-    "proposal_id": "ppso-b16bf40c",
-    "candidate_id": "laura-fernandez-delgado",
-    "pillar_id": "P9",
-    "proposal_title": "Sin propuesta identificada para este pilar",
-    "proposal_text": "El documento no contiene propuestas concretas para este pilar.",
-    "dimensions": {
-      "existence": 0,
-      "when": 0,
-      "how": 0,
-      "funding": 0
-    },
-    "extracted_fields": {
-      "when_text": "no_especificado",
-      "how_text": "no_especificado",
-      "funding_text": "no_especificado"
-    },
-    "evidence": {
-      "pdf_id": "PPSO",
-      "page": 1,
-      "snippet": "Sin contenido para este pilar."
-    }
-  },
-  {
-    "proposal_id": "ppso-b29010a1",
-    "candidate_id": "laura-fernandez-delgado",
-    "pillar_id": "P10",
-    "proposal_title": "Priorizar carreras STEM con énfasis en ciberseguridad. = …",
-    "proposal_text": "Priorizar carreras STEM con énfasis en ciberseguridad. = Plan Protección Infraestructuras = Conciencia ciudadana: implementar Críticas: diseñar e implementar un plan una campaña nacional de nacional que clasifique y priorice las alfabetización digital contra fraudes, infraestructuras críticas (energía, estafas y suplantación de identidad, telecomunicaciones, salud, finanzas, dirigida a todos los grupos etarios, con transporte, agua y servicios públicos), especial atención a niños y adultos con i",
+    "proposal_title": "67 • permita la transparencia de los procedimientos de co…",
+    "proposal_text": "67 • permita la transparencia de los procedimientos de contratación, se ÔŹļýĽųýӌ ĵÔӌ ýǢðĞýĽðĞÔӌ öýӌ ĵŅūӌ ŤýðŹŤūŅūӌ ƕӌ ūýӌ reduzcan los tiempos de espera de las familias. • ýĒŅŤļÔӌÔӌĵÔӌaýƕӌöýӌŅĽųŤÔųÔðĞņĽӌźïĵĞðÔӌ para incluir un capítulo con procedimientos de contratación propios para el desarrollo de proyectos de vivienda de interés social, öýӌĒŅŤļÔӌųÔĵӌţŹýӌūýӌųýĽēÔӌļÔƕŅŤӌųŤÔĽūšÔŤ- ýĽðĞÔӌýĽӌĵŅūӌšŤŅðýūŅūӔӌýǢðĞýĽðĞÔӌýĽӌýĵӌŹūŅӌöýӌ los recursos públicos ƕӌūýӌŤýöŹƞðÔĽӌĵŅūӌųĞýļ- šŅūӌ öýӌ ðŅĽųŤÔųÔðĞņĽӌ ",
     "dimensions": {
       "existence": 1,
       "when": 0,
@@ -3670,13 +3624,59 @@
     },
     "extracted_fields": {
       "when_text": "no_especificado",
-      "how_text": "iudadana: implementar Críticas: diseñar e implementar un plan una campa",
-      "funding_text": "njuntos y cooperación internacional gobiernos locales a realizar pruebas y especializ"
+      "how_text": "• Crear e implementar el “Programa Haga- mos Ciudad” en el cual el Pode",
+      "funding_text": "Ņӌöýӌ los recursos públicos ƕӌūýӌŤýöŹƞðÔĽӌĵŅūӌųĞýļ- šŅūӌ öýӌ ðŅĽųŤÔųÔðĞņĽӌ ƕӌ"
     },
     "evidence": {
       "pdf_id": "PPSO",
-      "page": 37,
-      "snippet": "Priorizar carreras STEM con énfasis en ciberseguridad. = Plan Protección Infraestructuras = Conciencia ciudadana: implementar Críticas: diseñar e implementar un plan una campaña nacional de nacional que clasifique y priorice las alfabeti…"
+      "page": 71,
+      "snippet": "67 • permita la transparencia de los procedimientos de contratación, se ÔŹļýĽųýӌ ĵÔӌ ýǢðĞýĽðĞÔӌ öýӌ ĵŅūӌ ŤýðŹŤūŅūӌ ƕӌ ūýӌ reduzcan los tiempos de espera de las familias. • ýĒŅŤļÔӌÔӌĵÔӌaýƕӌöýӌŅĽųŤÔųÔðĞņĽӌźïĵĞðÔӌ para incluir un capítulo c…"
+    }
+  },
+  {
+    "proposal_id": "ppso-97499c56",
+    "candidate_id": "laura-fernandez-delgado",
+    "pillar_id": "P9",
+    "proposal_title": "52 • • Implementar programas de capacitación a las ADIs p…",
+    "proposal_text": "52 • • Implementar programas de capacitación a las ADIs para la atracción y administración de recursos económicos frescos y ÔĵųýŤĽÔųĞƎŅūӌţŹýӌšýŤļĞųÔĽӌūŹӌūŅūųýĽĞïĞĵĞöÔöӓ • ļšĵĞÔŤӌ ĵÔӌ ðÔšÔðĞöÔöӌ ŅŤēÔĽĞƞÔųĞƎÔӌ ƕӌ ŅšýŤÔųĞƎÔӌ öýĵӌ iĞĽĞūųýŤĞŅӌ öýӌ ¡ŤÔïÔĮŅӌ ƕӌ Seguridad Social (MTSS) para la vigilancia y control responsable en la gestión de las asociaciones solidaristas y asociaciones civiles solidaristas. • Impulsar reformas regulatorias para mejorar la transparencia en la operación de las asociacion",
+    "dimensions": {
+      "existence": 1,
+      "when": 0,
+      "how": 1,
+      "funding": 1
+    },
+    "extracted_fields": {
+      "when_text": "no_especificado",
+      "how_text": "exterior mediante la incorporación de nuevas especialidades profesionales en el Esta",
+      "funding_text": "nismos de cooperación internacionalӌ Ôӌ šÔŤųĞŤӌ öýӌ ĵÔӌ ïźūţŹýöÔӌ öýӌ ūŅĵŹðĞŅĽýūӌ ļŹĵ"
+    },
+    "evidence": {
+      "pdf_id": "PPSO",
+      "page": 56,
+      "snippet": "52 • • Implementar programas de capacitación a las ADIs para la atracción y administración de recursos económicos frescos y ÔĵųýŤĽÔųĞƎŅūӌţŹýӌšýŤļĞųÔĽӌūŹӌūŅūųýĽĞïĞĵĞöÔöӓ • ļšĵĞÔŤӌ ĵÔӌ ðÔšÔðĞöÔöӌ ŅŤēÔĽĞƞÔųĞƎÔӌ ƕӌ ŅšýŤÔųĞƎÔӌ öýĵӌ iĞĽĞūųýŤĞŅ…"
+    }
+  },
+  {
+    "proposal_id": "ppso-7b217f34",
+    "candidate_id": "laura-fernandez-delgado",
+    "pillar_id": "P10",
+    "proposal_title": "46 • ýŤļĞųĞŤӌ ŹĽӌ ļÔƕŅŤӌ öýūÔŤŤŅĵĵŅӌ ýðŅĽņļĞðŅӌ ƕӌ social…",
+    "proposal_text": "46 • ýŤļĞųĞŤӌ ŹĽӌ ļÔƕŅŤӌ öýūÔŤŤŅĵĵŅӌ ýðŅĽņļĞðŅӌ ƕӌ social en el Caribe a partir de la construcción öýӌĵÔӌiÔŤĞĽÔӌƕӌ¡ýŤļĞĽÔĵӌöýӌŤŹðýŤŅūӌöýӌaĞļņĽӌ de conformidad a los mejores estándares ambientales. • Promover la transformación del entorno portuario del Caribe mediante la moder- ĽĞƞÔðĞņĽӌöýӌ\\ŹĽųÔӌöýӌöļĞĽĞūųŤÔðĞņĽӌ • Portuaria y de Desarrollo Económico de la ¼ýŤųĞýĽųýӌ ųĵÕĽųĞðÔӌ ԁ\\#,¼ԂӔӌ ýĽӌ ýĵӌ ðŹÔĵӌ ūýӌ permita a la institución tener una mayor incidencia en el desarrollo de las comunidades limone",
+    "dimensions": {
+      "existence": 1,
+      "when": 0,
+      "how": 1,
+      "funding": 1
+    },
+    "extracted_fields": {
+      "when_text": "no_especificado",
+      "how_text": "el Caribe mediante la moder- ĽĞƞÔðĞņĽӌöýӌ\\ŹĽųÔӌöýӌöļĞĽĞūųŤÔðĞņĽӌ • Portuaria",
+      "funding_text": "ųŤÔųŅӌöýӌ concesión, la supervisión y ejecución de los planes de acci"
+    },
+    "evidence": {
+      "pdf_id": "PPSO",
+      "page": 50,
+      "snippet": "46 • ýŤļĞųĞŤӌ ŹĽӌ ļÔƕŅŤӌ öýūÔŤŤŅĵĵŅӌ ýðŅĽņļĞðŅӌ ƕӌ social en el Caribe a partir de la construcción öýӌĵÔӌiÔŤĞĽÔӌƕӌ¡ýŤļĞĽÔĵӌöýӌŤŹðýŤŅūӌöýӌaĞļņĽӌ de conformidad a los mejores estándares ambientales. • Promover la transformación del entorno…"
     }
   },
   {
@@ -3703,49 +3703,49 @@
     }
   },
   {
-    "proposal_id": "psd-1f23e56e",
+    "proposal_id": "psd-236ad57b",
     "candidate_id": "luz-mary",
     "pillar_id": "P2",
-    "proposal_title": "PLAN DE GOBIERNO DEL PARTIDO PROGRESO SOCIAL DEMOCRÁTICO …",
-    "proposal_text": "PLAN DE GOBIERNO DEL PARTIDO PROGRESO SOCIAL DEMOCRÁTICO EL FUTURO ES PROGRESO Página: 106 de 125 Por último, existen programas institucionales ya dirigidos al desarrollo productivo y la innovación que, si bien no se enfocan exclusivamente en jóvenes, pueden ser aprovechados por jóvenes emprendedores: • GreenTech: Es un programa de incubación y aceleración ejecutado por Procomer que impulsa startups costarricenses de tecnología verde que buscan herramientas, acompañamiento y financiamiento para ",
+    "proposal_title": "Frente a estos desafíos, el Plan Nacional de Desarrollo P…",
+    "proposal_text": "Frente a estos desafíos, el Plan Nacional de Desarrollo Pesquero y Acuícola (PNDPA) 2025–2030 propone dignificar el trabajo, generar empleo sostenible y de alta calidad, modernizar la pesca artesanal con tecnología, capacitar a 7.800 personas, y promover la inclusión social de mujeres y jóvenes, reconociendo especialmente el trabajo invisibilizado y no remunerado de las mujeres en el sector",
     "dimensions": {
       "existence": 1,
-      "when": 0,
+      "when": 1,
       "how": 1,
-      "funding": 1
+      "funding": 0
     },
     "extracted_fields": {
-      "when_text": "no_especificado",
-      "how_text": "alificado a través de alianzas estratégicas, para satisfacer la demanda",
-      "funding_text": "amiento y financiamiento para el crecimiento del negocio. • Cultiva+: Este"
+      "when_text": "2025–2030",
+      "how_text": "afíos, el Plan Nacional de Desarrollo Pesquero y Acuícola (PNDPA) 2025–20",
+      "funding_text": "no_especificado"
     },
     "evidence": {
       "pdf_id": "PSD",
-      "page": 106,
-      "snippet": "PLAN DE GOBIERNO DEL PARTIDO PROGRESO SOCIAL DEMOCRÁTICO EL FUTURO ES PROGRESO Página: 106 de 125 Por último, existen programas institucionales ya dirigidos al desarrollo productivo y la innovación que, si bien no se enfocan exclusivamen…"
+      "page": 69,
+      "snippet": "Frente a estos desafíos, el Plan Nacional de Desarrollo Pesquero y Acuícola (PNDPA) 2025–2030 propone dignificar el trabajo, generar empleo sostenible y de alta calidad, modernizar la pesca artesanal con tecnología, capacitar a 7.800 per…"
     }
   },
   {
-    "proposal_id": "psd-547f190c",
+    "proposal_id": "psd-e8927172",
     "candidate_id": "luz-mary",
     "pillar_id": "P3",
-    "proposal_title": "Lanzar una plataforma digital segura para denuncias de vi…",
-    "proposal_text": "Lanzar una plataforma digital segura para denuncias de violencia. • Facilitar el acceso a la justicia para víctimas, especialmente en zonas rurales y zonas detectadas con alta incidencia en violencia. • Reducir femicidios y violencia de forma preventiva. • Mejorar el acceso a justicia y empleo para las mujeres • Crear una app y web oficiales con un Canal confidencial de denuncia. • Seguimiento en tiempo real de casos, mediante esta modalidad • Mediante esta modalidad se genere alertas de incumpl",
+    "proposal_title": "La realidad en la que no queremos continuar y que con pro…",
+    "proposal_text": "La realidad en la que no queremos continuar y que con progreso vamos a mejorar o La política de seguridad pública ha sido insuficiente para prevenir el auge del crimen organizado y es lenta para ajustarse a la nueva realidad. o Las políticas diseñadas tienen problemas graves para implementarse y carecen de mecanismos de evaluación para corregir debilidades.",
     "dimensions": {
       "existence": 1,
       "when": 0,
       "how": 1,
-      "funding": 1
+      "funding": 0
     },
     "extracted_fields": {
       "when_text": "no_especificado",
-      "how_text": "mujeres • Crear una app y web oficiales con un Canal confidencial de",
-      "funding_text": "Crear una app y web oficiales con un Canal confidencial de denu"
+      "how_text": "aves para implementarse y carecen de mecanismos de evaluación para corr",
+      "funding_text": "no_especificado"
     },
     "evidence": {
       "pdf_id": "PSD",
-      "page": 115,
-      "snippet": "Lanzar una plataforma digital segura para denuncias de violencia. • Facilitar el acceso a la justicia para víctimas, especialmente en zonas rurales y zonas detectadas con alta incidencia en violencia. • Reducir femicidios y violencia de …"
+      "page": 7,
+      "snippet": "La realidad en la que no queremos continuar y que con progreso vamos a mejorar o La política de seguridad pública ha sido insuficiente para prevenir el auge del crimen organizado y es lenta para ajustarse a la nueva realidad. o Las polít…"
     }
   },
   {
@@ -3933,34 +3933,34 @@
     }
   },
   {
-    "proposal_id": "pucd-f0d643a1",
+    "proposal_id": "pucd-6eca76d3",
     "candidate_id": "boris-molina",
     "pillar_id": "P2",
-    "proposal_title": "Ejecutar un Programa de Educación Financiera que se extie…",
-    "proposal_text": "Ejecutar un Programa de Educación Financiera que se extienda en la malla curricular de los centros educativos, así como entre las Micro, Pequeñas y Medianas Empresas (MiPymes) certificadas por el Ministerio de Economía, Industria y Comercio (MEIC), para fomentar el ahorro, la gestión segura de inversiones y las buenas prácticas financieras",
+    "proposal_title": "Sin propuesta identificada para este pilar",
+    "proposal_text": "El documento no contiene propuestas concretas para este pilar.",
     "dimensions": {
-      "existence": 1,
+      "existence": 0,
       "when": 0,
-      "how": 1,
+      "how": 0,
       "funding": 0
     },
     "extracted_fields": {
       "when_text": "no_especificado",
-      "how_text": "ecutar un Programa de Educación Financiera que se extienda en la malla",
+      "how_text": "no_especificado",
       "funding_text": "no_especificado"
     },
     "evidence": {
       "pdf_id": "PUCD",
-      "page": 4,
-      "snippet": "Ejecutar un Programa de Educación Financiera que se extienda en la malla curricular de los centros educativos, así como entre las Micro, Pequeñas y Medianas Empresas (MiPymes) certificadas por el Ministerio de Economía, Industria y Comer…"
+      "page": 1,
+      "snippet": "Sin contenido para este pilar."
     }
   },
   {
-    "proposal_id": "pucd-4e2f6783",
+    "proposal_id": "pucd-81ed29f0",
     "candidate_id": "boris-molina",
     "pillar_id": "P3",
-    "proposal_title": "Impulsar una reforma a la Ley de Violencia Doméstica que …",
-    "proposal_text": "Impulsar una reforma a la Ley de Violencia Doméstica que contemple someter a la persona agresora, de previo a dictar medidas cautelares, a un examen médico forense o psicológico forense, con el objetivo de determinar el estado mental de la persona agresora y su potencialidad de causar daño a la víctima, de tal manera que el juez tenga un elemento esencial para poder dictar prisión preventiva en contra del agresor y en protección de la víctima",
+    "proposal_title": "Implementar los aportes de la Inteligencia Artificial (IA…",
+    "proposal_text": "Implementar los aportes de la Inteligencia Artificial (IA) en materia de seguridad, tales como el reconocimiento facial y la detección temprana de amenazas en espacios públicos",
     "dimensions": {
       "existence": 1,
       "when": 0,
@@ -3969,13 +3969,13 @@
     },
     "extracted_fields": {
       "when_text": "no_especificado",
-      "how_text": "ulsar una reforma a la Ley de Violencia Doméstica que contemple somet",
+      "how_text": "Implementar los aportes de la Inteligencia Artificial (IA) en",
       "funding_text": "no_especificado"
     },
     "evidence": {
       "pdf_id": "PUCD",
       "page": 6,
-      "snippet": "Impulsar una reforma a la Ley de Violencia Doméstica que contemple someter a la persona agresora, de previo a dictar medidas cautelares, a un examen médico forense o psicológico forense, con el objetivo de determinar el estado mental de …"
+      "snippet": "Implementar los aportes de la Inteligencia Artificial (IA) en materia de seguridad, tales como el reconocimiento facial y la detección temprana de amenazas en espacios públicos"
     }
   },
   {
@@ -4002,26 +4002,26 @@
     }
   },
   {
-    "proposal_id": "pucd-3f1b3761",
+    "proposal_id": "pucd-f0d643a1",
     "candidate_id": "boris-molina",
     "pillar_id": "P5",
-    "proposal_title": "EDUCACIÓN OBJETIVOS Reformar la evaluación del aprendizaj…",
-    "proposal_text": "EDUCACIÓN OBJETIVOS Reformar la evaluación del aprendizaje mediante herramientas idóneas y científicamente probadas",
+    "proposal_title": "Ejecutar un Programa de Educación Financiera que se extie…",
+    "proposal_text": "Ejecutar un Programa de Educación Financiera que se extienda en la malla curricular de los centros educativos, así como entre las Micro, Pequeñas y Medianas Empresas (MiPymes) certificadas por el Ministerio de Economía, Industria y Comercio (MEIC), para fomentar el ahorro, la gestión segura de inversiones y las buenas prácticas financieras",
     "dimensions": {
       "existence": 1,
       "when": 0,
-      "how": 0,
+      "how": 1,
       "funding": 0
     },
     "extracted_fields": {
       "when_text": "no_especificado",
-      "how_text": "no_especificado",
+      "how_text": "ecutar un Programa de Educación Financiera que se extienda en la malla",
       "funding_text": "no_especificado"
     },
     "evidence": {
       "pdf_id": "PUCD",
-      "page": 7,
-      "snippet": "EDUCACIÓN OBJETIVOS Reformar la evaluación del aprendizaje mediante herramientas idóneas y científicamente probadas"
+      "page": 4,
+      "snippet": "Ejecutar un Programa de Educación Financiera que se extienda en la malla curricular de los centros educativos, así como entre las Micro, Pequeñas y Medianas Empresas (MiPymes) certificadas por el Ministerio de Economía, Industria y Comer…"
     }
   },
   {
@@ -4163,11 +4163,57 @@
     }
   },
   {
-    "proposal_id": "pusc-780a0ca6",
+    "proposal_id": "pusc-951eccd8",
     "candidate_id": "juan-carlos-hidalgo",
     "pillar_id": "P2",
-    "proposal_title": "Fondo Impulso Global (FIG): Crear el Fondo Impulso Global…",
-    "proposal_text": "Fondo Impulso Global (FIG): Crear el Fondo Impulso Global con $40 millones de base provistos por PROCOMER, INA y el SBD, complementado con fondos del sector privado y operadoras de pensiones, para financiar emprendimientos con miras a la exportación y vinculación con multinacionales",
+    "proposal_title": "Programas de capacitación laboral y reinserción: Crear y …",
+    "proposal_text": "Programas de capacitación laboral y reinserción: Crear y financiar 5 programas específicos para la capacitación laboral y la reinserción de personas adultas mayores en el mercado de trabajo",
+    "dimensions": {
+      "existence": 1,
+      "when": 0,
+      "how": 0,
+      "funding": 1
+    },
+    "extracted_fields": {
+      "when_text": "no_especificado",
+      "how_text": "no_especificado",
+      "funding_text": ": Crear y financiar 5 programas específicos para la capacitación labo"
+    },
+    "evidence": {
+      "pdf_id": "PUSC",
+      "page": 60,
+      "snippet": "Programas de capacitación laboral y reinserción: Crear y financiar 5 programas específicos para la capacitación laboral y la reinserción de personas adultas mayores en el mercado de trabajo"
+    }
+  },
+  {
+    "proposal_id": "pusc-a2529a9e",
+    "candidate_id": "juan-carlos-hidalgo",
+    "pillar_id": "P3",
+    "proposal_title": "Poner en práctica un régimen diferenciado, con infraestru…",
+    "proposal_text": "Poner en práctica un régimen diferenciado, con infraestructura, personal y protocolos especialmente diseñados, permitiría: separar a estos internos del resto de la población penal, evitando su influencia o reclutamiento sobre personas condenadas por delitos comunes; reducir los riesgos de corrupción interna, mediante mayores controles, monitoreo tecnológico, y estrictas medidas de seguridad; limitar la comunicación con el exterior, mediante inspecciones rigurosas, filtros de visitas, y uso contr",
+    "dimensions": {
+      "existence": 1,
+      "when": 0,
+      "how": 1,
+      "funding": 0
+    },
+    "extracted_fields": {
+      "when_text": "no_especificado",
+      "how_text": "cnología; establecer equipos especializados en inteligencia penitencia",
+      "funding_text": "no_especificado"
+    },
+    "evidence": {
+      "pdf_id": "PUSC",
+      "page": 19,
+      "snippet": "Poner en práctica un régimen diferenciado, con infraestructura, personal y protocolos especialmente diseñados, permitiría: separar a estos internos del resto de la población penal, evitando su influencia o reclutamiento sobre personas co…"
+    }
+  },
+  {
+    "proposal_id": "pusc-3f1daa6e",
+    "candidate_id": "juan-carlos-hidalgo",
+    "pillar_id": "P4",
+    "proposal_title": "PROYECTOS Pensión universal para personas adultas mayores…",
+    "proposal_text": "PROYECTOS Pensión universal para personas adultas mayores (65+): Crear una pensión mínima universal administrada por la CCSS equivalente a la línea oficial de pobreza, financiada con: (i) impuestos a pensiones de lujo; (ii) aportes estatales hoy dirigidos a regímenes básicos; y (iii) transferencias progresivas del Presupuesto conforme vayan extinguiéndose beneficios de regímenes con cargo directo al Estado",
     "dimensions": {
       "existence": 1,
       "when": 0,
@@ -4176,59 +4222,13 @@
     },
     "extracted_fields": {
       "when_text": "no_especificado",
-      "how_text": "al (FIG): Crear el Fondo Impulso Global con $40 millones de base pro",
-      "funding_text": "nes, para financiar emprendimientos con miras a la exportación y vinc"
+      "how_text": "es (65+): Crear una pensión mínima universal administrada por la CCSS",
+      "funding_text": "sivas del Presupuesto conforme vayan extinguiéndose beneficios de regím"
     },
     "evidence": {
       "pdf_id": "PUSC",
-      "page": 84,
-      "snippet": "Fondo Impulso Global (FIG): Crear el Fondo Impulso Global con $40 millones de base provistos por PROCOMER, INA y el SBD, complementado con fondos del sector privado y operadoras de pensiones, para financiar emprendimientos con miras a la…"
-    }
-  },
-  {
-    "proposal_id": "pusc-28ce92f5",
-    "candidate_id": "juan-carlos-hidalgo",
-    "pillar_id": "P3",
-    "proposal_title": "Centro Conjunto de Inteligencia Policial: Crearemos un ce…",
-    "proposal_text": "Centro Conjunto de Inteligencia Policial: Crearemos un centro conjunto de inteligencia policial que genere información y facilite su intercambio entre las diferentes fuerzas del orden, así como apoyar al OIJ y el Ministerio Público en el fortalecimiento de sus estructuras, capacidades, equipo y en lo táctico-operativo, siguiendo una lógica de cooperación entre los diferentes poderes de la República y entidades que ha estado ausente en la actual Administración",
-    "dimensions": {
-      "existence": 1,
-      "when": 0,
-      "how": 1,
-      "funding": 0
-    },
-    "extracted_fields": {
-      "when_text": "no_especificado",
-      "how_text": "Policial: Crearemos un centro conjunto de inteligencia policial que gene",
-      "funding_text": "no_especificado"
-    },
-    "evidence": {
-      "pdf_id": "PUSC",
-      "page": 20,
-      "snippet": "Centro Conjunto de Inteligencia Policial: Crearemos un centro conjunto de inteligencia policial que genere información y facilite su intercambio entre las diferentes fuerzas del orden, así como apoyar al OIJ y el Ministerio Público en el…"
-    }
-  },
-  {
-    "proposal_id": "pusc-3dee84b5",
-    "candidate_id": "juan-carlos-hidalgo",
-    "pillar_id": "P4",
-    "proposal_title": "SALUD: Reduciremos las listas de espera de la CCSS median…",
-    "proposal_text": "SALUD: Reduciremos las listas de espera de la CCSS mediante un agresivo plan de jornadas extraordinarias (vespertinas y fines de semana) con gestión por resultados y priorización clínica (urgente, preferente, diferible)",
-    "dimensions": {
-      "existence": 1,
-      "when": 0,
-      "how": 1,
-      "funding": 0
-    },
-    "extracted_fields": {
-      "when_text": "no_especificado",
-      "how_text": "e la CCSS mediante un agresivo plan de jornadas extraordinarias (vespertinas y f",
-      "funding_text": "no_especificado"
-    },
-    "evidence": {
-      "pdf_id": "PUSC",
-      "page": 12,
-      "snippet": "SALUD: Reduciremos las listas de espera de la CCSS mediante un agresivo plan de jornadas extraordinarias (vespertinas y fines de semana) con gestión por resultados y priorización clínica (urgente, preferente, diferible)"
+      "page": 43,
+      "snippet": "PROYECTOS Pensión universal para personas adultas mayores (65+): Crear una pensión mínima universal administrada por la CCSS equivalente a la línea oficial de pobreza, financiada con: (i) impuestos a pensiones de lujo; (ii) aportes estat…"
     }
   },
   {
@@ -4416,11 +4416,11 @@
     }
   },
   {
-    "proposal_id": "up-e27c13bf",
+    "proposal_id": "up-99688c4d",
     "candidate_id": "natalia-diaz",
     "pillar_id": "P3",
-    "proposal_title": "El Estado retomará el mando en comunidades dominadas por …",
-    "proposal_text": "El Estado retomará el mando en comunidades dominadas por el crimen organizado mediante operaciones sostenidas, con capacidad para permanecer en el territorio hasta restablecer el orden",
+    "proposal_title": "Crearemos un sistema nacional de gestión de infraestructu…",
+    "proposal_text": "Crearemos un sistema nacional de gestión de infraestructura escolar con diagnósticos en tiempo real y alertas tempranas. • Escuelas como “la otra megaobra de seguridad”: Cada inversión en infraestructura será también una inversión en prevención del delito",
     "dimensions": {
       "existence": 1,
       "when": 0,
@@ -4429,13 +4429,13 @@
     },
     "extracted_fields": {
       "when_text": "no_especificado",
-      "how_text": "io hasta restablecer el orden",
+      "how_text": "Crearemos un sistema nacional de gestión de infraestructura es",
       "funding_text": "no_especificado"
     },
     "evidence": {
       "pdf_id": "UP",
-      "page": 18,
-      "snippet": "El Estado retomará el mando en comunidades dominadas por el crimen organizado mediante operaciones sostenidas, con capacidad para permanecer en el territorio hasta restablecer el orden"
+      "page": 42,
+      "snippet": "Crearemos un sistema nacional de gestión de infraestructura escolar con diagnósticos en tiempo real y alertas tempranas. • Escuelas como “la otra megaobra de seguridad”: Cada inversión en infraestructura será también una inversión en pre…"
     }
   },
   {

@@ -331,7 +331,7 @@ const fiscalStats = getFiscalStats();
               <span class="text-lg">⚠️</span> Ataca regla fiscal
             </td>
             <td class="py-3 px-4 text-slate-600">
-              Propone flexibilizar, reformar o eliminar la regla fiscal sin alternativa de sostenibilidad
+              Propone flexibilizar, reformar o eliminar la regla fiscal (Ley 9635)
             </td>
             <td class="py-3 px-4 text-center font-bold text-red-600">-2 puntos</td>
           </tr>
@@ -340,16 +340,7 @@ const fiscalStats = getFiscalStats();
               <span class="text-lg">💰</span> Propone más deuda
             </td>
             <td class="py-3 px-4 text-slate-600">
-              Propone aumentar la deuda pública sin plan de sostenibilidad o mecanismo de pago
-            </td>
-            <td class="py-3 px-4 text-center font-bold text-red-600">-1 punto</td>
-          </tr>
-          <tr>
-            <td class="py-3 px-4 font-medium">
-              <span class="text-lg">📈</span> Propone más impuestos
-            </td>
-            <td class="py-3 px-4 text-slate-600">
-              Propone aumentar la carga tributaria al pueblo costarricense
+              Propone aumentar la deuda pública sin plan de sostenibilidad
             </td>
             <td class="py-3 px-4 text-center font-bold text-red-600">-1 punto</td>
           </tr>
@@ -357,21 +348,96 @@ const fiscalStats = getFiscalStats();
       </table>
     </div>
 
+    <h3 class="text-amber-700">⚠️ Penalizaciones por Omisión de Urgencias Nacionales</h3>
+    
+    <p>
+      <strong>Costa Rica enfrenta urgencias reales que deben abordarse.</strong> Penalizamos a candidatos 
+      que no mencionan temas críticos para el país:
+    </p>
+
+    <div class="not-prose overflow-x-auto">
+      <table class="min-w-full text-sm border border-amber-200">
+        <thead>
+          <tr class="bg-amber-50 border-b border-amber-200">
+            <th class="text-left py-3 px-4">Omisión</th>
+            <th class="text-left py-3 px-4">¿Por qué es importante?</th>
+            <th class="text-center py-3 px-4">Penalización</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-amber-100">
+            <td class="py-3 px-4 font-medium">
+              <span class="text-lg">🚨</span> Ignora seguridad operativa
+            </td>
+            <td class="py-3 px-4 text-slate-600">
+              No menciona policía, OIJ, patrullaje o vigilancia en contexto de crisis
+            </td>
+            <td class="py-3 px-4 text-center font-bold text-amber-600">-1 punto</td>
+          </tr>
+          <tr class="border-b border-amber-100">
+            <td class="py-3 px-4 font-medium">
+              <span class="text-lg">🏥</span> Ignora crisis CCSS
+            </td>
+            <td class="py-3 px-4 text-slate-600">
+              No menciona la Caja, listas de espera, IVM o régimen de pensiones
+            </td>
+            <td class="py-3 px-4 text-center font-bold text-amber-600">-1 punto</td>
+          </tr>
+          <tr class="border-b border-amber-100">
+            <td class="py-3 px-4 font-medium">
+              <span class="text-lg">💼</span> Ignora empleo formal
+            </td>
+            <td class="py-3 px-4 text-slate-600">
+              No menciona formalización, empleo formal o trabajo decente
+            </td>
+            <td class="py-3 px-4 text-center font-bold text-amber-600">-0.5 puntos</td>
+          </tr>
+          <tr>
+            <td class="py-3 px-4 font-medium">
+              <span class="text-lg">🔫</span> Ignora crimen organizado
+            </td>
+            <td class="py-3 px-4 text-slate-600">
+              No menciona narcotráfico, sicariato, extorsión o lavado de dinero
+            </td>
+            <td class="py-3 px-4 text-center font-bold text-amber-600">-0.5 puntos</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
     <div class="not-prose bg-slate-50 border border-slate-200 rounded-lg p-4 mt-4">
       <h4 class="font-semibold text-slate-900 mb-2">📊 Estadísticas actuales:</h4>
-      <ul class="text-sm text-slate-600 space-y-1">
-        <li>• <strong>{fiscalStats.attackFiscalRule}</strong> de {fiscalStats.total} partidos atacan la regla fiscal</li>
-        <li>• <strong>{fiscalStats.proposeDebt}</strong> de {fiscalStats.total} partidos proponen más deuda</li>
-        <li>• <strong>{fiscalStats.proposeTax}</strong> de {fiscalStats.total} partidos proponen más impuestos</li>
-        <li class="pt-2">• 🟢 <strong>{fiscalStats.lowRisk}</strong> partidos con riesgo BAJO</li>
-        <li>• 🟠 <strong>{fiscalStats.mediumRisk}</strong> partidos con riesgo MEDIO</li>
-        <li>• 🔴 <strong>{fiscalStats.highRisk}</strong> partidos con riesgo ALTO</li>
-      </ul>
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div>
+          <p class="font-medium text-red-700 mb-2">Penalizaciones fiscales:</p>
+          <ul class="text-sm text-slate-600 space-y-1">
+            <li>• <strong>{fiscalStats.attackFiscalRule}</strong> de {fiscalStats.total} atacan la regla fiscal</li>
+            <li>• <strong>{fiscalStats.proposeDebt}</strong> de {fiscalStats.total} proponen más deuda</li>
+          </ul>
+        </div>
+        <div>
+          <p class="font-medium text-amber-700 mb-2">Penalizaciones por omisión:</p>
+          <ul class="text-sm text-slate-600 space-y-1">
+            <li>• <strong>{fiscalStats.ignoreSecurity}</strong> ignoran seguridad operativa</li>
+            <li>• <strong>{fiscalStats.ignoreCCSS}</strong> ignoran crisis CCSS</li>
+            <li>• <strong>{fiscalStats.ignoreEmployment}</strong> ignoran empleo formal</li>
+            <li>• <strong>{fiscalStats.ignoreOrganizedCrime}</strong> ignoran crimen organizado</li>
+          </ul>
+        </div>
+      </div>
+      <div class="mt-3 pt-3 border-t border-slate-300">
+        <p class="font-medium text-slate-700 mb-2">Niveles de riesgo:</p>
+        <div class="flex flex-wrap gap-4 text-sm">
+          <span>🟢 <strong>{fiscalStats.lowRisk}</strong> BAJO</span>
+          <span>🟠 <strong>{fiscalStats.mediumRisk}</strong> MEDIO</span>
+          <span>🔴 <strong>{fiscalStats.highRisk}</strong> ALTO</span>
+        </div>
+      </div>
     </div>
 
     <hr />
 
-    <h2>Niveles de Riesgo Fiscal</h2>
+    <h2>Niveles de Riesgo</h2>
     
     <div class="not-prose grid gap-3">
       <div class="flex items-start gap-3 p-3 bg-green-50 border border-green-200 rounded-lg">
@@ -379,8 +445,8 @@ const fiscalStats = getFiscalStats();
         <div>
           <h4 class="font-semibold text-green-800">Riesgo BAJO</h4>
           <p class="text-sm text-green-700">
-            El partido NO ataca la regla fiscal, NO propone más deuda ni más impuestos al pueblo.
-            Plan fiscalmente responsable.
+            El partido NO ataca la regla fiscal, NO propone más deuda y aborda las urgencias nacionales.
+            Plan fiscalmente responsable y completo.
           </p>
         </div>
       </div>
@@ -390,8 +456,8 @@ const fiscalStats = getFiscalStats();
         <div>
           <h4 class="font-semibold text-amber-800">Riesgo MEDIO</h4>
           <p class="text-sm text-amber-700">
-            El partido tiene 1-2 banderas rojas fiscales. Puede proponer más deuda O atacar 
-            la regla fiscal, pero no ambas.
+            El partido tiene 1-2 banderas rojas fiscales u omite algunas urgencias nacionales.
+            Requiere atención a las deficiencias identificadas.
           </p>
         </div>
       </div>
@@ -401,8 +467,8 @@ const fiscalStats = getFiscalStats();
         <div>
           <h4 class="font-semibold text-red-800">Riesgo ALTO</h4>
           <p class="text-sm text-red-700">
-            El partido tiene múltiples banderas rojas fiscales. Propone flexibilizar la regla fiscal 
-            Y aumentar deuda Y/O impuestos. Riesgo significativo para las finanzas públicas.
+            El partido tiene múltiples banderas rojas: ataca regla fiscal, propone más deuda 
+            Y/O omite múltiples urgencias nacionales. Riesgo significativo.
           </p>
         </div>
       </div>
@@ -599,7 +665,7 @@ const fiscalStats = getFiscalStats();
     </div>
 
     <p class="text-sm text-slate-500 mt-12">
-      <em>Última actualización: Enero 2026 · Versión del análisis: v5 (Responsabilidad Fiscal)</em>
+      <em>Última actualización: Enero 2026 · Versión del análisis: v6 (Neutral + Estricto)</em>
     </p>
 
   </article>

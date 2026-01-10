@@ -21,15 +21,28 @@ El proyecto evalúa cada propuesta en **4 dimensiones objetivas**:
 
 Las propuestas se organizan en **10 pilares nacionales** para facilitar la comparación temática.
 
-### Análisis Fiscal
+### Sistema de Penalizaciones v6 (Neutral + Estricto)
 
-Además de las dimensiones estructurales, se evalúa la **responsabilidad fiscal** de cada candidato:
+Además de las dimensiones estructurales, se evalúan **penalizaciones objetivas**:
+
+#### Penalizaciones Fiscales (Basadas en Ley Vigente)
 
 | Indicador | Descripción | Penalización |
 |-----------|-------------|--------------|
-| 🔴 Ataca regla fiscal | Propone flexibilizar o eliminar la regla fiscal | -0.10 |
-| 💰 Más deuda | Propone aumentar deuda sin plan de sostenibilidad | -0.05 |
-| 📈 Más impuestos | Propone aumentar impuestos | -0.03 |
+| ⚠️ Ataca regla fiscal | Propone flexibilizar o eliminar la regla fiscal | -2 |
+| 💰 Más deuda | Propone aumentar deuda sin plan de sostenibilidad | -1 |
+
+#### Penalizaciones por Omisión (Basadas en Urgencias de CR)
+
+| Indicador | Descripción | Penalización |
+|-----------|-------------|--------------|
+| 🚨 Ignora seguridad | No menciona seguridad operativa | -1 |
+| 🏥 Ignora CCSS | No menciona crisis de la CCSS | -1 |
+| 💼 Ignora empleo | No menciona empleo/desempleo | -0.5 |
+| 🔫 Ignora crimen organizado | No menciona narcotráfico | -0.5 |
+| 📋 Falta pilar prioritario | Sin propuesta en P1, P3, P4 o P7 | -0.5 c/u |
+
+> **Nota**: Se eliminó la penalización por "proponer más impuestos" porque representaba un sesgo ideológico.
 
 ---
 
@@ -188,7 +201,7 @@ Los datos provienen exclusivamente de los **planes de gobierno oficiales** prese
 **Candidatos analizados**: 20  
 **Propuestas extraídas**: 3,400+  
 **Pilares nacionales**: 10  
-**Versión del análisis**: v4 (con análisis fiscal)
+**Versión del análisis**: v6 (neutral + estricto)
 
 ---
 

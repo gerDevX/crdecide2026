@@ -101,7 +101,8 @@ function getScoreLevel(scorePercent: number): { label: string; color: string; bg
       </div>
       <div class="mt-3 pt-3 border-t border-slate-200">
         <p class="text-xs text-slate-500">
-          <strong>Penalizaciones:</strong> Atacar regla fiscal (-2), Proponer más deuda (-1), Proponer más impuestos (-1)
+          <strong>Penalizaciones fiscales:</strong> Atacar regla fiscal (-2), Proponer más deuda (-1)<br/>
+          <strong>Penalizaciones por omisión:</strong> Ignorar seguridad (-1), Ignorar CCSS (-1), Ignorar empleo (-0.5), Ignorar crimen organizado (-0.5)
         </p>
       </div>
     </div>
@@ -160,9 +161,9 @@ function getScoreLevel(scorePercent: number): { label: string; color: string; bg
           {ranking.map((entry, index) => {
             const score = entry.weighted_sum || entry.priority_weighted_sum || entry.critical_weighted_sum || 0;
             const scorePercent = Math.round(score * 100);
-            const fiscalPenalty = (entry as any).fiscal_penalty || 0;
+            const fiscalPenalty = (entry as any).total_penalties || 0;
             const riskLevel = entry.analysis?.risk_level || 'BAJO';
-            const fiscalFlags = entry.analysis?.fiscal_responsibility;
+            const fiscalFlags = entry.analysis?.fiscal_flags;
             const scoreLevel = getScoreLevel(scorePercent);
             
             // Para ranking overall, usar riesgo fiscal; para otros, usar nivel por puntaje
