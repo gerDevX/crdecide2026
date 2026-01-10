@@ -1,170 +1,2618 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import RankingTable from '../components/ranking/RankingTable.astro';
-import { getFiscalStats, ranking } from '../lib/data';
+import { 
+  getFiscalStats, 
+  getRankingWithCandidates, 
+  getCriticalRankingWithCandidates,
+  getPriorityRankingWithCandidates,
+  candidateIndex
+} from '../lib/data';
 
 const fiscalStats = getFiscalStats();
+
+// Helper para obtener nombre del candidato
+function getCandidateName(candidate: any): string {
+  const name = candidate?.candidate_name;
+  if (name && name !== 'Por determinar' && name !== 'no_especificado') {
+    return name;
+  }
+  return candidate?.party_name || 'N/A';
+}
+
+// Función para obtener prioridad de riesgo
+function getRiskPriority(riskLevel: string): number {
+  if (riskLevel === 'BAJO') return 0;
+  if (riskLevel === 'MEDIO') return 1;
+  return 2;
+}
+
+// Obtener rankings
+const rawOverallRanking = getRankingWithCandidates();
+const overallRanking = [...rawOverallRanking].sort((a, b) => {
+  const riskA = getRiskPriority(a.analysis?.risk_level || 'BAJO');
+  const riskB = getRiskPriority(b.analysis?.risk_level || 'BAJO');
+  if (riskA !== riskB) return riskA - riskB;
+  return (b.weighted_sum || 0) - (a.weighted_sum || 0);
+}).map((entry, index) => ({ ...entry, rank: index + 1 }));
+
+const criticalRanking = getCriticalRankingWithCandidates();
+const priorityRanking = getPriorityRankingWithCandidates();
+
+// Función para nivel de score
+function getScoreLevel(scorePercent: number) {
+  if (scorePercent >= 70) return { label: 'Excelente', color: 'perfect', emoji: '🟢' };
+  if (scorePercent >= 55) return { label: 'Bueno', color: 'high', emoji: '🟡' };
+  if (scorePercent >= 40) return { label: 'Regular', color: 'medium', emoji: '🟠' };
+  return { label: 'Bajo', color: 'low', emoji: '🔴' };
+}
 ---
 
 <BaseLayout title="Rankings">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    
-    <!-- Header -->
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold text-slate-900 mb-2">Rankings</h1>
-      <p class="text-slate-600 max-w-3xl">
-        Clasificación de candidatos según el análisis estructural de sus planes de gobierno,
-        <strong>incluyendo penalizaciones por irresponsabilidad fiscal</strong>.
-        Estos rankings no son recomendaciones de voto.
-      </p>
-    </div>
 
-    <!-- Fiscal Risk Summary -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-      <div class="card p-4 border-l-4 border-green-500">
-        <div class="flex items-center gap-3">
-          <span class="text-3xl">🟢</span>
-          <div>
-            <div class="text-2xl font-bold text-green-600">{fiscalStats.lowRisk}</div>
-            <div class="text-sm text-slate-600">Riesgo Bajo</div>
-          </div>
-        </div>
-        <p class="text-xs text-slate-500 mt-2">Sin banderas rojas fiscales</p>
-      </div>
+  <!-- ============================================
+       DASHBOARD MODE (Default) - Modo Visual Detallado
+       ============================================ -->
+  <div class="mode-dashboard-content">
+    <div class="dashboard-ranking-container">
       
-      <div class="card p-4 border-l-4 border-amber-500">
-        <div class="flex items-center gap-3">
-          <span class="text-3xl">🟠</span>
-          <div>
-            <div class="text-2xl font-bold text-amber-600">{fiscalStats.mediumRisk}</div>
-            <div class="text-sm text-slate-600">Riesgo Medio</div>
-          </div>
+      <!-- Header -->
+      <header class="dashboard-ranking-header">
+        <div class="dashboard-header-content">
+          <h1 class="dashboard-ranking-title">🏆 Rankings de Candidatos</h1>
+          <p class="dashboard-ranking-subtitle">
+            Clasificación basada en el análisis estructural de planes de gobierno,
+            <strong>incluyendo penalizaciones por irresponsabilidad fiscal</strong>.
+            Estos rankings no son recomendaciones de voto.
+          </p>
         </div>
-        <p class="text-xs text-slate-500 mt-2">1-2 banderas fiscales</p>
-      </div>
-      
-      <div class="card p-4 border-l-4 border-red-500">
-        <div class="flex items-center gap-3">
-          <span class="text-3xl">🔴</span>
-          <div>
-            <div class="text-2xl font-bold text-red-600">{fiscalStats.highRisk}</div>
-            <div class="text-sm text-slate-600">Riesgo Alto</div>
-          </div>
-        </div>
-        <p class="text-xs text-slate-500 mt-2">Múltiples banderas fiscales</p>
-      </div>
-    </div>
+      </header>
 
-    <!-- Penalties applied info -->
-    <div class="card p-4 mb-8">
-      <div class="grid md:grid-cols-2 gap-6">
-        <!-- Penalizaciones fiscales -->
-        <div class="bg-red-50 border border-red-200 rounded-lg p-4">
-          <h3 class="font-semibold text-red-800 mb-3">🔴 Penalizaciones Fiscales</h3>
-          <div class="space-y-3 text-sm">
-        <div class="flex items-center gap-2">
-          <span class="text-lg">⚠️</span>
-          <div>
-            <span class="font-medium text-red-700">Ataca regla fiscal:</span>
-            <span class="text-red-600 font-bold"> -2 puntos</span>
-            <p class="text-xs text-red-600/80">{fiscalStats.attackFiscalRule} partidos afectados</p>
+      <!-- Fiscal Risk Stats Cards -->
+      <div class="dashboard-stats-grid">
+        <div class="dashboard-stat-card green">
+          <div class="dashboard-stat-icon">🟢</div>
+          <div class="dashboard-stat-content">
+            <div class="dashboard-stat-value">{fiscalStats.lowRisk}</div>
+            <div class="dashboard-stat-label">Riesgo Bajo</div>
+          </div>
+          <p class="dashboard-stat-desc">Sin banderas rojas fiscales</p>
+        </div>
+        
+        <div class="dashboard-stat-card amber">
+          <div class="dashboard-stat-icon">🟠</div>
+          <div class="dashboard-stat-content">
+            <div class="dashboard-stat-value">{fiscalStats.mediumRisk}</div>
+            <div class="dashboard-stat-label">Riesgo Medio</div>
+          </div>
+          <p class="dashboard-stat-desc">1-2 banderas fiscales</p>
+        </div>
+        
+        <div class="dashboard-stat-card red">
+          <div class="dashboard-stat-icon">🔴</div>
+          <div class="dashboard-stat-content">
+            <div class="dashboard-stat-value">{fiscalStats.highRisk}</div>
+            <div class="dashboard-stat-label">Riesgo Alto</div>
+          </div>
+          <p class="dashboard-stat-desc">Múltiples banderas fiscales</p>
+        </div>
+      </div>
+
+      <!-- Penalties Info Panel -->
+      <div class="dashboard-penalties-panel">
+        <div class="dashboard-penalties-grid">
+          <div class="dashboard-penalty-section fiscal">
+            <h3 class="dashboard-penalty-title">🔴 Penalizaciones Fiscales</h3>
+            <div class="dashboard-penalty-items">
+              <div class="dashboard-penalty-item">
+                <span class="dashboard-penalty-icon">⚠️</span>
+                <div class="dashboard-penalty-info">
+                  <span class="dashboard-penalty-name">Ataca regla fiscal:</span>
+                  <span class="dashboard-penalty-value">-2 puntos</span>
+                </div>
+                <span class="dashboard-penalty-affected">{fiscalStats.attackFiscalRule} afectados</span>
+              </div>
+              <div class="dashboard-penalty-item">
+                <span class="dashboard-penalty-icon">💰</span>
+                <div class="dashboard-penalty-info">
+                  <span class="dashboard-penalty-name">Propone más deuda:</span>
+                  <span class="dashboard-penalty-value">-1 punto</span>
+                </div>
+                <span class="dashboard-penalty-affected">{fiscalStats.proposeDebt} afectados</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="dashboard-penalty-section omission">
+            <h3 class="dashboard-penalty-title">🟠 Penalizaciones por Omisión</h3>
+            <div class="dashboard-penalty-items">
+              <div class="dashboard-penalty-item">
+                <span class="dashboard-penalty-icon">🚨</span>
+                <div class="dashboard-penalty-info">
+                  <span class="dashboard-penalty-name">Ignora seguridad:</span>
+                  <span class="dashboard-penalty-value">-1 punto</span>
+                </div>
+                <span class="dashboard-penalty-affected">{fiscalStats.ignoreSecurity} afectados</span>
+              </div>
+              <div class="dashboard-penalty-item">
+                <span class="dashboard-penalty-icon">🏥</span>
+                <div class="dashboard-penalty-info">
+                  <span class="dashboard-penalty-name">Ignora CCSS:</span>
+                  <span class="dashboard-penalty-value">-1 punto</span>
+                </div>
+                <span class="dashboard-penalty-affected">{fiscalStats.ignoreCCSS} afectados</span>
+              </div>
+              <div class="dashboard-penalty-item">
+                <span class="dashboard-penalty-icon">💼</span>
+                <div class="dashboard-penalty-info">
+                  <span class="dashboard-penalty-name">Ignora empleo:</span>
+                  <span class="dashboard-penalty-value">-0.5 pts</span>
+                </div>
+                <span class="dashboard-penalty-affected">{fiscalStats.ignoreEmployment} afectados</span>
+              </div>
+              <div class="dashboard-penalty-item">
+                <span class="dashboard-penalty-icon">🔫</span>
+                <div class="dashboard-penalty-info">
+                  <span class="dashboard-penalty-name">Ignora crimen:</span>
+                  <span class="dashboard-penalty-value">-0.5 pts</span>
+                </div>
+                <span class="dashboard-penalty-affected">{fiscalStats.ignoreOrganizedCrime} afectados</span>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="flex items-center gap-2">
-          <span class="text-lg">💰</span>
-          <div>
-            <span class="font-medium text-red-700">Propone más deuda:</span>
-            <span class="text-red-600 font-bold"> -1 punto</span>
-            <p class="text-xs text-red-600/80">{fiscalStats.proposeDebt} partidos afectados</p>
-          </div>
+      </div>
+
+      <!-- Tabs Navigation -->
+      <div class="dashboard-tabs" id="dashboardTabs">
+        <button class="dashboard-tab active" data-tab="critical">
+          ⭐ Pilares Críticos
+        </button>
+        <button class="dashboard-tab" data-tab="overall">
+          📊 General Ponderado
+        </button>
+        <button class="dashboard-tab" data-tab="priority">
+          🎯 Prioritarios
+        </button>
+        <button class="dashboard-tab" data-tab="methodology">
+          📖 Metodología
+        </button>
+      </div>
+
+      <!-- Tab Content: Critical Ranking -->
+      <div class="dashboard-tab-content active" id="dashboard-tab-critical">
+        <div class="dashboard-tab-header">
+          <h2 class="dashboard-tab-title">⭐ Ranking Pilares Críticos</h2>
+          <p class="dashboard-tab-description">
+            Pilares P1-P5, P7 y P10 que representan el <strong>81% del peso total</strong>: 
+            economía, empleo, seguridad, salud, educación, reforma del Estado e infraestructura.
+          </p>
         </div>
+        
+        <!-- Legend -->
+        <div class="dashboard-legend">
+          <span class="dashboard-legend-title">📊 Niveles:</span>
+          <div class="dashboard-legend-items">
+            <span class="dashboard-legend-item"><span class="dot green"></span>Excelente (≥70%)</span>
+            <span class="dashboard-legend-item"><span class="dot yellow"></span>Bueno (55-69%)</span>
+            <span class="dashboard-legend-item"><span class="dot orange"></span>Regular (40-54%)</span>
+            <span class="dashboard-legend-item"><span class="dot red"></span>Bajo (&lt;40%)</span>
           </div>
         </div>
         
-        <!-- Penalizaciones por omisión -->
-        <div class="bg-amber-50 border border-amber-200 rounded-lg p-4">
-          <h3 class="font-semibold text-amber-800 mb-3">🟠 Penalizaciones por Omisión</h3>
-          <div class="space-y-2 text-sm">
-            <div class="flex items-center gap-2">
-              <span>🚨</span>
-              <div>
-                <span class="font-medium text-amber-700">Ignora seguridad:</span>
-                <span class="text-amber-600 font-bold"> -1 punto</span>
-                <span class="text-xs text-amber-600/80 ml-1">({fiscalStats.ignoreSecurity} afectados)</span>
-              </div>
-            </div>
-            <div class="flex items-center gap-2">
-              <span>🏥</span>
-              <div>
-                <span class="font-medium text-amber-700">Ignora CCSS:</span>
-                <span class="text-amber-600 font-bold"> -1 punto</span>
-                <span class="text-xs text-amber-600/80 ml-1">({fiscalStats.ignoreCCSS} afectados)</span>
-              </div>
-            </div>
-            <div class="flex items-center gap-2">
-              <span>💼</span>
-              <div>
-                <span class="font-medium text-amber-700">Ignora empleo:</span>
-                <span class="text-amber-600 font-bold"> -0.5 puntos</span>
-                <span class="text-xs text-amber-600/80 ml-1">({fiscalStats.ignoreEmployment} afectados)</span>
-              </div>
-            </div>
-        <div class="flex items-center gap-2">
-              <span>🔫</span>
-          <div>
-                <span class="font-medium text-amber-700">Ignora crimen organizado:</span>
-                <span class="text-amber-600 font-bold"> -0.5 puntos</span>
-                <span class="text-xs text-amber-600/80 ml-1">({fiscalStats.ignoreOrganizedCrime} afectados)</span>
-              </div>
-            </div>
-          </div>
+        <div class="dashboard-ranking-table-container">
+          <table class="dashboard-ranking-table">
+            <thead>
+              <tr>
+                <th class="col-rank">#</th>
+                <th class="col-candidate">Candidato</th>
+                <th class="col-level">Nivel</th>
+                <th class="col-score">Puntaje</th>
+              </tr>
+            </thead>
+            <tbody>
+              {criticalRanking.map((entry, index) => {
+                const score = entry.critical_weighted_sum || 0;
+                const scorePercent = Math.round(score * 100);
+                const candidateName = getCandidateName(entry.candidate);
+                const level = getScoreLevel(scorePercent);
+                const medals = ['🥇', '🥈', '🥉'];
+                const hasMedal = index < 3;
+                
+                return (
+                  <tr class={hasMedal ? 'top-three' : ''}>
+                    <td class="col-rank">
+                      {hasMedal ? (
+                        <span class="medal">{medals[index]}</span>
+                      ) : (
+                        <span class="rank-number">{entry.rank}</span>
+                      )}
+                    </td>
+                    <td class="col-candidate">
+                      <a href={`/candidatos/${entry.candidate_id}`} class="candidate-link">
+                        <span class="candidate-name">{candidateName}</span>
+                        <span class="candidate-party">{entry.candidate?.party_name}</span>
+                      </a>
+                    </td>
+                    <td class="col-level">
+                      <span class={`level-badge ${level.color}`}>
+                        {level.emoji} {level.label}
+                      </span>
+                    </td>
+                    <td class="col-score">
+                      <span class={`score-value ${level.color}`}>{scorePercent}%</span>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       </div>
-    </div>
 
-    <!-- Overall Ranking -->
-    <RankingTable type="overall" showFiscal={true} class="mb-12" />
-
-    <!-- Critical Ranking -->
-    <RankingTable type="critical" showFiscal={false} class="mb-12" />
-
-    <!-- Methodology note -->
-    <div class="card p-6 bg-slate-50 border-slate-200">
-      <h2 class="text-lg font-bold text-slate-900 mb-3">¿Cómo se calcula?</h2>
-      <div class="text-sm text-slate-600 space-y-3">
-        <p>
-          <strong>Ranking General:</strong> Suma ponderada de los 10 pilares. Los pilares prioritarios 
-          (Seguridad 18%, Salud 16%, Finanzas 14%, Reforma Estado 12%) representan el 60% del peso total.
-          <strong>Se aplican penalizaciones fiscales</strong> que reducen el puntaje.
-        </p>
-        <p>
-          <strong>Ranking Crítico:</strong> Considera los pilares P1-P5, P7 y P10, que representan 
-          el 81% del peso total: economía, empleo, seguridad, salud, educación, reforma del Estado e infraestructura.
-        </p>
+      <!-- Tab Content: Overall Ranking -->
+      <div class="dashboard-tab-content" id="dashboard-tab-overall">
+        <div class="dashboard-tab-header">
+          <h2 class="dashboard-tab-title">📊 Ranking General Ponderado</h2>
+          <p class="dashboard-tab-description">
+            Ordenado por <strong>responsabilidad fiscal (riesgo BAJO primero)</strong> y puntaje ponderado de los 10 pilares.
+          </p>
+        </div>
         
-        <div class="bg-white p-3 rounded border border-slate-200 mt-4">
-          <h4 class="font-semibold text-slate-800 mb-2">Pesos por pilar (v6):</h4>
-          <div class="grid grid-cols-2 md:grid-cols-5 gap-2 text-xs">
-            <div><span class="font-medium">P3 Seguridad:</span> 18%</div>
-            <div><span class="font-medium">P4 Salud:</span> 16%</div>
-            <div><span class="font-medium">P1 Finanzas:</span> 14%</div>
-            <div><span class="font-medium">P7 Reforma:</span> 12%</div>
-            <div><span class="font-medium">P2 Empleo:</span> 11%</div>
-            <div><span class="font-medium">P5 Educación:</span> 10%</div>
-            <div><span class="font-medium">P10 Infra:</span> 9%</div>
-            <div><span class="font-medium">P8 Social:</span> 5%</div>
-            <div><span class="font-medium">P6 Ambiente:</span> 3%</div>
-            <div><span class="font-medium">P9 Exterior:</span> 2%</div>
+        <!-- Legend -->
+        <div class="dashboard-legend fiscal">
+          <span class="dashboard-legend-title">⚖️ Riesgo Fiscal:</span>
+          <div class="dashboard-legend-items">
+            <span class="dashboard-legend-item"><span class="dot green"></span><strong>BAJO</strong> = Fiscalmente responsable</span>
+            <span class="dashboard-legend-item"><span class="dot orange"></span><strong>MEDIO</strong> = Algunas propuestas riesgosas</span>
+            <span class="dashboard-legend-item"><span class="dot red"></span><strong>ALTO</strong> = Amenaza estabilidad fiscal</span>
           </div>
         </div>
         
-        <p class="mt-4">
-          <a href="/metodologia" class="text-civic-600 hover:underline font-medium">
+        <div class="dashboard-ranking-table-container">
+          <table class="dashboard-ranking-table">
+            <thead>
+              <tr>
+                <th class="col-rank">#</th>
+                <th class="col-candidate">Candidato</th>
+                <th class="col-risk">Riesgo</th>
+                <th class="col-penalty">Penalización</th>
+                <th class="col-score">Puntaje</th>
+              </tr>
+            </thead>
+            <tbody>
+              {overallRanking.map((entry, index) => {
+                const score = entry.weighted_sum || 0;
+                const scorePercent = Math.round(score * 100);
+                const candidateName = getCandidateName(entry.candidate);
+                const riskLevel = entry.analysis?.risk_level || 'BAJO';
+                const fiscalPenalty = (entry as any).total_penalties || 0;
+                const medals = ['🥇', '🥈', '🥉'];
+                const hasMedal = index < 3;
+                
+                const riskColor = riskLevel === 'BAJO' ? 'green' : riskLevel === 'MEDIO' ? 'amber' : 'red';
+                const riskEmoji = riskLevel === 'BAJO' ? '🟢' : riskLevel === 'MEDIO' ? '🟠' : '🔴';
+                
+                return (
+                  <tr class={hasMedal ? 'top-three' : ''}>
+                    <td class="col-rank">
+                      {hasMedal ? (
+                        <span class="medal">{medals[index]}</span>
+                      ) : (
+                        <span class="rank-number">{entry.rank}</span>
+                      )}
+                    </td>
+                    <td class="col-candidate">
+                      <a href={`/candidatos/${entry.candidate_id}`} class="candidate-link">
+                        <span class="candidate-name">{candidateName}</span>
+                        <span class="candidate-party">{entry.candidate?.party_name}</span>
+                      </a>
+                    </td>
+                    <td class="col-risk">
+                      <span class={`risk-badge ${riskColor}`}>
+                        {riskEmoji} {riskLevel}
+                      </span>
+                    </td>
+                    <td class="col-penalty">
+                      {fiscalPenalty < 0 ? (
+                        <span class="penalty-badge negative">{fiscalPenalty}</span>
+                      ) : (
+                        <span class="penalty-badge positive">0</span>
+                      )}
+                    </td>
+                    <td class="col-score">
+                      <span class={`score-value ${riskColor}`}>{scorePercent}%</span>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab Content: Priority Ranking -->
+      <div class="dashboard-tab-content" id="dashboard-tab-priority">
+        <div class="dashboard-tab-header">
+          <h2 class="dashboard-tab-title">🎯 Ranking Pilares Prioritarios</h2>
+          <p class="dashboard-tab-description">
+            P3 (Seguridad 18%), P4 (Salud 16%), P1 (Finanzas 14%), P7 (Reforma 12%) - <strong>60% del peso total</strong>.
+          </p>
+        </div>
+        
+        <!-- Legend -->
+        <div class="dashboard-legend">
+          <span class="dashboard-legend-title">📊 Niveles:</span>
+          <div class="dashboard-legend-items">
+            <span class="dashboard-legend-item"><span class="dot green"></span>Excelente (≥70%)</span>
+            <span class="dashboard-legend-item"><span class="dot yellow"></span>Bueno (55-69%)</span>
+            <span class="dashboard-legend-item"><span class="dot orange"></span>Regular (40-54%)</span>
+            <span class="dashboard-legend-item"><span class="dot red"></span>Bajo (&lt;40%)</span>
+          </div>
+        </div>
+        
+        <div class="dashboard-ranking-table-container">
+          <table class="dashboard-ranking-table">
+            <thead>
+              <tr>
+                <th class="col-rank">#</th>
+                <th class="col-candidate">Candidato</th>
+                <th class="col-level">Nivel</th>
+                <th class="col-score">Puntaje</th>
+              </tr>
+            </thead>
+            <tbody>
+              {priorityRanking.map((entry, index) => {
+                const score = entry.priority_weighted_sum || 0;
+                const scorePercent = Math.round(score * 100);
+                const candidateName = getCandidateName(entry.candidate);
+                const level = getScoreLevel(scorePercent);
+                const medals = ['🥇', '🥈', '🥉'];
+                const hasMedal = index < 3;
+                
+                return (
+                  <tr class={hasMedal ? 'top-three' : ''}>
+                    <td class="col-rank">
+                      {hasMedal ? (
+                        <span class="medal">{medals[index]}</span>
+                      ) : (
+                        <span class="rank-number">{entry.rank}</span>
+                      )}
+                    </td>
+                    <td class="col-candidate">
+                      <a href={`/candidatos/${entry.candidate_id}`} class="candidate-link">
+                        <span class="candidate-name">{candidateName}</span>
+                        <span class="candidate-party">{entry.candidate?.party_name}</span>
+                      </a>
+                    </td>
+                    <td class="col-level">
+                      <span class={`level-badge ${level.color}`}>
+                        {level.emoji} {level.label}
+                      </span>
+                    </td>
+                    <td class="col-score">
+                      <span class={`score-value ${level.color}`}>{scorePercent}%</span>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab Content: Methodology -->
+      <div class="dashboard-tab-content" id="dashboard-tab-methodology">
+        <div class="dashboard-methodology-panel">
+          <h2 class="dashboard-methodology-title">📖 ¿Cómo se calcula?</h2>
+          
+          <div class="dashboard-methodology-sections">
+            <div class="methodology-section">
+              <h3>📊 Ranking General Ponderado</h3>
+              <p>
+                Suma ponderada de los 10 pilares. Los pilares prioritarios 
+                (Seguridad 18%, Salud 16%, Finanzas 14%, Reforma Estado 12%) representan el 60% del peso total.
+                <strong>Se aplican penalizaciones fiscales</strong> que reducen el puntaje.
+              </p>
+            </div>
+            
+            <div class="methodology-section">
+              <h3>⭐ Ranking Pilares Críticos</h3>
+              <p>
+                Considera los pilares P1-P5, P7 y P10, que representan 
+                el <strong>81% del peso total</strong>: economía, empleo, seguridad, salud, educación, reforma del Estado e infraestructura.
+              </p>
+            </div>
+            
+            <div class="methodology-section">
+              <h3>🎯 Ranking Pilares Prioritarios</h3>
+              <p>
+                Solo los 4 pilares más críticos: P3 (Seguridad), P4 (Salud), P1 (Finanzas), P7 (Reforma del Estado),
+                que representan el <strong>60% del peso total</strong>.
+              </p>
+            </div>
+          </div>
+          
+          <div class="dashboard-weights-grid">
+            <h3>⚖️ Pesos por Pilar (v6)</h3>
+            <div class="weights-items">
+              <div class="weight-item priority"><span class="weight-label">P3 Seguridad</span><span class="weight-value">18%</span></div>
+              <div class="weight-item priority"><span class="weight-label">P4 Salud</span><span class="weight-value">16%</span></div>
+              <div class="weight-item priority"><span class="weight-label">P1 Finanzas</span><span class="weight-value">14%</span></div>
+              <div class="weight-item priority"><span class="weight-label">P7 Reforma</span><span class="weight-value">12%</span></div>
+              <div class="weight-item"><span class="weight-label">P2 Empleo</span><span class="weight-value">11%</span></div>
+              <div class="weight-item"><span class="weight-label">P5 Educación</span><span class="weight-value">10%</span></div>
+              <div class="weight-item"><span class="weight-label">P10 Infra</span><span class="weight-value">9%</span></div>
+              <div class="weight-item"><span class="weight-label">P8 Social</span><span class="weight-value">5%</span></div>
+              <div class="weight-item"><span class="weight-label">P6 Ambiente</span><span class="weight-value">3%</span></div>
+              <div class="weight-item"><span class="weight-label">P9 Exterior</span><span class="weight-value">2%</span></div>
+            </div>
+          </div>
+          
+          <a href="/metodologia" class="dashboard-methodology-link">
             Ver metodología completa →
           </a>
-        </p>
+        </div>
       </div>
-    </div>
 
+    </div>
   </div>
+
+  <!-- ============================================
+       EXPRESS MODE 🚀 - Modo Visual Rápido
+       ============================================ -->
+  <div class="mode-express-content">
+    <div class="express-ranking-container">
+      
+      <!-- Header -->
+      <header class="express-ranking-header">
+        <h1 class="express-ranking-title">🏆 Rankings de Candidatos</h1>
+        <p class="express-ranking-subtitle">
+          Clasificación basada en la calidad de las propuestas y responsabilidad fiscal
+        </p>
+      </header>
+
+      <!-- Stats Pills -->
+      <div class="express-stats-row">
+        <div class="express-stat-pill green">
+          <span class="express-stat-emoji">🟢</span>
+          <span class="express-stat-value">{fiscalStats.lowRisk}</span>
+          <span class="express-stat-label">Riesgo Bajo</span>
+        </div>
+        <div class="express-stat-pill amber">
+          <span class="express-stat-emoji">🟠</span>
+          <span class="express-stat-value">{fiscalStats.mediumRisk}</span>
+          <span class="express-stat-label">Riesgo Medio</span>
+        </div>
+        <div class="express-stat-pill red">
+          <span class="express-stat-emoji">🔴</span>
+          <span class="express-stat-value">{fiscalStats.highRisk}</span>
+          <span class="express-stat-label">Riesgo Alto</span>
+        </div>
+      </div>
+
+      <!-- Tabs Navigation -->
+      <div class="express-tabs">
+        <button class="express-tab active" data-tab="critical">
+          ⭐ Pilares Críticos
+        </button>
+        <button class="express-tab" data-tab="overall">
+          📊 General Ponderado
+        </button>
+        <button class="express-tab" data-tab="priority">
+          🎯 Prioritarios
+        </button>
+      </div>
+
+      <!-- Tab Content: Critical Ranking -->
+      <div class="express-tab-content active" id="tab-critical">
+        <div class="express-tab-header">
+          <h2 class="express-tab-title">⭐ Ranking Pilares Críticos</h2>
+          <p class="express-tab-description">
+            P1-P5, P7 y P10 (81% del peso): economía, empleo, seguridad, salud, educación, reforma e infraestructura.
+          </p>
+        </div>
+        
+        <div class="express-candidates-list">
+          {criticalRanking.map((entry, index) => {
+            const score = entry.critical_weighted_sum || 0;
+            const scorePercent = Math.round(score * 100);
+            const candidateName = getCandidateName(entry.candidate);
+            const level = getScoreLevel(scorePercent);
+            const medals = ['🥇', '🥈', '🥉'];
+            const hasMedal = index < 3;
+            
+            return (
+              <a href={`/candidatos/${entry.candidate_id}`} class={`express-ranking-card ${hasMedal ? 'top-three' : ''}`}>
+                <div class="express-rank-badge">
+                  {hasMedal ? (
+                    <span class="express-medal">{medals[index]}</span>
+                  ) : (
+                    <span class="express-rank-number">{entry.rank}</span>
+                  )}
+                </div>
+                
+                <div class="express-candidate-info">
+                  <h3 class="express-candidate-name">{candidateName}</h3>
+                  <p class="express-candidate-party">{entry.candidate?.party_name}</p>
+                </div>
+                
+                <div class={`express-score-pill ${level.color}`}>
+                  <span class="express-score-emoji">{level.emoji}</span>
+                  <span class="express-score-value">{scorePercent}%</span>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      </div>
+
+      <!-- Tab Content: Overall Ranking -->
+      <div class="express-tab-content" id="tab-overall">
+        <div class="express-tab-header">
+          <h2 class="express-tab-title">📊 Ranking General Ponderado</h2>
+          <p class="express-tab-description">
+            Ordenado por responsabilidad fiscal (riesgo BAJO primero) y puntaje ponderado de los 10 pilares.
+          </p>
+        </div>
+        
+        <!-- Legend -->
+        <div class="express-legend-box">
+          <div class="express-legend-item">
+            <span class="express-legend-dot green"></span>
+            <span><strong>BAJO</strong> = Fiscalmente responsable</span>
+          </div>
+          <div class="express-legend-item">
+            <span class="express-legend-dot amber"></span>
+            <span><strong>MEDIO</strong> = Algunas propuestas riesgosas</span>
+          </div>
+          <div class="express-legend-item">
+            <span class="express-legend-dot red"></span>
+            <span><strong>ALTO</strong> = Amenaza la estabilidad fiscal</span>
+          </div>
+        </div>
+        
+        <div class="express-candidates-list">
+          {overallRanking.map((entry, index) => {
+            const score = entry.weighted_sum || 0;
+            const scorePercent = Math.round(score * 100);
+            const candidateName = getCandidateName(entry.candidate);
+            const riskLevel = entry.analysis?.risk_level || 'BAJO';
+            const fiscalPenalty = (entry as any).total_penalties || 0;
+            const medals = ['🥇', '🥈', '🥉'];
+            const hasMedal = index < 3;
+            
+            const riskColor = riskLevel === 'BAJO' ? 'green' : riskLevel === 'MEDIO' ? 'amber' : 'red';
+            const riskEmoji = riskLevel === 'BAJO' ? '🟢' : riskLevel === 'MEDIO' ? '🟠' : '🔴';
+            
+            return (
+              <a href={`/candidatos/${entry.candidate_id}`} class={`express-ranking-card ${hasMedal ? 'top-three' : ''}`}>
+                <div class="express-rank-badge">
+                  {hasMedal ? (
+                    <span class="express-medal">{medals[index]}</span>
+                  ) : (
+                    <span class="express-rank-number">{entry.rank}</span>
+                  )}
+                </div>
+                
+                <div class="express-candidate-info">
+                  <h3 class="express-candidate-name">{candidateName}</h3>
+                  <p class="express-candidate-party">{entry.candidate?.party_name}</p>
+                </div>
+                
+                <div class="express-score-group">
+                  <div class={`express-risk-badge ${riskColor}`}>
+                    {riskEmoji} {riskLevel}
+                  </div>
+                  <div class="express-score-value-standalone">{scorePercent}%</div>
+                  {fiscalPenalty < 0 && (
+                    <div class="express-penalty-badge">{fiscalPenalty}</div>
+                  )}
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      </div>
+
+      <!-- Tab Content: Priority Ranking -->
+      <div class="express-tab-content" id="tab-priority">
+        <div class="express-tab-header">
+          <h2 class="express-tab-title">🎯 Ranking Pilares Prioritarios</h2>
+          <p class="express-tab-description">
+            P3 (Seguridad), P4 (Salud), P1 (Finanzas), P7 (Reforma del Estado) - 60% del peso total.
+          </p>
+        </div>
+        
+        <div class="express-candidates-list">
+          {priorityRanking.map((entry, index) => {
+            const score = entry.priority_weighted_sum || 0;
+            const scorePercent = Math.round(score * 100);
+            const candidateName = getCandidateName(entry.candidate);
+            const level = getScoreLevel(scorePercent);
+            const medals = ['🥇', '🥈', '🥉'];
+            const hasMedal = index < 3;
+            
+            return (
+              <a href={`/candidatos/${entry.candidate_id}`} class={`express-ranking-card ${hasMedal ? 'top-three' : ''}`}>
+                <div class="express-rank-badge">
+                  {hasMedal ? (
+                    <span class="express-medal">{medals[index]}</span>
+                  ) : (
+                    <span class="express-rank-number">{entry.rank}</span>
+                  )}
+                </div>
+                
+                <div class="express-candidate-info">
+                  <h3 class="express-candidate-name">{candidateName}</h3>
+                  <p class="express-candidate-party">{entry.candidate?.party_name}</p>
+                </div>
+                
+                <div class={`express-score-pill ${level.color}`}>
+                  <span class="express-score-emoji">{level.emoji}</span>
+                  <span class="express-score-value">{scorePercent}%</span>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      </div>
+
+      <!-- Methodology Link -->
+      <div class="express-methodology-link">
+        <a href="/metodologia">
+          📖 ¿Cómo se calcula el ranking? →
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================
+       READING MODE 📖 - Modo Lectura (Adultos Mayores)
+       ============================================ -->
+  <div class="mode-reading-content">
+    <div class="reading-ranking-container">
+      
+      <!-- Header -->
+      <header class="reading-ranking-header">
+        <h1 class="reading-ranking-title">🏆 Rankings de Candidatos</h1>
+        <p class="reading-ranking-intro">
+          Esta página muestra la clasificación de los candidatos presidenciales 
+          según la calidad de sus propuestas de gobierno.
+        </p>
+        <div class="reading-important-note">
+          <strong>⚠️ Importante:</strong> Estos rankings NO son recomendaciones de voto. 
+          Son una herramienta para informarse antes de tomar una decisión.
+        </div>
+      </header>
+
+      <!-- Resumen de Riesgo Fiscal -->
+      <section class="reading-fiscal-summary">
+        <h2 class="reading-section-title">📊 Resumen de Riesgo Fiscal</h2>
+        <p class="reading-section-intro">
+          El riesgo fiscal evalúa si las propuestas amenazan la estabilidad económica del país.
+        </p>
+        
+        <div class="reading-fiscal-cards">
+          <div class="reading-fiscal-card green">
+            <div class="reading-fiscal-icon">🟢</div>
+            <div class="reading-fiscal-number">{fiscalStats.lowRisk}</div>
+            <div class="reading-fiscal-label">candidatos con<br/><strong>Riesgo BAJO</strong></div>
+            <p class="reading-fiscal-desc">Propuestas fiscalmente responsables</p>
+          </div>
+          
+          <div class="reading-fiscal-card amber">
+            <div class="reading-fiscal-icon">🟠</div>
+            <div class="reading-fiscal-number">{fiscalStats.mediumRisk}</div>
+            <div class="reading-fiscal-label">candidatos con<br/><strong>Riesgo MEDIO</strong></div>
+            <p class="reading-fiscal-desc">Algunas propuestas preocupantes</p>
+          </div>
+          
+          <div class="reading-fiscal-card red">
+            <div class="reading-fiscal-icon">🔴</div>
+            <div class="reading-fiscal-number">{fiscalStats.highRisk}</div>
+            <div class="reading-fiscal-label">candidatos con<br/><strong>Riesgo ALTO</strong></div>
+            <p class="reading-fiscal-desc">Amenaza a las finanzas públicas</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tabs de navegación -->
+      <nav class="reading-tabs" id="readingTabs">
+        <button class="reading-tab active" data-tab="critical">
+          ⭐ Pilares Críticos
+        </button>
+        <button class="reading-tab" data-tab="overall">
+          📊 General
+        </button>
+        <button class="reading-tab" data-tab="priority">
+          🎯 Prioritarios
+        </button>
+      </nav>
+
+      <!-- Tab: Ranking Pilares Críticos -->
+      <section class="reading-tab-content active" id="reading-tab-critical">
+        <div class="reading-tab-header">
+          <h2 class="reading-tab-title">⭐ Ranking de Pilares Críticos</h2>
+          <p class="reading-tab-description">
+            Este ranking evalúa los temas más importantes para el país: 
+            <strong>economía, empleo, seguridad, salud, educación, reforma del Estado e infraestructura</strong>.
+            Estos 7 pilares representan el 81% de la evaluación total.
+          </p>
+        </div>
+        
+        <!-- Leyenda -->
+        <div class="reading-legend">
+          <h3>¿Qué significan los colores?</h3>
+          <div class="reading-legend-items">
+            <div class="reading-legend-item">
+              <span class="reading-legend-dot green"></span>
+              <span><strong>🟢 Excelente</strong> (70% o más) - Propuestas muy completas</span>
+            </div>
+            <div class="reading-legend-item">
+              <span class="reading-legend-dot yellow"></span>
+              <span><strong>🟡 Bueno</strong> (55-69%) - Propuestas adecuadas</span>
+            </div>
+            <div class="reading-legend-item">
+              <span class="reading-legend-dot orange"></span>
+              <span><strong>🟠 Regular</strong> (40-54%) - Propuestas incompletas</span>
+            </div>
+            <div class="reading-legend-item">
+              <span class="reading-legend-dot red"></span>
+              <span><strong>🔴 Bajo</strong> (menos de 40%) - Propuestas insuficientes</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lista de candidatos -->
+        <div class="reading-candidates-list">
+          {criticalRanking.map((entry, index) => {
+            const score = entry.critical_weighted_sum || 0;
+            const scorePercent = Math.round(score * 100);
+            const candidateName = getCandidateName(entry.candidate);
+            const level = getScoreLevel(scorePercent);
+            const medals = ['🥇', '🥈', '🥉'];
+            const hasMedal = index < 3;
+            
+            return (
+              <article class={`reading-candidate-card ${hasMedal ? 'top-three' : ''}`}>
+                <div class="reading-candidate-rank">
+                  {hasMedal ? (
+                    <span class="reading-medal">{medals[index]}</span>
+                  ) : (
+                    <span class="reading-rank-number">#{entry.rank}</span>
+                  )}
+                </div>
+                
+                <div class="reading-candidate-info">
+                  <h3 class="reading-candidate-name">{candidateName}</h3>
+                  <p class="reading-candidate-party">{entry.candidate?.party_name}</p>
+                </div>
+                
+                <div class="reading-candidate-score">
+                  <span class={`reading-score-badge ${level.color}`}>
+                    {level.emoji} {scorePercent}%
+                  </span>
+                  <span class="reading-score-label">{level.label}</span>
+                </div>
+                
+                <a href={`/candidatos/${entry.candidate_id}`} class="reading-profile-link">
+                  👤 Ver perfil
+                </a>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      <!-- Tab: Ranking General -->
+      <section class="reading-tab-content" id="reading-tab-overall">
+        <div class="reading-tab-header">
+          <h2 class="reading-tab-title">📊 Ranking General Ponderado</h2>
+          <p class="reading-tab-description">
+            Este ranking ordena a los candidatos por <strong>responsabilidad fiscal</strong> 
+            (los de menor riesgo primero) y calidad de propuestas en los 10 pilares.
+          </p>
+        </div>
+        
+        <!-- Leyenda de riesgo -->
+        <div class="reading-legend fiscal">
+          <h3>¿Qué significa el riesgo fiscal?</h3>
+          <div class="reading-legend-items">
+            <div class="reading-legend-item">
+              <span class="reading-legend-dot green"></span>
+              <span><strong>🟢 BAJO</strong> - El candidato es fiscalmente responsable. No pone en riesgo las finanzas.</span>
+            </div>
+            <div class="reading-legend-item">
+              <span class="reading-legend-dot orange"></span>
+              <span><strong>🟠 MEDIO</strong> - El candidato tiene algunas propuestas que podrían afectar las finanzas.</span>
+            </div>
+            <div class="reading-legend-item">
+              <span class="reading-legend-dot red"></span>
+              <span><strong>🔴 ALTO</strong> - El candidato propone medidas que amenazan la estabilidad fiscal.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lista de candidatos -->
+        <div class="reading-candidates-list">
+          {overallRanking.map((entry, index) => {
+            const score = entry.weighted_sum || 0;
+            const scorePercent = Math.round(score * 100);
+            const candidateName = getCandidateName(entry.candidate);
+            const riskLevel = entry.analysis?.risk_level || 'BAJO';
+            const fiscalPenalty = (entry as any).total_penalties || 0;
+            const medals = ['🥇', '🥈', '🥉'];
+            const hasMedal = index < 3;
+            
+            const riskColor = riskLevel === 'BAJO' ? 'green' : riskLevel === 'MEDIO' ? 'amber' : 'red';
+            const riskEmoji = riskLevel === 'BAJO' ? '🟢' : riskLevel === 'MEDIO' ? '🟠' : '🔴';
+            
+            return (
+              <article class={`reading-candidate-card ${hasMedal ? 'top-three' : ''} ${riskColor}`}>
+                <div class="reading-candidate-rank">
+                  {hasMedal ? (
+                    <span class="reading-medal">{medals[index]}</span>
+                  ) : (
+                    <span class="reading-rank-number">#{entry.rank}</span>
+                  )}
+                </div>
+                
+                <div class="reading-candidate-info">
+                  <h3 class="reading-candidate-name">{candidateName}</h3>
+                  <p class="reading-candidate-party">{entry.candidate?.party_name}</p>
+                </div>
+                
+                <div class="reading-candidate-metrics">
+                  <div class={`reading-risk-badge ${riskColor}`}>
+                    {riskEmoji} Riesgo {riskLevel}
+                  </div>
+                  <div class="reading-score-value">{scorePercent}%</div>
+                  {fiscalPenalty < 0 && (
+                    <div class="reading-penalty">Penalización: {fiscalPenalty}</div>
+                  )}
+                </div>
+                
+                <a href={`/candidatos/${entry.candidate_id}`} class="reading-profile-link">
+                  👤 Ver perfil
+                </a>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      <!-- Tab: Ranking Prioritarios -->
+      <section class="reading-tab-content" id="reading-tab-priority">
+        <div class="reading-tab-header">
+          <h2 class="reading-tab-title">🎯 Ranking de Pilares Prioritarios</h2>
+          <p class="reading-tab-description">
+            Este ranking solo considera los 4 pilares más importantes: 
+            <strong>Seguridad (18%), Salud (16%), Finanzas (14%) y Reforma del Estado (12%)</strong>.
+            Juntos representan el 60% de la evaluación.
+          </p>
+        </div>
+        
+        <!-- Leyenda -->
+        <div class="reading-legend">
+          <h3>¿Qué significan los colores?</h3>
+          <div class="reading-legend-items">
+            <div class="reading-legend-item">
+              <span class="reading-legend-dot green"></span>
+              <span><strong>🟢 Excelente</strong> (70% o más) - Propuestas muy completas</span>
+            </div>
+            <div class="reading-legend-item">
+              <span class="reading-legend-dot yellow"></span>
+              <span><strong>🟡 Bueno</strong> (55-69%) - Propuestas adecuadas</span>
+            </div>
+            <div class="reading-legend-item">
+              <span class="reading-legend-dot orange"></span>
+              <span><strong>🟠 Regular</strong> (40-54%) - Propuestas incompletas</span>
+            </div>
+            <div class="reading-legend-item">
+              <span class="reading-legend-dot red"></span>
+              <span><strong>🔴 Bajo</strong> (menos de 40%) - Propuestas insuficientes</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lista de candidatos -->
+        <div class="reading-candidates-list">
+          {priorityRanking.map((entry, index) => {
+            const score = entry.priority_weighted_sum || 0;
+            const scorePercent = Math.round(score * 100);
+            const candidateName = getCandidateName(entry.candidate);
+            const level = getScoreLevel(scorePercent);
+            const medals = ['🥇', '🥈', '🥉'];
+            const hasMedal = index < 3;
+            
+            return (
+              <article class={`reading-candidate-card ${hasMedal ? 'top-three' : ''}`}>
+                <div class="reading-candidate-rank">
+                  {hasMedal ? (
+                    <span class="reading-medal">{medals[index]}</span>
+                  ) : (
+                    <span class="reading-rank-number">#{entry.rank}</span>
+                  )}
+                </div>
+                
+                <div class="reading-candidate-info">
+                  <h3 class="reading-candidate-name">{candidateName}</h3>
+                  <p class="reading-candidate-party">{entry.candidate?.party_name}</p>
+                </div>
+                
+                <div class="reading-candidate-score">
+                  <span class={`reading-score-badge ${level.color}`}>
+                    {level.emoji} {scorePercent}%
+                  </span>
+                  <span class="reading-score-label">{level.label}</span>
+                </div>
+                
+                <a href={`/candidatos/${entry.candidate_id}`} class="reading-profile-link">
+                  👤 Ver perfil
+                </a>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      <!-- Sección de metodología -->
+      <section class="reading-methodology">
+        <h2 class="reading-methodology-title">📖 ¿Cómo se calcula el ranking?</h2>
+        
+        <div class="reading-methodology-content">
+          <div class="reading-methodology-item">
+            <h3>📊 Ranking General</h3>
+            <p>
+              Se evalúan los 10 pilares del plan de gobierno. Los pilares más importantes 
+              (Seguridad, Salud, Finanzas, Reforma) tienen más peso. Además, se penaliza a 
+              los candidatos con propuestas fiscalmente irresponsables.
+            </p>
+          </div>
+          
+          <div class="reading-methodology-item">
+            <h3>⭐ Ranking Crítico</h3>
+            <p>
+              Solo considera 7 pilares esenciales que representan el 81% de la evaluación: 
+              economía, empleo, seguridad, salud, educación, reforma del Estado e infraestructura.
+            </p>
+          </div>
+          
+          <div class="reading-methodology-item">
+            <h3>🎯 Ranking Prioritario</h3>
+            <p>
+              Solo considera los 4 pilares más importantes: Seguridad (18%), Salud (16%), 
+              Finanzas (14%) y Reforma del Estado (12%). Juntos suman el 60% de la evaluación.
+            </p>
+          </div>
+        </div>
+        
+        <a href="/metodologia" class="reading-methodology-link">
+          📖 Ver metodología completa →
+        </a>
+      </section>
+
+    </div>
+  </div>
+
 </BaseLayout>
+
+<style>
+  /* Mode visibility */
+  .mode-express-content {
+    display: none;
+  }
+  
+  .mode-dashboard-content {
+    display: block;
+  }
+  
+  html[data-mode="express"] .mode-express-content {
+    display: block;
+  }
+  
+  html[data-mode="express"] .mode-dashboard-content {
+    display: none;
+  }
+
+  /* ===========================================
+     DASHBOARD MODE STYLES
+     =========================================== */
+  
+  .dashboard-ranking-container {
+    max-width: 75rem;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  /* Header */
+  .dashboard-ranking-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0fdf4 100%);
+    border-radius: 1.5rem;
+    border: 1px solid #e2e8f0;
+  }
+  
+  .dashboard-ranking-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 0.75rem;
+  }
+  
+  .dashboard-ranking-subtitle {
+    font-size: 1rem;
+    color: #475569;
+    max-width: 48rem;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+  
+  /* Stats Grid */
+  .dashboard-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .dashboard-stat-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.25rem;
+    border: 2px solid;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .dashboard-stat-card.green {
+    border-color: #22c55e;
+    background: linear-gradient(135deg, #f0fdf4 0%, white 100%);
+  }
+  
+  .dashboard-stat-card.amber {
+    border-color: #f59e0b;
+    background: linear-gradient(135deg, #fffbeb 0%, white 100%);
+  }
+  
+  .dashboard-stat-card.red {
+    border-color: #ef4444;
+    background: linear-gradient(135deg, #fef2f2 0%, white 100%);
+  }
+  
+  .dashboard-stat-card .dashboard-stat-icon {
+    font-size: 2rem;
+  }
+  
+  .dashboard-stat-card .dashboard-stat-content {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+  
+  .dashboard-stat-value {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #0f172a;
+  }
+  
+  .dashboard-stat-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #475569;
+  }
+  
+  .dashboard-stat-desc {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin: 0;
+  }
+  
+  /* Penalties Panel */
+  .dashboard-penalties-panel {
+    background: white;
+    border-radius: 1rem;
+    border: 1px solid #e2e8f0;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .dashboard-penalties-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .dashboard-penalty-section {
+    padding: 1rem;
+    border-radius: 0.75rem;
+  }
+  
+  .dashboard-penalty-section.fiscal {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+  }
+  
+  .dashboard-penalty-section.omission {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+  }
+  
+  .dashboard-penalty-title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0 0 0.75rem 0;
+  }
+  
+  .dashboard-penalty-section.fiscal .dashboard-penalty-title {
+    color: #b91c1c;
+  }
+  
+  .dashboard-penalty-section.omission .dashboard-penalty-title {
+    color: #a16207;
+  }
+  
+  .dashboard-penalty-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .dashboard-penalty-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+  }
+  
+  .dashboard-penalty-icon {
+    font-size: 1rem;
+  }
+  
+  .dashboard-penalty-info {
+    flex: 1;
+    display: flex;
+    gap: 0.25rem;
+  }
+  
+  .dashboard-penalty-name {
+    color: #475569;
+  }
+  
+  .dashboard-penalty-section.fiscal .dashboard-penalty-value {
+    font-weight: 700;
+    color: #dc2626;
+  }
+  
+  .dashboard-penalty-section.omission .dashboard-penalty-value {
+    font-weight: 700;
+    color: #d97706;
+  }
+  
+  .dashboard-penalty-affected {
+    font-size: 0.75rem;
+    color: #64748b;
+    background: rgba(0,0,0,0.05);
+    padding: 0.125rem 0.5rem;
+    border-radius: 9999px;
+  }
+  
+  /* Tabs */
+  .dashboard-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    background: #f1f5f9;
+    padding: 0.5rem;
+    border-radius: 1rem;
+    overflow-x: auto;
+  }
+  
+  .dashboard-tab {
+    flex: 1;
+    min-width: 140px;
+    padding: 1rem 1.25rem;
+    border: none;
+    border-radius: 0.75rem;
+    background: transparent;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  
+  .dashboard-tab:hover {
+    background: rgba(255,255,255,0.5);
+    color: #0891b2;
+  }
+  
+  .dashboard-tab.active {
+    background: white;
+    color: #0891b2;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  
+  /* Tab Content */
+  .dashboard-tab-content {
+    display: none;
+  }
+  
+  .dashboard-tab-content.active {
+    display: block;
+  }
+  
+  .dashboard-tab-header {
+    margin-bottom: 1.5rem;
+  }
+  
+  .dashboard-tab-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 0.5rem 0;
+  }
+  
+  .dashboard-tab-description {
+    font-size: 1rem;
+    color: #64748b;
+    margin: 0;
+  }
+  
+  /* Legend */
+  .dashboard-legend {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  
+  .dashboard-legend.fiscal {
+    background: linear-gradient(90deg, #f0fdf4 0%, #fef3c7 50%, #fef2f2 100%);
+  }
+  
+  .dashboard-legend-title {
+    font-weight: 700;
+    color: #334155;
+    font-size: 0.9rem;
+  }
+  
+  .dashboard-legend-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .dashboard-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.8rem;
+    color: #475569;
+  }
+  
+  .dashboard-legend-item .dot {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+  }
+  
+  .dashboard-legend-item .dot.green { background: #22c55e; }
+  .dashboard-legend-item .dot.yellow { background: #facc15; }
+  .dashboard-legend-item .dot.orange { background: #f59e0b; }
+  .dashboard-legend-item .dot.red { background: #ef4444; }
+  
+  /* Ranking Table */
+  .dashboard-ranking-table-container {
+    background: white;
+    border-radius: 1rem;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+  }
+  
+  .dashboard-ranking-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .dashboard-ranking-table thead {
+    background: #f8fafc;
+  }
+  
+  .dashboard-ranking-table th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: #475569;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    border-bottom: 2px solid #e2e8f0;
+  }
+  
+  .dashboard-ranking-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+  }
+  
+  .dashboard-ranking-table tr:last-child td {
+    border-bottom: none;
+  }
+  
+  .dashboard-ranking-table tr:hover {
+    background: #f8fafc;
+  }
+  
+  .dashboard-ranking-table tr.top-three {
+    background: linear-gradient(90deg, #fffbeb 0%, white 30%);
+  }
+  
+  .dashboard-ranking-table tr.top-three:hover {
+    background: linear-gradient(90deg, #fef3c7 0%, #f8fafc 30%);
+  }
+  
+  .col-rank {
+    width: 60px;
+    text-align: center;
+  }
+  
+  .col-level, .col-risk {
+    width: 140px;
+  }
+  
+  .col-penalty {
+    width: 100px;
+    text-align: center;
+  }
+  
+  .col-score {
+    width: 100px;
+    text-align: right;
+  }
+  
+  .medal {
+    font-size: 1.5rem;
+    line-height: 1;
+  }
+  
+  .rank-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    background: #f1f5f9;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #64748b;
+  }
+  
+  .candidate-link {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  
+  .candidate-link:hover .candidate-name {
+    color: #0891b2;
+  }
+  
+  .candidate-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f172a;
+    transition: color 0.2s;
+  }
+  
+  .candidate-party {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-top: 0.125rem;
+  }
+  
+  .level-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+  
+  .level-badge.perfect {
+    background: #dcfce7;
+    color: #15803d;
+  }
+  
+  .level-badge.high {
+    background: #fef9c3;
+    color: #a16207;
+  }
+  
+  .level-badge.medium {
+    background: #ffedd5;
+    color: #c2410c;
+  }
+  
+  .level-badge.low {
+    background: #fee2e2;
+    color: #dc2626;
+  }
+  
+  .risk-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+  
+  .risk-badge.green {
+    background: #dcfce7;
+    color: #15803d;
+  }
+  
+  .risk-badge.amber {
+    background: #fef3c7;
+    color: #a16207;
+  }
+  
+  .risk-badge.red {
+    background: #fee2e2;
+    color: #dc2626;
+  }
+  
+  .penalty-badge {
+    display: inline-block;
+    padding: 0.25rem 0.625rem;
+    border-radius: 0.375rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+  
+  .penalty-badge.negative {
+    background: #fee2e2;
+    color: #dc2626;
+  }
+  
+  .penalty-badge.positive {
+    background: #dcfce7;
+    color: #15803d;
+  }
+  
+  .score-value {
+    font-size: 1.25rem;
+    font-weight: 800;
+  }
+  
+  .score-value.perfect { color: #15803d; }
+  .score-value.high { color: #65a30d; }
+  .score-value.medium { color: #d97706; }
+  .score-value.low { color: #dc2626; }
+  .score-value.green { color: #15803d; }
+  .score-value.amber { color: #d97706; }
+  .score-value.red { color: #dc2626; }
+  
+  /* Methodology Panel */
+  .dashboard-methodology-panel {
+    background: white;
+    border-radius: 1rem;
+    border: 1px solid #e2e8f0;
+    padding: 2rem;
+  }
+  
+  .dashboard-methodology-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 1.5rem 0;
+  }
+  
+  .dashboard-methodology-sections {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .methodology-section {
+    background: #f8fafc;
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+    border: 1px solid #e2e8f0;
+  }
+  
+  .methodology-section h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 0.5rem 0;
+  }
+  
+  .methodology-section p {
+    font-size: 0.9rem;
+    color: #475569;
+    margin: 0;
+    line-height: 1.6;
+  }
+  
+  .dashboard-weights-grid {
+    margin-bottom: 1.5rem;
+  }
+  
+  .dashboard-weights-grid h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 1rem 0;
+  }
+  
+  .weights-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.5rem;
+  }
+  
+  .weight-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem;
+    background: #f8fafc;
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+    font-size: 0.85rem;
+  }
+  
+  .weight-item.priority {
+    background: linear-gradient(135deg, #ecfdf5, #f0fdf4);
+    border-color: #86efac;
+  }
+  
+  .weight-label {
+    color: #475569;
+  }
+  
+  .weight-value {
+    font-weight: 700;
+    color: #0f172a;
+  }
+  
+  .dashboard-methodology-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #0891b2;
+    text-decoration: none;
+    padding: 0.75rem 1.5rem;
+    border: 2px solid #0891b2;
+    border-radius: 0.75rem;
+    transition: all 0.2s;
+  }
+  
+  .dashboard-methodology-link:hover {
+    background: #0891b2;
+    color: white;
+  }
+  
+  /* Responsive Dashboard */
+  @media (max-width: 768px) {
+    .dashboard-ranking-container {
+      padding: 1rem;
+    }
+    
+    .dashboard-ranking-title {
+      font-size: 1.75rem;
+    }
+    
+    .dashboard-tabs {
+      flex-direction: column;
+      padding: 0.375rem;
+    }
+    
+    .dashboard-tab {
+      min-width: 100%;
+    }
+    
+    .dashboard-ranking-table th,
+    .dashboard-ranking-table td {
+      padding: 0.75rem 0.5rem;
+    }
+    
+    .col-penalty {
+      display: none;
+    }
+    
+    .candidate-name {
+      font-size: 0.9rem;
+    }
+    
+    .candidate-party {
+      font-size: 0.75rem;
+    }
+  }
+
+  /* ===========================================
+     READING MODE STYLES (Adultos Mayores)
+     =========================================== */
+  
+  .mode-reading-content {
+    display: none;
+  }
+  
+  html[data-mode="reading"] .mode-reading-content {
+    display: block;
+  }
+  
+  html[data-mode="reading"] .mode-dashboard-content,
+  html[data-mode="reading"] .mode-express-content {
+    display: none;
+  }
+  
+  .reading-ranking-container {
+    max-width: 56rem;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    font-family: Georgia, 'Times New Roman', serif !important;
+  }
+  
+  /* Header */
+  .reading-ranking-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    padding: 2rem;
+    background: #f8fafc;
+    border: 3px solid #1e3a5f;
+    border-radius: 1rem;
+  }
+  
+  .reading-ranking-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1e3a5f;
+    margin: 0 0 1rem 0;
+    line-height: 1.3;
+  }
+  
+  .reading-ranking-intro {
+    font-size: 1.35rem;
+    color: #334155;
+    line-height: 1.8;
+    margin: 0 0 1.25rem 0;
+  }
+  
+  .reading-important-note {
+    font-size: 1.2rem;
+    background: #fef3c7;
+    border: 2px solid #f59e0b;
+    padding: 1rem 1.25rem;
+    border-radius: 0.75rem;
+    color: #92400e;
+    line-height: 1.6;
+  }
+  
+  /* Fiscal Summary */
+  .reading-fiscal-summary {
+    margin-bottom: 2.5rem;
+  }
+  
+  .reading-section-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1e3a5f;
+    margin: 0 0 0.75rem 0;
+  }
+  
+  .reading-section-intro {
+    font-size: 1.25rem;
+    color: #475569;
+    line-height: 1.7;
+    margin: 0 0 1.5rem 0;
+  }
+  
+  .reading-fiscal-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.25rem;
+  }
+  
+  .reading-fiscal-card {
+    padding: 1.5rem;
+    border-radius: 1rem;
+    text-align: center;
+    border: 3px solid;
+  }
+  
+  .reading-fiscal-card.green {
+    background: #f0fdf4;
+    border-color: #22c55e;
+  }
+  
+  .reading-fiscal-card.amber {
+    background: #fffbeb;
+    border-color: #f59e0b;
+  }
+  
+  .reading-fiscal-card.red {
+    background: #fef2f2;
+    border-color: #ef4444;
+  }
+  
+  .reading-fiscal-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .reading-fiscal-number {
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1;
+  }
+  
+  .reading-fiscal-label {
+    font-size: 1.1rem;
+    color: #475569;
+    margin-top: 0.5rem;
+    line-height: 1.4;
+  }
+  
+  .reading-fiscal-desc {
+    font-size: 1rem;
+    color: #64748b;
+    margin: 0.75rem 0 0 0;
+  }
+  
+  /* Tabs */
+  .reading-tabs {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+  
+  .reading-tab {
+    flex: 1;
+    min-width: 140px;
+    padding: 1.25rem 1.5rem;
+    border: 3px solid #cbd5e1;
+    border-radius: 0.75rem;
+    background: white;
+    font-size: 1.2rem;
+    font-weight: 700;
+    font-family: Georgia, 'Times New Roman', serif !important;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  
+  .reading-tab:hover {
+    border-color: #1e3a5f;
+    color: #1e3a5f;
+  }
+  
+  .reading-tab.active {
+    background: #1e3a5f;
+    border-color: #1e3a5f;
+    color: white;
+  }
+  
+  /* Tab Content */
+  .reading-tab-content {
+    display: none;
+  }
+  
+  .reading-tab-content.active {
+    display: block;
+  }
+  
+  .reading-tab-header {
+    margin-bottom: 1.5rem;
+  }
+  
+  .reading-tab-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1e3a5f;
+    margin: 0 0 0.75rem 0;
+  }
+  
+  .reading-tab-description {
+    font-size: 1.25rem;
+    color: #475569;
+    line-height: 1.7;
+    margin: 0;
+  }
+  
+  /* Legend */
+  .reading-legend {
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .reading-legend.fiscal {
+    background: linear-gradient(135deg, #f0fdf4 0%, #fffbeb 50%, #fef2f2 100%);
+  }
+  
+  .reading-legend h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1e3a5f;
+    margin: 0 0 1rem 0;
+  }
+  
+  .reading-legend-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+  }
+  
+  .reading-legend-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 1.15rem;
+    color: #334155;
+    line-height: 1.5;
+  }
+  
+  .reading-legend-dot {
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 0.25rem;
+  }
+  
+  .reading-legend-dot.green { background: #22c55e; }
+  .reading-legend-dot.yellow { background: #facc15; }
+  .reading-legend-dot.orange { background: #f59e0b; }
+  .reading-legend-dot.red { background: #ef4444; }
+  
+  /* Candidates List */
+  .reading-candidates-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .reading-candidate-card {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: white;
+    border: 3px solid #e2e8f0;
+    border-radius: 1rem;
+    transition: all 0.2s;
+  }
+  
+  .reading-candidate-card:hover {
+    border-color: #1e3a5f;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  }
+  
+  .reading-candidate-card.top-three {
+    background: linear-gradient(135deg, #fffbeb 0%, white 40%);
+    border-color: #fcd34d;
+  }
+  
+  .reading-candidate-card.green {
+    border-left: 6px solid #22c55e;
+  }
+  
+  .reading-candidate-card.amber {
+    border-left: 6px solid #f59e0b;
+  }
+  
+  .reading-candidate-card.red {
+    border-left: 6px solid #ef4444;
+  }
+  
+  .reading-candidate-rank {
+    width: 4rem;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  
+  .reading-medal {
+    font-size: 2.5rem;
+    line-height: 1;
+  }
+  
+  .reading-rank-number {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #64748b;
+    background: #f1f5f9;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+  }
+  
+  .reading-candidate-info {
+    flex: 1;
+    min-width: 200px;
+  }
+  
+  .reading-candidate-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 0.25rem 0;
+    line-height: 1.3;
+  }
+  
+  .reading-candidate-party {
+    font-size: 1.15rem;
+    color: #64748b;
+    margin: 0;
+  }
+  
+  .reading-candidate-score {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  
+  .reading-score-badge {
+    font-size: 1.5rem;
+    font-weight: 800;
+    padding: 0.5rem 1rem;
+    border-radius: 0.75rem;
+  }
+  
+  .reading-score-badge.perfect {
+    background: #dcfce7;
+    color: #15803d;
+  }
+  
+  .reading-score-badge.high {
+    background: #fef9c3;
+    color: #a16207;
+  }
+  
+  .reading-score-badge.medium {
+    background: #ffedd5;
+    color: #c2410c;
+  }
+  
+  .reading-score-badge.low {
+    background: #fee2e2;
+    color: #dc2626;
+  }
+  
+  .reading-score-label {
+    font-size: 1rem;
+    color: #64748b;
+  }
+  
+  .reading-candidate-metrics {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .reading-risk-badge {
+    font-size: 1.1rem;
+    font-weight: 700;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+  }
+  
+  .reading-risk-badge.green {
+    background: #dcfce7;
+    color: #15803d;
+  }
+  
+  .reading-risk-badge.amber {
+    background: #fef3c7;
+    color: #a16207;
+  }
+  
+  .reading-risk-badge.red {
+    background: #fee2e2;
+    color: #dc2626;
+  }
+  
+  .reading-score-value {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #0891b2;
+  }
+  
+  .reading-penalty {
+    font-size: 0.95rem;
+    color: #dc2626;
+    font-weight: 600;
+  }
+  
+  .reading-profile-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.25rem;
+    background: #1e3a5f;
+    color: white !important;
+    border-radius: 0.75rem;
+    font-size: 1.15rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  
+  .reading-profile-link:hover {
+    background: #0f172a;
+    transform: translateY(-2px);
+  }
+  
+  /* Methodology */
+  .reading-methodology {
+    margin-top: 2.5rem;
+    padding: 2rem;
+    background: #f8fafc;
+    border: 3px solid #e2e8f0;
+    border-radius: 1rem;
+  }
+  
+  .reading-methodology-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1e3a5f;
+    margin: 0 0 1.5rem 0;
+  }
+  
+  .reading-methodology-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .reading-methodology-item {
+    background: white;
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+    border: 2px solid #e2e8f0;
+  }
+  
+  .reading-methodology-item h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1e3a5f;
+    margin: 0 0 0.5rem 0;
+  }
+  
+  .reading-methodology-item p {
+    font-size: 1.15rem;
+    color: #475569;
+    line-height: 1.7;
+    margin: 0;
+  }
+  
+  .reading-methodology-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: white !important;
+    background: #1e3a5f;
+    padding: 1rem 1.75rem;
+    border-radius: 0.75rem;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  
+  .reading-methodology-link:hover {
+    background: #0f172a;
+    transform: translateY(-2px);
+  }
+  
+  /* Responsive Reading Mode */
+  @media (max-width: 768px) {
+    .reading-ranking-container {
+      padding: 1.5rem 1rem;
+    }
+    
+    .reading-ranking-title {
+      font-size: 2rem;
+    }
+    
+    .reading-tabs {
+      flex-direction: column;
+    }
+    
+    .reading-tab {
+      min-width: 100%;
+    }
+    
+    .reading-candidate-card {
+      flex-direction: column;
+      align-items: flex-start;
+      text-align: left;
+    }
+    
+    .reading-candidate-rank {
+      width: auto;
+    }
+    
+    .reading-candidate-score,
+    .reading-candidate-metrics {
+      align-items: flex-start;
+    }
+    
+    .reading-profile-link {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  /* ===========================================
+     EXPRESS MODE STYLES
+     =========================================== */
+  
+  .express-ranking-container {
+    max-width: 50rem;
+    margin: 0 auto;
+    padding: 1.5rem;
+  }
+  
+  /* Header */
+  .express-ranking-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .express-ranking-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+  }
+  
+  .express-ranking-subtitle {
+    font-size: 1rem;
+    color: #64748b;
+  }
+  
+  /* Stats Row */
+  .express-stats-row {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+  
+  .express-stat-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    border: 2px solid;
+  }
+  
+  .express-stat-pill.green {
+    background: #dcfce7;
+    border-color: #22c55e;
+  }
+  
+  .express-stat-pill.amber {
+    background: #fef3c7;
+    border-color: #f59e0b;
+  }
+  
+  .express-stat-pill.red {
+    background: #fee2e2;
+    border-color: #ef4444;
+  }
+  
+  .express-stat-emoji {
+    font-size: 1.25rem;
+  }
+  
+  .express-stat-value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #1e293b;
+  }
+  
+  .express-stat-label {
+    font-size: 0.75rem;
+    color: #64748b;
+  }
+  
+  /* Tabs */
+  .express-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+  }
+  
+  .express-tab {
+    flex: 1;
+    min-width: 120px;
+    padding: 0.875rem 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.75rem;
+    background: white;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  
+  .express-tab:hover {
+    border-color: #0891b2;
+    color: #0891b2;
+  }
+  
+  .express-tab.active {
+    background: linear-gradient(135deg, #06b6d4, #0891b2);
+    border-color: #0891b2;
+    color: white;
+  }
+  
+  /* Tab Content */
+  .express-tab-content {
+    display: none;
+  }
+  
+  .express-tab-content.active {
+    display: block;
+  }
+  
+  .express-tab-header {
+    margin-bottom: 1rem;
+  }
+  
+  .express-tab-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 0.375rem;
+  }
+  
+  .express-tab-description {
+    font-size: 0.9rem;
+    color: #64748b;
+  }
+  
+  /* Legend Box */
+  .express-legend-box {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 0.875rem 1rem;
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  
+  .express-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: #475569;
+  }
+  
+  .express-legend-dot {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+  }
+  
+  .express-legend-dot.green {
+    background: #22c55e;
+  }
+  
+  .express-legend-dot.amber {
+    background: #f59e0b;
+  }
+  
+  .express-legend-dot.red {
+    background: #ef4444;
+  }
+  
+  /* Candidates List */
+  .express-candidates-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .express-ranking-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 1rem;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  
+  .express-ranking-card:hover {
+    border-color: #0891b2;
+    box-shadow: 0 4px 20px rgba(8, 145, 178, 0.15);
+    transform: translateY(-2px);
+  }
+  
+  .express-ranking-card.top-three {
+    background: linear-gradient(135deg, #fffbeb 0%, white 50%);
+    border-color: #fcd34d;
+  }
+  
+  .express-rank-badge {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  
+  .express-medal {
+    font-size: 1.5rem;
+    line-height: 1;
+  }
+  
+  .express-rank-number {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #64748b;
+  }
+  
+  .express-candidate-info {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .express-candidate-name {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 0.125rem 0;
+    line-height: 1.3;
+  }
+  
+  .express-candidate-party {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin: 0;
+  }
+  
+  /* Score Pills */
+  .express-score-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 0.875rem;
+    border-radius: 0.75rem;
+    flex-shrink: 0;
+  }
+  
+  .express-score-pill.perfect {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+  }
+  
+  .express-score-pill.high {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+  }
+  
+  .express-score-pill.medium {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+  }
+  
+  .express-score-pill.low {
+    background: #f1f5f9;
+    color: #64748b;
+  }
+  
+  .express-score-emoji {
+    font-size: 1rem;
+  }
+  
+  .express-score-value {
+    font-size: 1.125rem;
+    font-weight: 800;
+  }
+  
+  /* Score Group (for overall ranking) */
+  .express-score-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+  
+  .express-risk-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.375rem 0.625rem;
+    border-radius: 0.5rem;
+  }
+  
+  .express-risk-badge.green {
+    background: #dcfce7;
+    color: #15803d;
+  }
+  
+  .express-risk-badge.amber {
+    background: #fef3c7;
+    color: #a16207;
+  }
+  
+  .express-risk-badge.red {
+    background: #fee2e2;
+    color: #dc2626;
+  }
+  
+  .express-score-value-standalone {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #0891b2;
+  }
+  
+  .express-penalty-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.25rem 0.5rem;
+    background: #fee2e2;
+    color: #dc2626;
+    border-radius: 0.375rem;
+  }
+  
+  /* Methodology Link */
+  .express-methodology-link {
+    margin-top: 1.5rem;
+    text-align: center;
+  }
+  
+  .express-methodology-link a {
+    display: inline-block;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #0891b2;
+    padding: 0.75rem 1.5rem;
+    border: 2px solid #0891b2;
+    border-radius: 0.75rem;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  
+  .express-methodology-link a:hover {
+    background: #0891b2;
+    color: white;
+  }
+  
+  /* Responsive */
+  @media (max-width: 640px) {
+    .express-ranking-container {
+      padding: 1rem;
+    }
+    
+    .express-ranking-title {
+      font-size: 1.5rem;
+    }
+    
+    .express-stats-row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    
+    .express-stat-pill {
+      justify-content: center;
+    }
+    
+    .express-tabs {
+      flex-direction: column;
+    }
+    
+    .express-tab {
+      min-width: 100%;
+    }
+    
+    .express-ranking-card {
+      flex-wrap: wrap;
+    }
+    
+    .express-score-group {
+      width: 100%;
+      justify-content: flex-end;
+      margin-top: 0.5rem;
+    }
+  }
+</style>
+
+<script>
+  // Express Mode - Tab switching functionality
+  document.querySelectorAll('.express-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const tabId = tab.getAttribute('data-tab');
+      
+      // Update tab buttons
+      document.querySelectorAll('.express-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      
+      // Update tab content
+      document.querySelectorAll('.express-tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      document.getElementById(`tab-${tabId}`)?.classList.add('active');
+    });
+  });
+
+  // Dashboard Mode - Tab switching functionality
+  document.querySelectorAll('.dashboard-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const tabId = tab.getAttribute('data-tab');
+      
+      // Update tab buttons
+      document.querySelectorAll('.dashboard-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      
+      // Update tab content
+      document.querySelectorAll('.dashboard-tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      document.getElementById(`dashboard-tab-${tabId}`)?.classList.add('active');
+    });
+  });
+
+  // Reading Mode - Tab switching functionality
+  document.querySelectorAll('.reading-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const tabId = tab.getAttribute('data-tab');
+      
+      // Update tab buttons
+      document.querySelectorAll('.reading-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      
+      // Update tab content
+      document.querySelectorAll('.reading-tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      document.getElementById(`reading-tab-${tabId}`)?.classList.add('active');
+    });
+  });
+</script>
