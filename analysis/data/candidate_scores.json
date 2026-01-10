@@ -1123,8 +1123,8 @@
       },
       "urgency_penalty": 0,
       "missing_pillars": [
-        "P4",
-        "P7"
+        "P7",
+        "P4"
       ],
       "pillar_penalty": -1.0
     },
@@ -1135,7 +1135,7 @@
       "priority_weighted_sum": 0.045,
       "critical_weighted_sum": 0.175,
       "total_penalties_applied": -3.0,
-      "notes": "🔴 ATACA REGLA FISCAL (-2) | ✅ Responsabilidad fiscal | ❌ Sin propuesta: P4, P7"
+      "notes": "🔴 ATACA REGLA FISCAL (-2) | ✅ Responsabilidad fiscal | ❌ Sin propuesta: P7, P4"
     }
   },
   {
@@ -1464,8 +1464,8 @@
       },
       "urgency_penalty": 0,
       "missing_pillars": [
-        "P4",
-        "P1"
+        "P1",
+        "P4"
       ],
       "pillar_penalty": -1.0
     },
@@ -1476,7 +1476,7 @@
       "priority_weighted_sum": 0.15,
       "critical_weighted_sum": 0.23,
       "total_penalties_applied": -3.0,
-      "notes": "🔴 ATACA REGLA FISCAL (-2) | ✅ Responsabilidad fiscal | ❌ Sin propuesta: P4, P1"
+      "notes": "🔴 ATACA REGLA FISCAL (-2) | ✅ Responsabilidad fiscal | ❌ Sin propuesta: P1, P4"
     }
   },
   {
@@ -2479,18 +2479,18 @@
       },
       {
         "pillar_id": "P3",
-        "raw_score": 3,
-        "effective_score": 3,
-        "normalized": 0.75,
-        "weighted": 0.135,
+        "raw_score": 4,
+        "effective_score": 4,
+        "normalized": 1.0,
+        "weighted": 0.18,
         "penalties": []
       },
       {
         "pillar_id": "P4",
-        "raw_score": 3,
-        "effective_score": 3,
-        "normalized": 0.75,
-        "weighted": 0.12,
+        "raw_score": 4,
+        "effective_score": 4,
+        "normalized": 1.0,
+        "weighted": 0.16,
         "penalties": []
       },
       {
@@ -2503,34 +2503,34 @@
       },
       {
         "pillar_id": "P6",
-        "raw_score": 2,
-        "effective_score": 2,
-        "normalized": 0.5,
-        "weighted": 0.015,
+        "raw_score": 3,
+        "effective_score": 3,
+        "normalized": 0.75,
+        "weighted": 0.0225,
         "penalties": []
       },
       {
         "pillar_id": "P7",
-        "raw_score": 2,
-        "effective_score": 2,
-        "normalized": 0.5,
-        "weighted": 0.06,
+        "raw_score": 3,
+        "effective_score": 3,
+        "normalized": 0.75,
+        "weighted": 0.09,
         "penalties": []
       },
       {
         "pillar_id": "P8",
-        "raw_score": 3,
-        "effective_score": 3,
-        "normalized": 0.75,
-        "weighted": 0.0375,
+        "raw_score": 0,
+        "effective_score": 0,
+        "normalized": 0.0,
+        "weighted": 0.0,
         "penalties": []
       },
       {
         "pillar_id": "P9",
-        "raw_score": 3,
-        "effective_score": 3,
-        "normalized": 0.75,
-        "weighted": 0.015,
+        "raw_score": 0,
+        "effective_score": 0,
+        "normalized": 0.0,
+        "weighted": 0.0,
         "penalties": []
       },
       {
@@ -2546,7 +2546,7 @@
       "flags": {
         "attacks_fiscal_rule": false,
         "proposes_debt_increase": false,
-        "shows_fiscal_responsibility": false
+        "shows_fiscal_responsibility": true
       },
       "total_penalty": 0,
       "evidence": []
@@ -2557,6 +2557,8 @@
           "covered": true,
           "terms_found": [
             "policía",
+            "fuerza pública",
+            "OIJ",
             "inteligencia",
             "patrullaje",
             "operativo",
@@ -2586,7 +2588,9 @@
           "covered": true,
           "terms_found": [
             "crimen organizado",
-            "sicariato"
+            "narcotráfico",
+            "sicariato",
+            "lavado de dinero"
           ],
           "description": "Crimen organizado"
         }
@@ -2596,13 +2600,13 @@
       "pillar_penalty": 0
     },
     "overall": {
-      "raw_sum": 28,
-      "effective_sum": 28,
-      "weighted_sum": 0.7125,
-      "priority_weighted_sum": 0.42,
-      "critical_weighted_sum": 0.5775,
+      "raw_sum": 26,
+      "effective_sum": 26,
+      "weighted_sum": 0.7825,
+      "priority_weighted_sum": 0.535,
+      "critical_weighted_sum": 0.6925,
       "total_penalties_applied": 0,
-      "notes": ""
+      "notes": "✅ Responsabilidad fiscal"
     }
   },
   {

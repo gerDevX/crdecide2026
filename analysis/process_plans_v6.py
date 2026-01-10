@@ -319,15 +319,41 @@ def extract_text_from_pdf(pdf_path: str) -> Tuple[List[Tuple[int, str]], str]:
     """
     Extrae texto de un PDF, retorna páginas y texto completo.
     Detecta automáticamente texto corrupto y usa OCR cuando es necesario.
+    También busca archivos de texto OCR pre-extraídos.
     """
     pages = []
     full_text = ""
     ocr_pages = 0
     doc = None
+    pdf_name = os.path.basename(pdf_path)
+    pdf_id = os.path.splitext(pdf_name)[0].lower()
+    
+    # Verificar si existe un archivo de texto OCR pre-extraído
+    ocr_text_file = os.path.join(DATA_DIR, f"{pdf_id}_ocr_text.txt")
+    if os.path.exists(ocr_text_file):
+        print(f"  📄 {pdf_name}: Usando texto OCR pre-extraído...")
+        try:
+            with open(ocr_text_file, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            # Parsear el archivo de texto OCR (formato: --- Página N ---)
+            page_pattern = r'--- Página (\d+) ---\n(.*?)(?=--- Página \d+ ---|$)'
+            matches = re.findall(page_pattern, content, re.DOTALL)
+            
+            for page_num_str, page_text in matches:
+                page_num = int(page_num_str)
+                normalized = normalize_text(page_text)
+                if normalized:
+                    pages.append((page_num, normalized))
+                    full_text += " " + normalized
+            
+            print(f"  ✅ Cargadas {len(pages)} páginas desde archivo OCR")
+            return pages, full_text
+        except Exception as e:
+            print(f"  ⚠️  Error leyendo archivo OCR: {e}, intentando extraer del PDF...")
     
     try:
         doc = fitz.open(pdf_path)
-        pdf_name = os.path.basename(pdf_path)
         num_pages = len(doc)
         
         # Primera pasada: detectar si hay texto corrupto (muestra de primeras 10 páginas)
@@ -340,7 +366,7 @@ def extract_text_from_pdf(pdf_path: str) -> Tuple[List[Tuple[int, str]], str]:
         
         if is_corrupt:
             if OCR_AVAILABLE:
-                print(f"  ⚠️  {pdf_name}: Texto corrupto ({ratio*100:.1f}%), usando OCR...")
+                print(f"  ⚠️  {pdf_name}: Texto corrupto ({ratio*100:.1f}%), extrayendo con OCR...")
             else:
                 print(f"  ⚠️  {pdf_name}: Texto corrupto ({ratio*100:.1f}%) pero OCR no disponible")
         

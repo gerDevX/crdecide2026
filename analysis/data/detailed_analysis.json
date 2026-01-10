@@ -459,8 +459,8 @@
       }
     },
     "missing_priority_pillars": [
-      "P4",
-      "P7"
+      "P7",
+      "P4"
     ],
     "strengths": [
       "✅ Aborda: Seguridad operativa",
@@ -471,8 +471,8 @@
     ],
     "weaknesses": [
       "🔴 ATACA REGLA FISCAL - Riesgo alto para finanzas públicas",
-      "❌ Sin propuesta en pilar prioritario P4",
-      "❌ Sin propuesta en pilar prioritario P7"
+      "❌ Sin propuesta en pilar prioritario P7",
+      "❌ Sin propuesta en pilar prioritario P4"
     ],
     "risk_level": "MEDIO",
     "candidate_id": "david-hernandez-brenes"
@@ -602,8 +602,8 @@
       }
     },
     "missing_priority_pillars": [
-      "P4",
-      "P1"
+      "P1",
+      "P4"
     ],
     "strengths": [
       "✅ Aborda: Seguridad operativa",
@@ -614,8 +614,8 @@
     ],
     "weaknesses": [
       "🔴 ATACA REGLA FISCAL - Riesgo alto para finanzas públicas",
-      "❌ Sin propuesta en pilar prioritario P4",
-      "❌ Sin propuesta en pilar prioritario P1"
+      "❌ Sin propuesta en pilar prioritario P1",
+      "❌ Sin propuesta en pilar prioritario P4"
     ],
     "risk_level": "MEDIO",
     "candidate_id": "claudio-alpizar"
@@ -1045,12 +1045,12 @@
   },
   {
     "pdf_id": "PPSO",
-    "total_pages": 85,
+    "total_pages": 87,
     "version": "v6_neutral_strict",
     "fiscal_flags": {
       "attacks_fiscal_rule": false,
       "proposes_debt_increase": false,
-      "shows_fiscal_responsibility": false
+      "shows_fiscal_responsibility": true
     },
     "fiscal_evidence": [],
     "urgency_coverage": {
@@ -1058,6 +1058,8 @@
         "covered": true,
         "terms_found": [
           "policía",
+          "fuerza pública",
+          "OIJ",
           "inteligencia",
           "patrullaje",
           "operativo",
@@ -1087,7 +1089,9 @@
         "covered": true,
         "terms_found": [
           "crimen organizado",
-          "sicariato"
+          "narcotráfico",
+          "sicariato",
+          "lavado de dinero"
         ],
         "description": "Crimen organizado"
       }
@@ -1097,7 +1101,8 @@
       "✅ Aborda: Seguridad operativa",
       "✅ Aborda: Crisis de la CCSS",
       "✅ Aborda: Empleo formal",
-      "✅ Aborda: Crimen organizado"
+      "✅ Aborda: Crimen organizado",
+      "✅ Demuestra responsabilidad fiscal"
     ],
     "weaknesses": [],
     "risk_level": "BAJO",
