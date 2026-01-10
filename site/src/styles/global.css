@@ -246,6 +246,75 @@ html:not([data-mode]) {
   }
 }
 
+/* ===========================================
+   RESPONSIVE - DASHBOARD MODE (Fluid Typography)
+   Using clamp() for smooth scaling
+   =========================================== */
+
+html[data-mode="dashboard"],
+html:not([data-mode]) {
+  /* Base font: min 14px, preferred 1vw + 12px, max 16px */
+  font-size: clamp(14px, 0.5vw + 13px, 16px);
+}
+
+html[data-mode="dashboard"] .dashboard-title,
+html:not([data-mode]) .dashboard-title {
+  /* Title: min 1.5rem, preferred 2vw + 1rem, max 2rem */
+  font-size: clamp(1.5rem, 2vw + 0.75rem, 2rem);
+}
+
+html[data-mode="dashboard"] .dashboard-section-title,
+html:not([data-mode]) .dashboard-section-title {
+  font-size: clamp(1rem, 1vw + 0.5rem, 1.125rem);
+}
+
+html[data-mode="dashboard"] .page-container,
+html:not([data-mode]) .page-container {
+  padding-left: clamp(0.75rem, 2vw, 2rem);
+  padding-right: clamp(0.75rem, 2vw, 2rem);
+}
+
+/* Tablet (768px) */
+@media (max-width: 768px) {
+  html[data-mode="dashboard"] .dashboard-grid,
+  html:not([data-mode]) .dashboard-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  html[data-mode="dashboard"] .card,
+  html:not([data-mode]) .card {
+    padding: 1rem;
+  }
+}
+
+/* Mobile (640px) */
+@media (max-width: 640px) {
+  html[data-mode="dashboard"] .dashboard-grid,
+  html:not([data-mode]) .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  html[data-mode="dashboard"] .card,
+  html:not([data-mode]) .card {
+    padding: 0.875rem;
+    border-radius: 0.75rem;
+  }
+  
+  html[data-mode="dashboard"] .btn,
+  html:not([data-mode]) .btn {
+    padding: 0.625rem 1rem;
+    font-size: 0.9375rem;
+  }
+}
+
+/* Small mobile (480px) */
+@media (max-width: 480px) {
+  html[data-mode="dashboard"] .card,
+  html:not([data-mode]) .card {
+    padding: 0.875rem;
+  }
+}
+
 /* ============================================
    MODE: READING 📖
    Optimizado para adultos mayores:
@@ -565,34 +634,121 @@ html[data-mode="reading"] {
   }
   
   /* ===========================================
-     RESPONSIVE
+     RESPONSIVE - READING MODE
      =========================================== */
   
+  /* Tablet (768px) */
+  @media (max-width: 768px) {
+    html[data-mode="reading"] {
+      font-size: 19px;
+    }
+    
+    html[data-mode="reading"] .page-container {
+      padding: 2rem 1.5rem;
+    }
+    
+    html[data-mode="reading"] h1,
+    html[data-mode="reading"] .reading-title {
+      font-size: 2.25rem;
+    }
+    
+    html[data-mode="reading"] h2,
+    html[data-mode="reading"] .reading-subtitle {
+      font-size: 1.75rem;
+    }
+    
+    html[data-mode="reading"] .reading-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    html[data-mode="reading"] .reading-flex-row {
+      flex-direction: column;
+    }
+  }
+  
+  /* Mobile (640px) */
   @media (max-width: 640px) {
     html[data-mode="reading"] {
       font-size: 18px;
     }
     
-    .page-container {
-      padding: 2rem 1.25rem;
+    html[data-mode="reading"] .page-container {
+      padding: 1.5rem 1rem;
     }
     
-    h1, .reading-title {
-      font-size: 2rem;
+    html[data-mode="reading"] h1,
+    html[data-mode="reading"] .reading-title {
+      font-size: 1.875rem;
     }
     
-    h2, .reading-subtitle {
+    html[data-mode="reading"] h2,
+    html[data-mode="reading"] .reading-subtitle {
       font-size: 1.5rem;
-  }
-  
-  .reading-nav {
+    }
+    
+    html[data-mode="reading"] .reading-nav {
       flex-direction: column;
       gap: 1rem;
     }
     
-    .reading-nav-btn, .btn {
+    html[data-mode="reading"] .reading-nav-btn,
+    html[data-mode="reading"] .btn {
       width: 100%;
       min-width: 100%;
+      text-align: center;
+    }
+    
+    html[data-mode="reading"] .reading-card {
+      padding: 1.25rem;
+    }
+    
+    html[data-mode="reading"] table {
+      display: block;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+  }
+  
+  /* Small mobile (480px) */
+  @media (max-width: 480px) {
+    html[data-mode="reading"] {
+      font-size: 17px;
+    }
+    
+    html[data-mode="reading"] .page-container {
+      padding: 1.25rem 0.75rem;
+    }
+    
+    html[data-mode="reading"] h1,
+    html[data-mode="reading"] .reading-title {
+      font-size: 1.625rem;
+    }
+    
+    html[data-mode="reading"] h2,
+    html[data-mode="reading"] .reading-subtitle {
+      font-size: 1.375rem;
+    }
+    
+    html[data-mode="reading"] .reading-body {
+      font-size: 1rem;
+    }
+    
+    html[data-mode="reading"] .reading-score {
+      font-size: 2.5rem;
+    }
+    
+    html[data-mode="reading"] .reading-percentage {
+      font-size: 2rem;
+    }
+    
+    html[data-mode="reading"] .reading-card {
+      padding: 1rem;
+      border-radius: 0.75rem;
+    }
+    
+    html[data-mode="reading"] .reading-button {
+      padding: 0.875rem 1.25rem;
+      font-size: 1rem;
     }
   }
   

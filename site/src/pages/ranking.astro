@@ -1613,14 +1613,42 @@ function getScoreLevel(scorePercent: number) {
     color: white;
   }
   
-  /* Responsive Dashboard */
+  /* Responsive Dashboard - Fluid Typography */
+  .dashboard-ranking-title {
+    font-size: clamp(1.5rem, 3vw + 0.5rem, 2.25rem);
+  }
+  
+  .dashboard-ranking-subtitle {
+    font-size: clamp(0.9rem, 1vw + 0.5rem, 1.125rem);
+  }
+  
+  .dashboard-tab {
+    font-size: clamp(0.85rem, 0.8vw + 0.5rem, 1rem);
+  }
+  
+  .candidate-name {
+    font-size: clamp(0.85rem, 0.8vw + 0.5rem, 1rem);
+  }
+  
+  .candidate-party {
+    font-size: clamp(0.75rem, 0.6vw + 0.4rem, 0.875rem);
+  }
+  
+  .score-badge {
+    font-size: clamp(0.85rem, 0.8vw + 0.5rem, 1rem);
+  }
+  
+  .dashboard-legend-title {
+    font-size: clamp(0.9rem, 0.8vw + 0.5rem, 1.125rem);
+  }
+  
+  .dashboard-legend-item {
+    font-size: clamp(0.8rem, 0.6vw + 0.5rem, 0.9rem);
+  }
+  
   @media (max-width: 768px) {
     .dashboard-ranking-container {
       padding: 1rem;
-    }
-    
-    .dashboard-ranking-title {
-      font-size: 1.75rem;
     }
     
     .dashboard-tabs {
@@ -1640,13 +1668,20 @@ function getScoreLevel(scorePercent: number) {
     .col-penalty {
       display: none;
     }
-    
-    .candidate-name {
-      font-size: 0.9rem;
+  }
+  
+  @media (max-width: 480px) {
+    .dashboard-ranking-container {
+      padding: 0.875rem;
     }
     
-    .candidate-party {
-      font-size: 0.75rem;
+    .dashboard-ranking-table th,
+    .dashboard-ranking-table td {
+      padding: 0.625rem 0.5rem;
+    }
+    
+    .dashboard-legend {
+      padding: 0.875rem;
     }
   }
 
@@ -2170,6 +2205,58 @@ function getScoreLevel(scorePercent: number) {
     .reading-profile-link {
       width: 100%;
       justify-content: center;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .reading-ranking-container {
+      padding: 1.25rem 0.75rem;
+    }
+    
+    .reading-ranking-title {
+      font-size: 1.625rem;
+    }
+    
+    .reading-ranking-subtitle {
+      font-size: 1rem;
+    }
+    
+    .reading-tab {
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+    }
+    
+    .reading-candidate-card {
+      padding: 1rem;
+    }
+    
+    .reading-candidate-name {
+      font-size: 1.25rem;
+    }
+    
+    .reading-candidate-party {
+      font-size: 1rem;
+    }
+    
+    .reading-candidate-score-value {
+      font-size: 2rem;
+    }
+    
+    .reading-candidate-rank {
+      font-size: 1.5rem;
+    }
+    
+    .reading-profile-link {
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+    }
+    
+    .reading-legend {
+      padding: 1rem;
+    }
+    
+    .reading-legend-title {
+      font-size: 1.125rem;
     }
   }
 

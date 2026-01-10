@@ -51,18 +51,18 @@ export const FiscalRiskDashboard = ({ stats, className }: FiscalRiskDashboardPro
 
       {/* Penalty Details */}
       <motion.div
-        className="rounded-2xl border border-slate-200 bg-white p-6 shadow-lg"
+        className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-lg"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
       >
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
           <div>
-            <h3 className="font-bold text-red-800 mb-4 flex items-center gap-2">
-              <span className="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center">🔴</span>
+            <h3 className="font-bold text-red-800 mb-3 sm:mb-4 flex items-center gap-2 text-base sm:text-lg">
+              <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-red-100 flex items-center justify-center text-sm sm:text-base">🔴</span>
               Penalizaciones fiscales
             </h3>
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
               <PenaltyItem
                 icon="⚠️"
                 count={stats.attackFiscalRule}
@@ -76,11 +76,11 @@ export const FiscalRiskDashboard = ({ stats, className }: FiscalRiskDashboardPro
             </div>
           </div>
           <div>
-            <h3 className="font-bold text-amber-800 mb-4 flex items-center gap-2">
-              <span className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">🟠</span>
+            <h3 className="font-bold text-amber-800 mb-3 sm:mb-4 flex items-center gap-2 text-base sm:text-lg">
+              <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-amber-100 flex items-center justify-center text-sm sm:text-base">🟠</span>
               Omisiones de urgencias
             </h3>
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
               <PenaltyItem
                 icon="🚨"
                 count={stats.ignoreSecurity}
@@ -129,7 +129,7 @@ const RiskCard = ({
   return (
     <motion.div
       className={cn(
-        "relative overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br to-white p-5 shadow-lg border-l-4",
+        "relative overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br to-white p-4 sm:p-5 shadow-lg border-l-4",
         colorClasses[color]
       )}
       initial={{ opacity: 0, y: 20 }}
@@ -141,13 +141,13 @@ const RiskCard = ({
         <div>
           <AnimatedCounter
             value={count}
-            className={cn("text-4xl font-bold", textColors[color])}
+            className={cn("text-3xl sm:text-4xl font-bold", textColors[color])}
           />
-          <p className="text-slate-600 text-sm mt-1 capitalize">Riesgo {level} {icon}</p>
+          <p className="text-slate-600 text-base sm:text-sm mt-1 capitalize">Riesgo {level} {icon}</p>
         </div>
-        <span className="text-5xl opacity-30">{icon}</span>
+        <span className="text-4xl sm:text-5xl opacity-30">{icon}</span>
       </div>
-      <p className="text-xs text-slate-500 mt-3">{description}</p>
+      <p className="text-sm sm:text-xs text-slate-500 mt-3">{description}</p>
     </motion.div>
   );
 };
@@ -163,11 +163,11 @@ const PenaltyItem = ({
 }) => {
   return (
     <motion.div
-      className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 transition-colors"
+      className="flex items-center gap-2 sm:gap-3 p-2 rounded-lg hover:bg-slate-50 transition-colors"
       whileHover={{ x: 4 }}
     >
-      <span className="text-xl">{icon}</span>
-      <span className="text-sm">
+      <span className="text-lg sm:text-xl">{icon}</span>
+      <span className="text-base sm:text-sm">
         <strong className="text-slate-900">{count}</strong>{" "}
         <span className="text-slate-600">{label}</span>
       </span>

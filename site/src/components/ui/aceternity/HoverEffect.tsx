@@ -59,7 +59,7 @@ export const HoverEffect = ({
           >
             <motion.div
               className={cn(
-                "relative h-full w-full overflow-hidden rounded-2xl border-2 p-5",
+                "relative h-full w-full overflow-hidden rounded-2xl border-2 p-4 sm:p-5",
                 "bg-gradient-to-br",
                 bgColor,
                 "transition-all duration-300",
@@ -71,7 +71,7 @@ export const HoverEffect = ({
               {/* Icon */}
               <div 
                 className={cn(
-                  "w-12 h-12 rounded-xl bg-gradient-to-br flex items-center justify-center text-white text-xl shadow-lg mb-4",
+                  "w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br flex items-center justify-center text-white text-lg sm:text-xl shadow-lg mb-3 sm:mb-4",
                   iconBg
                 )}
               >
@@ -82,7 +82,7 @@ export const HoverEffect = ({
               {item.badge && (
                 <span 
                   className={cn(
-                    "absolute top-4 right-4 px-2 py-0.5 text-xs font-semibold rounded-full",
+                    "absolute top-3 right-3 sm:top-4 sm:right-4 px-2 py-0.5 text-xs sm:text-xs font-semibold rounded-full",
                     item.badgeColor || "bg-white/80 text-slate-600"
                   )}
                 >
@@ -91,12 +91,12 @@ export const HoverEffect = ({
               )}
               
               {/* Title */}
-              <h4 className="font-bold text-slate-900 text-base mb-2">
+              <h4 className="font-bold text-slate-900 text-lg sm:text-base mb-1 sm:mb-2">
                 {item.title}
               </h4>
               
               {/* Description */}
-              <p className="text-slate-600 text-sm leading-relaxed">
+              <p className="text-slate-600 text-base sm:text-sm leading-relaxed">
                 {item.description}
               </p>
               

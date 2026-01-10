@@ -334,6 +334,71 @@ function buildPdfUrl(pdfId: string, page: number): string {
   }
 
   /* ===========================================
+     DASHBOARD MODE RESPONSIVE - Fluid Typography
+     =========================================== */
+  .mode-dashboard-content h1 {
+    font-size: clamp(1.5rem, 3vw + 0.5rem, 2rem);
+  }
+  
+  .mode-dashboard-content p {
+    font-size: clamp(0.9rem, 1vw + 0.5rem, 1.125rem);
+  }
+  
+  .mode-dashboard-content .candidate-btn span:first-child {
+    font-size: clamp(0.85rem, 0.8vw + 0.5rem, 1rem);
+  }
+  
+  .mode-dashboard-content .candidate-btn span:last-child {
+    font-size: clamp(0.7rem, 0.6vw + 0.4rem, 0.85rem);
+  }
+  
+  .mode-dashboard-content table th,
+  .mode-dashboard-content table td {
+    font-size: clamp(0.8rem, 0.7vw + 0.5rem, 0.95rem);
+  }
+  
+  @media (max-width: 768px) {
+    .mode-dashboard-content .max-w-7xl {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+    
+    .mode-dashboard-content .grid-cols-5 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .mode-dashboard-content .candidate-btn {
+      padding: 0.625rem 0.75rem;
+    }
+  }
+  
+  @media (max-width: 640px) {
+    .mode-dashboard-content .grid-cols-5 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .mode-dashboard-content .max-w-7xl {
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+    }
+    
+    .mode-dashboard-content .grid-cols-5 {
+      grid-template-columns: 1fr;
+    }
+    
+    .mode-dashboard-content .candidate-btn {
+      padding: 0.625rem;
+    }
+    
+    .mode-dashboard-content table th,
+    .mode-dashboard-content table td {
+      padding: 0.625rem;
+    }
+  }
+
+  /* ===========================================
      EXPRESS MODE STYLES
      =========================================== */
   .express-compare-container {
