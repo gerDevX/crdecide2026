@@ -2,86 +2,1686 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PillarCard from '../../components/pillars/PillarCard.astro';
 import { getAllPillarCardData, candidateIndex } from '../../lib/data';
-import { CRITICAL_PILLARS } from '../../lib/types';
+import { CRITICAL_PILLARS, PILLAR_ICONS } from '../../lib/types';
 import type { PillarId } from '../../lib/types';
 
 const pillarData = getAllPillarCardData();
+
+// Helper to get icon for each pillar
+function getPillarIcon(pillarId: string): string {
+  return PILLAR_ICONS[pillarId as PillarId] || '📌';
+}
+
+// Descripciones de cada pilar para el modo Express
+const PILLAR_DESCRIPTIONS: Record<string, string> = {
+  'P1': 'Manejo responsable de las finanzas del Estado, control del gasto público y sostenibilidad de la deuda.',
+  'P2': 'Generación de empleo formal, atracción de inversión y fortalecimiento del sector productivo.',
+  'P3': 'Combate a la criminalidad, fortalecimiento de la policía y protección ciudadana.',
+  'P4': 'Reforma de la CCSS, reducción de listas de espera y acceso a servicios de salud.',
+  'P5': 'Mejora de la calidad educativa, formación docente y acceso a educación.',
+  'P6': 'Protección ambiental, cambio climático y desarrollo sostenible.',
+  'P7': 'Modernización del Estado, simplificación de trámites y eficiencia institucional.',
+  'P8': 'Reducción de la pobreza, protección de grupos vulnerables y programas sociales.',
+  'P9': 'Relaciones internacionales, comercio exterior y posicionamiento del país.',
+  'P10': 'Desarrollo de carreteras, transporte público e infraestructura nacional.',
+};
+
+// Helper function to get candidate display name
+function getCandidateName(candidate: any): string {
+  const name = candidate?.candidate_name;
+  if (name && name !== 'Por determinar' && name !== 'no_especificado') {
+    return name;
+  }
+  return candidate?.party_name || 'N/A';
+}
 ---
 
 <BaseLayout title="Pilares Nacionales">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    
-    <!-- Header -->
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold text-slate-900 mb-2">Los 10 Pilares Nacionales</h1>
-      <p class="text-slate-600 max-w-3xl">
-        Organizamos las propuestas de cada candidato en 10 áreas temáticas fundamentales para el país.
-        Los pilares marcados como "críticos" (P1-P5 y P7) representan el 85% del peso total en la evaluación.
-      </p>
-    </div>
-
-    <!-- Legend -->
-    <div class="flex flex-wrap gap-4 mb-8">
-      <div class="flex items-center gap-2 text-sm">
-        <span class="w-3 h-3 bg-amber-200 rounded"></span>
-        <span class="text-slate-600">Pilar crítico (mayor peso)</span>
+  
+  <!-- ============================================
+       DASHBOARD MODE (Default) - Modo Visual Detallado
+       ============================================ -->
+  <div class="mode-dashboard-content">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      
+      <!-- Header -->
+      <div class="mb-8">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white text-2xl shadow-lg">
+            🏛️
+          </span>
+          <h1 class="text-3xl font-bold text-slate-900">Los 10 Pilares Nacionales</h1>
+        </div>
+        <p class="text-slate-600 max-w-3xl text-lg">
+          Organizamos las propuestas de cada candidato en 10 áreas temáticas fundamentales para el país.
+          Los pilares marcados como <strong class="text-amber-600">"críticos"</strong> representan el <strong>85% del peso total</strong> en la evaluación.
+        </p>
       </div>
-      <div class="flex items-center gap-2 text-sm">
-        <span class="w-3 h-3 bg-slate-200 rounded"></span>
-        <span class="text-slate-600">Pilar complementario</span>
-      </div>
-    </div>
 
-    <!-- Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      {pillarData.map((data) => {
-        const topCandidate = data.topCandidates[0];
-        const isCritical = CRITICAL_PILLARS.includes(data.pillar.pillar_id as PillarId);
-        
-        return (
-          <div class={isCritical ? 'ring-2 ring-amber-200 rounded-xl' : ''}>
-            <PillarCard
-              pillar={data.pillar}
-              avgScore={data.avgScore}
-              topCandidate={topCandidate ? {
-                name: topCandidate.candidate.party_name.split(' ').slice(0, 2).join(' '),
-                score: topCandidate.score.effective_score,
-              } : undefined}
-            />
+      <!-- Legend -->
+      <div class="flex flex-wrap gap-6 mb-8 p-4 bg-slate-50 rounded-xl border border-slate-200">
+        <div class="flex items-center gap-2">
+          <span class="w-4 h-4 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full shadow"></span>
+          <span class="text-slate-700 font-medium">Pilar crítico (mayor peso)</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="w-4 h-4 bg-gradient-to-r from-cyan-400 to-blue-400 rounded-full shadow"></span>
+          <span class="text-slate-700 font-medium">Pilar complementario</span>
+        </div>
+      </div>
+
+      <!-- Grid de Pilares Mejorado -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {pillarData.map((data) => {
+          const isCritical = CRITICAL_PILLARS.includes(data.pillar.pillar_id as PillarId);
+          const avgPercent = Math.round((data.avgScore / 4) * 100);
+          const description = PILLAR_DESCRIPTIONS[data.pillar.pillar_id] || '';
+          const top3 = data.topCandidates.slice(0, 3);
+          const weightPercent = Math.round((data.pillar.weight || 0) * 100);
+          const icon = getPillarIcon(data.pillar.pillar_id);
+          
+          return (
+            <a 
+              href={`/pilares/${data.pillar.pillar_id.toLowerCase()}`}
+              class={`dashboard-pilar-card group ${isCritical ? 'critical' : ''}`}
+            >
+              <div class="pilar-card-content">
+                <!-- Header -->
+                <div class="pilar-card-header">
+                  <div class="pilar-icon-container">
+                    <span class="pilar-icon-large">{icon}</span>
+                  </div>
+                  <div class="pilar-meta-info">
+                    <div class="pilar-badges-row">
+                      <span class="pilar-id-tag">{data.pillar.pillar_id}</span>
+                      {isCritical && <span class="critical-tag">⭐ Crítico</span>}
+                      <span class="weight-tag">Peso: {weightPercent}%</span>
+                    </div>
+                    <h2 class="pilar-title-large">{data.pillar.pillar_name}</h2>
+                  </div>
+                </div>
+                
+                <!-- Description -->
+                <p class="pilar-description-text">{description}</p>
+                
+                <!-- Score Display -->
+                <div class="pilar-score-container">
+                  <div class="score-display-large">
+                    <span class="score-number-big">{avgPercent}</span>
+                    <span class="score-percent-big">%</span>
+                  </div>
+                  <div class="score-info">
+                    <span class="score-label-text">Promedio general</span>
+                    <div class="score-bar-wrapper">
+                      <div 
+                        class="score-bar-fill-animated" 
+                        style={`width: ${avgPercent}%`}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Top 3 Candidates -->
+                {top3.length > 0 && (
+                  <div class="top-candidates-section">
+                    <h3 class="top-candidates-title">🏆 Top 3 Candidatos en este pilar</h3>
+                    <div class="top-candidates-grid">
+                      {top3.map((tc, idx) => {
+                        const scorePercent = Math.round((tc.score.effective_score / 4) * 100);
+                        const candidateName = getCandidateName(tc.candidate);
+                        return (
+                          <div class={`top-candidate-card rank-${idx + 1}`}>
+                            <span class="candidate-rank-badge">{idx + 1}</span>
+                            <div class="candidate-details">
+                              <span class="candidate-name-text">{candidateName}</span>
+                              <span class="candidate-party-text">{tc.candidate?.party_name}</span>
+                            </div>
+                            <span class={`candidate-score-badge ${scorePercent === 100 ? 'perfect' : scorePercent >= 75 ? 'high' : ''}`}>
+                              {scorePercent}%
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+                
+                <!-- Arrow CTA -->
+                <div class="pilar-cta">
+                  <span class="cta-text">Ver detalle completo</span>
+                  <span class="cta-arrow">→</span>
+                </div>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+
+      <!-- Info sobre pesos -->
+      <div class="mt-12 bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl border border-slate-200 p-8">
+        <div class="flex items-center gap-3 mb-6">
+          <span class="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-lg shadow">
+            ⚖️
+          </span>
+          <h2 class="text-xl font-bold text-slate-900">Distribución de Pesos (v6)</h2>
+        </div>
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="bg-white rounded-xl p-5 border border-amber-200 shadow-sm">
+            <h3 class="font-bold text-amber-700 mb-3 flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-amber-100 flex items-center justify-center text-sm">🔥</span>
+              Prioritarios (60%)
+            </h3>
+            <ul class="text-sm text-slate-600 space-y-2">
+              <li class="flex justify-between"><span>P3 Seguridad</span><span class="font-bold text-amber-600">18%</span></li>
+              <li class="flex justify-between"><span>P4 Salud</span><span class="font-bold text-amber-600">16%</span></li>
+              <li class="flex justify-between"><span>P1 Finanzas</span><span class="font-bold text-amber-600">14%</span></li>
+              <li class="flex justify-between"><span>P7 Reforma</span><span class="font-bold text-amber-600">12%</span></li>
+            </ul>
           </div>
-        );
-      })}
-    </div>
-
-    <!-- Info -->
-    <div class="mt-12 card p-6">
-      <h2 class="text-xl font-bold text-slate-900 mb-4">Sobre los pesos (v6)</h2>
-      <div class="grid md:grid-cols-2 gap-6">
-        <div>
-          <h3 class="font-semibold text-slate-800 mb-2">Pilares prioritarios (60%)</h3>
-          <ul class="text-sm text-slate-600 space-y-1">
-            <li>• P3 Seguridad: 18%</li>
-            <li>• P4 Salud: 16%</li>
-            <li>• P1 Finanzas: 14%</li>
-            <li>• P7 Reforma: 12%</li>
-          </ul>
-        </div>
-        <div>
-          <h3 class="font-semibold text-slate-800 mb-2">Pilares críticos adicionales (21%)</h3>
-          <ul class="text-sm text-slate-600 space-y-1">
-            <li>• P2 Empleo: 11%</li>
-            <li>• P5 Educación: 10%</li>
-          </ul>
-          <h3 class="font-semibold text-slate-800 mb-2 mt-4">Pilares complementarios (19%)</h3>
-          <ul class="text-sm text-slate-600 space-y-1">
-            <li>• P10 Infraestructura: 9%</li>
-            <li>• P8 Social: 5%</li>
-            <li>• P6 Ambiente: 3%</li>
-            <li>• P9 Exterior: 2%</li>
-          </ul>
+          <div class="bg-white rounded-xl p-5 border border-blue-200 shadow-sm">
+            <h3 class="font-bold text-blue-700 mb-3 flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-sm">⭐</span>
+              Críticos (21%)
+            </h3>
+            <ul class="text-sm text-slate-600 space-y-2">
+              <li class="flex justify-between"><span>P2 Empleo</span><span class="font-bold text-blue-600">11%</span></li>
+              <li class="flex justify-between"><span>P5 Educación</span><span class="font-bold text-blue-600">10%</span></li>
+            </ul>
+          </div>
+          <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm">
+            <h3 class="font-bold text-slate-700 mb-3 flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-sm">📋</span>
+              Complementarios (19%)
+            </h3>
+            <ul class="text-sm text-slate-600 space-y-2">
+              <li class="flex justify-between"><span>P10 Infraestructura</span><span class="font-bold text-slate-600">9%</span></li>
+              <li class="flex justify-between"><span>P8 Social</span><span class="font-bold text-slate-600">5%</span></li>
+              <li class="flex justify-between"><span>P6 Ambiente</span><span class="font-bold text-slate-600">3%</span></li>
+              <li class="flex justify-between"><span>P9 Exterior</span><span class="font-bold text-slate-600">2%</span></li>
+            </ul>
+          </div>
         </div>
       </div>
-    </div>
 
+    </div>
   </div>
+
+  <!-- ============================================
+       EXPRESS MODE 🚀
+       ============================================ -->
+  <div class="mode-express-content">
+    <div class="express-pilares-container">
+      
+      <!-- Header -->
+      <div class="express-header">
+        <h1 class="express-title">🏛️ Pilares Nacionales</h1>
+        <p class="express-subtitle">Toca un pilar para ver más detalles</p>
+      </div>
+
+      <!-- Pilares List -->
+      <div class="express-pilares-list">
+        {pillarData.map((data) => {
+          const isCritical = CRITICAL_PILLARS.includes(data.pillar.pillar_id as PillarId);
+          const avgPercent = Math.round((data.avgScore / 4) * 100);
+          const description = PILLAR_DESCRIPTIONS[data.pillar.pillar_id] || '';
+          const top3 = data.topCandidates.slice(0, 3);
+          const weightPercent = Math.round((data.pillar.weight || 0) * 100);
+          
+          return (
+            <a 
+              href={`/pilares/${data.pillar.pillar_id.toLowerCase()}`}
+              class={`express-pilar-card ${isCritical ? 'critical' : ''}`}
+            >
+              <!-- Header Row -->
+              <div class="pilar-header">
+                <div class="pilar-icon-wrap">
+                  <span class="pilar-icon">{getPillarIcon(data.pillar.pillar_id)}</span>
+                </div>
+                <div class="pilar-badges">
+                  <span class="pilar-id-badge">{data.pillar.pillar_id}</span>
+                  {isCritical && <span class="critical-badge">⭐ Crítico</span>}
+                  <span class="weight-badge">Peso: {weightPercent}%</span>
+                </div>
+              </div>
+              
+              <!-- Title & Description -->
+              <h2 class="pilar-name">{data.pillar.pillar_name}</h2>
+              <p class="pilar-description">{description}</p>
+              
+              <!-- Big Score -->
+              <div class="pilar-score-section">
+                <div class="pilar-score-big">
+                  <span class="score-value">{avgPercent}</span>
+                  <span class="score-percent">%</span>
+                </div>
+                <span class="score-label">Promedio de todos los candidatos</span>
+                
+                <!-- Score Bar -->
+                <div class="pilar-score-bar">
+                  <div 
+                    class="pilar-score-fill" 
+                    style={`width: ${avgPercent}%`}
+                  ></div>
+                </div>
+              </div>
+              
+              <!-- Top 3 Candidates -->
+              {top3.length > 0 && (
+                <div class="pilar-top3">
+                  <h3 class="top3-title">🏆 Top 3 Candidatos</h3>
+                  <div class="top3-list">
+                    {top3.map((tc, idx) => {
+                      const scorePercent = Math.round((tc.score.effective_score / 4) * 100);
+                      const candidateName = getCandidateName(tc.candidate);
+                      return (
+                        <div class="top3-item">
+                          <span class={`top3-rank rank-${idx + 1}`}>{idx + 1}</span>
+                          <div class="top3-info">
+                            <span class="top3-name">{candidateName}</span>
+                            <span class="top3-party">{tc.candidate?.party_name}</span>
+                          </div>
+                          <span class={`top3-score ${scorePercent === 100 ? 'perfect' : scorePercent >= 75 ? 'high' : ''}`}>
+                            {scorePercent}%
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+              
+              <!-- Arrow -->
+              <div class="pilar-arrow">
+                Ver detalle →
+              </div>
+            </a>
+          );
+        })}
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- ============================================
+       READING MODE 📖 - Modo Lectura (Adultos Mayores)
+       ============================================ -->
+  <div class="mode-reading-content">
+    <article class="reading-pilares-container">
+      
+      <!-- Header -->
+      <header class="reading-header">
+        <h1 class="reading-main-title">🏛️ Los 10 Pilares Nacionales</h1>
+        <p class="reading-intro">
+          Organizamos las propuestas de cada candidato en <strong>10 áreas temáticas</strong> 
+          fundamentales para el desarrollo del país. Esta página le permite conocer cada pilar 
+          y ver qué candidatos tienen las mejores propuestas en cada área.
+        </p>
+        
+        <div class="reading-legend-box">
+          <p class="legend-title">📌 Leyenda:</p>
+          <div class="legend-items">
+            <span class="legend-item critical">
+              <span class="legend-dot critical"></span>
+              <strong>Pilar Crítico</strong> = Mayor importancia en la evaluación
+            </span>
+            <span class="legend-item">
+              <span class="legend-dot normal"></span>
+              <strong>Pilar Complementario</strong> = Importancia moderada
+            </span>
+          </div>
+        </div>
+      </header>
+
+      <hr class="reading-divider" />
+
+      <!-- Lista de Pilares -->
+      <section class="reading-pilares-list">
+        {pillarData.map((data, index) => {
+          const isCritical = CRITICAL_PILLARS.includes(data.pillar.pillar_id as PillarId);
+          const avgPercent = Math.round((data.avgScore / 4) * 100);
+          const description = PILLAR_DESCRIPTIONS[data.pillar.pillar_id] || '';
+          const top3 = data.topCandidates.slice(0, 3);
+          const weightPercent = Math.round((data.pillar.weight || 0) * 100);
+          const icon = getPillarIcon(data.pillar.pillar_id);
+          
+          return (
+            <article class={`reading-pilar-item ${isCritical ? 'critical' : ''}`}>
+              <div class="pilar-number">{index + 1}.</div>
+              
+              <div class="pilar-content">
+                <!-- Encabezado del Pilar -->
+                <div class="pilar-header-reading">
+                  <span class="pilar-icon-reading">{icon}</span>
+                  <div class="pilar-title-section">
+                    <div class="pilar-badges-reading">
+                      <span class="badge-id">{data.pillar.pillar_id}</span>
+                      {isCritical && <span class="badge-critical">⭐ Crítico</span>}
+                      <span class="badge-weight">Peso: {weightPercent}%</span>
+                    </div>
+                    <h2 class="pilar-name-reading">{data.pillar.pillar_name}</h2>
+                  </div>
+                </div>
+                
+                <!-- Descripción -->
+                <p class="pilar-description-reading">
+                  <strong>¿Qué evalúa este pilar?</strong> {description}
+                </p>
+                
+                <!-- Puntaje Grande -->
+                <div class="pilar-score-reading">
+                  <div class="score-box-reading">
+                    <div class="score-big-reading">
+                      <span class="score-number-reading">{avgPercent}</span>
+                      <span class="score-percent-reading">%</span>
+                    </div>
+                    <p class="score-explanation">
+                      Este es el <strong>promedio de todos los candidatos</strong> en este pilar.
+                      <br />
+                      <span class="score-hint">
+                        {avgPercent >= 75 ? '✅ Buen promedio general' : 
+                         avgPercent >= 50 ? '🟡 Promedio moderado' : 
+                         '🔴 Área con poca atención por los candidatos'}
+                      </span>
+                    </p>
+                  </div>
+                  
+                  <!-- Barra Visual -->
+                  <div class="score-bar-reading">
+                    <div 
+                      class="score-fill-reading" 
+                      style={`width: ${avgPercent}%`}
+                    ></div>
+                  </div>
+                </div>
+                
+                <!-- Top 3 Candidatos -->
+                {top3.length > 0 && (
+                  <div class="top3-reading">
+                    <h3 class="top3-title-reading">🏆 Los 3 mejores candidatos en este pilar:</h3>
+                    <ol class="top3-list-reading">
+                      {top3.map((tc, idx) => {
+                        const scorePercent = Math.round((tc.score.effective_score / 4) * 100);
+                        const candidateName = getCandidateName(tc.candidate);
+                        const medals = ['🥇', '🥈', '🥉'];
+                        return (
+                          <li class="top3-item-reading">
+                            <span class="medal">{medals[idx]}</span>
+                            <div class="candidate-info-reading">
+                              <span class="candidate-name-reading">{candidateName}</span>
+                              <span class="candidate-party-reading">Partido: {tc.candidate?.party_name}</span>
+                            </div>
+                            <span class={`candidate-score-reading ${scorePercent === 100 ? 'perfect' : scorePercent >= 75 ? 'high' : ''}`}>
+                              {scorePercent}%
+                            </span>
+                          </li>
+                        );
+                      })}
+                    </ol>
+                  </div>
+                )}
+                
+                <!-- Enlace a más información -->
+                <a 
+                  href={`/pilares/${data.pillar.pillar_id.toLowerCase()}`}
+                  class="pilar-link-reading"
+                >
+                  Ver información completa de este pilar →
+                </a>
+              </div>
+            </article>
+          );
+        })}
+      </section>
+
+      <hr class="reading-divider" />
+
+      <!-- Información sobre pesos -->
+      <section class="reading-weights-section">
+        <h2 class="reading-section-title">⚖️ ¿Cómo se distribuyen los pesos?</h2>
+        <p class="reading-explanation">
+          No todos los pilares tienen el mismo peso en la evaluación final. 
+          Los pilares más urgentes para el país tienen mayor importancia:
+        </p>
+        
+        <div class="weights-list-reading">
+          <div class="weight-group-reading priority">
+            <h3 class="weight-group-title">🔥 Pilares Prioritarios (60% del total)</h3>
+            <p class="weight-group-description">Estos son los temas más urgentes para Costa Rica:</p>
+            <ul class="weight-items-reading">
+              <li><strong>P3 - Seguridad Ciudadana:</strong> 18%</li>
+              <li><strong>P4 - Salud y CCSS:</strong> 16%</li>
+              <li><strong>P1 - Responsabilidad Fiscal:</strong> 14%</li>
+              <li><strong>P7 - Reforma del Estado:</strong> 12%</li>
+            </ul>
+          </div>
+          
+          <div class="weight-group-reading important">
+            <h3 class="weight-group-title">⭐ Pilares Críticos (21% del total)</h3>
+            <p class="weight-group-description">Temas fundamentales para el desarrollo:</p>
+            <ul class="weight-items-reading">
+              <li><strong>P2 - Empleo e Inversión:</strong> 11%</li>
+              <li><strong>P5 - Educación:</strong> 10%</li>
+            </ul>
+          </div>
+          
+          <div class="weight-group-reading complementary">
+            <h3 class="weight-group-title">📋 Pilares Complementarios (19% del total)</h3>
+            <p class="weight-group-description">Temas importantes pero menos urgentes:</p>
+            <ul class="weight-items-reading">
+              <li><strong>P10 - Infraestructura:</strong> 9%</li>
+              <li><strong>P8 - Pobreza y Vulnerabilidad:</strong> 5%</li>
+              <li><strong>P6 - Ambiente y Sostenibilidad:</strong> 3%</li>
+              <li><strong>P9 - Política Exterior:</strong> 2%</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <hr class="reading-divider" />
+
+      <!-- Navegación -->
+      <footer class="reading-footer">
+        <a href="/" class="reading-nav-link">← Volver al inicio</a>
+        <a href="/metodologia" class="reading-nav-link">¿Cómo se calcula el puntaje? →</a>
+      </footer>
+      
+    </article>
+  </div>
+
 </BaseLayout>
+
+<style>
+  /* Mode visibility */
+  .mode-express-content,
+  .mode-reading-content {
+    display: none;
+  }
+  
+  .mode-dashboard-content {
+    display: block;
+  }
+  
+  html[data-mode="express"] .mode-express-content {
+    display: block;
+  }
+  
+  html[data-mode="express"] .mode-dashboard-content,
+  html[data-mode="express"] .mode-reading-content {
+    display: none;
+  }
+  
+  html[data-mode="reading"] .mode-reading-content {
+    display: block;
+  }
+  
+  html[data-mode="reading"] .mode-dashboard-content,
+  html[data-mode="reading"] .mode-express-content {
+    display: none;
+  }
+
+  /* ===========================================
+     READING MODE STYLES - Modo Lectura (Adultos Mayores)
+     Fuentes grandes, alto contraste, interlineado generoso
+     =========================================== */
+  
+  .reading-pilares-container {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.25rem;
+    line-height: 1.8;
+    color: #1e293b;
+  }
+  
+  .reading-header {
+    margin-bottom: 2rem;
+  }
+  
+  .reading-main-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #1e293b;
+    margin-bottom: 1.5rem;
+    line-height: 1.3;
+  }
+  
+  .reading-intro {
+    font-size: 1.25rem;
+    line-height: 1.9;
+    color: #334155;
+    margin-bottom: 1.5rem;
+  }
+  
+  .reading-legend-box {
+    background: #fef3c7;
+    border: 3px solid #f59e0b;
+    border-radius: 1rem;
+    padding: 1.5rem;
+  }
+  
+  .legend-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #92400e;
+    margin-bottom: 0.75rem;
+  }
+  
+  .legend-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.125rem;
+    color: #1e293b;
+  }
+  
+  .legend-dot {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  
+  .legend-dot.critical {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+  }
+  
+  .legend-dot.normal {
+    background: linear-gradient(135deg, #06b6d4, #0284c7);
+  }
+  
+  .reading-divider {
+    border: none;
+    border-top: 3px solid #94a3b8;
+    margin: 2.5rem 0;
+  }
+  
+  /* Lista de Pilares */
+  .reading-pilares-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .reading-pilar-item {
+    display: flex;
+    gap: 1.5rem;
+    padding: 2rem;
+    background: white;
+    border: 3px solid #e2e8f0;
+    border-radius: 1.25rem;
+  }
+  
+  .reading-pilar-item.critical {
+    border-color: #fcd34d;
+    background: linear-gradient(135deg, #fffbeb 0%, white 100%);
+  }
+  
+  .pilar-number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #94a3b8;
+    min-width: 3rem;
+    line-height: 1;
+  }
+  
+  .reading-pilar-item.critical .pilar-number {
+    color: #f59e0b;
+  }
+  
+  .pilar-content {
+    flex: 1;
+  }
+  
+  .pilar-header-reading {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+  }
+  
+  .pilar-icon-reading {
+    font-size: 2.5rem;
+    line-height: 1;
+  }
+  
+  .pilar-title-section {
+    flex: 1;
+  }
+  
+  .pilar-badges-reading {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .badge-id {
+    font-size: 0.9rem;
+    font-weight: 700;
+    padding: 0.25rem 0.75rem;
+    background: #f1f5f9;
+    color: #475569;
+    border-radius: 0.5rem;
+  }
+  
+  .badge-critical {
+    font-size: 0.9rem;
+    font-weight: 700;
+    padding: 0.25rem 0.75rem;
+    background: #fef3c7;
+    color: #92400e;
+    border-radius: 0.5rem;
+  }
+  
+  .badge-weight {
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.25rem 0.75rem;
+    background: #e0f2fe;
+    color: #0369a1;
+    border-radius: 0.5rem;
+  }
+  
+  .pilar-name-reading {
+    font-size: 1.75rem;
+    font-weight: bold;
+    color: #1e293b;
+    line-height: 1.3;
+    margin: 0;
+  }
+  
+  .pilar-description-reading {
+    font-size: 1.125rem;
+    line-height: 1.8;
+    color: #475569;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: #f8fafc;
+    border-left: 4px solid #06b6d4;
+    border-radius: 0.5rem;
+  }
+  
+  .reading-pilar-item.critical .pilar-description-reading {
+    border-left-color: #f59e0b;
+  }
+  
+  /* Score Reading */
+  .pilar-score-reading {
+    margin-bottom: 1.5rem;
+  }
+  
+  .score-box-reading {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .score-big-reading {
+    display: flex;
+    align-items: baseline;
+    gap: 0.125rem;
+  }
+  
+  .score-number-reading {
+    font-size: 4rem;
+    font-weight: 800;
+    line-height: 1;
+    color: #0891b2;
+  }
+  
+  .reading-pilar-item.critical .score-number-reading {
+    color: #d97706;
+  }
+  
+  .score-percent-reading {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #0891b2;
+  }
+  
+  .reading-pilar-item.critical .score-percent-reading {
+    color: #d97706;
+  }
+  
+  .score-explanation {
+    flex: 1;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #475569;
+  }
+  
+  .score-hint {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+  
+  .score-bar-reading {
+    height: 1rem;
+    background: #e2e8f0;
+    border-radius: 9999px;
+    overflow: hidden;
+  }
+  
+  .score-fill-reading {
+    height: 100%;
+    background: linear-gradient(90deg, #06b6d4, #0891b2);
+    border-radius: 9999px;
+  }
+  
+  .reading-pilar-item.critical .score-fill-reading {
+    background: linear-gradient(90deg, #f59e0b, #d97706);
+  }
+  
+  /* Top 3 Reading */
+  .top3-reading {
+    margin-bottom: 1.5rem;
+  }
+  
+  .top3-title-reading {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 1rem;
+  }
+  
+  .top3-list-reading {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .top3-item-reading {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.75rem;
+  }
+  
+  .medal {
+    font-size: 2rem;
+    line-height: 1;
+  }
+  
+  .candidate-info-reading {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .candidate-name-reading {
+    display: block;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #1e293b;
+  }
+  
+  .candidate-party-reading {
+    display: block;
+    font-size: 1rem;
+    color: #64748b;
+  }
+  
+  .candidate-score-reading {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #64748b;
+    flex-shrink: 0;
+  }
+  
+  .candidate-score-reading.high {
+    color: #059669;
+  }
+  
+  .candidate-score-reading.perfect {
+    color: #059669;
+    background: #d1fae5;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.5rem;
+  }
+  
+  .pilar-link-reading {
+    display: inline-block;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1d4ed8;
+    padding: 0.75rem 0;
+    border-bottom: 2px solid #1d4ed8;
+  }
+  
+  .pilar-link-reading:hover {
+    color: #1e40af;
+    border-bottom-color: #1e40af;
+  }
+  
+  /* Weights Section */
+  .reading-weights-section {
+    margin-bottom: 2rem;
+  }
+  
+  .reading-section-title {
+    font-size: 1.75rem;
+    font-weight: bold;
+    color: #1e293b;
+    margin-bottom: 1rem;
+  }
+  
+  .reading-explanation {
+    font-size: 1.125rem;
+    line-height: 1.8;
+    color: #475569;
+    margin-bottom: 1.5rem;
+  }
+  
+  .weights-list-reading {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .weight-group-reading {
+    padding: 1.5rem;
+    border-radius: 1rem;
+    border: 3px solid;
+  }
+  
+  .weight-group-reading.priority {
+    background: #fffbeb;
+    border-color: #f59e0b;
+  }
+  
+  .weight-group-reading.important {
+    background: #eff6ff;
+    border-color: #3b82f6;
+  }
+  
+  .weight-group-reading.complementary {
+    background: #f8fafc;
+    border-color: #94a3b8;
+  }
+  
+  .weight-group-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  
+  .weight-group-reading.priority .weight-group-title {
+    color: #92400e;
+  }
+  
+  .weight-group-reading.important .weight-group-title {
+    color: #1e40af;
+  }
+  
+  .weight-group-reading.complementary .weight-group-title {
+    color: #475569;
+  }
+  
+  .weight-group-description {
+    font-size: 1rem;
+    color: #64748b;
+    margin-bottom: 1rem;
+  }
+  
+  .weight-items-reading {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .weight-items-reading li {
+    font-size: 1.125rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+  }
+  
+  .weight-items-reading li:last-child {
+    border-bottom: none;
+  }
+  
+  /* Footer */
+  .reading-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  
+  .reading-nav-link {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1d4ed8;
+    padding: 1rem 1.5rem;
+    border: 3px solid #1d4ed8;
+    border-radius: 0.75rem;
+    background: white;
+  }
+  
+  .reading-nav-link:hover {
+    background: #eff6ff;
+    color: #1e40af;
+    border-color: #1e40af;
+  }
+  
+  /* Responsive para móvil */
+  @media (max-width: 640px) {
+    .reading-pilares-container {
+      padding: 2rem 1.25rem;
+      font-size: 1.125rem;
+    }
+    
+    .reading-main-title {
+      font-size: 2rem;
+    }
+    
+    .reading-pilar-item {
+      flex-direction: column;
+      gap: 1rem;
+      padding: 1.5rem;
+    }
+    
+    .pilar-number {
+      font-size: 2rem;
+    }
+    
+    .pilar-header-reading {
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    
+    .score-box-reading {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    
+    .score-number-reading {
+      font-size: 3rem;
+    }
+    
+    .reading-footer {
+      flex-direction: column;
+    }
+    
+    .reading-nav-link {
+      text-align: center;
+    }
+  }
+
+  /* ===========================================
+     DASHBOARD MODE STYLES - Modo Visual Detallado
+     =========================================== */
+  
+  .dashboard-pilar-card {
+    display: block;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 1.25rem;
+    overflow: hidden;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+  
+  .dashboard-pilar-card:hover {
+    border-color: #06b6d4;
+    box-shadow: 0 20px 50px -15px rgba(6, 182, 212, 0.2);
+    transform: translateY(-4px);
+  }
+  
+  .dashboard-pilar-card.critical {
+    border-color: #fcd34d;
+    background: linear-gradient(135deg, #fffbeb 0%, white 100%);
+  }
+  
+  .dashboard-pilar-card.critical:hover {
+    border-color: #f59e0b;
+    box-shadow: 0 20px 50px -15px rgba(245, 158, 11, 0.25);
+  }
+  
+  .pilar-card-content {
+    padding: 1.5rem;
+  }
+  
+  /* Header */
+  .pilar-card-header {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .pilar-icon-container {
+    width: 4rem;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #e0f2fe, #dbeafe);
+    border-radius: 1rem;
+    flex-shrink: 0;
+  }
+  
+  .dashboard-pilar-card.critical .pilar-icon-container {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+  }
+  
+  .pilar-icon-large {
+    font-size: 2rem;
+  }
+  
+  .pilar-meta-info {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .pilar-badges-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .pilar-id-tag {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.2rem 0.5rem;
+    background: #f1f5f9;
+    color: #64748b;
+    border-radius: 0.25rem;
+    text-transform: uppercase;
+  }
+  
+  .critical-tag {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.2rem 0.5rem;
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    color: #92400e;
+    border-radius: 0.25rem;
+  }
+  
+  .weight-tag {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.2rem 0.5rem;
+    background: #e0f2fe;
+    color: #0369a1;
+    border-radius: 0.25rem;
+  }
+  
+  .pilar-title-large {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.3;
+    margin: 0;
+  }
+  
+  .dashboard-pilar-card:hover .pilar-title-large {
+    color: #0891b2;
+  }
+  
+  .dashboard-pilar-card.critical:hover .pilar-title-large {
+    color: #b45309;
+  }
+  
+  /* Description */
+  .pilar-description-text {
+    font-size: 0.9rem;
+    color: #64748b;
+    line-height: 1.5;
+    margin-bottom: 1.25rem;
+  }
+  
+  /* Score Container */
+  .pilar-score-container {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    background: #f8fafc;
+    border-radius: 1rem;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  
+  .score-display-large {
+    display: flex;
+    align-items: baseline;
+    gap: 0.125rem;
+  }
+  
+  .score-number-big {
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1;
+    background: linear-gradient(135deg, #06b6d4, #3b82f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .dashboard-pilar-card.critical .score-number-big {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+  
+  .score-percent-big {
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #06b6d4, #3b82f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .dashboard-pilar-card.critical .score-percent-big {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+  
+  .score-info {
+    flex: 1;
+  }
+  
+  .score-label-text {
+    display: block;
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-bottom: 0.5rem;
+  }
+  
+  .score-bar-wrapper {
+    height: 0.625rem;
+    background: #e2e8f0;
+    border-radius: 9999px;
+    overflow: hidden;
+  }
+  
+  .score-bar-fill-animated {
+    height: 100%;
+    background: linear-gradient(90deg, #06b6d4, #3b82f6);
+    border-radius: 9999px;
+    transition: width 0.8s ease;
+  }
+  
+  .dashboard-pilar-card.critical .score-bar-fill-animated {
+    background: linear-gradient(90deg, #f59e0b, #d97706);
+  }
+  
+  /* Top Candidates Section */
+  .top-candidates-section {
+    margin-bottom: 1rem;
+  }
+  
+  .top-candidates-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #475569;
+    margin-bottom: 0.75rem;
+  }
+  
+  .top-candidates-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .top-candidate-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.625rem 0.75rem;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    transition: all 0.2s ease;
+  }
+  
+  .top-candidate-card:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+  }
+  
+  .candidate-rank-badge {
+    width: 1.75rem;
+    height: 1.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    border-radius: 0.5rem;
+    flex-shrink: 0;
+    background: #e2e8f0;
+    color: #64748b;
+  }
+  
+  .top-candidate-card.rank-1 .candidate-rank-badge {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    color: white;
+  }
+  
+  .top-candidate-card.rank-2 .candidate-rank-badge {
+    background: linear-gradient(135deg, #94a3b8, #64748b);
+    color: white;
+  }
+  
+  .top-candidate-card.rank-3 .candidate-rank-badge {
+    background: linear-gradient(135deg, #d97706, #b45309);
+    color: white;
+  }
+  
+  .candidate-details {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .candidate-name-text {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1e293b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .candidate-party-text {
+    display: block;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .candidate-score-badge {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #64748b;
+    flex-shrink: 0;
+  }
+  
+  .candidate-score-badge.high {
+    color: #059669;
+  }
+  
+  .candidate-score-badge.perfect {
+    color: #059669;
+    background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+  }
+  
+  /* CTA Arrow */
+  .pilar-cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #f1f5f9;
+  }
+  
+  .cta-text {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #06b6d4;
+  }
+  
+  .dashboard-pilar-card.critical .cta-text {
+    color: #d97706;
+  }
+  
+  .cta-arrow {
+    font-size: 1rem;
+    color: #06b6d4;
+    transition: transform 0.2s ease;
+  }
+  
+  .dashboard-pilar-card.critical .cta-arrow {
+    color: #d97706;
+  }
+  
+  .dashboard-pilar-card:hover .cta-arrow {
+    transform: translateX(4px);
+  }
+
+  /* ===========================================
+     EXPRESS MODE STYLES
+     =========================================== */
+  
+  .express-pilares-container {
+    padding: 1.5rem;
+    max-width: 48rem;
+    margin: 0 auto;
+  }
+  
+  .express-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .express-title {
+    font-size: 1.75rem;
+    font-weight: bold;
+    color: #0f172a;
+    margin-bottom: 0.5rem;
+  }
+  
+  .express-subtitle {
+    font-size: 1rem;
+    color: #64748b;
+  }
+  
+  .express-pilares-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  /* Pilar Card */
+  .express-pilar-card {
+    display: block;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 1.25rem;
+    padding: 1.5rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+  
+  .express-pilar-card:hover {
+    border-color: #06b6d4;
+    box-shadow: 0 10px 30px -10px rgba(6, 182, 212, 0.2);
+    transform: translateY(-2px);
+  }
+  
+  .express-pilar-card.critical {
+    border-color: #fcd34d;
+    background: linear-gradient(135deg, #fffbeb 0%, white 100%);
+  }
+  
+  .express-pilar-card.critical:hover {
+    border-color: #f59e0b;
+    box-shadow: 0 10px 30px -10px rgba(245, 158, 11, 0.25);
+  }
+  
+  /* Header */
+  .pilar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+  
+  .pilar-icon-wrap {
+    width: 3.5rem;
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #e0f2fe, #dbeafe);
+    border-radius: 1rem;
+    font-size: 1.75rem;
+  }
+  
+  .express-pilar-card.critical .pilar-icon-wrap {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+  }
+  
+  .pilar-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: flex-end;
+  }
+  
+  .pilar-id-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.25rem 0.5rem;
+    background: #f1f5f9;
+    color: #64748b;
+    border-radius: 0.375rem;
+  }
+  
+  .critical-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.25rem 0.5rem;
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    color: #92400e;
+    border-radius: 0.375rem;
+  }
+  
+  .weight-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.5rem;
+    background: #e0f2fe;
+    color: #0369a1;
+    border-radius: 0.375rem;
+  }
+  
+  /* Title & Description */
+  .pilar-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+  }
+  
+  .pilar-description {
+    font-size: 0.95rem;
+    color: #64748b;
+    line-height: 1.5;
+    margin-bottom: 1.25rem;
+  }
+  
+  /* Score Section */
+  .pilar-score-section {
+    text-align: center;
+    margin-bottom: 1.25rem;
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: 1rem;
+  }
+  
+  .pilar-score-big {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.125rem;
+  }
+  
+  .score-value {
+    font-size: 4rem;
+    font-weight: 800;
+    line-height: 1;
+    background: linear-gradient(135deg, #06b6d4, #3b82f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .express-pilar-card.critical .score-value {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+  
+  .score-percent {
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #06b6d4, #3b82f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .express-pilar-card.critical .score-percent {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+  
+  .score-label {
+    display: block;
+    font-size: 0.8rem;
+    color: #94a3b8;
+    margin-top: 0.25rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .pilar-score-bar {
+    height: 0.625rem;
+    background: #e2e8f0;
+    border-radius: 9999px;
+    overflow: hidden;
+  }
+  
+  .pilar-score-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #06b6d4, #3b82f6);
+    border-radius: 9999px;
+    transition: width 0.5s ease;
+  }
+  
+  .express-pilar-card.critical .pilar-score-fill {
+    background: linear-gradient(90deg, #f59e0b, #d97706);
+  }
+  
+  /* Top 3 */
+  .pilar-top3 {
+    margin-bottom: 1rem;
+  }
+  
+  .top3-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #475569;
+    margin-bottom: 0.75rem;
+  }
+  
+  .top3-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .top3-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.625rem 0.75rem;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+  }
+  
+  .top3-rank {
+    width: 1.75rem;
+    height: 1.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    font-weight: 700;
+    border-radius: 0.5rem;
+    flex-shrink: 0;
+  }
+  
+  .top3-rank.rank-1 {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    color: white;
+  }
+  
+  .top3-rank.rank-2 {
+    background: linear-gradient(135deg, #94a3b8, #64748b);
+    color: white;
+  }
+  
+  .top3-rank.rank-3 {
+    background: linear-gradient(135deg, #d97706, #b45309);
+    color: white;
+  }
+  
+  .top3-info {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .top3-name {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1e293b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .top3-party {
+    display: block;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .top3-score {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #64748b;
+    flex-shrink: 0;
+  }
+  
+  .top3-score.high {
+    color: #059669;
+  }
+  
+  .top3-score.perfect {
+    color: #059669;
+    background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+  }
+  
+  /* Arrow */
+  .pilar-arrow {
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #06b6d4;
+    padding-top: 0.75rem;
+    border-top: 1px solid #f1f5f9;
+  }
+  
+  .express-pilar-card.critical .pilar-arrow {
+    color: #d97706;
+  }
+  
+  .express-pilar-card:hover .pilar-arrow {
+    transform: translateX(4px);
+    transition: transform 0.2s ease;
+  }
+</style>
