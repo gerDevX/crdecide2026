@@ -1,0 +1,63 @@
+---
+import { getRankingWithCandidates } from '../../lib/data';
+import ScoreBar from '../ui/ScoreBar.astro';
+
+interface Props {
+  limit?: number;
+  class?: string;
+}
+
+const { limit = 5, class: className = '' } = Astro.props;
+
+const ranking = getRankingWithCandidates().slice(0, limit);
+---
+
+<section class={`${className}`}>
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="text-xl font-bold text-slate-900">Ranking General</h2>
+    <a href="/ranking" class="text-civic-600 hover:text-civic-700 text-sm font-medium">
+      Ver completo →
+    </a>
+  </div>
+  
+  <div class="card">
+    <div class="divide-y divide-slate-100">
+      {ranking.map((entry, index) => {
+        const score = entry.weighted_sum || 0;
+        const scorePercent = Math.round(score * 100);
+        
+        return (
+          <a
+            href={`/candidatos/${entry.candidate_id}`}
+            class="flex items-center gap-4 p-4 hover:bg-slate-50 transition-colors group"
+          >
+            <span class={`
+              w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm
+              ${index === 0 ? 'bg-amber-100 text-amber-700' : 
+                index === 1 ? 'bg-slate-200 text-slate-600' :
+                index === 2 ? 'bg-orange-100 text-orange-700' :
+                'bg-slate-100 text-slate-500'}
+            `}>
+              {entry.rank}
+            </span>
+            
+            <div class="flex-1 min-w-0">
+              <div class="font-medium text-slate-900 group-hover:text-civic-600 transition-colors truncate">
+                {entry.candidate?.party_name || entry.candidate_id.toUpperCase()}
+              </div>
+              <div class="text-sm text-slate-500">{entry.candidate_id.toUpperCase()}</div>
+            </div>
+            
+            <div class="w-32 hidden sm:block">
+              <ScoreBar score={Math.round(score * 4)} max={4} showLabel={false} size="sm" />
+            </div>
+            
+            <span class="font-bold text-civic-600 min-w-[4rem] text-right">
+              {scorePercent}%
+            </span>
+          </a>
+        );
+      })}
+    </div>
+  </div>
+</section>

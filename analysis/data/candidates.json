@@ -1,0 +1,162 @@
+[
+  {
+    "candidate_id": "acrm",
+    "candidate_name": "Ronny Castillo González",
+    "party_name": "Alianza Costarricense por la Responsabilidad y el Movimiento",
+    "pdf_id": "ACRM",
+    "pdf_title": "Plan de Gobierno ACRM 2026-2030",
+    "pdf_url": "local://analysis/planes/ACRM.pdf"
+  },
+  {
+    "candidate_id": "cac",
+    "candidate_name": "Por determinar",
+    "party_name": "Coalición Agrícola y Campesina",
+    "pdf_id": "CAC",
+    "pdf_title": "Plan de Gobierno CAC 2026-2030",
+    "pdf_url": "local://analysis/planes/CAC.pdf"
+  },
+  {
+    "candidate_id": "cds",
+    "candidate_name": "Por determinar",
+    "party_name": "Ciudadanos de la Sierra",
+    "pdf_id": "CDS",
+    "pdf_title": "Plan de Gobierno CDS 2026-2030",
+    "pdf_url": "local://analysis/planes/CDS.pdf"
+  },
+  {
+    "candidate_id": "cr1",
+    "candidate_name": "de la Republica de Costa",
+    "party_name": "Costa Rica Primero",
+    "pdf_id": "CR1",
+    "pdf_title": "Plan de Gobierno CR1 2026-2030",
+    "pdf_url": "local://analysis/planes/CR1.pdf"
+  },
+  {
+    "candidate_id": "fa",
+    "candidate_name": "Por determinar",
+    "party_name": "Frente Amplio",
+    "pdf_id": "FA",
+    "pdf_title": "Plan de Gobierno FA 2026-2030",
+    "pdf_url": "local://analysis/planes/FA.pdf"
+  },
+  {
+    "candidate_id": "pa",
+    "candidate_name": "Por determinar",
+    "party_name": "Partido Accesibilidad sin Exclusión",
+    "pdf_id": "PA",
+    "pdf_title": "Plan de Gobierno PA 2026-2030",
+    "pdf_url": "local://analysis/planes/PA.pdf"
+  },
+  {
+    "candidate_id": "pdlct",
+    "candidate_name": "Por determinar",
+    "party_name": "Partido de los Trabajadores",
+    "pdf_id": "PDLCT",
+    "pdf_title": "Plan de Gobierno PDLCT 2026-2030",
+    "pdf_url": "local://analysis/planes/PDLCT.pdf"
+  },
+  {
+    "candidate_id": "pel",
+    "candidate_name": "Por determinar",
+    "party_name": "Partido El Pueblo",
+    "pdf_id": "PEL",
+    "pdf_title": "Plan de Gobierno PEL 2026-2030",
+    "pdf_url": "local://analysis/planes/PEL.pdf"
+  },
+  {
+    "candidate_id": "pen",
+    "candidate_name": "Por determinar",
+    "party_name": "Partido Encuentro Nacional",
+    "pdf_id": "PEN",
+    "pdf_title": "Plan de Gobierno PEN 2026-2030",
+    "pdf_url": "local://analysis/planes/PEN.pdf"
+  },
+  {
+    "candidate_id": "pin",
+    "candidate_name": "Por determinar",
+    "party_name": "Partido Integración Nacional",
+    "pdf_id": "PIN",
+    "pdf_title": "Plan de Gobierno PIN 2026-2030",
+    "pdf_url": "local://analysis/planes/PIN.pdf"
+  },
+  {
+    "candidate_id": "pjsc",
+    "candidate_name": "Por determinar",
+    "party_name": "Partido Justicia Social Costarricense",
+    "pdf_id": "PJSC",
+    "pdf_title": "Plan de Gobierno PJSC 2026-2030",
+    "pdf_url": "local://analysis/planes/PJSC.pdf"
+  },
+  {
+    "candidate_id": "pln",
+    "candidate_name": "Marvin Taylor Dormond",
+    "party_name": "Partido Liberación Nacional",
+    "pdf_id": "PLN",
+    "pdf_title": "Plan de Gobierno PLN 2026-2030",
+    "pdf_url": "local://analysis/planes/PLN.pdf"
+  },
+  {
+    "candidate_id": "plp",
+    "candidate_name": "Por determinar",
+    "party_name": "Partido Liberal Progresista",
+    "pdf_id": "PLP",
+    "pdf_title": "Plan de Gobierno PLP 2026-2030",
+    "pdf_url": "local://analysis/planes/PLP.pdf"
+  },
+  {
+    "candidate_id": "png",
+    "candidate_name": "Oliver Mora Tumminelli",
+    "party_name": "Partido Nueva Generación",
+    "pdf_id": "PNG",
+    "pdf_title": "Plan de Gobierno PNG 2026-2030",
+    "pdf_url": "local://analysis/planes/PNG.pdf"
+  },
+  {
+    "candidate_id": "pnr",
+    "candidate_name": "Por determinar",
+    "party_name": "Partido Nueva República",
+    "pdf_id": "PNR",
+    "pdf_title": "Plan de Gobierno PNR 2026-2030",
+    "pdf_url": "local://analysis/planes/PNR.pdf"
+  },
+  {
+    "candidate_id": "ppso",
+    "candidate_name": "Por determinar",
+    "party_name": "Partido Progreso Social Democrático",
+    "pdf_id": "PPSO",
+    "pdf_title": "Plan de Gobierno PPSO 2026-2030",
+    "pdf_url": "local://analysis/planes/PPSO.pdf"
+  },
+  {
+    "candidate_id": "psd",
+    "candidate_name": "Por determinar",
+    "party_name": "Partido Social Demócrata",
+    "pdf_id": "PSD",
+    "pdf_title": "Plan de Gobierno PSD 2026-2030",
+    "pdf_url": "local://analysis/planes/PSD.pdf"
+  },
+  {
+    "candidate_id": "pucd",
+    "candidate_name": "Por determinar",
+    "party_name": "Partido Unidad Cristiana Demócrata",
+    "pdf_id": "PUCD",
+    "pdf_title": "Plan de Gobierno PUCD 2026-2030",
+    "pdf_url": "local://analysis/planes/PUCD.pdf"
+  },
+  {
+    "candidate_id": "pusc",
+    "candidate_name": "Por determinar",
+    "party_name": "Partido Unidad Social Cristiana",
+    "pdf_id": "PUSC",
+    "pdf_title": "Plan de Gobierno PUSC 2026-2030",
+    "pdf_url": "local://analysis/planes/PUSC.pdf"
+  },
+  {
+    "candidate_id": "up",
+    "candidate_name": "Por determinar",
+    "party_name": "Unidos Podemos",
+    "pdf_id": "UP",
+    "pdf_title": "Plan de Gobierno UP 2026-2030",
+    "pdf_url": "local://analysis/planes/UP.pdf"
+  }
+]

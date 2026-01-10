@@ -1,0 +1,107 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PillarGrid from '../components/pillars/PillarGrid.astro';
+import QuickRanking from '../components/ranking/QuickRanking.astro';
+import { candidates, candidateScores } from '../lib/data';
+---
+
+<BaseLayout title="Inicio">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <!-- Hero -->
+    <section class="text-center py-12 mb-8">
+      <h1 class="text-4xl md:text-5xl font-bold text-slate-900 mb-4">
+        Costa Rica <span class="text-civic-600">Decide</span> 2026
+      </h1>
+      <p class="text-xl text-slate-600 max-w-2xl mx-auto mb-8">
+        Compara los planes de gobierno de los {candidates.length} candidatos presidenciales.
+        Sin sesgos. Sin recomendaciones. Solo datos.
+      </p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href="/comparar" class="btn btn-primary py-3 px-6">
+          Comparar candidatos
+        </a>
+        <a href="/metodologia" class="btn btn-secondary py-3 px-6">
+          ¿Cómo funciona?
+        </a>
+      </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+      <div class="card p-5 text-center">
+        <span class="text-3xl font-bold text-civic-600">{candidates.length}</span>
+        <p class="text-slate-600 text-sm mt-1">Candidatos</p>
+      </div>
+      <div class="card p-5 text-center">
+        <span class="text-3xl font-bold text-civic-600">9</span>
+        <p class="text-slate-600 text-sm mt-1">Pilares</p>
+      </div>
+      <div class="card p-5 text-center">
+        <span class="text-3xl font-bold text-civic-600">3,400+</span>
+        <p class="text-slate-600 text-sm mt-1">Propuestas</p>
+      </div>
+      <div class="card p-5 text-center">
+        <span class="text-3xl font-bold text-civic-600">4</span>
+        <p class="text-slate-600 text-sm mt-1">Dimensiones</p>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold text-slate-900 mb-6 text-center">¿Cómo evaluamos?</h2>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="card p-5">
+          <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center mb-3">
+            <span class="text-xl">📋</span>
+          </div>
+          <h3 class="font-semibold text-slate-900 mb-1">Existencia</h3>
+          <p class="text-sm text-slate-600">¿Es una propuesta concreta?</p>
+        </div>
+        <div class="card p-5">
+          <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mb-3">
+            <span class="text-xl">📅</span>
+          </div>
+          <h3 class="font-semibold text-slate-900 mb-1">Cuándo</h3>
+          <p class="text-sm text-slate-600">¿Tiene plazo definido?</p>
+        </div>
+        <div class="card p-5">
+          <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mb-3">
+            <span class="text-xl">⚙️</span>
+          </div>
+          <h3 class="font-semibold text-slate-900 mb-1">Cómo</h3>
+          <p class="text-sm text-slate-600">¿Explica el mecanismo?</p>
+        </div>
+        <div class="card p-5">
+          <div class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center mb-3">
+            <span class="text-xl">💰</span>
+          </div>
+          <h3 class="font-semibold text-slate-900 mb-1">Fondos</h3>
+          <p class="text-sm text-slate-600">¿Indica financiamiento?</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pillars -->
+    <PillarGrid />
+
+    <!-- Quick Ranking -->
+    <QuickRanking limit={10} class="mt-12" />
+
+    <!-- CTA -->
+    <section class="mt-12 text-center">
+      <div class="card p-8 bg-civic-50 border-civic-200">
+        <h2 class="text-2xl font-bold text-slate-900 mb-3">
+          ¿Listo para comparar?
+        </h2>
+        <p class="text-slate-600 mb-6">
+          Selecciona hasta 4 candidatos y compara sus propuestas lado a lado.
+        </p>
+        <a href="/comparar" class="btn btn-primary py-3 px-8">
+          Ir al comparador
+        </a>
+      </div>
+    </section>
+
+  </div>
+</BaseLayout>

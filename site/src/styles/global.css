@@ -1,0 +1,257 @@
+@import "tailwindcss";
+
+/* ============================================
+   CUSTOM THEME - CIVIC DATA DASHBOARD
+   ============================================ */
+
+@theme {
+  /* Colors - Civic Palette */
+  --color-civic-50: #f0f9ff;
+  --color-civic-100: #e0f2fe;
+  --color-civic-200: #bae6fd;
+  --color-civic-300: #7dd3fc;
+  --color-civic-400: #38bdf8;
+  --color-civic-500: #0ea5e9;
+  --color-civic-600: #0284c7;
+  --color-civic-700: #0369a1;
+  --color-civic-800: #075985;
+  --color-civic-900: #0c4a6e;
+  --color-civic-950: #082f49;
+
+  /* Neutral Grays */
+  --color-slate-25: #fcfcfd;
+  
+  /* Score Colors */
+  --color-score-0: #e5e7eb;
+  --color-score-1: #fca5a5;
+  --color-score-2: #fcd34d;
+  --color-score-3: #86efac;
+  --color-score-4: #22c55e;
+
+  /* Fonts */
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* ============================================
+   BASE STYLES
+   ============================================ */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-slate-50 text-slate-800 antialiased;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+}
+
+/* ============================================
+   AGE-ADAPTIVE TYPOGRAPHY
+   ============================================ */
+
+html[data-age-group="18-35"] {
+  font-size: 16px;
+}
+
+html[data-age-group="36-49"] {
+  font-size: 16px;
+}
+
+html[data-age-group="50+"] {
+  font-size: 20px;
+  
+  & body {
+    @apply leading-relaxed;
+  }
+  
+  & .card {
+    @apply p-6;
+  }
+  
+  & .btn {
+    @apply py-3 px-6 text-lg;
+  }
+}
+
+/* ============================================
+   COMPONENTS
+   ============================================ */
+
+/* Cards */
+.card {
+  @apply bg-white rounded-xl border border-slate-200 shadow-sm;
+  @apply hover:shadow-md transition-shadow duration-200;
+}
+
+.card-header {
+  @apply px-5 py-4 border-b border-slate-100;
+}
+
+.card-body {
+  @apply p-5;
+}
+
+/* Buttons */
+.btn {
+  @apply inline-flex items-center justify-center gap-2;
+  @apply font-medium rounded-lg transition-all duration-200;
+  @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+}
+
+.btn-primary {
+  @apply bg-civic-600 text-white;
+  @apply hover:bg-civic-700;
+  @apply focus:ring-civic-500;
+}
+
+.btn-secondary {
+  @apply bg-white text-slate-700 border border-slate-300;
+  @apply hover:bg-slate-50;
+  @apply focus:ring-slate-400;
+}
+
+.btn-ghost {
+  @apply text-slate-600;
+  @apply hover:bg-slate-100;
+  @apply focus:ring-slate-400;
+}
+
+/* Score Bars */
+.score-bar {
+  @apply flex gap-0.5 h-3 rounded-full overflow-hidden bg-slate-100;
+}
+
+.score-bar-segment {
+  @apply flex-1 rounded-sm transition-colors duration-300;
+}
+
+.score-bar-segment.filled {
+  @apply bg-emerald-500;
+}
+
+.score-bar-segment.empty {
+  @apply bg-slate-200;
+}
+
+/* Dimension Badges */
+.dimension-badge {
+  @apply inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium;
+}
+
+.dimension-badge.active {
+  @apply bg-emerald-100 text-emerald-700;
+}
+
+.dimension-badge.inactive {
+  @apply bg-slate-100 text-slate-400;
+}
+
+/* Pillar Colors */
+.pillar-P1 { @apply border-l-emerald-500; }
+.pillar-P2 { @apply border-l-blue-500; }
+.pillar-P3 { @apply border-l-red-500; }
+.pillar-P4 { @apply border-l-pink-500; }
+.pillar-P5 { @apply border-l-amber-500; }
+.pillar-P6 { @apply border-l-green-500; }
+.pillar-P7 { @apply border-l-purple-500; }
+.pillar-P8 { @apply border-l-orange-500; }
+.pillar-P9 { @apply border-l-cyan-500; }
+
+/* ============================================
+   NAVIGATION
+   ============================================ */
+
+.nav-link {
+  @apply text-slate-600 hover:text-civic-600 font-medium;
+  @apply transition-colors duration-200;
+}
+
+.nav-link.active {
+  @apply text-civic-600;
+}
+
+/* ============================================
+   TABLES
+   ============================================ */
+
+.table-ranking {
+  @apply w-full;
+}
+
+.table-ranking th {
+  @apply text-left text-sm font-medium text-slate-500 pb-3 border-b border-slate-200;
+}
+
+.table-ranking td {
+  @apply py-3 border-b border-slate-100;
+}
+
+.table-ranking tr:hover td {
+  @apply bg-slate-50;
+}
+
+/* ============================================
+   MODALS
+   ============================================ */
+
+.modal-backdrop {
+  @apply fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40;
+}
+
+.modal-content {
+  @apply fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
+  @apply bg-white rounded-2xl shadow-2xl z-50 p-8;
+  @apply w-full max-w-lg;
+}
+
+/* ============================================
+   ANIMATIONS (disabled for 50+)
+   ============================================ */
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-age-group="50+"]) {
+    & .animate-fade-in {
+      animation: fadeIn 0.3s ease-out;
+    }
+    
+    & .animate-slide-up {
+      animation: slideUp 0.3s ease-out;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+
+.sr-only {
+  @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
+  clip: rect(0, 0, 0, 0);
+}
+
+:focus-visible {
+  @apply outline-2 outline-offset-2 outline-civic-500;
+}
+
+/* Skip link */
+.skip-link {
+  @apply absolute -top-10 left-4 z-50;
+  @apply bg-civic-600 text-white px-4 py-2 rounded-b-lg;
+  @apply focus:top-0;
+}

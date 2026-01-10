@@ -1,0 +1,37 @@
+---
+interface Props {
+  score: number;
+  max?: number;
+  showLabel?: boolean;
+  size?: 'sm' | 'md' | 'lg';
+  class?: string;
+}
+
+const { score, max = 4, showLabel = true, size = 'md', class: className = '' } = Astro.props;
+
+const segments = Array.from({ length: max }, (_, i) => i < score);
+
+const sizeClasses = {
+  sm: 'h-2 gap-0.5',
+  md: 'h-3 gap-1',
+  lg: 'h-4 gap-1',
+};
+---
+
+<div class={`flex items-center gap-2 ${className}`}>
+  <div class={`flex flex-1 rounded-full overflow-hidden bg-slate-100 ${sizeClasses[size]}`}>
+    {segments.map((filled) => (
+      <div
+        class:list={[
+          'flex-1 rounded-sm transition-colors duration-300',
+          filled ? 'bg-emerald-500' : 'bg-slate-200'
+        ]}
+      />
+    ))}
+  </div>
+  {showLabel && (
+    <span class="text-sm font-medium text-slate-600 min-w-[2.5rem]">
+      {score}/{max}
+    </span>
+  )}
+</div>

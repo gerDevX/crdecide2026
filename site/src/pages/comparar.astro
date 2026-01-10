@@ -1,0 +1,249 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ScoreBar from '../components/ui/ScoreBar.astro';
+import DimensionBadges from '../components/ui/DimensionBadges.astro';
+import { candidates, scoresByCandidate, pillars, pillarIndex } from '../lib/data';
+import { PILLAR_ICONS } from '../lib/types';
+import type { PillarId } from '../lib/types';
+
+// Sort candidates by score for selector
+const sortedCandidates = [...candidates].sort((a, b) => {
+  const scoreA = scoresByCandidate[a.candidate_id]?.overall.weighted_sum || 0;
+  const scoreB = scoresByCandidate[b.candidate_id]?.overall.weighted_sum || 0;
+  return scoreB - scoreA;
+});
+---
+
+<BaseLayout title="Comparar Candidatos">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-slate-900 mb-2">Comparar Candidatos</h1>
+      <p class="text-slate-600">
+        Selecciona de 2 a 4 candidatos para comparar sus propuestas lado a lado.
+      </p>
+    </div>
+
+    <!-- Selector -->
+    <div class="card p-5 mb-8">
+      <div class="flex flex-wrap items-center gap-3 mb-4">
+        <span class="font-medium text-slate-700">Selecciona candidatos:</span>
+        <button id="clear-selection" class="text-sm text-red-600 hover:underline hidden">
+          Limpiar selección
+        </button>
+      </div>
+      <div id="candidate-selector" class="flex flex-wrap gap-2">
+        {sortedCandidates.map((candidate) => (
+          <button
+            data-candidate-id={candidate.candidate_id}
+            data-party-name={candidate.party_name}
+            class="candidate-btn px-3 py-1.5 rounded-full text-sm border-2 border-slate-200 hover:border-civic-500 transition-colors"
+          >
+            {candidate.pdf_id}
+          </button>
+        ))}
+      </div>
+      <p id="selection-hint" class="mt-3 text-sm text-slate-500">
+        Haz clic en los candidatos que deseas comparar (mínimo 2, máximo 4)
+      </p>
+    </div>
+
+    <!-- Comparison Table (populated by JS) -->
+    <div id="comparison-container" class="hidden">
+      <!-- Sticky Header -->
+      <div id="comparison-header" class="sticky top-16 z-20 bg-white border-b border-slate-200 -mx-4 px-4 py-3">
+        <div class="flex items-center">
+          <div class="w-48 flex-shrink-0 font-medium text-slate-500">Pilar</div>
+          <div id="header-candidates" class="flex-1 flex">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Comparison Body -->
+      <div id="comparison-body" class="divide-y divide-slate-100">
+        {pillars.map((pillar) => {
+          const icon = PILLAR_ICONS[pillar.pillar_id as PillarId];
+          return (
+            <div class="pillar-row py-4" data-pillar-id={pillar.pillar_id}>
+              <div class="flex items-start">
+                <div class="w-48 flex-shrink-0">
+                  <div class="flex items-center gap-2">
+                    <span>{icon}</span>
+                    <span class="font-medium text-slate-900">{pillar.pillar_id}</span>
+                  </div>
+                  <div class="text-sm text-slate-500 mt-1">{pillar.pillar_name}</div>
+                </div>
+                <div class="flex-1 flex gap-4 candidate-scores">
+                  <!-- Filled by JS -->
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <!-- Overall Comparison -->
+      <div id="overall-comparison" class="mt-6 card p-5 bg-civic-50">
+        <h3 class="font-bold text-slate-900 mb-4">Resumen General</h3>
+        <div id="overall-scores" class="grid gap-4">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty state -->
+    <div id="empty-state" class="card p-12 text-center">
+      <div class="text-4xl mb-4">🔍</div>
+      <h3 class="text-xl font-semibold text-slate-900 mb-2">Selecciona candidatos</h3>
+      <p class="text-slate-600">
+        Elige al menos 2 candidatos de la lista superior para comenzar la comparación.
+      </p>
+    </div>
+
+  </div>
+</BaseLayout>
+
+<script define:vars={{ candidates: sortedCandidates, scoresByCandidate, pillars }}>
+  const selectedCandidates = new Set();
+  const maxSelection = 4;
+  const minSelection = 2;
+
+  const candidateBtns = document.querySelectorAll('.candidate-btn');
+  const clearBtn = document.getElementById('clear-selection');
+  const selectionHint = document.getElementById('selection-hint');
+  const comparisonContainer = document.getElementById('comparison-container');
+  const emptyState = document.getElementById('empty-state');
+  const headerCandidates = document.getElementById('header-candidates');
+  const overallScores = document.getElementById('overall-scores');
+
+  // Check URL params
+  const urlParams = new URLSearchParams(window.location.search);
+  const preselected = urlParams.get('c');
+  if (preselected) {
+    selectedCandidates.add(preselected);
+    document.querySelector(`[data-candidate-id="${preselected}"]`)?.classList.add('selected', 'bg-civic-100', 'border-civic-500');
+  }
+
+  candidateBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.candidateId;
+      
+      if (selectedCandidates.has(id)) {
+        selectedCandidates.delete(id);
+        btn.classList.remove('selected', 'bg-civic-100', 'border-civic-500');
+      } else if (selectedCandidates.size < maxSelection) {
+        selectedCandidates.add(id);
+        btn.classList.add('selected', 'bg-civic-100', 'border-civic-500');
+      }
+      
+      updateUI();
+    });
+  });
+
+  clearBtn?.addEventListener('click', () => {
+    selectedCandidates.clear();
+    candidateBtns.forEach(btn => {
+      btn.classList.remove('selected', 'bg-civic-100', 'border-civic-500');
+    });
+    updateUI();
+  });
+
+  function updateUI() {
+    const count = selectedCandidates.size;
+    
+    // Update hint
+    if (selectionHint) {
+      if (count === 0) {
+        selectionHint.textContent = 'Haz clic en los candidatos que deseas comparar (mínimo 2, máximo 4)';
+      } else if (count < minSelection) {
+        selectionHint.textContent = `${count} seleccionado. Selecciona al menos ${minSelection - count} más.`;
+      } else {
+        selectionHint.textContent = `${count} candidatos seleccionados.`;
+      }
+    }
+    
+    // Show/hide clear button
+    clearBtn?.classList.toggle('hidden', count === 0);
+    
+    // Show comparison or empty state
+    if (count >= minSelection) {
+      comparisonContainer?.classList.remove('hidden');
+      emptyState?.classList.add('hidden');
+      renderComparison();
+    } else {
+      comparisonContainer?.classList.add('hidden');
+      emptyState?.classList.remove('hidden');
+    }
+  }
+
+  function renderComparison() {
+    const selected = Array.from(selectedCandidates);
+    const candidateData = selected.map(id => {
+      const candidate = candidates.find(c => c.candidate_id === id);
+      const score = scoresByCandidate[id];
+      return { candidate, score };
+    });
+
+    // Render header
+    if (headerCandidates) {
+      headerCandidates.innerHTML = candidateData.map(({ candidate, score }) => `
+        <div class="flex-1 text-center px-2">
+          <div class="font-bold text-slate-900">${candidate.pdf_id}</div>
+          <div class="text-lg font-bold text-civic-600">${Math.round(score.overall.weighted_sum * 100)}%</div>
+        </div>
+      `).join('');
+    }
+
+    // Render pillar scores
+    document.querySelectorAll('.pillar-row').forEach(row => {
+      const pillarId = row.dataset.pillarId;
+      const scoresContainer = row.querySelector('.candidate-scores');
+      
+      if (scoresContainer) {
+        scoresContainer.innerHTML = candidateData.map(({ score }) => {
+          const pillarScore = score.pillar_scores.find(ps => ps.pillar_id === pillarId);
+          if (!pillarScore) return '<div class="flex-1">-</div>';
+          
+          const dims = pillarScore.dimension_counts;
+          return `
+            <div class="flex-1 px-2">
+              <div class="flex items-center gap-2 mb-1">
+                <div class="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div class="h-full bg-emerald-500 rounded-full" style="width: ${(pillarScore.effective_score / 4) * 100}%"></div>
+                </div>
+                <span class="font-bold text-sm">${pillarScore.effective_score}/4</span>
+              </div>
+              <div class="flex gap-1 text-xs">
+                <span class="${dims.existence ? 'text-emerald-600' : 'text-slate-300'}">E${dims.existence ? '✓' : '○'}</span>
+                <span class="${dims.when ? 'text-emerald-600' : 'text-slate-300'}">C${dims.when ? '✓' : '○'}</span>
+                <span class="${dims.how ? 'text-emerald-600' : 'text-slate-300'}">H${dims.how ? '✓' : '○'}</span>
+                <span class="${dims.funding ? 'text-emerald-600' : 'text-slate-300'}">F${dims.funding ? '✓' : '○'}</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    });
+
+    // Render overall scores
+    if (overallScores) {
+      overallScores.innerHTML = candidateData.map(({ candidate, score }) => `
+        <div class="flex items-center justify-between p-3 bg-white rounded-lg">
+          <div>
+            <div class="font-bold text-slate-900">${candidate.party_name}</div>
+            <div class="text-sm text-slate-500">${candidate.pdf_id}</div>
+          </div>
+          <div class="text-right">
+            <div class="text-2xl font-bold text-civic-600">${Math.round(score.overall.weighted_sum * 100)}%</div>
+            <div class="text-sm text-slate-500">General</div>
+          </div>
+        </div>
+      `).join('');
+    }
+  }
+
+  // Initial render
+  updateUI();
+</script>

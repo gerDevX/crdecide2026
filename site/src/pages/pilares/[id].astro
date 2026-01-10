@@ -1,0 +1,184 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ScoreBar from '../../components/ui/ScoreBar.astro';
+import DimensionBadges from '../../components/ui/DimensionBadges.astro';
+import EvidenceLink from '../../components/ui/EvidenceLink.astro';
+import { 
+  pillars, 
+  getPillarCardData, 
+  getProposalsByPillar, 
+  candidateIndex,
+  scoresByCandidate
+} from '../../lib/data';
+import { PILLAR_ICONS, CRITICAL_PILLARS } from '../../lib/types';
+import type { PillarId } from '../../lib/types';
+
+export function getStaticPaths() {
+  return pillars.map(pillar => ({
+    params: { id: pillar.pillar_id.toLowerCase() },
+    props: { pillarId: pillar.pillar_id }
+  }));
+}
+
+const { pillarId } = Astro.props;
+const pillarData = getPillarCardData(pillarId as PillarId);
+const proposals = getProposalsByPillar(pillarId as PillarId);
+const icon = PILLAR_ICONS[pillarId as PillarId];
+const isCritical = CRITICAL_PILLARS.includes(pillarId as PillarId);
+const weightPercent = Math.round(pillarData.pillar.weight * 100);
+
+// Group proposals by candidate for display
+const proposalsByCandidate = proposals.reduce((acc, p) => {
+  if (!acc[p.candidate_id]) acc[p.candidate_id] = [];
+  acc[p.candidate_id].push(p);
+  return acc;
+}, {} as Record<string, typeof proposals>);
+---
+
+<BaseLayout title={pillarData.pillar.pillar_name}>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <!-- Breadcrumb -->
+    <nav class="mb-6 text-sm">
+      <a href="/pilares" class="text-civic-600 hover:underline">← Pilares</a>
+    </nav>
+
+    <!-- Header -->
+    <header class={`card p-6 mb-8 border-l-4 pillar-${pillarId}`}>
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-3 mb-2">
+            <span class="text-4xl">{icon}</span>
+            <span class="text-sm font-medium text-slate-400 uppercase">{pillarId}</span>
+            {isCritical && (
+              <span class="text-xs bg-amber-100 text-amber-700 px-2 py-1 rounded-full">
+                Pilar crítico
+              </span>
+            )}
+          </div>
+          <h1 class="text-3xl font-bold text-slate-900">{pillarData.pillar.pillar_name}</h1>
+        </div>
+        <div class="text-right">
+          <div class="text-3xl font-bold text-civic-600">{weightPercent}%</div>
+          <div class="text-sm text-slate-500">Peso en ranking</div>
+        </div>
+      </div>
+      
+      <div class="mt-4 flex items-center gap-4 text-sm text-slate-600">
+        <span>Promedio: <strong>{pillarData.avgScore.toFixed(1)}/4</strong></span>
+        <span>•</span>
+        <span>{pillarData.topCandidates.length} candidatos evaluados</span>
+      </div>
+    </header>
+
+    <!-- Ranking in this pillar -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold text-slate-900 mb-4">Ranking en este pilar</h2>
+      <div class="card overflow-hidden">
+        <table class="table-ranking">
+          <thead>
+            <tr class="bg-slate-50">
+              <th class="px-4 py-3 w-16">#</th>
+              <th class="px-4 py-3">Partido</th>
+              <th class="px-4 py-3 hidden md:table-cell">Dimensiones</th>
+              <th class="px-4 py-3 w-40 hidden sm:table-cell">Puntaje</th>
+              <th class="px-4 py-3 w-20 text-right">Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            {pillarData.topCandidates.map((item, index) => (
+              <tr class="group">
+                <td class="px-4 py-3">
+                  <span class={`
+                    w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm
+                    ${index === 0 ? 'bg-amber-100 text-amber-700' : 
+                      index === 1 ? 'bg-slate-200 text-slate-600' :
+                      index === 2 ? 'bg-orange-100 text-orange-700' :
+                      'bg-slate-100 text-slate-500'}
+                  `}>
+                    {index + 1}
+                  </span>
+                </td>
+                <td class="px-4 py-3">
+                  <a
+                    href={`/candidatos/${item.candidate.candidate_id}`}
+                    class="group-hover:text-civic-600 transition-colors"
+                  >
+                    <div class="font-medium text-slate-900">{item.candidate.party_name}</div>
+                    <div class="text-sm text-slate-500">{item.candidate.pdf_id}</div>
+                  </a>
+                </td>
+                <td class="px-4 py-3 hidden md:table-cell">
+                  <DimensionBadges dimensions={item.score.dimension_counts} compact={true} />
+                </td>
+                <td class="px-4 py-3 hidden sm:table-cell">
+                  <ScoreBar score={item.score.effective_score} max={4} showLabel={false} size="sm" />
+                </td>
+                <td class="px-4 py-3 text-right">
+                  <span class="font-bold text-civic-600">{item.score.effective_score}/4</span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Top proposals -->
+    <section>
+      <h2 class="text-2xl font-bold text-slate-900 mb-4">Propuestas destacadas</h2>
+      <p class="text-slate-600 mb-6">
+        Mostrando las mejores propuestas por candidato en este pilar.
+      </p>
+      
+      <div class="space-y-4">
+        {pillarData.topCandidates.slice(0, 10).map((item) => {
+          const candidateProposals = proposalsByCandidate[item.candidate.candidate_id] || [];
+          const bestProposal = candidateProposals
+            .sort((a, b) => {
+              const scoreA = a.dimensions.existence + a.dimensions.when + a.dimensions.how + a.dimensions.funding;
+              const scoreB = b.dimensions.existence + b.dimensions.when + b.dimensions.how + b.dimensions.funding;
+              return scoreB - scoreA;
+            })[0];
+          
+          if (!bestProposal) return null;
+          
+          return (
+            <div class={`card p-5 border-l-4 pillar-${pillarId}`}>
+              <div class="flex flex-wrap items-start justify-between gap-4 mb-3">
+                <div>
+                  <a 
+                    href={`/candidatos/${item.candidate.candidate_id}`}
+                    class="text-sm text-civic-600 hover:underline"
+                  >
+                    {item.candidate.party_name}
+                  </a>
+                  <h3 class="font-semibold text-slate-900 mt-1">
+                    {bestProposal.proposal_title}
+                  </h3>
+                </div>
+                <span class="font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded">
+                  {item.score.effective_score}/4
+                </span>
+              </div>
+              
+              <p class="text-slate-600 text-sm mb-3 line-clamp-2">
+                {bestProposal.proposal_text}
+              </p>
+              
+              <div class="flex flex-wrap items-center justify-between gap-4">
+                <DimensionBadges dimensions={bestProposal.dimensions} compact={true} />
+                <EvidenceLink 
+                  pdfId={bestProposal.evidence.pdf_id}
+                  page={bestProposal.evidence.page}
+                  compact={true}
+                />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+
+  </div>
+</BaseLayout>

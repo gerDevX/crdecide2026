@@ -1,0 +1,58 @@
+---
+import type { Pillar, PillarId } from '../../lib/types';
+import { PILLAR_ICONS } from '../../lib/types';
+import ScoreBar from '../ui/ScoreBar.astro';
+
+interface Props {
+  pillar: Pillar;
+  avgScore: number;
+  topCandidate?: {
+    name: string;
+    score: number;
+  };
+  class?: string;
+}
+
+const { pillar, avgScore, topCandidate, class: className = '' } = Astro.props;
+
+const icon = PILLAR_ICONS[pillar.pillar_id as PillarId];
+const weightPercent = Math.round(pillar.weight * 100);
+---
+
+<a
+  href={`/pilares/${pillar.pillar_id.toLowerCase()}`}
+  class={`card block group border-l-4 pillar-${pillar.pillar_id} ${className}`}
+>
+  <div class="p-5">
+    <div class="flex items-start justify-between mb-3">
+      <div class="flex items-center gap-2">
+        <span class="text-2xl" aria-hidden="true">{icon}</span>
+        <span class="text-xs font-medium text-slate-400 uppercase">{pillar.pillar_id}</span>
+      </div>
+      <span class="text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+        Peso: {weightPercent}%
+      </span>
+    </div>
+    
+    <h3 class="font-semibold text-slate-900 group-hover:text-civic-600 transition-colors mb-3 line-clamp-2">
+      {pillar.pillar_name}
+    </h3>
+    
+    <div class="space-y-2">
+      <div class="flex items-center justify-between text-sm">
+        <span class="text-slate-500">Puntaje promedio</span>
+        <span class="font-medium text-slate-700">{avgScore.toFixed(1)}/4</span>
+      </div>
+      <ScoreBar score={Math.round(avgScore)} max={4} showLabel={false} size="sm" />
+    </div>
+    
+    {topCandidate && (
+      <div class="mt-3 pt-3 border-t border-slate-100">
+        <div class="flex items-center justify-between text-sm">
+          <span class="text-slate-500">Mejor:</span>
+          <span class="font-medium text-emerald-600">{topCandidate.name}</span>
+        </div>
+      </div>
+    )}
+  </div>
+</a>

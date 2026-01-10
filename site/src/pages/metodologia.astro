@@ -1,0 +1,185 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Metodología">
+  <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 prose prose-slate prose-lg">
+    
+    <h1>¿Cómo funciona Costa Rica Decide?</h1>
+
+    <h2>¿Qué es esto?</h2>
+    <p>
+      Costa Rica Decide es una herramienta ciudadana que te ayuda a entender qué proponen 
+      los candidatos presidenciales para el período 2026-2030.
+    </p>
+    <p>
+      <strong>No te decimos por quién votar.</strong> Solo organizamos la información de los 
+      planes de gobierno oficiales para que puedas compararlos fácilmente.
+    </p>
+
+    <hr />
+
+    <h2>¿De dónde salen los datos?</h2>
+    <p>
+      Todos los datos provienen de los <strong>planes de gobierno oficiales</strong> presentados 
+      por cada partido político al Tribunal Supremo de Elecciones (TSE).
+    </p>
+    <p>
+      Estos documentos son públicos y los puedes descargar directamente desde este sitio.
+    </p>
+
+    <hr />
+
+    <h2>¿Qué son los pilares?</h2>
+    <p>
+      Organizamos las propuestas en <strong>9 áreas temáticas</strong> que consideramos 
+      fundamentales para el país:
+    </p>
+
+    <div class="not-prose overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead>
+          <tr class="border-b">
+            <th class="text-left py-2 px-3">Pilar</th>
+            <th class="text-left py-2 px-3">¿De qué trata?</th>
+            <th class="text-right py-2 px-3">Peso</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b"><td class="py-2 px-3 font-medium">P1. Sostenibilidad fiscal</td><td class="py-2 px-3">Impuestos, deuda, gasto público</td><td class="py-2 px-3 text-right">15%</td></tr>
+          <tr class="border-b"><td class="py-2 px-3 font-medium">P2. Empleo y competitividad</td><td class="py-2 px-3">Trabajo, empresas, inversión</td><td class="py-2 px-3 text-right">15%</td></tr>
+          <tr class="border-b"><td class="py-2 px-3 font-medium">P3. Seguridad ciudadana</td><td class="py-2 px-3">Policía, crimen, justicia</td><td class="py-2 px-3 text-right">15%</td></tr>
+          <tr class="border-b"><td class="py-2 px-3 font-medium">P4. Salud pública (CCSS)</td><td class="py-2 px-3">Hospitales, medicina, pensiones</td><td class="py-2 px-3 text-right">15%</td></tr>
+          <tr class="border-b"><td class="py-2 px-3 font-medium">P5. Educación</td><td class="py-2 px-3">Escuelas, universidades, capacitación</td><td class="py-2 px-3 text-right">15%</td></tr>
+          <tr class="border-b"><td class="py-2 px-3 font-medium">P6. Ambiente</td><td class="py-2 px-3">Cambio climático, conservación</td><td class="py-2 px-3 text-right">5%</td></tr>
+          <tr class="border-b"><td class="py-2 px-3 font-medium">P7. Reforma del Estado</td><td class="py-2 px-3">Corrupción, eficiencia, transparencia</td><td class="py-2 px-3 text-right">10%</td></tr>
+          <tr class="border-b"><td class="py-2 px-3 font-medium">P8. Política social</td><td class="py-2 px-3">Pobreza, vulnerabilidad, subsidios</td><td class="py-2 px-3 text-right">8%</td></tr>
+          <tr><td class="py-2 px-3 font-medium">P9. Política exterior</td><td class="py-2 px-3">Comercio internacional, diplomacia</td><td class="py-2 px-3 text-right">2%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      Los <strong>pilares críticos</strong> (P1-P5 y P7) suman el 85% del peso total porque son 
+      los temas que más impactan el día a día de los costarricenses.
+    </p>
+
+    <hr />
+
+    <h2>¿Cómo evaluamos cada propuesta?</h2>
+    <p>
+      Para cada propuesta que encontramos, respondemos <strong>4 preguntas simples</strong>:
+    </p>
+
+    <h3>1. ¿Existe la propuesta? (Existencia)</h3>
+    <p>¿El plan menciona una acción concreta, no solo un deseo vago?</p>
+    <ul>
+      <li>✓ "Crearemos un programa de becas para estudiantes de zonas rurales"</li>
+      <li>✗ "Mejoraremos la educación"</li>
+    </ul>
+
+    <h3>2. ¿Dice cuándo? (Plazo)</h3>
+    <p>¿Hay un plazo específico, no solo "en el futuro"?</p>
+    <ul>
+      <li>✓ "En los primeros 100 días" o "Durante el cuatrienio 2026-2030"</li>
+      <li>✗ "Gradualmente" o "Cuando sea posible"</li>
+    </ul>
+
+    <h3>3. ¿Dice cómo? (Mecanismo)</h3>
+    <p>¿Explica el método, la ley, el programa o los pasos?</p>
+    <ul>
+      <li>✓ "Mediante una reforma a la Ley de Contratación Pública"</li>
+      <li>✗ "Implementaremos mejoras"</li>
+    </ul>
+
+    <h3>4. ¿Dice con qué fondos? (Financiamiento)</h3>
+    <p>¿Indica de dónde saldrá el dinero?</p>
+    <ul>
+      <li>✓ "Financiado con una reasignación del presupuesto del MOPT"</li>
+      <li>✗ "Invertiremos millones" (sin decir de dónde)</li>
+    </ul>
+
+    <hr />
+
+    <h2>¿Qué es la compatibilidad normativa?</h2>
+    <p>
+      Además de las 4 preguntas anteriores, verificamos si la propuesta 
+      <strong>presenta conflictos claros</strong> con:
+    </p>
+    <ul>
+      <li>La <strong>Constitución Política</strong> de Costa Rica</li>
+      <li>La <strong>regla fiscal</strong> vigente</li>
+      <li>El <strong>destino legal</strong> de ciertos fondos (como los de la CCSS)</li>
+    </ul>
+    <p>
+      <strong>Importante:</strong> Solo marcamos conflicto cuando es <strong>explícito y documentable</strong>. 
+      Si el candidato propone reformar la ley para hacer algo, no hay conflicto.
+    </p>
+
+    <hr />
+
+    <h2>¿Cómo se calcula el puntaje?</h2>
+    <p>Cada propuesta puede obtener hasta <strong>4 puntos</strong> (uno por cada dimensión cumplida).</p>
+    <p>Para cada pilar, tomamos la <strong>mejor propuesta</strong> del candidato en ese tema.</p>
+    <p>El puntaje final se calcula así:</p>
+    <ol>
+      <li>Se normaliza el puntaje de cada pilar (0 a 1)</li>
+      <li>Se multiplica por el peso del pilar</li>
+      <li>Se suman todos los pilares</li>
+    </ol>
+    <p><strong>Máximo posible:</strong> 1.0 (todas las propuestas perfectas en todos los pilares)</p>
+
+    <hr />
+
+    <h2>¿Qué NO hace este análisis?</h2>
+    <ul>
+      <li>❌ <strong>No evalúa viabilidad política</strong> (si es posible aprobar algo en la Asamblea)</li>
+      <li>❌ <strong>No juzga calidad ideológica</strong> (si algo es "de izquierda" o "de derecha")</li>
+      <li>❌ <strong>No predice resultados</strong> (si funcionará o no)</li>
+      <li>❌ <strong>No recomienda candidatos</strong> (esa decisión es tuya)</li>
+    </ul>
+
+    <hr />
+
+    <h2>Transparencia</h2>
+    <ul>
+      <li>Todos los PDFs originales están disponibles en el sitio</li>
+      <li>Cada propuesta tiene enlace a la página exacta del documento</li>
+      <li>El código de análisis está disponible públicamente</li>
+      <li>No recibimos financiamiento de partidos políticos</li>
+    </ul>
+
+    <p class="text-sm text-slate-500 mt-12">
+      <em>Última actualización: Enero 2026 · Versión del análisis: v2</em>
+    </p>
+
+  </article>
+</BaseLayout>
+
+<style>
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+  }
+  .prose h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .prose p {
+    color: #475569;
+    line-height: 1.75;
+  }
+  .prose ul, .prose ol {
+    color: #475569;
+  }
+  .prose hr {
+    margin: 2rem 0;
+    border-color: #e2e8f0;
+  }
+</style>

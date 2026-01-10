@@ -1,0 +1,45 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import RankingTable from '../components/ranking/RankingTable.astro';
+---
+
+<BaseLayout title="Rankings">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-slate-900 mb-2">Rankings</h1>
+      <p class="text-slate-600 max-w-3xl">
+        Clasificación de candidatos según el análisis estructural de sus planes de gobierno.
+        Estos rankings no son recomendaciones de voto.
+      </p>
+    </div>
+
+    <!-- Overall Ranking -->
+    <RankingTable type="overall" class="mb-12" />
+
+    <!-- Critical Ranking -->
+    <RankingTable type="critical" class="mb-12" />
+
+    <!-- Methodology note -->
+    <div class="card p-6 bg-slate-50 border-slate-200">
+      <h2 class="text-lg font-bold text-slate-900 mb-3">¿Cómo se calcula?</h2>
+      <div class="text-sm text-slate-600 space-y-2">
+        <p>
+          <strong>Ranking General:</strong> Suma ponderada de los 9 pilares. Cada pilar tiene un peso 
+          asignado (15% para los principales, menos para los complementarios).
+        </p>
+        <p>
+          <strong>Ranking Crítico:</strong> Solo considera los pilares P1-P5 y P7, que representan 
+          las áreas de mayor impacto: economía, empleo, seguridad, salud, educación y reforma del Estado.
+        </p>
+        <p class="mt-4">
+          <a href="/metodologia" class="text-civic-600 hover:underline">
+            Ver metodología completa →
+          </a>
+        </p>
+      </div>
+    </div>
+
+  </div>
+</BaseLayout>

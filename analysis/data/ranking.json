@@ -1,0 +1,218 @@
+{
+  "method_version": "v2",
+  "weights": {
+    "P1": 0.15,
+    "P2": 0.15,
+    "P3": 0.15,
+    "P4": 0.15,
+    "P5": 0.15,
+    "P6": 0.05,
+    "P7": 0.1,
+    "P8": 0.08,
+    "P9": 0.02
+  },
+  "ranking_overall_weighted": [
+    {
+      "rank": 1,
+      "candidate_id": "fa",
+      "weighted_sum": 0.9825
+    },
+    {
+      "rank": 2,
+      "candidate_id": "psd",
+      "weighted_sum": 0.91
+    },
+    {
+      "rank": 3,
+      "candidate_id": "pnr",
+      "weighted_sum": 0.8625
+    },
+    {
+      "rank": 4,
+      "candidate_id": "ppso",
+      "weighted_sum": 0.83
+    },
+    {
+      "rank": 5,
+      "candidate_id": "png",
+      "weighted_sum": 0.82
+    },
+    {
+      "rank": 6,
+      "candidate_id": "pel",
+      "weighted_sum": 0.8125
+    },
+    {
+      "rank": 7,
+      "candidate_id": "plp",
+      "weighted_sum": 0.7675
+    },
+    {
+      "rank": 8,
+      "candidate_id": "acrm",
+      "weighted_sum": 0.7525
+    },
+    {
+      "rank": 9,
+      "candidate_id": "cds",
+      "weighted_sum": 0.75
+    },
+    {
+      "rank": 10,
+      "candidate_id": "pusc",
+      "weighted_sum": 0.745
+    },
+    {
+      "rank": 11,
+      "candidate_id": "cac",
+      "weighted_sum": 0.72
+    },
+    {
+      "rank": 12,
+      "candidate_id": "pin",
+      "weighted_sum": 0.7125
+    },
+    {
+      "rank": 13,
+      "candidate_id": "pa",
+      "weighted_sum": 0.7
+    },
+    {
+      "rank": 14,
+      "candidate_id": "pjsc",
+      "weighted_sum": 0.695
+    },
+    {
+      "rank": 15,
+      "candidate_id": "pln",
+      "weighted_sum": 0.6825
+    },
+    {
+      "rank": 16,
+      "candidate_id": "pdlct",
+      "weighted_sum": 0.68
+    },
+    {
+      "rank": 17,
+      "candidate_id": "up",
+      "weighted_sum": 0.6425
+    },
+    {
+      "rank": 18,
+      "candidate_id": "pucd",
+      "weighted_sum": 0.6225
+    },
+    {
+      "rank": 19,
+      "candidate_id": "pen",
+      "weighted_sum": 0.615
+    },
+    {
+      "rank": 20,
+      "candidate_id": "cr1",
+      "weighted_sum": 0.53
+    }
+  ],
+  "ranking_critical_weighted": [
+    {
+      "rank": 1,
+      "candidate_id": "fa",
+      "coverage_critical_weighted_sum": 0.85
+    },
+    {
+      "rank": 2,
+      "candidate_id": "psd",
+      "coverage_critical_weighted_sum": 0.775
+    },
+    {
+      "rank": 3,
+      "candidate_id": "pnr",
+      "coverage_critical_weighted_sum": 0.75
+    },
+    {
+      "rank": 4,
+      "candidate_id": "pel",
+      "coverage_critical_weighted_sum": 0.7125
+    },
+    {
+      "rank": 5,
+      "candidate_id": "ppso",
+      "coverage_critical_weighted_sum": 0.7125
+    },
+    {
+      "rank": 6,
+      "candidate_id": "acrm",
+      "coverage_critical_weighted_sum": 0.675
+    },
+    {
+      "rank": 7,
+      "candidate_id": "plp",
+      "coverage_critical_weighted_sum": 0.675
+    },
+    {
+      "rank": 8,
+      "candidate_id": "png",
+      "coverage_critical_weighted_sum": 0.675
+    },
+    {
+      "rank": 9,
+      "candidate_id": "cds",
+      "coverage_critical_weighted_sum": 0.6375
+    },
+    {
+      "rank": 10,
+      "candidate_id": "pusc",
+      "coverage_critical_weighted_sum": 0.6375
+    },
+    {
+      "rank": 11,
+      "candidate_id": "pa",
+      "coverage_critical_weighted_sum": 0.625
+    },
+    {
+      "rank": 12,
+      "candidate_id": "cac",
+      "coverage_critical_weighted_sum": 0.6
+    },
+    {
+      "rank": 13,
+      "candidate_id": "pdlct",
+      "coverage_critical_weighted_sum": 0.6
+    },
+    {
+      "rank": 14,
+      "candidate_id": "pin",
+      "coverage_critical_weighted_sum": 0.6
+    },
+    {
+      "rank": 15,
+      "candidate_id": "pjsc",
+      "coverage_critical_weighted_sum": 0.6
+    },
+    {
+      "rank": 16,
+      "candidate_id": "pln",
+      "coverage_critical_weighted_sum": 0.575
+    },
+    {
+      "rank": 17,
+      "candidate_id": "up",
+      "coverage_critical_weighted_sum": 0.5625
+    },
+    {
+      "rank": 18,
+      "candidate_id": "pen",
+      "coverage_critical_weighted_sum": 0.5375
+    },
+    {
+      "rank": 19,
+      "candidate_id": "pucd",
+      "coverage_critical_weighted_sum": 0.5375
+    },
+    {
+      "rank": 20,
+      "candidate_id": "cr1",
+      "coverage_critical_weighted_sum": 0.5
+    }
+  ]
+}

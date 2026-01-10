@@ -1,0 +1,157 @@
+---
+const navItems = [
+  { href: '/pilares', label: 'Pilares' },
+  { href: '/candidatos', label: 'Candidatos' },
+  { href: '/comparar', label: 'Comparar' },
+  { href: '/ranking', label: 'Ranking' },
+  { href: '/metodologia', label: 'Metodología' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="bg-white border-b border-slate-200 sticky top-0 z-30">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <!-- Logo -->
+      <a href="/" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 bg-civic-600 rounded-lg flex items-center justify-center">
+          <span class="text-white text-xl">🗳️</span>
+        </div>
+        <div>
+          <span class="font-bold text-slate-900 group-hover:text-civic-600 transition-colors">
+            Costa Rica Decide
+          </span>
+          <span class="hidden sm:inline text-slate-400 text-sm ml-2">2026</span>
+        </div>
+      </a>
+
+      <!-- Navigation -->
+      <nav class="hidden md:flex items-center gap-6" aria-label="Navegación principal">
+        {navItems.map(item => (
+          <a
+            href={item.href}
+            class:list={[
+              'nav-link',
+              { 'active': currentPath.startsWith(item.href) }
+            ]}
+          >
+            {item.label}
+          </a>
+        ))}
+      </nav>
+
+      <!-- Age Selector + Mobile Menu -->
+      <div class="flex items-center gap-3">
+        <!-- Age Group Selector -->
+        <div class="relative">
+          <button
+            id="age-selector-btn"
+            class="btn btn-ghost text-sm"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <span id="current-age-label">Edad</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          <div
+            id="age-dropdown"
+            class="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-lg border border-slate-200 hidden"
+          >
+            <button data-age="18-35" class="age-option w-full text-left px-4 py-2 hover:bg-slate-50 rounded-t-lg">
+              18-35 años
+            </button>
+            <button data-age="36-49" class="age-option w-full text-left px-4 py-2 hover:bg-slate-50">
+              36-49 años
+            </button>
+            <button data-age="50+" class="age-option w-full text-left px-4 py-2 hover:bg-slate-50 rounded-b-lg">
+              50+ años
+            </button>
+          </div>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <button
+          id="mobile-menu-btn"
+          class="md:hidden btn btn-ghost p-2"
+          aria-label="Abrir menú"
+        >
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Navigation -->
+  <nav
+    id="mobile-nav"
+    class="md:hidden hidden border-t border-slate-200 bg-white"
+    aria-label="Navegación móvil"
+  >
+    <div class="px-4 py-3 space-y-1">
+      {navItems.map(item => (
+        <a
+          href={item.href}
+          class:list={[
+            'block py-2 px-3 rounded-lg',
+            currentPath.startsWith(item.href)
+              ? 'bg-civic-50 text-civic-600'
+              : 'text-slate-600 hover:bg-slate-50'
+          ]}
+        >
+          {item.label}
+        </a>
+      ))}
+    </div>
+  </nav>
+</header>
+
+<script>
+  // Age selector
+  const ageBtn = document.getElementById('age-selector-btn');
+  const ageDropdown = document.getElementById('age-dropdown');
+  const ageLabel = document.getElementById('current-age-label');
+  const ageOptions = document.querySelectorAll('.age-option');
+
+  // Update label from stored value
+  const stored = localStorage.getItem('costarica-decide-age-group');
+  if (stored && ageLabel) {
+    ageLabel.textContent = stored;
+  }
+
+  ageBtn?.addEventListener('click', () => {
+    ageDropdown?.classList.toggle('hidden');
+  });
+
+  ageOptions.forEach(opt => {
+    opt.addEventListener('click', (e) => {
+      const age = (e.target as HTMLElement).dataset.age;
+      if (age) {
+        localStorage.setItem('costarica-decide-age-group', age);
+        document.documentElement.setAttribute('data-age-group', age);
+        if (ageLabel) ageLabel.textContent = age;
+        ageDropdown?.classList.add('hidden');
+        window.location.reload();
+      }
+    });
+  });
+
+  // Close dropdown on outside click
+  document.addEventListener('click', (e) => {
+    if (!ageBtn?.contains(e.target as Node) && !ageDropdown?.contains(e.target as Node)) {
+      ageDropdown?.classList.add('hidden');
+    }
+  });
+
+  // Mobile menu
+  const mobileBtn = document.getElementById('mobile-menu-btn');
+  const mobileNav = document.getElementById('mobile-nav');
+
+  mobileBtn?.addEventListener('click', () => {
+    mobileNav?.classList.toggle('hidden');
+  });
+</script>

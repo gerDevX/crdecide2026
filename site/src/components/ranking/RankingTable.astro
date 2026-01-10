@@ -1,0 +1,82 @@
+---
+import { getRankingWithCandidates, getCriticalRankingWithCandidates } from '../../lib/data';
+import ScoreBar from '../ui/ScoreBar.astro';
+
+interface Props {
+  type?: 'overall' | 'critical';
+  class?: string;
+}
+
+const { type = 'overall', class: className = '' } = Astro.props;
+
+const ranking = type === 'overall' 
+  ? getRankingWithCandidates()
+  : getCriticalRankingWithCandidates();
+
+const title = type === 'overall' 
+  ? 'Ranking General Ponderado'
+  : 'Ranking Pilares Críticos';
+
+const description = type === 'overall'
+  ? 'Considerando los 9 pilares con sus pesos asignados'
+  : 'Solo pilares P1-P5 y P7 (85% del peso total)';
+---
+
+<div class={`${className}`}>
+  <div class="mb-4">
+    <h2 class="text-2xl font-bold text-slate-900">{title}</h2>
+    <p class="text-slate-600 text-sm mt-1">{description}</p>
+  </div>
+  
+  <div class="card overflow-hidden">
+    <table class="table-ranking">
+      <thead>
+        <tr class="bg-slate-50">
+          <th class="px-4 py-3 w-16">#</th>
+          <th class="px-4 py-3">Partido</th>
+          <th class="px-4 py-3 w-40 hidden md:table-cell">Barra</th>
+          <th class="px-4 py-3 w-24 text-right">Puntaje</th>
+        </tr>
+      </thead>
+      <tbody>
+        {ranking.map((entry, index) => {
+          const score = entry.weighted_sum || entry.coverage_critical_weighted_sum || 0;
+          const scorePercent = Math.round(score * 100);
+          
+          return (
+            <tr class="group">
+              <td class="px-4 py-3">
+                <span class={`
+                  w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm
+                  ${index === 0 ? 'bg-amber-100 text-amber-700' : 
+                    index === 1 ? 'bg-slate-200 text-slate-600' :
+                    index === 2 ? 'bg-orange-100 text-orange-700' :
+                    'bg-slate-100 text-slate-500'}
+                `}>
+                  {entry.rank}
+                </span>
+              </td>
+              <td class="px-4 py-3">
+                <a
+                  href={`/candidatos/${entry.candidate_id}`}
+                  class="group-hover:text-civic-600 transition-colors"
+                >
+                  <div class="font-medium text-slate-900">
+                    {entry.candidate?.party_name || entry.candidate_id.toUpperCase()}
+                  </div>
+                  <div class="text-sm text-slate-500">{entry.candidate_id.toUpperCase()}</div>
+                </a>
+              </td>
+              <td class="px-4 py-3 hidden md:table-cell">
+                <ScoreBar score={Math.round(score * 4)} max={4} showLabel={false} size="sm" />
+              </td>
+              <td class="px-4 py-3 text-right">
+                <span class="font-bold text-civic-600 text-lg">{scorePercent}%</span>
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  </div>
+</div>

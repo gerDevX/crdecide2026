@@ -1,0 +1,31 @@
+---
+import PillarCard from './PillarCard.astro';
+import { getAllPillarCardData, candidateIndex } from '../../lib/data';
+
+const pillarData = getAllPillarCardData();
+---
+
+<section class="py-8">
+  <div class="flex items-center justify-between mb-6">
+    <h2 class="text-2xl font-bold text-slate-900">Los 9 Pilares Nacionales</h2>
+    <a href="/pilares" class="text-civic-600 hover:text-civic-700 text-sm font-medium">
+      Ver todos →
+    </a>
+  </div>
+  
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    {pillarData.map((data) => {
+      const topCandidate = data.topCandidates[0];
+      return (
+        <PillarCard
+          pillar={data.pillar}
+          avgScore={data.avgScore}
+          topCandidate={topCandidate ? {
+            name: topCandidate.candidate.party_name.split(' ').slice(0, 2).join(' '),
+            score: topCandidate.score.effective_score,
+          } : undefined}
+        />
+      );
+    })}
+  </div>
+</section>

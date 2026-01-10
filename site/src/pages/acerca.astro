@@ -1,0 +1,147 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Acerca del Proyecto">
+  <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 prose prose-slate prose-lg">
+    
+    <h1>Acerca de Costa Rica Decide</h1>
+
+    <h2>Propósito</h2>
+    <p>
+      Costa Rica Decide nace de la necesidad de facilitar el acceso ciudadano a la información 
+      contenida en los planes de gobierno de los candidatos presidenciales.
+    </p>
+    <p>
+      Los planes de gobierno son documentos extensos (algunos superan las 200 páginas) que 
+      contienen propuestas, diagnósticos y visiones de país. Leerlos todos y compararlos 
+      requiere tiempo que la mayoría de los ciudadanos no tiene.
+    </p>
+    <p>
+      Esta herramienta extrae, organiza y presenta esa información de manera estructurada 
+      para que puedas tomar decisiones más informadas.
+    </p>
+
+    <hr />
+
+    <h2>Qué somos</h2>
+    <ul>
+      <li>Una herramienta de <strong>análisis estructural</strong> de documentos públicos</li>
+      <li>Un <strong>comparador visual</strong> de propuestas por tema</li>
+      <li>Un <strong>repositorio accesible</strong> de planes de gobierno</li>
+    </ul>
+
+    <h2>Qué NO somos</h2>
+    <ul>
+      <li>No somos un medio de comunicación</li>
+      <li>No hacemos periodismo de opinión</li>
+      <li>No recomendamos candidatos</li>
+      <li>No evaluamos ideologías</li>
+      <li>No predecimos ganadores</li>
+    </ul>
+
+    <hr />
+
+    <h2>Neutralidad</h2>
+    <p>
+      El análisis se basa exclusivamente en el <strong>texto literal</strong> de los planes de gobierno. 
+      No agregamos información que no esté en los documentos, no interpretamos intenciones 
+      y no hacemos juicios de valor.
+    </p>
+    <p>
+      Cuando evaluamos si una propuesta cumple con las dimensiones (existencia, plazo, mecanismo, 
+      financiamiento), lo hacemos con criterios objetivos y verificables. Cada evaluación 
+      incluye una referencia a la página exacta del documento original.
+    </p>
+
+    <hr />
+
+    <h2>Limitaciones</h2>
+    <p>Este análisis tiene limitaciones que debes conocer:</p>
+    <ul>
+      <li>
+        <strong>Solo analizamos lo escrito:</strong> Un plan de gobierno no es una predicción 
+        de lo que hará un gobierno. Muchas promesas no se cumplen, y algunas acciones no 
+        estaban en ningún plan.
+      </li>
+      <li>
+        <strong>La calidad no es solo estructura:</strong> Una propuesta bien estructurada 
+        no es necesariamente buena política. Y una propuesta vaga podría funcionar en la práctica.
+      </li>
+      <li>
+        <strong>El análisis es automatizado:</strong> Usamos algoritmos de procesamiento de 
+        texto que pueden cometer errores. Por eso incluimos enlaces a los documentos originales.
+      </li>
+      <li>
+        <strong>Los pesos son una decisión editorial:</strong> La ponderación de pilares 
+        (15% para economía, 2% para política exterior, etc.) refleja una priorización que 
+        puede no coincidir con la tuya.
+      </li>
+    </ul>
+
+    <hr />
+
+    <h2>Verifica por ti mismo</h2>
+    <p>
+      Cada propuesta en este sitio incluye:
+    </p>
+    <ul>
+      <li>El número de página donde aparece en el documento original</li>
+      <li>Un fragmento del texto (snippet) para contexto</li>
+      <li>Un enlace directo al PDF del plan de gobierno</li>
+    </ul>
+    <p>
+      Te invitamos a verificar cualquier dato que te parezca relevante para tu decisión.
+    </p>
+
+    <hr />
+
+    <h2>Código abierto</h2>
+    <p>
+      El código que genera este análisis está disponible públicamente. Puedes revisarlo, 
+      auditarlo y sugerir mejoras.
+    </p>
+
+    <hr />
+
+    <h2>Contacto</h2>
+    <p>
+      Si encuentras errores, tienes sugerencias o quieres reportar un problema, 
+      puedes contactarnos a través del repositorio del proyecto.
+    </p>
+
+    <div class="not-prose mt-12 p-6 bg-slate-100 rounded-lg">
+      <p class="text-slate-600 text-sm">
+        <strong>Nota importante:</strong> Este sitio no solicita ni acepta donaciones de 
+        partidos políticos, candidatos o sus representantes. Cualquier intento de influir 
+        en el contenido será rechazado y documentado públicamente.
+      </p>
+    </div>
+
+    <p class="text-sm text-slate-500 mt-12">
+      <em>Costa Rica Decide 2026 · Versión 2.0</em>
+    </p>
+
+  </article>
+</BaseLayout>
+
+<style>
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+  }
+  .prose p {
+    color: #475569;
+    line-height: 1.75;
+  }
+  .prose ul {
+    color: #475569;
+  }
+  .prose hr {
+    margin: 2rem 0;
+    border-color: #e2e8f0;
+  }
+</style>
