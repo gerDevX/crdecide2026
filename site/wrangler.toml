@@ -1,11 +1,6 @@
-# Cloudflare Pages configuration (optional - for local preview with wrangler)
-# https://developers.cloudflare.com/pages/platform/wrangler-configuration/
+# Cloudflare Pages configuration
+# https://developers.cloudflare.com/pages/functions/wrangler-configuration/
 
-name = "cr-decide-2026"
+name = "crdecide2026"
+pages_build_output_dir = "./dist"
 compatibility_date = "2024-01-01"
-
-# For Cloudflare Pages, most configuration is done in the dashboard
-# This file is mainly for local development with `wrangler pages dev`
-
-[site]
-bucket = "./dist"
