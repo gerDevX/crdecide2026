@@ -63,19 +63,25 @@ const topPillars = score.pillar_scores
 
     <!-- Pillar Grid -->
     <div class="grid grid-cols-3 gap-3 mb-8">
-      {topPillars.map(({ pillar_id, effective_score, pillar }) => (
-        <div class={`p-3 rounded-xl bg-slate-50 text-center pillar-${pillar_id}`}>
-          <div class="text-xs text-slate-500 mb-1">{pillar_id}</div>
-          <div class="text-lg font-bold text-slate-900">
-            {effective_score}/4
+      {topPillars.map(({ pillar_id, effective_score, pillar }) => {
+        const weightPercent = pillar?.weight ? Math.round(pillar.weight * 100) : 0;
+        return (
+          <div class={`p-3 rounded-xl bg-slate-50 text-center pillar-${pillar_id}`}>
+            <div class="text-xs text-slate-500 mb-1">
+              {pillar?.pillar_name || pillar_id}
+            </div>
+            <div class="text-[10px] text-slate-400">{weightPercent}%</div>
+            <div class="text-lg font-bold text-slate-900">
+              {effective_score}/4
+            </div>
+            <div class="flex justify-center gap-0.5 mt-1">
+              {[1,2,3,4].map(i => (
+                <span class={`w-2 h-2 rounded-full ${i <= effective_score ? 'bg-emerald-500' : 'bg-slate-200'}`}></span>
+              ))}
+            </div>
           </div>
-          <div class="flex justify-center gap-0.5 mt-1">
-            {[1,2,3,4].map(i => (
-              <span class={`w-2 h-2 rounded-full ${i <= effective_score ? 'bg-emerald-500' : 'bg-slate-200'}`}></span>
-            ))}
-          </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
 
     <!-- CTA Buttons -->
@@ -189,6 +195,7 @@ const topPillars = score.pillar_scores
   .pillar-P7 { border-left: 4px solid #8b5cf6; }
   .pillar-P8 { border-left: 4px solid #f97316; }
   .pillar-P9 { border-left: 4px solid #06b6d4; }
+  .pillar-P10 { border-left: 4px solid #6366f1; }
   
   @keyframes scaleIn {
     from {

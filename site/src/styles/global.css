@@ -399,6 +399,7 @@ html[data-mode="reading"] {
 .pillar-P7 { --pillar-color: #8b5cf6; }
 .pillar-P8 { --pillar-color: #f97316; }
 .pillar-P9 { --pillar-color: #06b6d4; }
+.pillar-P10 { --pillar-color: #6366f1; }
 
 .pillar-badge {
   @apply inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium;

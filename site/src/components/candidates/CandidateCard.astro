@@ -33,7 +33,7 @@ const weightedPercent = Math.round(weightedSum * 100);
     </div>
     
     <!-- Mini matrix -->
-    <div class="grid grid-cols-9 gap-1 mb-3">
+    <div class="grid grid-cols-10 gap-1 mb-3">
       {score.pillar_scores.map((ps) => {
         const icon = PILLAR_ICONS[ps.pillar_id as PillarId];
         const opacity = ps.effective_score / 4;
