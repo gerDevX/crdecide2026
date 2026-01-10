@@ -3,297 +3,687 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title="Acerca del Proyecto">
-  <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 prose prose-slate prose-lg">
-    
-    <h1 class="flex items-center gap-3">
-      <span>ℹ️</span> Acerca de Costa Rica Decide
-    </h1>
+  
+  <!-- ============================================
+       MODE: DASHBOARD 📊
+       ============================================ -->
+  <div class="mode-dashboard-content">
+    <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 prose prose-slate prose-lg">
+      
+      <h1 class="flex items-center gap-3">
+        <span>ℹ️</span> Acerca de Costa Rica Decide
+      </h1>
 
-    <h2>🎯 Propósito</h2>
-    
-    <div class="not-prose bg-gradient-to-r from-civic-50 to-blue-50 border border-civic-200 rounded-xl p-6 mt-4">
-      <p class="text-lg text-slate-700 mb-4">
-        <strong class="text-civic-800">Costa Rica Decide</strong> nace de la necesidad de facilitar el acceso ciudadano a la información 
-        contenida en los planes de gobierno de los candidatos presidenciales.
-      </p>
-      <div class="space-y-3">
-        <div class="flex items-start gap-3">
-          <span class="text-2xl">📚</span>
-          <p class="text-slate-600">
-            Los planes de gobierno son documentos extensos (algunos superan las <strong>200 páginas</strong>) que 
-            contienen propuestas, diagnósticos y visiones de país.
-          </p>
-        </div>
-        <div class="flex items-start gap-3">
-          <span class="text-2xl">⏰</span>
-          <p class="text-slate-600">
-            Leerlos todos y compararlos requiere <strong>tiempo que la mayoría de los ciudadanos no tiene</strong>.
-          </p>
-        </div>
-        <div class="flex items-start gap-3">
-          <span class="text-2xl">🎯</span>
-          <p class="text-slate-600">
-            Esta herramienta extrae, organiza y presenta esa información de manera estructurada 
-            para que puedas <strong>tomar decisiones más informadas</strong>.
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <hr />
-
-    <h2>✅ Qué somos</h2>
-    
-    <div class="not-prose grid gap-4 mt-4">
-      <div class="flex items-center gap-4 bg-emerald-50 border border-emerald-200 rounded-xl p-4">
-        <span class="text-3xl">🔍</span>
-        <div>
-          <p class="font-semibold text-emerald-800">Herramienta de análisis estructural</p>
-          <p class="text-sm text-emerald-600">Procesamos documentos públicos de forma sistemática</p>
-        </div>
-      </div>
-      <div class="flex items-center gap-4 bg-blue-50 border border-blue-200 rounded-xl p-4">
-        <span class="text-3xl">⚖️</span>
-        <div>
-          <p class="font-semibold text-blue-800">Comparador visual de propuestas</p>
-          <p class="text-sm text-blue-600">Organizamos por tema para facilitar la comparación</p>
-        </div>
-      </div>
-      <div class="flex items-center gap-4 bg-purple-50 border border-purple-200 rounded-xl p-4">
-        <span class="text-3xl">📁</span>
-        <div>
-          <p class="font-semibold text-purple-800">Repositorio accesible</p>
-          <p class="text-sm text-purple-600">Todos los planes de gobierno en un solo lugar</p>
-        </div>
-      </div>
-    </div>
-
-    <h2>❌ Qué NO somos</h2>
-    
-    <div class="not-prose grid gap-3 mt-4">
-      <div class="flex items-center gap-3 bg-slate-100 border border-slate-200 rounded-lg px-4 py-3">
-        <span class="text-xl">🚫</span>
-        <p class="text-slate-700">No somos un <strong>medio de comunicación</strong></p>
-      </div>
-      <div class="flex items-center gap-3 bg-slate-100 border border-slate-200 rounded-lg px-4 py-3">
-        <span class="text-xl">🚫</span>
-        <p class="text-slate-700">No hacemos <strong>periodismo de opinión</strong></p>
-      </div>
-      <div class="flex items-center gap-3 bg-slate-100 border border-slate-200 rounded-lg px-4 py-3">
-        <span class="text-xl">🚫</span>
-        <p class="text-slate-700">No <strong>recomendamos candidatos</strong></p>
-      </div>
-      <div class="flex items-center gap-3 bg-slate-100 border border-slate-200 rounded-lg px-4 py-3">
-        <span class="text-xl">🚫</span>
-        <p class="text-slate-700">No <strong>evaluamos ideologías</strong></p>
-      </div>
-      <div class="flex items-center gap-3 bg-slate-100 border border-slate-200 rounded-lg px-4 py-3">
-        <span class="text-xl">🚫</span>
-        <p class="text-slate-700">No <strong>predecimos ganadores</strong></p>
-      </div>
-    </div>
-
-    <hr />
-
-    <h2>⚖️ Neutralidad</h2>
-    
-    <div class="not-prose bg-amber-50 border border-amber-200 rounded-xl p-6 mt-4">
-      <div class="flex items-start gap-4">
-        <span class="text-4xl">📜</span>
+      <h2>🎯 Propósito</h2>
+      
+      <div class="not-prose bg-gradient-to-r from-civic-50 to-blue-50 border border-civic-200 rounded-xl p-6 mt-4">
+        <p class="text-lg text-slate-700 mb-4">
+          <strong class="text-civic-800">Costa Rica Decide</strong> nace de la necesidad de facilitar el acceso ciudadano a la información 
+          contenida en los planes de gobierno de los candidatos presidenciales.
+        </p>
         <div class="space-y-3">
-          <p class="text-lg text-amber-900">
-            El análisis se basa exclusivamente en el <strong>texto literal</strong> de los planes de gobierno.
+          <div class="flex items-start gap-3">
+            <span class="text-2xl">📚</span>
+            <p class="text-slate-600">
+              Los planes de gobierno son documentos extensos (algunos superan las <strong>200 páginas</strong>) que 
+              contienen propuestas, diagnósticos y visiones de país.
+            </p>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-2xl">⏰</span>
+            <p class="text-slate-600">
+              Leerlos todos y compararlos requiere <strong>tiempo que la mayoría de los ciudadanos no tiene</strong>.
+            </p>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-2xl">🎯</span>
+            <p class="text-slate-600">
+              Esta herramienta extrae, organiza y presenta esa información de manera estructurada 
+              para que puedas <strong>tomar decisiones más informadas</strong>.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <hr />
+
+      <h2>✅ Qué somos</h2>
+      
+      <div class="not-prose grid gap-4 mt-4">
+        <div class="flex items-center gap-4 bg-emerald-50 border border-emerald-200 rounded-xl p-4">
+          <span class="text-3xl">🔍</span>
+          <div>
+            <p class="font-semibold text-emerald-800">Herramienta de análisis estructural</p>
+            <p class="text-sm text-emerald-600">Procesamos documentos públicos de forma sistemática</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-4 bg-blue-50 border border-blue-200 rounded-xl p-4">
+          <span class="text-3xl">⚖️</span>
+          <div>
+            <p class="font-semibold text-blue-800">Comparador visual de propuestas</p>
+            <p class="text-sm text-blue-600">Organizamos por tema para facilitar la comparación</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-4 bg-purple-50 border border-purple-200 rounded-xl p-4">
+          <span class="text-3xl">📁</span>
+          <div>
+            <p class="font-semibold text-purple-800">Repositorio accesible</p>
+            <p class="text-sm text-purple-600">Todos los planes de gobierno en un solo lugar</p>
+          </div>
+        </div>
+      </div>
+
+      <h2>❌ Qué NO somos</h2>
+      
+      <div class="not-prose grid gap-3 mt-4">
+        <div class="flex items-center gap-3 bg-slate-100 border border-slate-200 rounded-lg px-4 py-3">
+          <span class="text-xl">🚫</span>
+          <p class="text-slate-700">No somos un <strong>medio de comunicación</strong></p>
+        </div>
+        <div class="flex items-center gap-3 bg-slate-100 border border-slate-200 rounded-lg px-4 py-3">
+          <span class="text-xl">🚫</span>
+          <p class="text-slate-700">No hacemos <strong>periodismo de opinión</strong></p>
+        </div>
+        <div class="flex items-center gap-3 bg-slate-100 border border-slate-200 rounded-lg px-4 py-3">
+          <span class="text-xl">🚫</span>
+          <p class="text-slate-700">No <strong>recomendamos candidatos</strong></p>
+        </div>
+        <div class="flex items-center gap-3 bg-slate-100 border border-slate-200 rounded-lg px-4 py-3">
+          <span class="text-xl">🚫</span>
+          <p class="text-slate-700">No <strong>evaluamos ideologías</strong></p>
+        </div>
+        <div class="flex items-center gap-3 bg-slate-100 border border-slate-200 rounded-lg px-4 py-3">
+          <span class="text-xl">🚫</span>
+          <p class="text-slate-700">No <strong>predecimos ganadores</strong></p>
+        </div>
+      </div>
+
+      <hr />
+
+      <h2>⚖️ Neutralidad</h2>
+      
+      <div class="not-prose bg-amber-50 border border-amber-200 rounded-xl p-6 mt-4">
+        <div class="flex items-start gap-4">
+          <span class="text-4xl">📜</span>
+          <div class="space-y-3">
+            <p class="text-lg text-amber-900">
+              El análisis se basa exclusivamente en el <strong>texto literal</strong> de los planes de gobierno.
+            </p>
+            <ul class="space-y-2 text-amber-800">
+              <li class="flex items-start gap-2">
+                <span class="text-amber-600">•</span>
+                No agregamos información que no esté en los documentos
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-amber-600">•</span>
+                No interpretamos intenciones
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-amber-600">•</span>
+                No hacemos juicios de valor
+              </li>
+            </ul>
+            <p class="text-amber-700 text-sm mt-3 border-t border-amber-200 pt-3">
+              Cuando evaluamos si una propuesta cumple con las dimensiones (existencia, plazo, mecanismo, 
+              financiamiento), lo hacemos con criterios objetivos y verificables. Cada evaluación 
+              incluye una referencia a la página exacta del documento original.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <hr />
+
+      <h2>⚠️ Limitaciones</h2>
+      <p>Este análisis tiene limitaciones que debes conocer:</p>
+      
+      <div class="not-prose grid gap-4 mt-4">
+        <div class="bg-orange-50 border-l-4 border-orange-400 rounded-r-xl p-4">
+          <div class="flex items-start gap-3">
+            <span class="text-2xl">📝</span>
+            <div>
+              <p class="font-semibold text-orange-800">Solo analizamos lo escrito</p>
+              <p class="text-sm text-orange-700">
+                Un plan de gobierno no es una predicción de lo que hará un gobierno. 
+                Muchas promesas no se cumplen, y algunas acciones no estaban en ningún plan.
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-orange-50 border-l-4 border-orange-400 rounded-r-xl p-4">
+          <div class="flex items-start gap-3">
+            <span class="text-2xl">📊</span>
+            <div>
+              <p class="font-semibold text-orange-800">La calidad no es solo estructura</p>
+              <p class="text-sm text-orange-700">
+                Una propuesta bien estructurada no es necesariamente buena política. 
+                Y una propuesta vaga podría funcionar en la práctica.
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-orange-50 border-l-4 border-orange-400 rounded-r-xl p-4">
+          <div class="flex items-start gap-3">
+            <span class="text-2xl">🤖</span>
+            <div>
+              <p class="font-semibold text-orange-800">El análisis es automatizado</p>
+              <p class="text-sm text-orange-700">
+                Usamos algoritmos de procesamiento de texto que pueden cometer errores. 
+                Por eso incluimos enlaces a los documentos originales.
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-orange-50 border-l-4 border-orange-400 rounded-r-xl p-4">
+          <div class="flex items-start gap-3">
+            <span class="text-2xl">⚖️</span>
+            <div>
+              <p class="font-semibold text-orange-800">Los pesos son una decisión editorial</p>
+              <p class="text-sm text-orange-700">
+                La ponderación de pilares (18% para seguridad, 2% para política exterior, etc.) 
+                refleja una priorización basada en las urgencias actuales de Costa Rica, que puede no coincidir con la tuya.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr />
+
+      <h2>🔎 Verifica por ti mismo</h2>
+      
+      <div class="not-prose bg-green-50 border border-green-200 rounded-xl p-6 mt-4">
+        <p class="text-lg text-green-800 mb-4">
+          Cada propuesta en este sitio incluye:
+        </p>
+        <div class="grid gap-3">
+          <div class="flex items-center gap-3 bg-white rounded-lg px-4 py-3 shadow-sm">
+            <span class="text-2xl">📄</span>
+            <p class="text-green-800">El <strong>número de página</strong> donde aparece en el documento original</p>
+          </div>
+          <div class="flex items-center gap-3 bg-white rounded-lg px-4 py-3 shadow-sm">
+            <span class="text-2xl">💬</span>
+            <p class="text-green-800">Un <strong>fragmento del texto</strong> (snippet) para contexto</p>
+          </div>
+          <div class="flex items-center gap-3 bg-white rounded-lg px-4 py-3 shadow-sm">
+            <span class="text-2xl">🔗</span>
+            <p class="text-green-800">Un <strong>enlace directo al PDF</strong> oficial del TSE</p>
+          </div>
+        </div>
+        <div class="mt-4 bg-green-100 rounded-lg px-4 py-3">
+          <p class="text-green-700 font-medium">
+            💡 Te invitamos a verificar cualquier dato que te parezca relevante para tu decisión.
           </p>
-          <ul class="space-y-2 text-amber-800">
-            <li class="flex items-start gap-2">
-              <span class="text-amber-600">•</span>
-              No agregamos información que no esté en los documentos
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="text-amber-600">•</span>
-              No interpretamos intenciones
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="text-amber-600">•</span>
-              No hacemos juicios de valor
-            </li>
-          </ul>
-          <p class="text-amber-700 text-sm mt-3 border-t border-amber-200 pt-3">
-            Cuando evaluamos si una propuesta cumple con las dimensiones (existencia, plazo, mecanismo, 
-            financiamiento), lo hacemos con criterios objetivos y verificables. Cada evaluación 
-            incluye una referencia a la página exacta del documento original.
+        </div>
+      </div>
+
+      <hr />
+
+      <h2>🔓 Transparencia</h2>
+      
+      <div class="not-prose grid md:grid-cols-2 gap-4 mt-4">
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-5">
+          <div class="flex items-center gap-3 mb-3">
+            <span class="text-3xl">📐</span>
+            <p class="font-bold text-slate-800 text-lg">Metodología pública</p>
+          </div>
+          <p class="text-slate-600 text-sm">
+            Documentamos cómo analizamos cada plan, qué criterios usamos 
+            y cómo calculamos las puntuaciones.
           </p>
+          <a href="/metodologia" class="inline-flex items-center gap-2 mt-3 text-civic-600 hover:text-civic-700 font-medium text-sm">
+            Ver metodología →
+          </a>
         </div>
-      </div>
-    </div>
-
-    <hr />
-
-    <h2>⚠️ Limitaciones</h2>
-    <p>Este análisis tiene limitaciones que debes conocer:</p>
-    
-    <div class="not-prose grid gap-4 mt-4">
-      <div class="bg-orange-50 border-l-4 border-orange-400 rounded-r-xl p-4">
-        <div class="flex items-start gap-3">
-          <span class="text-2xl">📝</span>
-          <div>
-            <p class="font-semibold text-orange-800">Solo analizamos lo escrito</p>
-            <p class="text-sm text-orange-700">
-              Un plan de gobierno no es una predicción de lo que hará un gobierno. 
-              Muchas promesas no se cumplen, y algunas acciones no estaban en ningún plan.
-            </p>
+        
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-5">
+          <div class="flex items-center gap-3 mb-3">
+            <span class="text-3xl">📄</span>
+            <p class="font-bold text-slate-800 text-lg">Fuentes verificables</p>
           </div>
+          <p class="text-slate-600 text-sm">
+            Cada propuesta incluye referencia a la página exacta del documento original. 
+            Puedes descargar los PDFs oficiales y verificar cualquier dato.
+          </p>
+          <a href="/candidatos" class="inline-flex items-center gap-2 mt-3 text-civic-600 hover:text-civic-700 font-medium text-sm">
+            Ver candidatos →
+          </a>
         </div>
       </div>
+
+      <hr />
+
+      <h2>📬 Contacto</h2>
       
-      <div class="bg-orange-50 border-l-4 border-orange-400 rounded-r-xl p-4">
-        <div class="flex items-start gap-3">
-          <span class="text-2xl">📊</span>
+      <div class="not-prose bg-blue-50 border border-blue-200 rounded-xl p-6 mt-4">
+        <div class="flex items-start gap-4">
+          <span class="text-4xl">💬</span>
           <div>
-            <p class="font-semibold text-orange-800">La calidad no es solo estructura</p>
-            <p class="text-sm text-orange-700">
-              Una propuesta bien estructurada no es necesariamente buena política. 
-              Y una propuesta vaga podría funcionar en la práctica.
+            <p class="text-lg text-blue-800 mb-2">
+              Si encuentras errores, tienes sugerencias o quieres reportar un problema:
+            </p>
+            <p class="text-blue-700">
+              Puedes contactarnos a través del repositorio del proyecto.
             </p>
           </div>
         </div>
       </div>
-      
-      <div class="bg-orange-50 border-l-4 border-orange-400 rounded-r-xl p-4">
-        <div class="flex items-start gap-3">
-          <span class="text-2xl">🤖</span>
-          <div>
-            <p class="font-semibold text-orange-800">El análisis es automatizado</p>
-            <p class="text-sm text-orange-700">
-              Usamos algoritmos de procesamiento de texto que pueden cometer errores. 
-              Por eso incluimos enlaces a los documentos originales.
-            </p>
-          </div>
-        </div>
-      </div>
-      
-      <div class="bg-orange-50 border-l-4 border-orange-400 rounded-r-xl p-4">
-        <div class="flex items-start gap-3">
-          <span class="text-2xl">⚖️</span>
-          <div>
-            <p class="font-semibold text-orange-800">Los pesos son una decisión editorial</p>
-            <p class="text-sm text-orange-700">
-              La ponderación de pilares (18% para seguridad, 2% para política exterior, etc.) 
-              refleja una priorización basada en las urgencias actuales de Costa Rica, que puede no coincidir con la tuya.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <hr />
-
-    <h2>🔎 Verifica por ti mismo</h2>
-    
-    <div class="not-prose bg-green-50 border border-green-200 rounded-xl p-6 mt-4">
-      <p class="text-lg text-green-800 mb-4">
-        Cada propuesta en este sitio incluye:
-      </p>
-      <div class="grid gap-3">
-        <div class="flex items-center gap-3 bg-white rounded-lg px-4 py-3 shadow-sm">
-          <span class="text-2xl">📄</span>
-          <p class="text-green-800">El <strong>número de página</strong> donde aparece en el documento original</p>
-        </div>
-        <div class="flex items-center gap-3 bg-white rounded-lg px-4 py-3 shadow-sm">
-          <span class="text-2xl">💬</span>
-          <p class="text-green-800">Un <strong>fragmento del texto</strong> (snippet) para contexto</p>
-        </div>
-        <div class="flex items-center gap-3 bg-white rounded-lg px-4 py-3 shadow-sm">
-          <span class="text-2xl">🔗</span>
-          <p class="text-green-800">Un <strong>enlace directo al PDF</strong> oficial del TSE</p>
+      <!-- Nota importante -->
+      <div class="not-prose mt-8 bg-red-50 border border-red-200 rounded-xl p-6">
+        <div class="flex items-start gap-4">
+          <span class="text-3xl">🚨</span>
+          <div>
+            <p class="font-bold text-red-800 mb-2">Nota importante sobre independencia</p>
+            <p class="text-red-700">
+              Este sitio <strong>no solicita ni acepta donaciones</strong> de partidos políticos, 
+              candidatos o sus representantes. Cualquier intento de influir en el contenido 
+              será <strong>rechazado y documentado públicamente</strong>.
+            </p>
+          </div>
         </div>
       </div>
-      <div class="mt-4 bg-green-100 rounded-lg px-4 py-3">
-        <p class="text-green-700 font-medium">
-          💡 Te invitamos a verificar cualquier dato que te parezca relevante para tu decisión.
+
+      <div class="not-prose mt-12 text-center">
+        <p class="text-sm text-slate-500">
+          <span class="inline-flex items-center gap-2">
+            🇨🇷 Costa Rica Decide 2026 · Análisis v6 (Neutral + Estricto)
+          </span>
         </p>
       </div>
-    </div>
 
-    <hr />
+    </article>
+  </div>
 
-    <h2>🔓 Transparencia</h2>
-    
-    <div class="not-prose grid md:grid-cols-2 gap-4 mt-4">
-      <div class="bg-slate-50 border border-slate-200 rounded-xl p-5">
-        <div class="flex items-center gap-3 mb-3">
-          <span class="text-3xl">📐</span>
-          <p class="font-bold text-slate-800 text-lg">Metodología pública</p>
+  <!-- ============================================
+       MODE: EXPRESS 🚀
+       ============================================ -->
+  <div class="mode-express-content">
+    <div class="express-acerca-container">
+      <!-- Hero -->
+      <div class="express-hero">
+        <h1 class="express-title">ℹ️ Acerca de CR Decide</h1>
+        <p class="express-subtitle">Herramienta ciudadana para comparar planes de gobierno</p>
+      </div>
+
+      <!-- Purpose Cards -->
+      <div class="express-cards-row">
+        <div class="express-purpose-card express-card-blue">
+          <span class="express-card-emoji">📚</span>
+          <p><strong>+200 páginas</strong> por plan de gobierno</p>
         </div>
-        <p class="text-slate-600 text-sm">
-          Documentamos cómo analizamos cada plan, qué criterios usamos 
-          y cómo calculamos las puntuaciones.
+        <div class="express-purpose-card express-card-amber">
+          <span class="express-card-emoji">⏰</span>
+          <p><strong>Tiempo</strong> que no tienes</p>
+        </div>
+        <div class="express-purpose-card express-card-cyan">
+          <span class="express-card-emoji">🎯</span>
+          <p><strong>Decisiones</strong> más informadas</p>
+        </div>
+      </div>
+
+      <!-- What we are / are not -->
+      <div class="express-two-cols">
+        <div class="express-section express-section-green">
+          <h2 class="express-section-title">✅ Qué somos</h2>
+          <div class="express-list">
+            <div class="express-list-item">
+              <span>🔍</span>
+              <span>Análisis estructural de documentos</span>
+            </div>
+            <div class="express-list-item">
+              <span>⚖️</span>
+              <span>Comparador visual de propuestas</span>
+            </div>
+            <div class="express-list-item">
+              <span>📁</span>
+              <span>Repositorio de planes de gobierno</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="express-section express-section-gray">
+          <h2 class="express-section-title">❌ Qué NO somos</h2>
+          <div class="express-list-negative">
+            <span>🚫 Medio de comunicación</span>
+            <span>🚫 Periodismo de opinión</span>
+            <span>🚫 Recomendadores de candidatos</span>
+            <span>🚫 Evaluadores de ideologías</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Neutrality -->
+      <div class="express-section express-section-amber">
+        <h2 class="express-section-title">⚖️ Neutralidad</h2>
+        <p class="express-neutral-text">
+          Analizamos solo el <strong>texto literal</strong> de los planes. No agregamos información, 
+          no interpretamos intenciones, no hacemos juicios de valor.
         </p>
-        <a href="/metodologia" class="inline-flex items-center gap-2 mt-3 text-civic-600 hover:text-civic-700 font-medium text-sm">
-          Ver metodología →
+        <div class="express-badges-row">
+          <span class="express-badge express-badge-amber">📜 Solo texto oficial</span>
+          <span class="express-badge express-badge-amber">🔗 Con página exacta</span>
+          <span class="express-badge express-badge-amber">✓ Criterios objetivos</span>
+        </div>
+      </div>
+
+      <!-- Limitations -->
+      <div class="express-section express-section-orange">
+        <h2 class="express-section-title">⚠️ Limitaciones</h2>
+        <div class="express-limitations-grid">
+          <div class="express-limitation">
+            <span>📝</span>
+            <div>
+              <strong>Solo lo escrito</strong>
+              <p>Promesas ≠ acciones reales</p>
+            </div>
+          </div>
+          <div class="express-limitation">
+            <span>📊</span>
+            <div>
+              <strong>Estructura ≠ calidad</strong>
+              <p>Una propuesta vaga puede funcionar</p>
+            </div>
+          </div>
+          <div class="express-limitation">
+            <span>🤖</span>
+            <div>
+              <strong>Análisis automático</strong>
+              <p>Los algoritmos pueden errar</p>
+            </div>
+          </div>
+          <div class="express-limitation">
+            <span>⚖️</span>
+            <div>
+              <strong>Pesos editoriales</strong>
+              <p>Nuestra priorización ≠ la tuya</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Verify -->
+      <div class="express-section express-section-green">
+        <h2 class="express-section-title">🔎 Verifica por ti mismo</h2>
+        <div class="express-verify-grid">
+          <div class="express-verify-item">
+            <span>📄</span>
+            <span>Número de página exacto</span>
+          </div>
+          <div class="express-verify-item">
+            <span>💬</span>
+            <span>Fragmento de texto original</span>
+          </div>
+          <div class="express-verify-item">
+            <span>🔗</span>
+            <span>Enlace directo al PDF del TSE</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Independence warning -->
+      <div class="express-warning-box">
+        <span class="express-warning-icon">🚨</span>
+        <div>
+          <strong>Independencia total</strong>
+          <p>No aceptamos donaciones de partidos políticos ni candidatos.</p>
+        </div>
+      </div>
+
+      <!-- Links -->
+      <div class="express-links">
+        <a href="/metodologia" class="express-link express-link-primary">
+          📐 Ver metodología
+        </a>
+        <a href="/candidatos" class="express-link express-link-secondary">
+          👥 Ver candidatos
         </a>
       </div>
-      
-      <div class="bg-slate-50 border border-slate-200 rounded-xl p-5">
-        <div class="flex items-center gap-3 mb-3">
-          <span class="text-3xl">📄</span>
-          <p class="font-bold text-slate-800 text-lg">Fuentes verificables</p>
-        </div>
-        <p class="text-slate-600 text-sm">
-          Cada propuesta incluye referencia a la página exacta del documento original. 
-          Puedes descargar los PDFs oficiales y verificar cualquier dato.
-        </p>
-        <a href="/candidatos" class="inline-flex items-center gap-2 mt-3 text-civic-600 hover:text-civic-700 font-medium text-sm">
-          Ver candidatos →
-        </a>
-      </div>
+
+      <p class="express-footer">🇨🇷 Costa Rica Decide 2026 · v6</p>
     </div>
+  </div>
 
-    <hr />
+  <!-- ============================================
+       MODE: READING 📖
+       ============================================ -->
+  <div class="mode-reading-content">
+    <div class="reading-acerca-container">
+      <h1 class="reading-main-title">ℹ️ Acerca de Costa Rica Decide</h1>
 
-    <h2>📬 Contacto</h2>
-    
-    <div class="not-prose bg-blue-50 border border-blue-200 rounded-xl p-6 mt-4">
-      <div class="flex items-start gap-4">
-        <span class="text-4xl">💬</span>
-        <div>
-          <p class="text-lg text-blue-800 mb-2">
-            Si encuentras errores, tienes sugerencias o quieres reportar un problema:
+      <!-- Propósito -->
+      <section class="reading-section">
+        <h2 class="reading-section-title">🎯 ¿Cuál es el propósito de esta herramienta?</h2>
+        <div class="reading-box reading-box-blue">
+          <p class="reading-large-text">
+            <strong>Costa Rica Decide</strong> le ayuda a entender qué proponen los candidatos 
+            presidenciales para el período <strong>2026-2030</strong>.
           </p>
-          <p class="text-blue-700">
-            Puedes contactarnos a través del repositorio del proyecto.
+          
+          <div class="reading-points">
+            <div class="reading-point">
+              <span class="reading-point-icon">📚</span>
+              <p>Los planes de gobierno son documentos muy extensos. Algunos tienen <strong>más de 200 páginas</strong>.</p>
+            </div>
+            <div class="reading-point">
+              <span class="reading-point-icon">⏰</span>
+              <p>Leerlos todos requiere <strong>tiempo que la mayoría de las personas no tiene</strong>.</p>
+            </div>
+            <div class="reading-point">
+              <span class="reading-point-icon">🎯</span>
+              <p>Esta herramienta le ayuda a <strong>tomar decisiones más informadas</strong>.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Qué somos -->
+      <section class="reading-section">
+        <h2 class="reading-section-title">✅ ¿Qué somos?</h2>
+        <div class="reading-list-positive">
+          <div class="reading-list-item reading-item-green">
+            <span class="reading-item-icon">🔍</span>
+            <div>
+              <strong>Herramienta de análisis</strong>
+              <p>Procesamos los documentos oficiales de forma ordenada</p>
+            </div>
+          </div>
+          <div class="reading-list-item reading-item-blue">
+            <span class="reading-item-icon">⚖️</span>
+            <div>
+              <strong>Comparador visual</strong>
+              <p>Organizamos las propuestas por tema para facilitar la comparación</p>
+            </div>
+          </div>
+          <div class="reading-list-item reading-item-purple">
+            <span class="reading-item-icon">📁</span>
+            <div>
+              <strong>Repositorio de planes</strong>
+              <p>Todos los planes de gobierno en un solo lugar</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Qué NO somos -->
+      <section class="reading-section">
+        <h2 class="reading-section-title">❌ ¿Qué NO somos?</h2>
+        <div class="reading-list-negative">
+          <div class="reading-negative-item">
+            <span>🚫</span>
+            <p>No somos un <strong>medio de comunicación</strong></p>
+          </div>
+          <div class="reading-negative-item">
+            <span>🚫</span>
+            <p>No hacemos <strong>periodismo de opinión</strong></p>
+          </div>
+          <div class="reading-negative-item">
+            <span>🚫</span>
+            <p>No <strong>recomendamos candidatos</strong></p>
+          </div>
+          <div class="reading-negative-item">
+            <span>🚫</span>
+            <p>No <strong>evaluamos ideologías</strong> (izquierda, derecha, centro)</p>
+          </div>
+          <div class="reading-negative-item">
+            <span>🚫</span>
+            <p>No <strong>predecimos ganadores</strong></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Neutralidad -->
+      <section class="reading-section">
+        <h2 class="reading-section-title">⚖️ Neutralidad</h2>
+        <div class="reading-box reading-box-amber">
+          <div class="reading-icon-header">
+            <span class="reading-big-icon">📜</span>
+            <p class="reading-large-text">
+              El análisis se basa <strong>exclusivamente en el texto literal</strong> de los planes de gobierno.
+            </p>
+          </div>
+          
+          <div class="reading-neutral-points">
+            <div class="reading-neutral-item">
+              <span>•</span>
+              <p>No agregamos información que no esté en los documentos</p>
+            </div>
+            <div class="reading-neutral-item">
+              <span>•</span>
+              <p>No interpretamos intenciones</p>
+            </div>
+            <div class="reading-neutral-item">
+              <span>•</span>
+              <p>No hacemos juicios de valor</p>
+            </div>
+          </div>
+          
+          <p class="reading-note">
+            Cada evaluación incluye una referencia a la <strong>página exacta</strong> del documento original 
+            para que usted pueda verificarla.
           </p>
         </div>
-      </div>
-    </div>
+      </section>
 
-    <!-- Nota importante -->
-    <div class="not-prose mt-8 bg-red-50 border border-red-200 rounded-xl p-6">
-      <div class="flex items-start gap-4">
-        <span class="text-3xl">🚨</span>
-        <div>
-          <p class="font-bold text-red-800 mb-2">Nota importante sobre independencia</p>
-          <p class="text-red-700">
+      <!-- Limitaciones -->
+      <section class="reading-section">
+        <h2 class="reading-section-title reading-title-orange">⚠️ Limitaciones importantes</h2>
+        <p class="reading-intro">Este análisis tiene limitaciones que usted debe conocer:</p>
+        
+        <div class="reading-limitations">
+          <div class="reading-limitation-item">
+            <span class="reading-limitation-icon">📝</span>
+            <div>
+              <strong>Solo analizamos lo que está escrito</strong>
+              <p>Un plan de gobierno no es una predicción de lo que hará un gobierno. Muchas promesas no se cumplen.</p>
+            </div>
+          </div>
+          <div class="reading-limitation-item">
+            <span class="reading-limitation-icon">📊</span>
+            <div>
+              <strong>La estructura no lo es todo</strong>
+              <p>Una propuesta bien estructurada no es necesariamente buena política. Y una propuesta vaga podría funcionar.</p>
+            </div>
+          </div>
+          <div class="reading-limitation-item">
+            <span class="reading-limitation-icon">🤖</span>
+            <div>
+              <strong>El análisis es automático</strong>
+              <p>Usamos programas de computadora que pueden cometer errores. Por eso incluimos enlaces a los documentos originales.</p>
+            </div>
+          </div>
+          <div class="reading-limitation-item">
+            <span class="reading-limitation-icon">⚖️</span>
+            <div>
+              <strong>Los pesos son una decisión editorial</strong>
+              <p>La importancia que le damos a cada tema puede no coincidir con lo que usted considera más importante.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Verificación -->
+      <section class="reading-section">
+        <h2 class="reading-section-title">🔎 Verifique por usted mismo</h2>
+        <div class="reading-box reading-box-green">
+          <p class="reading-large-text">Cada propuesta en este sitio incluye:</p>
+          
+          <div class="reading-verify-list">
+            <div class="reading-verify-item">
+              <span>📄</span>
+              <p>El <strong>número de página</strong> donde aparece en el documento</p>
+            </div>
+            <div class="reading-verify-item">
+              <span>💬</span>
+              <p>Un <strong>fragmento del texto</strong> original para contexto</p>
+            </div>
+            <div class="reading-verify-item">
+              <span>🔗</span>
+              <p>Un <strong>enlace directo al PDF</strong> oficial del TSE</p>
+            </div>
+          </div>
+          
+          <div class="reading-highlight">
+            <span>💡</span>
+            <p>Le invitamos a verificar cualquier dato que le parezca importante para su decisión.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Independencia -->
+      <section class="reading-section">
+        <div class="reading-independence-box">
+          <div class="reading-independence-header">
+            <span>🚨</span>
+            <strong>Nota importante sobre independencia</strong>
+          </div>
+          <p class="reading-independence-text">
             Este sitio <strong>no solicita ni acepta donaciones</strong> de partidos políticos, 
             candidatos o sus representantes. Cualquier intento de influir en el contenido 
             será <strong>rechazado y documentado públicamente</strong>.
           </p>
         </div>
-      </div>
-    </div>
+      </section>
 
-    <div class="not-prose mt-12 text-center">
-      <p class="text-sm text-slate-500">
-        <span class="inline-flex items-center gap-2">
-          🇨🇷 Costa Rica Decide 2026 · Análisis v6 (Neutral + Estricto)
-        </span>
+      <!-- Links -->
+      <section class="reading-section">
+        <div class="reading-links">
+          <a href="/metodologia" class="reading-link reading-link-primary">
+            📐 Ver cómo analizamos los planes (Metodología)
+          </a>
+          <a href="/candidatos" class="reading-link reading-link-secondary">
+            👥 Ver todos los candidatos
+          </a>
+        </div>
+      </section>
+
+      <p class="reading-footer">
+        🇨🇷 Costa Rica Decide 2026 · Análisis v6 (Neutral + Estricto)
       </p>
     </div>
+  </div>
 
-  </article>
 </BaseLayout>
 
 <style>
+  /* ============================================
+     MODE VISIBILITY
+     ============================================ */
+  .mode-dashboard-content { display: block; }
+  .mode-express-content { display: none; }
+  .mode-reading-content { display: none; }
+  
+  :global(html[data-mode="express"]) .mode-dashboard-content { display: none; }
+  :global(html[data-mode="express"]) .mode-express-content { display: block; }
+  :global(html[data-mode="express"]) .mode-reading-content { display: none; }
+  
+  :global(html[data-mode="reading"]) .mode-dashboard-content { display: none; }
+  :global(html[data-mode="reading"]) .mode-express-content { display: none; }
+  :global(html[data-mode="reading"]) .mode-reading-content { display: block; }
+
   /* ============================================
      MODE: DASHBOARD (default)
      ============================================ */
@@ -323,68 +713,678 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   /* ============================================
-     MODE: EXPRESS 🚀 (18-35)
+     MODE: EXPRESS 🚀
      ============================================ */
-  :global(html[data-mode="express"]) article {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(12px);
-    border-radius: 1.5rem;
-    padding: 2rem;
-    margin: 1rem;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  .express-acerca-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
   }
   
-  :global(html[data-mode="express"]) .prose h1 {
-    font-size: 1.75rem;
+  .express-hero {
     text-align: center;
+    margin-bottom: 2rem;
   }
   
-  :global(html[data-mode="express"]) .prose h2 {
-    font-size: 1.25rem;
-    margin-top: 2rem;
+  .express-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 0.5rem;
   }
   
-  :global(html[data-mode="express"]) .not-prose {
-    border-radius: 1rem;
-  }
-
-  /* ============================================
-     MODE: READING 📖 (50+)
-     ============================================ */
-  :global(html[data-mode="reading"]) article {
-    max-width: 48rem;
-    background: #fffef5;
-    padding: 3rem 2rem;
+  .express-subtitle {
+    font-size: 1rem;
+    color: #64748b;
   }
   
-  :global(html[data-mode="reading"]) .prose h1 {
-    font-size: 2.5rem;
-    font-family: Georgia, 'Times New Roman', serif;
-    line-height: 1.2;
-    margin-bottom: 2.5rem;
-  }
-  
-  :global(html[data-mode="reading"]) .prose h2 {
-    font-size: 1.75rem;
-    font-family: Georgia, 'Times New Roman', serif;
-    margin-top: 3.5rem;
+  .express-cards-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
     margin-bottom: 1.5rem;
   }
   
-  :global(html[data-mode="reading"]) .prose p,
-  :global(html[data-mode="reading"]) .not-prose p {
+  @media (max-width: 640px) {
+    .express-cards-row {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  .express-purpose-card {
+    padding: 1.25rem;
+    border-radius: 1rem;
+    text-align: center;
+    border: 2px solid;
+  }
+  
+  .express-card-blue {
+    background: linear-gradient(135deg, #eff6ff, #dbeafe);
+    border-color: #93c5fd;
+  }
+  
+  .express-card-amber {
+    background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    border-color: #fcd34d;
+  }
+  
+  .express-card-cyan {
+    background: linear-gradient(135deg, #ecfeff, #cffafe);
+    border-color: #67e8f9;
+  }
+  
+  .express-card-emoji {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  
+  .express-purpose-card p {
+    font-size: 0.9rem;
+    color: #374151;
+  }
+  
+  .express-two-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  @media (max-width: 640px) {
+    .express-two-cols {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  .express-section {
+    padding: 1.25rem;
+    border-radius: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .express-section-green {
+    background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+    border: 2px solid #6ee7b7;
+  }
+  
+  .express-section-gray {
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+  }
+  
+  .express-section-amber {
+    background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    border: 2px solid #fcd34d;
+  }
+  
+  .express-section-orange {
+    background: linear-gradient(135deg, #fff7ed, #ffedd5);
+    border: 2px solid #fdba74;
+  }
+  
+  .express-section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 0.75rem;
+  }
+  
+  .express-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .express-list-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #065f46;
+  }
+  
+  .express-list-negative {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: #475569;
+  }
+  
+  .express-list-negative span {
+    background: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    border: 1px solid #e2e8f0;
+  }
+  
+  .express-neutral-text {
+    font-size: 0.95rem;
+    color: #92400e;
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+  }
+  
+  .express-badges-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .express-badge {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-weight: 500;
+  }
+  
+  .express-badge-amber {
+    background: white;
+    color: #92400e;
+    border: 1px solid #fcd34d;
+  }
+  
+  .express-limitations-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+  
+  @media (max-width: 640px) {
+    .express-limitations-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  .express-limitation {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    background: white;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.85rem;
+  }
+  
+  .express-limitation span {
     font-size: 1.25rem;
-    line-height: 2;
+  }
+  
+  .express-limitation strong {
+    display: block;
+    color: #c2410c;
+    margin-bottom: 0.125rem;
+  }
+  
+  .express-limitation p {
+    color: #78716c;
+    font-size: 0.8rem;
+  }
+  
+  .express-verify-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  
+  .express-verify-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: white;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    color: #065f46;
+    border: 1px solid #6ee7b7;
+  }
+  
+  .express-warning-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    background: #fef2f2;
+    border: 2px solid #fca5a5;
+    border-radius: 1rem;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .express-warning-icon {
+    font-size: 2rem;
+  }
+  
+  .express-warning-box strong {
+    display: block;
+    color: #991b1b;
+    margin-bottom: 0.25rem;
+  }
+  
+  .express-warning-box p {
+    font-size: 0.9rem;
+    color: #b91c1c;
+  }
+  
+  .express-links {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+  
+  .express-link {
+    padding: 0.75rem 1.5rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: transform 0.2s;
+  }
+  
+  .express-link:hover {
+    transform: translateY(-2px);
+  }
+  
+  .express-link-primary {
+    background: linear-gradient(135deg, #0891b2, #0e7490);
+    color: white;
+  }
+  
+  .express-link-secondary {
+    background: white;
+    color: #0891b2;
+    border: 2px solid #0891b2;
+  }
+  
+  .express-footer {
+    text-align: center;
+    font-size: 0.8rem;
+    color: #94a3b8;
+  }
+
+  /* ============================================
+     MODE: READING 📖
+     ============================================ */
+  .reading-acerca-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    background: #fffef5;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  
+  .reading-main-title {
+    font-size: 2.5rem;
+    font-weight: 700;
     color: #1a1a1a;
+    text-align: center;
+    margin-bottom: 2.5rem;
+    line-height: 1.2;
   }
   
-  :global(html[data-mode="reading"]) .not-prose {
+  .reading-section {
+    margin-bottom: 2.5rem;
+  }
+  
+  .reading-section-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 3px solid #0891b2;
+  }
+  
+  .reading-title-orange {
+    border-bottom-color: #f97316;
+  }
+  
+  .reading-intro {
+    font-size: 1.2rem;
+    color: #374151;
+    margin-bottom: 1.5rem;
+    line-height: 1.7;
+  }
+  
+  .reading-box {
     padding: 1.5rem;
-    border-width: 2px;
+    border-radius: 1rem;
+    border: 3px solid;
   }
   
-  :global(html[data-mode="reading"]) .prose hr {
-    margin: 3rem 0;
-    border-width: 2px;
+  .reading-box-blue {
+    background: #eff6ff;
+    border-color: #3b82f6;
+  }
+  
+  .reading-box-amber {
+    background: #fffbeb;
+    border-color: #f59e0b;
+  }
+  
+  .reading-box-green {
+    background: #ecfdf5;
+    border-color: #10b981;
+  }
+  
+  .reading-large-text {
+    font-size: 1.3rem;
+    line-height: 1.8;
+    color: #1a1a1a;
+    margin-bottom: 1rem;
+  }
+  
+  .reading-points {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .reading-point {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    background: white;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  
+  .reading-point-icon {
+    font-size: 1.75rem;
+  }
+  
+  .reading-point p {
+    font-size: 1.15rem;
+    color: #374151;
+    line-height: 1.6;
+  }
+  
+  .reading-list-positive {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .reading-list-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem;
+    border-radius: 1rem;
+    border: 3px solid;
+  }
+  
+  .reading-item-green {
+    background: #ecfdf5;
+    border-color: #10b981;
+  }
+  
+  .reading-item-blue {
+    background: #eff6ff;
+    border-color: #3b82f6;
+  }
+  
+  .reading-item-purple {
+    background: #faf5ff;
+    border-color: #9333ea;
+  }
+  
+  .reading-item-icon {
+    font-size: 2rem;
+  }
+  
+  .reading-list-item strong {
+    font-size: 1.25rem;
+    color: #1a1a1a;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+  
+  .reading-list-item p {
+    font-size: 1.1rem;
+    color: #64748b;
+  }
+  
+  .reading-list-negative {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .reading-negative-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.75rem;
+  }
+  
+  .reading-negative-item span {
+    font-size: 1.5rem;
+  }
+  
+  .reading-negative-item p {
+    font-size: 1.15rem;
+    color: #374151;
+  }
+  
+  .reading-icon-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .reading-big-icon {
+    font-size: 3rem;
+  }
+  
+  .reading-neutral-points {
+    margin: 1rem 0;
+    padding-left: 1rem;
+  }
+  
+  .reading-neutral-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .reading-neutral-item span {
+    color: #d97706;
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+  
+  .reading-neutral-item p {
+    font-size: 1.15rem;
+    color: #92400e;
+  }
+  
+  .reading-note {
+    font-size: 1.05rem;
+    color: #78350f;
+    padding-top: 1rem;
+    border-top: 2px solid #fcd34d;
+    margin-top: 1rem;
+  }
+  
+  .reading-limitations {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .reading-limitation-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem;
+    background: #fff7ed;
+    border-left: 5px solid #f97316;
+    border-radius: 0 0.75rem 0.75rem 0;
+  }
+  
+  .reading-limitation-icon {
+    font-size: 2rem;
+  }
+  
+  .reading-limitation-item strong {
+    font-size: 1.2rem;
+    color: #c2410c;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+  
+  .reading-limitation-item p {
+    font-size: 1.05rem;
+    color: #9a3412;
+    line-height: 1.6;
+  }
+  
+  .reading-verify-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin: 1rem 0;
+  }
+  
+  .reading-verify-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: white;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  }
+  
+  .reading-verify-item span {
+    font-size: 1.5rem;
+  }
+  
+  .reading-verify-item p {
+    font-size: 1.1rem;
+    color: #065f46;
+  }
+  
+  .reading-highlight {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    background: #d1fae5;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-top: 1rem;
+  }
+  
+  .reading-highlight span {
+    font-size: 1.5rem;
+  }
+  
+  .reading-highlight p {
+    font-size: 1.1rem;
+    color: #047857;
+    font-weight: 500;
+  }
+  
+  .reading-independence-box {
+    background: #fef2f2;
+    border: 3px solid #ef4444;
+    border-radius: 1rem;
+    padding: 1.5rem;
+  }
+  
+  .reading-independence-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  
+  .reading-independence-header span {
+    font-size: 2rem;
+  }
+  
+  .reading-independence-header strong {
+    font-size: 1.35rem;
+    color: #991b1b;
+  }
+  
+  .reading-independence-text {
+    font-size: 1.15rem;
+    color: #b91c1c;
+    line-height: 1.7;
+  }
+  
+  .reading-links {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .reading-link {
+    display: block;
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    transition: transform 0.2s;
+  }
+  
+  .reading-link:hover {
+    transform: translateY(-2px);
+  }
+  
+  .reading-link-primary {
+    background: linear-gradient(135deg, #0891b2, #0e7490);
+    color: white;
+  }
+  
+  .reading-link-secondary {
+    background: white;
+    color: #0891b2;
+    border: 3px solid #0891b2;
+  }
+  
+  .reading-footer {
+    text-align: center;
+    font-size: 1rem;
+    color: #64748b;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e2e8f0;
+  }
+  
+  /* Responsive Reading Mode */
+  @media (max-width: 640px) {
+    .reading-main-title {
+      font-size: 2rem;
+    }
+    .reading-section-title {
+      font-size: 1.5rem;
+    }
+    .reading-large-text {
+      font-size: 1.15rem;
+    }
+    .reading-point,
+    .reading-list-item,
+    .reading-limitation-item {
+      flex-direction: column;
+      text-align: center;
+    }
+    .reading-icon-header {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
   }
 </style>

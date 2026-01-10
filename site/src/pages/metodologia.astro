@@ -3,10 +3,29 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { pillars, getFiscalStats } from '../lib/data';
 
 const fiscalStats = getFiscalStats();
+
+// Datos de pilares con sus pesos ordenados por prioridad
+const pillarData = [
+  { id: 'P3', name: 'Seguridad ciudadana', icon: '🛡️', weight: 18, color: 'red', desc: 'Policía, crimen organizado, narcotráfico, justicia' },
+  { id: 'P4', name: 'Salud pública (CCSS)', icon: '🏥', weight: 16, color: 'pink', desc: 'Hospitales, listas de espera, pensiones' },
+  { id: 'P1', name: 'Sostenibilidad fiscal', icon: '💰', weight: 14, color: 'emerald', desc: 'Regla fiscal, deuda, gasto público' },
+  { id: 'P7', name: 'Reforma del Estado', icon: '⚖️', weight: 12, color: 'purple', desc: 'Corrupción, eficiencia, transparencia' },
+  { id: 'P2', name: 'Empleo e IED', icon: '💼', weight: 11, color: 'slate', desc: 'Inversión extranjera, zonas francas, empleo' },
+  { id: 'P5', name: 'Educación', icon: '📚', weight: 10, color: 'slate', desc: 'Calidad educativa, deserción, universidades' },
+  { id: 'P10', name: 'Infraestructura', icon: '🏗️', weight: 9, color: 'slate', desc: 'Carreteras, puertos, APP, obra pública' },
+  { id: 'P8', name: 'Política social', icon: '🤝', weight: 5, color: 'slate', desc: 'Pobreza, vulnerabilidad, subsidios focalizados' },
+  { id: 'P6', name: 'Ambiente', icon: '🌿', weight: 3, color: 'slate', desc: 'Cambio climático, conservación' },
+  { id: 'P9', name: 'Política exterior', icon: '🌎', weight: 2, color: 'slate', desc: 'Comercio internacional, diplomacia' },
+];
 ---
 
 <BaseLayout title="Metodología">
-  <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 prose prose-slate prose-lg">
+  
+  <!-- ============================================
+       MODE: DASHBOARD 📊
+       ============================================ -->
+  <div class="mode-dashboard-content">
+    <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 prose prose-slate prose-lg">
     
     <h1 class="flex items-center gap-3">
       <span>📋</span> ¿Cómo funciona Costa Rica Decide?
@@ -811,9 +830,471 @@ const fiscalStats = getFiscalStats();
     </p>
 
   </article>
+  </div>
+
+  <!-- ============================================
+       MODE: EXPRESS 🚀
+       ============================================ -->
+  <div class="mode-express-content">
+    <div class="express-metodo-container">
+      <!-- Hero Section -->
+      <div class="express-hero">
+        <h1 class="express-title">📋 ¿Cómo funciona CR Decide?</h1>
+        <p class="express-subtitle">Análisis objetivo de planes de gobierno 2026-2030</p>
+      </div>
+
+      <!-- Quick Cards -->
+      <div class="express-cards-grid">
+        <!-- Card 1: Qué es -->
+        <div class="express-card express-card-blue">
+          <div class="express-card-icon">🗳️</div>
+          <h3>¿Qué es esto?</h3>
+          <p>Herramienta ciudadana para entender las propuestas de los candidatos. <strong>No te decimos por quién votar</strong>, solo organizamos la información.</p>
+        </div>
+
+        <!-- Card 2: Fuente de datos -->
+        <div class="express-card express-card-cyan">
+          <div class="express-card-icon">📄</div>
+          <h3>¿De dónde salen los datos?</h3>
+          <p>De los <strong>planes de gobierno oficiales</strong> presentados al TSE. Son documentos públicos que puedes descargar.</p>
+        </div>
+
+        <!-- Card 3: Proceso -->
+        <div class="express-card express-card-purple">
+          <div class="express-card-icon">🤖</div>
+          <h3>¿Cómo procesamos?</h3>
+          <p>Un programa lee los 20 PDFs y evalúa cada propuesta con <strong>las mismas reglas para todos</strong>. Sin favoritismos.</p>
+        </div>
+      </div>
+
+      <!-- 10 Pilares -->
+      <div class="express-section">
+        <h2 class="express-section-title">🏛️ Los 10 Pilares de Evaluación</h2>
+        <p class="express-section-desc">Organizamos las propuestas en 10 áreas temáticas. Los 4 primeros suman el 60% del peso.</p>
+        
+        <div class="express-pillars-grid">
+          {pillarData.map((p, i) => (
+            <div class={`express-pillar-chip ${i < 4 ? 'express-pillar-priority' : ''}`}>
+              <span class="express-pillar-icon">{p.icon}</span>
+              <span class="express-pillar-name">{p.name}</span>
+              <span class="express-pillar-weight">{p.weight}%</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- 4 Dimensiones -->
+      <div class="express-section">
+        <h2 class="express-section-title">📐 ¿Cómo evaluamos cada propuesta?</h2>
+        <p class="express-section-desc">Cada propuesta puede obtener hasta 4 puntos, uno por cada pregunta:</p>
+        
+        <div class="express-dimensions-grid">
+          <div class="express-dimension express-dim-blue">
+            <span class="express-dim-num">1</span>
+            <div>
+              <strong>¿Existe?</strong>
+              <p>¿Hay una acción concreta, no solo un deseo vago?</p>
+            </div>
+          </div>
+          <div class="express-dimension express-dim-amber">
+            <span class="express-dim-num">2</span>
+            <div>
+              <strong>¿Dice cuándo?</strong>
+              <p>¿Hay un plazo específico para implementarla?</p>
+            </div>
+          </div>
+          <div class="express-dimension express-dim-purple">
+            <span class="express-dim-num">3</span>
+            <div>
+              <strong>¿Dice cómo?</strong>
+              <p>¿Explica el método, la ley o los pasos?</p>
+            </div>
+          </div>
+          <div class="express-dimension express-dim-emerald">
+            <span class="express-dim-num">4</span>
+            <div>
+              <strong>¿Con qué fondos?</strong>
+              <p>¿Indica de dónde saldrá el dinero?</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Penalizaciones -->
+      <div class="express-section">
+        <h2 class="express-section-title">⚠️ Penalizaciones Fiscales</h2>
+        <p class="express-section-desc">Restamos puntos a propuestas que comprometen la estabilidad del país:</p>
+        
+        <div class="express-penalties-grid">
+          <div class="express-penalty express-penalty-red">
+            <span class="express-penalty-icon">🚨</span>
+            <div>
+              <strong>Ataca regla fiscal</strong>
+              <span class="express-penalty-points">-2 pts</span>
+            </div>
+          </div>
+          <div class="express-penalty express-penalty-red">
+            <span class="express-penalty-icon">💰</span>
+            <div>
+              <strong>Propone más deuda</strong>
+              <span class="express-penalty-points">-1 pt</span>
+            </div>
+          </div>
+          <div class="express-penalty express-penalty-amber">
+            <span class="express-penalty-icon">🔫</span>
+            <div>
+              <strong>Ignora crimen organizado</strong>
+              <span class="express-penalty-points">-0.5 pts</span>
+            </div>
+          </div>
+          <div class="express-penalty express-penalty-amber">
+            <span class="express-penalty-icon">🏥</span>
+            <div>
+              <strong>Ignora crisis CCSS</strong>
+              <span class="express-penalty-points">-1 pt</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Niveles de Riesgo -->
+      <div class="express-section">
+        <h2 class="express-section-title">🚦 Niveles de Riesgo</h2>
+        
+        <div class="express-risk-grid">
+          <div class="express-risk express-risk-low">
+            <span class="express-risk-badge">🟢 BAJO</span>
+            <p>Plan fiscalmente responsable sin banderas rojas</p>
+            <span class="express-risk-count">{fiscalStats.lowRisk} candidatos</span>
+          </div>
+          <div class="express-risk express-risk-medium">
+            <span class="express-risk-badge">🟠 MEDIO</span>
+            <p>1-2 banderas rojas u omisiones importantes</p>
+            <span class="express-risk-count">{fiscalStats.mediumRisk} candidatos</span>
+          </div>
+          <div class="express-risk express-risk-high">
+            <span class="express-risk-badge">🔴 ALTO</span>
+            <p>Múltiples banderas rojas o irresponsabilidad fiscal</p>
+            <span class="express-risk-count">{fiscalStats.highRisk} candidatos</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Transparencia -->
+      <div class="express-section express-transparency">
+        <h2 class="express-section-title">✅ Transparencia Total</h2>
+        <div class="express-transparency-grid">
+          <span>📄 PDFs originales disponibles</span>
+          <span>🔗 Enlaces a página exacta</span>
+          <span>⚖️ Sin sesgos ideológicos</span>
+          <span>💵 Sin financiamiento político</span>
+        </div>
+      </div>
+
+      <p class="express-footer-note">
+        Última actualización: Enero 2026 · Versión v6
+      </p>
+    </div>
+  </div>
+
+  <!-- ============================================
+       MODE: READING 📖
+       ============================================ -->
+  <div class="mode-reading-content">
+    <div class="reading-metodo-container">
+      <h1 class="reading-main-title">📋 ¿Cómo funciona Costa Rica Decide?</h1>
+      
+      <!-- Introducción -->
+      <section class="reading-section">
+        <h2 class="reading-section-title">¿Qué es esto?</h2>
+        <div class="reading-highlight-box reading-box-blue">
+          <p class="reading-large-text">
+            <strong>Costa Rica Decide</strong> es una herramienta ciudadana que le ayuda a entender 
+            qué proponen los candidatos presidenciales para el período <strong>2026-2030</strong>.
+          </p>
+          <div class="reading-warning-box">
+            <span class="reading-warning-icon">🗳️</span>
+            <p><strong>No le decimos por quién votar.</strong> Solo organizamos la información de los 
+            planes de gobierno oficiales para que pueda compararlos fácilmente.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Fuente de datos -->
+      <section class="reading-section">
+        <h2 class="reading-section-title">¿De dónde salen los datos?</h2>
+        <div class="reading-highlight-box reading-box-cyan">
+          <div class="reading-icon-text">
+            <span class="reading-big-icon">📄</span>
+            <div>
+              <p class="reading-large-text">
+                Todos los datos provienen de los <strong>planes de gobierno oficiales</strong> 
+                presentados por cada partido político al <strong>Tribunal Supremo de Elecciones (TSE)</strong>.
+              </p>
+              <p class="reading-medium-text">
+                Estos documentos son públicos y los puede descargar directamente desde este sitio.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Proceso de análisis -->
+      <section class="reading-section">
+        <h2 class="reading-section-title">🤖 ¿Cómo procesamos los planes?</h2>
+        <div class="reading-highlight-box reading-box-purple">
+          <p class="reading-large-text">
+            <strong>El análisis se realiza con un programa de computadora</strong> que lee todos los PDFs 
+            y extrae información de manera sistemática. Todos los planes se evalúan con las mismas reglas.
+          </p>
+          
+          <div class="reading-steps-list">
+            <div class="reading-step">
+              <span class="reading-step-num">1</span>
+              <p>Descargamos los PDFs oficiales del TSE</p>
+            </div>
+            <div class="reading-step">
+              <span class="reading-step-num">2</span>
+              <p>El programa lee cada página y busca propuestas</p>
+            </div>
+            <div class="reading-step">
+              <span class="reading-step-num">3</span>
+              <p>Evalúa cada propuesta con 4 preguntas</p>
+            </div>
+            <div class="reading-step">
+              <span class="reading-step-num">4</span>
+              <p>Aplica penalizaciones si hay irresponsabilidad fiscal</p>
+            </div>
+            <div class="reading-step">
+              <span class="reading-step-num">5</span>
+              <p>Genera los puntajes y el ranking final</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Los 10 Pilares -->
+      <section class="reading-section">
+        <h2 class="reading-section-title">🏛️ Los 10 Pilares de Evaluación</h2>
+        <p class="reading-intro-text">
+          Organizamos las propuestas en <strong>10 áreas temáticas</strong> fundamentales para el país.
+          Los 4 primeros pilares son los más importantes y suman el <strong>60% del peso total</strong>.
+        </p>
+        
+        <div class="reading-pillars-table">
+          {pillarData.map((p, i) => (
+            <div class={`reading-pillar-row ${i < 4 ? 'reading-pillar-priority' : ''}`}>
+              <span class="reading-pillar-rank">{i + 1}°</span>
+              <span class="reading-pillar-icon">{p.icon}</span>
+              <div class="reading-pillar-info">
+                <strong>{p.name}</strong>
+                <span>{p.desc}</span>
+              </div>
+              <span class="reading-pillar-weight">{p.weight}%</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- Las 4 Dimensiones -->
+      <section class="reading-section">
+        <h2 class="reading-section-title">📐 ¿Cómo evaluamos cada propuesta?</h2>
+        <p class="reading-intro-text">
+          Para cada propuesta que encontramos, respondemos <strong>4 preguntas simples</strong>.
+          Cada respuesta positiva suma 1 punto (máximo 4 puntos por propuesta).
+        </p>
+        
+        <div class="reading-dimensions-list">
+          <div class="reading-dimension-item reading-dim-blue">
+            <div class="reading-dim-header">
+              <span class="reading-dim-number">1</span>
+              <strong>¿Existe la propuesta?</strong>
+            </div>
+            <p>¿El plan menciona una acción concreta, no solo un deseo vago?</p>
+            <div class="reading-dim-examples">
+              <div class="reading-example-good">
+                <span>✓</span> "Crearemos un programa de becas para estudiantes rurales"
+              </div>
+              <div class="reading-example-bad">
+                <span>✗</span> "Mejoraremos la educación"
+              </div>
+            </div>
+          </div>
+          
+          <div class="reading-dimension-item reading-dim-amber">
+            <div class="reading-dim-header">
+              <span class="reading-dim-number">2</span>
+              <strong>¿Dice cuándo?</strong>
+            </div>
+            <p>¿Hay un plazo específico, no solo "en el futuro"?</p>
+            <div class="reading-dim-examples">
+              <div class="reading-example-good">
+                <span>✓</span> "En los primeros 100 días" o "Durante el cuatrienio 2026-2030"
+              </div>
+              <div class="reading-example-bad">
+                <span>✗</span> "Gradualmente" o "Cuando sea posible"
+              </div>
+            </div>
+          </div>
+          
+          <div class="reading-dimension-item reading-dim-purple">
+            <div class="reading-dim-header">
+              <span class="reading-dim-number">3</span>
+              <strong>¿Dice cómo?</strong>
+            </div>
+            <p>¿Explica el método, la ley, el programa o los pasos?</p>
+            <div class="reading-dim-examples">
+              <div class="reading-example-good">
+                <span>✓</span> "Mediante una reforma a la Ley de Contratación Pública"
+              </div>
+              <div class="reading-example-bad">
+                <span>✗</span> "Implementaremos mejoras"
+              </div>
+            </div>
+          </div>
+          
+          <div class="reading-dimension-item reading-dim-emerald">
+            <div class="reading-dim-header">
+              <span class="reading-dim-number">4</span>
+              <strong>¿Dice con qué fondos?</strong>
+            </div>
+            <p>¿Indica de dónde saldrá el dinero?</p>
+            <div class="reading-dim-examples">
+              <div class="reading-example-good">
+                <span>✓</span> "Financiado con una reasignación del presupuesto del MOPT"
+              </div>
+              <div class="reading-example-bad">
+                <span>✗</span> "Invertiremos millones" (sin decir de dónde)
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Penalizaciones -->
+      <section class="reading-section">
+        <h2 class="reading-section-title reading-title-red">⚠️ Penalizaciones por Irresponsabilidad Fiscal</h2>
+        <p class="reading-intro-text">
+          Costa Rica enfrenta urgencias fiscales reales. Penalizamos propuestas que comprometen la estabilidad financiera del país:
+        </p>
+        
+        <div class="reading-penalties-box">
+          <div class="reading-penalty-item reading-penalty-severe">
+            <span class="reading-penalty-icon">⚠️</span>
+            <div>
+              <strong>Ataca la regla fiscal</strong>
+              <p>Propone flexibilizar, reformar o eliminar la regla fiscal (Ley 9635)</p>
+            </div>
+            <span class="reading-penalty-points">-2 puntos</span>
+          </div>
+          <div class="reading-penalty-item reading-penalty-severe">
+            <span class="reading-penalty-icon">💰</span>
+            <div>
+              <strong>Propone más deuda</strong>
+              <p>Propone aumentar la deuda pública sin plan de sostenibilidad</p>
+            </div>
+            <span class="reading-penalty-points">-1 punto</span>
+          </div>
+          <div class="reading-penalty-item reading-penalty-moderate">
+            <span class="reading-penalty-icon">🚨</span>
+            <div>
+              <strong>Ignora seguridad operativa</strong>
+              <p>No menciona policía, OIJ, patrullaje o vigilancia</p>
+            </div>
+            <span class="reading-penalty-points">-1 punto</span>
+          </div>
+          <div class="reading-penalty-item reading-penalty-moderate">
+            <span class="reading-penalty-icon">🏥</span>
+            <div>
+              <strong>Ignora crisis CCSS</strong>
+              <p>No menciona la Caja, listas de espera o régimen de pensiones</p>
+            </div>
+            <span class="reading-penalty-points">-1 punto</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Niveles de Riesgo -->
+      <section class="reading-section">
+        <h2 class="reading-section-title">🚦 Niveles de Riesgo</h2>
+        
+        <div class="reading-risk-cards">
+          <div class="reading-risk-card reading-risk-low">
+            <div class="reading-risk-header">
+              <span class="reading-risk-emoji">🟢</span>
+              <strong>Riesgo BAJO</strong>
+              <span class="reading-risk-count">{fiscalStats.lowRisk} candidatos</span>
+            </div>
+            <p>El partido NO ataca la regla fiscal, NO propone más deuda y aborda las urgencias nacionales. Plan fiscalmente responsable y completo.</p>
+          </div>
+          
+          <div class="reading-risk-card reading-risk-medium">
+            <div class="reading-risk-header">
+              <span class="reading-risk-emoji">🟠</span>
+              <strong>Riesgo MEDIO</strong>
+              <span class="reading-risk-count">{fiscalStats.mediumRisk} candidatos</span>
+            </div>
+            <p>El partido tiene 1-2 banderas rojas fiscales u omite algunas urgencias nacionales. Requiere atención a las deficiencias identificadas.</p>
+          </div>
+          
+          <div class="reading-risk-card reading-risk-high">
+            <div class="reading-risk-header">
+              <span class="reading-risk-emoji">🔴</span>
+              <strong>Riesgo ALTO</strong>
+              <span class="reading-risk-count">{fiscalStats.highRisk} candidatos</span>
+            </div>
+            <p>El partido tiene múltiples banderas rojas: ataca regla fiscal, propone más deuda Y/O omite múltiples urgencias nacionales.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Transparencia -->
+      <section class="reading-section">
+        <h2 class="reading-section-title">✅ Transparencia</h2>
+        <div class="reading-transparency-box">
+          <div class="reading-transparency-item">
+            <span>✓</span>
+            <p><strong>PDFs originales disponibles</strong> - Todos los planes de gobierno están disponibles para descarga</p>
+          </div>
+          <div class="reading-transparency-item">
+            <span>✓</span>
+            <p><strong>Enlaces a página exacta</strong> - Cada propuesta tiene enlace directo al documento fuente</p>
+          </div>
+          <div class="reading-transparency-item">
+            <span>✓</span>
+            <p><strong>Análisis objetivo</strong> - Sin sesgos ideológicos, solo evaluamos qué tan completas son las propuestas</p>
+          </div>
+          <div class="reading-transparency-item">
+            <span>✓</span>
+            <p><strong>Sin financiamiento político</strong> - No recibimos dinero de partidos políticos ni candidatos</p>
+          </div>
+        </div>
+      </section>
+
+      <p class="reading-footer-note">
+        <em>Última actualización: Enero 2026 · Versión del análisis: v6 (Neutral + Estricto)</em>
+      </p>
+    </div>
+  </div>
+
 </BaseLayout>
 
 <style>
+  /* ============================================
+     MODE VISIBILITY
+     ============================================ */
+  .mode-dashboard-content { display: block; }
+  .mode-express-content { display: none; }
+  .mode-reading-content { display: none; }
+  
+  :global(html[data-mode="express"]) .mode-dashboard-content { display: none; }
+  :global(html[data-mode="express"]) .mode-express-content { display: block; }
+  :global(html[data-mode="express"]) .mode-reading-content { display: none; }
+  
+  :global(html[data-mode="reading"]) .mode-dashboard-content { display: none; }
+  :global(html[data-mode="reading"]) .mode-express-content { display: none; }
+  :global(html[data-mode="reading"]) .mode-reading-content { display: block; }
+
   /* ============================================
      MODE: DASHBOARD (default)
      ============================================ */
@@ -844,82 +1325,758 @@ const fiscalStats = getFiscalStats();
   }
 
   /* ============================================
-     MODE: EXPRESS 🚀 (18-35)
+     MODE: EXPRESS 🚀
      ============================================ */
-  :global(html[data-mode="express"]) article {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(12px);
-    border-radius: 1.5rem;
-    padding: 2rem;
-    margin: 1rem;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  .express-metodo-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
   }
   
-  :global(html[data-mode="express"]) .prose h1 {
-    font-size: 1.75rem;
+  .express-hero {
     text-align: center;
+    margin-bottom: 2rem;
   }
   
-  :global(html[data-mode="express"]) .prose h2 {
-    font-size: 1.25rem;
-    margin-top: 2rem;
+  .express-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 0.5rem;
   }
   
-  :global(html[data-mode="express"]) .not-prose {
+  .express-subtitle {
+    font-size: 1.1rem;
+    color: #64748b;
+  }
+  
+  .express-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .express-card {
+    padding: 1.5rem;
     border-radius: 1rem;
+    border: 2px solid;
   }
   
-  :global(html[data-mode="express"]) table {
-    font-size: 0.875rem;
-  }
-
-  /* ============================================
-     MODE: READING 📖 (50+)
-     ============================================ */
-  :global(html[data-mode="reading"]) article {
-    max-width: 48rem;
-    background: #fffef5;
-    padding: 3rem 2rem;
+  .express-card-blue {
+    background: linear-gradient(135deg, #eff6ff, #dbeafe);
+    border-color: #93c5fd;
   }
   
-  :global(html[data-mode="reading"]) .prose h1 {
-    font-size: 2.5rem;
-    font-family: Georgia, 'Times New Roman', serif;
-    line-height: 1.2;
-    margin-bottom: 2.5rem;
+  .express-card-cyan {
+    background: linear-gradient(135deg, #ecfeff, #cffafe);
+    border-color: #67e8f9;
   }
   
-  :global(html[data-mode="reading"]) .prose h2 {
-    font-size: 1.75rem;
-    font-family: Georgia, 'Times New Roman', serif;
-    margin-top: 3.5rem;
+  .express-card-purple {
+    background: linear-gradient(135deg, #faf5ff, #f3e8ff);
+    border-color: #c4b5fd;
+  }
+  
+  .express-card-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .express-card h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+  }
+  
+  .express-card p {
+    font-size: 0.9rem;
+    color: #475569;
+    line-height: 1.5;
+  }
+  
+  .express-section {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 1.5rem;
     margin-bottom: 1.5rem;
   }
   
-  :global(html[data-mode="reading"]) .prose p,
-  :global(html[data-mode="reading"]) .not-prose p {
+  .express-section-title {
     font-size: 1.25rem;
-    line-height: 2;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 0.5rem;
+  }
+  
+  .express-section-desc {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin-bottom: 1rem;
+  }
+  
+  .express-pillars-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .express-pillar-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: #f1f5f9;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+  }
+  
+  .express-pillar-priority {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    border: 2px solid #f59e0b;
+  }
+  
+  .express-pillar-icon {
+    font-size: 1.1rem;
+  }
+  
+  .express-pillar-name {
+    font-weight: 500;
+    color: #1e293b;
+  }
+  
+  .express-pillar-weight {
+    font-weight: 700;
+    color: #0891b2;
+  }
+  
+  .express-dimensions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+  }
+  
+  .express-dimension {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+    border-radius: 0.75rem;
+  }
+  
+  .express-dim-blue { background: #eff6ff; }
+  .express-dim-amber { background: #fffbeb; }
+  .express-dim-purple { background: #faf5ff; }
+  .express-dim-emerald { background: #ecfdf5; }
+  
+  .express-dim-num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    background: white;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+  
+  .express-dimension strong {
+    font-size: 0.9rem;
+    color: #1e293b;
+  }
+  
+  .express-dimension p {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-top: 0.25rem;
+  }
+  
+  .express-penalties-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+  }
+  
+  .express-penalty {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+  }
+  
+  .express-penalty-red {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+  }
+  
+  .express-penalty-amber {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+  }
+  
+  .express-penalty-icon {
+    font-size: 1.25rem;
+  }
+  
+  .express-penalty strong {
+    font-size: 0.85rem;
+    color: #1e293b;
+    display: block;
+  }
+  
+  .express-penalty-points {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #dc2626;
+    background: #fee2e2;
+    padding: 0.125rem 0.5rem;
+    border-radius: 9999px;
+    margin-left: auto;
+  }
+  
+  .express-risk-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+  
+  @media (max-width: 768px) {
+    .express-risk-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  .express-risk {
+    padding: 1rem;
+    border-radius: 0.75rem;
+    text-align: center;
+  }
+  
+  .express-risk-low {
+    background: #ecfdf5;
+    border: 2px solid #6ee7b7;
+  }
+  
+  .express-risk-medium {
+    background: #fffbeb;
+    border: 2px solid #fcd34d;
+  }
+  
+  .express-risk-high {
+    background: #fef2f2;
+    border: 2px solid #fca5a5;
+  }
+  
+  .express-risk-badge {
+    font-weight: 700;
+    font-size: 1rem;
+  }
+  
+  .express-risk p {
+    font-size: 0.8rem;
+    color: #475569;
+    margin: 0.5rem 0;
+  }
+  
+  .express-risk-count {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748b;
+  }
+  
+  .express-transparency {
+    background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+    border-color: #6ee7b7;
+  }
+  
+  .express-transparency-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.9rem;
+    color: #047857;
+  }
+  
+  .express-footer-note {
+    text-align: center;
+    font-size: 0.8rem;
+    color: #94a3b8;
+    margin-top: 2rem;
+  }
+
+  /* ============================================
+     MODE: READING 📖
+     ============================================ */
+  .reading-metodo-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    background: #fffef5;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  
+  .reading-main-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    text-align: center;
+    margin-bottom: 2rem;
+    line-height: 1.2;
+  }
+  
+  .reading-section {
+    margin-bottom: 3rem;
+  }
+  
+  .reading-section-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 3px solid #0891b2;
+  }
+  
+  .reading-title-red {
+    border-bottom-color: #dc2626;
+  }
+  
+  .reading-intro-text {
+    font-size: 1.25rem;
+    line-height: 1.8;
+    color: #374151;
+    margin-bottom: 1.5rem;
+  }
+  
+  .reading-highlight-box {
+    padding: 1.5rem;
+    border-radius: 1rem;
+    border: 3px solid;
+    margin-bottom: 1rem;
+  }
+  
+  .reading-box-blue {
+    background: #eff6ff;
+    border-color: #3b82f6;
+  }
+  
+  .reading-box-cyan {
+    background: #ecfeff;
+    border-color: #0891b2;
+  }
+  
+  .reading-box-purple {
+    background: #faf5ff;
+    border-color: #9333ea;
+  }
+  
+  .reading-large-text {
+    font-size: 1.35rem;
+    line-height: 1.8;
+    color: #1a1a1a;
+    margin-bottom: 1rem;
+  }
+  
+  .reading-medium-text {
+    font-size: 1.15rem;
+    line-height: 1.7;
+    color: #374151;
+  }
+  
+  .reading-warning-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    background: #fef3c7;
+    border: 2px solid #f59e0b;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .reading-warning-icon {
+    font-size: 2rem;
+  }
+  
+  .reading-warning-box p {
+    font-size: 1.15rem;
+    color: #92400e;
+    line-height: 1.6;
+  }
+  
+  .reading-icon-text {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .reading-big-icon {
+    font-size: 3rem;
+  }
+  
+  .reading-steps-list {
+    margin-top: 1.5rem;
+  }
+  
+  .reading-step {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 0.75rem;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  
+  .reading-step-num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: #9333ea;
+    color: white;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+  
+  .reading-step p {
+    font-size: 1.15rem;
     color: #1a1a1a;
   }
   
-  :global(html[data-mode="reading"]) .not-prose {
+  .reading-pillars-table {
+    background: white;
+    border-radius: 1rem;
+    overflow: hidden;
+    border: 2px solid #e2e8f0;
+  }
+  
+  .reading-pillar-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  .reading-pillar-row:last-child {
+    border-bottom: none;
+  }
+  
+  .reading-pillar-priority {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+  }
+  
+  .reading-pillar-rank {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0891b2;
+    width: 2.5rem;
+  }
+  
+  .reading-pillar-icon {
+    font-size: 1.75rem;
+  }
+  
+  .reading-pillar-info {
+    flex: 1;
+  }
+  
+  .reading-pillar-info strong {
+    font-size: 1.15rem;
+    color: #1a1a1a;
+    display: block;
+  }
+  
+  .reading-pillar-info span {
+    font-size: 1rem;
+    color: #64748b;
+  }
+  
+  .reading-pillar-weight {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #0891b2;
+  }
+  
+  .reading-dimensions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .reading-dimension-item {
     padding: 1.5rem;
-    border-width: 2px;
+    border-radius: 1rem;
+    border: 3px solid;
   }
   
-  :global(html[data-mode="reading"]) .prose hr {
-    margin: 3rem 0;
-    border-width: 2px;
+  .reading-dim-blue {
+    background: #eff6ff;
+    border-color: #3b82f6;
   }
   
-  :global(html[data-mode="reading"]) table {
-    font-size: 1.125rem;
+  .reading-dim-amber {
+    background: #fffbeb;
+    border-color: #f59e0b;
   }
   
-  :global(html[data-mode="reading"]) table th,
-  :global(html[data-mode="reading"]) table td {
-    padding: 1rem;
+  .reading-dim-purple {
+    background: #faf5ff;
+    border-color: #9333ea;
+  }
+  
+  .reading-dim-emerald {
+    background: #ecfdf5;
+    border-color: #10b981;
+  }
+  
+  .reading-dim-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .reading-dim-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: white;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: #1a1a1a;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .reading-dim-header strong {
+    font-size: 1.35rem;
+    color: #1a1a1a;
+  }
+  
+  .reading-dimension-item > p {
+    font-size: 1.15rem;
+    color: #374151;
+    margin-bottom: 1rem;
+  }
+  
+  .reading-dim-examples {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .reading-example-good,
+  .reading-example-bad {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 1.05rem;
+  }
+  
+  .reading-example-good {
+    background: #d1fae5;
+    border: 2px solid #6ee7b7;
+    color: #065f46;
+  }
+  
+  .reading-example-bad {
+    background: #fee2e2;
+    border: 2px solid #fca5a5;
+    color: #991b1b;
+  }
+  
+  .reading-example-good span,
+  .reading-example-bad span {
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+  
+  .reading-penalties-box {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .reading-penalty-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+  }
+  
+  .reading-penalty-severe {
+    background: #fef2f2;
+    border: 2px solid #fca5a5;
+  }
+  
+  .reading-penalty-moderate {
+    background: #fffbeb;
+    border: 2px solid #fcd34d;
+  }
+  
+  .reading-penalty-icon {
+    font-size: 2rem;
+  }
+  
+  .reading-penalty-item strong {
+    font-size: 1.25rem;
+    color: #1a1a1a;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+  
+  .reading-penalty-item p {
+    font-size: 1.05rem;
+    color: #64748b;
+  }
+  
+  .reading-penalty-points {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #dc2626;
+    background: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    border: 2px solid #fca5a5;
+    white-space: nowrap;
+  }
+  
+  .reading-risk-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .reading-risk-card {
+    padding: 1.5rem;
+    border-radius: 1rem;
+    border: 3px solid;
+  }
+  
+  .reading-risk-low {
+    background: #ecfdf5;
+    border-color: #10b981;
+  }
+  
+  .reading-risk-medium {
+    background: #fffbeb;
+    border-color: #f59e0b;
+  }
+  
+  .reading-risk-high {
+    background: #fef2f2;
+    border-color: #ef4444;
+  }
+  
+  .reading-risk-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .reading-risk-emoji {
+    font-size: 2rem;
+  }
+  
+  .reading-risk-header strong {
+    font-size: 1.35rem;
+    color: #1a1a1a;
+  }
+  
+  .reading-risk-count {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #64748b;
+    margin-left: auto;
+    background: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+  }
+  
+  .reading-risk-card > p {
+    font-size: 1.15rem;
+    line-height: 1.7;
+    color: #374151;
+  }
+  
+  .reading-transparency-box {
+    background: #ecfdf5;
+    border: 3px solid #10b981;
+    border-radius: 1rem;
+    padding: 1.5rem;
+  }
+  
+  .reading-transparency-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #a7f3d0;
+  }
+  
+  .reading-transparency-item:last-child {
+    border-bottom: none;
+  }
+  
+  .reading-transparency-item span {
+    font-size: 1.5rem;
+    color: #10b981;
+    font-weight: 700;
+  }
+  
+  .reading-transparency-item p {
+    font-size: 1.15rem;
+    color: #065f46;
+  }
+  
+  .reading-footer-note {
+    text-align: center;
+    font-size: 1rem;
+    color: #64748b;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e2e8f0;
+  }
+  
+  /* Responsive Reading Mode */
+  @media (max-width: 640px) {
+    .reading-main-title {
+      font-size: 2rem;
+    }
+    .reading-section-title {
+      font-size: 1.5rem;
+    }
+    .reading-large-text {
+      font-size: 1.2rem;
+    }
+    .reading-pillar-row {
+      flex-wrap: wrap;
+    }
+    .reading-penalty-item {
+      flex-wrap: wrap;
+    }
+    .reading-penalty-points {
+      width: 100%;
+      text-align: center;
+      margin-top: 0.5rem;
+    }
   }
 </style>
 
