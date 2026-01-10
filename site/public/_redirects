@@ -1,0 +1,5 @@
+# Cloudflare Pages and Netlify redirects
+# https://developers.cloudflare.com/pages/platform/redirects/
+
+# Handle 404s gracefully
+/*    /index.html   404
