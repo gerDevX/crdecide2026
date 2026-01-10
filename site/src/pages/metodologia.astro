@@ -8,28 +8,44 @@ const fiscalStats = getFiscalStats();
 <BaseLayout title="Metodología">
   <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 prose prose-slate prose-lg">
     
-    <h1>¿Cómo funciona Costa Rica Decide?</h1>
+    <h1 class="flex items-center gap-3">
+      <span>📋</span> ¿Cómo funciona Costa Rica Decide?
+    </h1>
 
     <h2>¿Qué es esto?</h2>
-    <p>
-      Costa Rica Decide es una herramienta ciudadana que te ayuda a entender qué proponen 
-      los candidatos presidenciales para el período 2026-2030.
-    </p>
-    <p>
-      <strong>No te decimos por quién votar.</strong> Solo organizamos la información de los 
-      planes de gobierno oficiales para que puedas compararlos fácilmente.
-    </p>
+    
+    <div class="not-prose bg-gradient-to-r from-civic-50 to-blue-50 border border-civic-200 rounded-xl p-6 mt-4">
+      <p class="text-lg text-slate-700 mb-4">
+        <strong class="text-civic-800">Costa Rica Decide</strong> es una herramienta ciudadana que te ayuda a entender 
+        qué proponen los candidatos presidenciales para el período <strong>2026-2030</strong>.
+      </p>
+      <div class="flex items-center gap-3 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">
+        <span class="text-2xl">🗳️</span>
+        <p class="text-amber-900 font-medium">
+          <strong>No te decimos por quién votar.</strong> Solo organizamos la información de los 
+          planes de gobierno oficiales para que puedas compararlos fácilmente.
+        </p>
+      </div>
+    </div>
 
     <hr />
 
     <h2>¿De dónde salen los datos?</h2>
-    <p>
-      Todos los datos provienen de los <strong>planes de gobierno oficiales</strong> presentados 
-      por cada partido político al Tribunal Supremo de Elecciones (TSE).
-    </p>
-    <p>
-      Estos documentos son públicos y los puedes descargar directamente desde este sitio.
-    </p>
+    
+    <div class="not-prose bg-blue-50 border border-blue-200 rounded-xl p-6 mt-4">
+      <div class="flex items-start gap-4">
+        <span class="text-4xl">📄</span>
+        <div>
+          <p class="text-lg text-slate-700 mb-2">
+            Todos los datos provienen de los <strong class="text-blue-800">planes de gobierno oficiales</strong> 
+            presentados por cada partido político al <strong>Tribunal Supremo de Elecciones (TSE)</strong>.
+          </p>
+          <p class="text-slate-600">
+            Estos documentos son públicos y los puedes descargar directamente desde este sitio con enlace al TSE.
+          </p>
+        </div>
+      </div>
+    </div>
 
     <hr />
 
@@ -126,33 +142,95 @@ const fiscalStats = getFiscalStats();
       Para cada propuesta que encontramos, respondemos <strong>4 preguntas simples</strong>:
     </p>
 
-    <h3>1. ¿Existe la propuesta? (Existencia)</h3>
-    <p>¿El plan menciona una acción concreta, no solo un deseo vago?</p>
-    <ul>
-      <li>✓ "Crearemos un programa de becas para estudiantes de zonas rurales"</li>
-      <li>✗ "Mejoraremos la educación"</li>
-    </ul>
+    <div class="not-prose grid gap-4 mt-6">
+      <!-- Dimensión 1: Existencia -->
+      <div class="bg-gradient-to-r from-blue-50 to-slate-50 border border-blue-200 rounded-xl p-5">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="flex items-center justify-center w-10 h-10 bg-blue-100 text-blue-700 rounded-full font-bold text-lg">1</span>
+          <div>
+            <h4 class="font-bold text-blue-900 text-lg">¿Existe la propuesta?</h4>
+            <span class="text-sm text-blue-600 font-medium">Dimensión: Existencia</span>
+          </div>
+        </div>
+        <p class="text-slate-600 mb-3">¿El plan menciona una acción concreta, no solo un deseo vago?</p>
+        <div class="grid gap-2">
+          <div class="flex items-start gap-2 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
+            <span class="text-green-600 font-bold">✓</span>
+            <span class="text-green-800 text-sm">"Crearemos un programa de becas para estudiantes de zonas rurales"</span>
+          </div>
+          <div class="flex items-start gap-2 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+            <span class="text-red-600 font-bold">✗</span>
+            <span class="text-red-800 text-sm">"Mejoraremos la educación"</span>
+          </div>
+        </div>
+      </div>
 
-    <h3>2. ¿Dice cuándo? (Plazo)</h3>
-    <p>¿Hay un plazo específico, no solo "en el futuro"?</p>
-    <ul>
-      <li>✓ "En los primeros 100 días" o "Durante el cuatrienio 2026-2030"</li>
-      <li>✗ "Gradualmente" o "Cuando sea posible"</li>
-    </ul>
+      <!-- Dimensión 2: Plazo -->
+      <div class="bg-gradient-to-r from-amber-50 to-slate-50 border border-amber-200 rounded-xl p-5">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="flex items-center justify-center w-10 h-10 bg-amber-100 text-amber-700 rounded-full font-bold text-lg">2</span>
+          <div>
+            <h4 class="font-bold text-amber-900 text-lg">¿Dice cuándo?</h4>
+            <span class="text-sm text-amber-600 font-medium">Dimensión: Plazo</span>
+          </div>
+        </div>
+        <p class="text-slate-600 mb-3">¿Hay un plazo específico, no solo "en el futuro"?</p>
+        <div class="grid gap-2">
+          <div class="flex items-start gap-2 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
+            <span class="text-green-600 font-bold">✓</span>
+            <span class="text-green-800 text-sm">"En los primeros 100 días" o "Durante el cuatrienio 2026-2030"</span>
+          </div>
+          <div class="flex items-start gap-2 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+            <span class="text-red-600 font-bold">✗</span>
+            <span class="text-red-800 text-sm">"Gradualmente" o "Cuando sea posible"</span>
+          </div>
+        </div>
+      </div>
 
-    <h3>3. ¿Dice cómo? (Mecanismo)</h3>
-    <p>¿Explica el método, la ley, el programa o los pasos?</p>
-    <ul>
-      <li>✓ "Mediante una reforma a la Ley de Contratación Pública"</li>
-      <li>✗ "Implementaremos mejoras"</li>
-    </ul>
+      <!-- Dimensión 3: Mecanismo -->
+      <div class="bg-gradient-to-r from-purple-50 to-slate-50 border border-purple-200 rounded-xl p-5">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="flex items-center justify-center w-10 h-10 bg-purple-100 text-purple-700 rounded-full font-bold text-lg">3</span>
+          <div>
+            <h4 class="font-bold text-purple-900 text-lg">¿Dice cómo?</h4>
+            <span class="text-sm text-purple-600 font-medium">Dimensión: Mecanismo</span>
+          </div>
+        </div>
+        <p class="text-slate-600 mb-3">¿Explica el método, la ley, el programa o los pasos?</p>
+        <div class="grid gap-2">
+          <div class="flex items-start gap-2 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
+            <span class="text-green-600 font-bold">✓</span>
+            <span class="text-green-800 text-sm">"Mediante una reforma a la Ley de Contratación Pública"</span>
+          </div>
+          <div class="flex items-start gap-2 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+            <span class="text-red-600 font-bold">✗</span>
+            <span class="text-red-800 text-sm">"Implementaremos mejoras"</span>
+          </div>
+        </div>
+      </div>
 
-    <h3>4. ¿Dice con qué fondos? (Financiamiento)</h3>
-    <p>¿Indica de dónde saldrá el dinero?</p>
-    <ul>
-      <li>✓ "Financiado con una reasignación del presupuesto del MOPT"</li>
-      <li>✗ "Invertiremos millones" (sin decir de dónde)</li>
-    </ul>
+      <!-- Dimensión 4: Financiamiento -->
+      <div class="bg-gradient-to-r from-emerald-50 to-slate-50 border border-emerald-200 rounded-xl p-5">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="flex items-center justify-center w-10 h-10 bg-emerald-100 text-emerald-700 rounded-full font-bold text-lg">4</span>
+          <div>
+            <h4 class="font-bold text-emerald-900 text-lg">¿Dice con qué fondos?</h4>
+            <span class="text-sm text-emerald-600 font-medium">Dimensión: Financiamiento</span>
+          </div>
+        </div>
+        <p class="text-slate-600 mb-3">¿Indica de dónde saldrá el dinero?</p>
+        <div class="grid gap-2">
+          <div class="flex items-start gap-2 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
+            <span class="text-green-600 font-bold">✓</span>
+            <span class="text-green-800 text-sm">"Financiado con una reasignación del presupuesto del MOPT"</span>
+          </div>
+          <div class="flex items-start gap-2 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+            <span class="text-red-600 font-bold">✗</span>
+            <span class="text-red-800 text-sm">"Invertiremos millones" (sin decir de dónde)</span>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <hr />
 
@@ -259,59 +337,192 @@ const fiscalStats = getFiscalStats();
     <hr />
 
     <h2>¿Cómo se calcula el puntaje?</h2>
-    <p>Cada propuesta puede obtener hasta <strong>4 puntos</strong> (uno por cada dimensión cumplida).</p>
-    <p>Para cada pilar, tomamos la <strong>mejor propuesta</strong> del candidato en ese tema.</p>
-    <p>El puntaje final se calcula así:</p>
-    <ol>
-      <li>Se calcula el puntaje bruto (raw) de cada pilar (0-4)</li>
-      <li><strong>Se aplican penalizaciones fiscales</strong> (el puntaje puede bajar)</li>
-      <li>Se normaliza el puntaje efectivo (0 a 1)</li>
-      <li>Se multiplica por el peso del pilar</li>
-      <li>Se suman todos los pilares</li>
-    </ol>
-    <p><strong>Máximo posible:</strong> 100% (propuestas perfectas en todos los pilares, sin penalizaciones)</p>
+    
+    <div class="not-prose bg-slate-50 border border-slate-200 rounded-xl p-6 mt-4">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="text-3xl">🧮</span>
+        <div>
+          <p class="font-semibold text-slate-900">Cada propuesta puede obtener hasta <span class="text-emerald-600">4 puntos</span></p>
+          <p class="text-sm text-slate-600">Uno por cada dimensión cumplida (Existencia, Plazo, Mecanismo, Financiamiento)</p>
+        </div>
+      </div>
+      
+      <p class="text-slate-700 mb-4">
+        Para cada pilar, tomamos la <strong>mejor propuesta</strong> del candidato en ese tema.
+      </p>
+      
+      <h4 class="font-bold text-slate-800 mb-3">📐 Proceso de cálculo:</h4>
+      
+      <div class="space-y-3">
+        <div class="flex items-start gap-3">
+          <span class="flex items-center justify-center w-7 h-7 bg-blue-100 text-blue-700 rounded-full font-bold text-sm shrink-0">1</span>
+          <p class="text-slate-700">Se calcula el <strong>puntaje bruto (raw)</strong> de cada pilar (0-4)</p>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="flex items-center justify-center w-7 h-7 bg-red-100 text-red-700 rounded-full font-bold text-sm shrink-0">2</span>
+          <p class="text-slate-700"><strong class="text-red-700">Se aplican penalizaciones fiscales</strong> (el puntaje puede bajar)</p>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="flex items-center justify-center w-7 h-7 bg-purple-100 text-purple-700 rounded-full font-bold text-sm shrink-0">3</span>
+          <p class="text-slate-700">Se <strong>normaliza</strong> el puntaje efectivo (0 a 1)</p>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="flex items-center justify-center w-7 h-7 bg-amber-100 text-amber-700 rounded-full font-bold text-sm shrink-0">4</span>
+          <p class="text-slate-700">Se <strong>multiplica por el peso</strong> del pilar</p>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="flex items-center justify-center w-7 h-7 bg-emerald-100 text-emerald-700 rounded-full font-bold text-sm shrink-0">5</span>
+          <p class="text-slate-700">Se <strong>suman todos los pilares</strong> para el puntaje final</p>
+        </div>
+      </div>
+      
+      <div class="mt-4 pt-4 border-t border-slate-300 flex items-center gap-2">
+        <span class="text-xl">🏆</span>
+        <p class="font-medium text-slate-800"><strong>Máximo posible:</strong> 100% (propuestas perfectas en todos los pilares, sin penalizaciones)</p>
+      </div>
+    </div>
 
     <hr />
 
     <h2>¿Por qué penalizar propuestas fiscales irresponsables?</h2>
-    <p>
-      Costa Rica vive una realidad concreta:
-    </p>
-    <ul>
-      <li>📉 <strong>Déficit fiscal</strong> que requiere control constante</li>
-      <li>🏦 <strong>Compromisos con el FMI</strong> que deben cumplirse</li>
-      <li>📊 <strong>Regla fiscal</strong> como único mecanismo de contención del gasto</li>
-      <li>💵 <strong>Deuda pública</strong> que ya representa más del 60% del PIB</li>
-    </ul>
-    <p>
-      Proponer flexibilizar la regla fiscal sin alternativa, o aumentar deuda e impuestos 
-      sin plan de sostenibilidad, son decisiones que <strong>afectan directamente</strong> 
-      al pueblo costarricense.
-    </p>
-    <p>
-      Por eso, este análisis premia la <strong>responsabilidad fiscal</strong> y penaliza 
-      las propuestas que ponen en riesgo la estabilidad económica del país.
-    </p>
+    
+    <div class="not-prose bg-slate-50 border border-slate-200 rounded-xl p-6 mt-4">
+      <h4 class="font-bold text-lg mb-4 flex items-center gap-2 text-slate-800">
+        <span>🇨🇷</span> Costa Rica vive una realidad concreta:
+      </h4>
+      
+      <div class="grid sm:grid-cols-2 gap-3 mb-4">
+        <div class="flex items-center gap-3 bg-amber-50 border-2 border-amber-300 rounded-lg px-4 py-3 shadow-sm">
+          <span class="text-2xl">📉</span>
+          <div>
+            <p class="font-bold text-amber-900">Déficit fiscal</p>
+            <p class="text-sm text-amber-700">Requiere control constante</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 bg-amber-50 border-2 border-amber-300 rounded-lg px-4 py-3 shadow-sm">
+          <span class="text-2xl">🏦</span>
+          <div>
+            <p class="font-bold text-amber-900">Compromisos con el FMI</p>
+            <p class="text-sm text-amber-700">Que deben cumplirse</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 bg-amber-50 border-2 border-amber-300 rounded-lg px-4 py-3 shadow-sm">
+          <span class="text-2xl">📊</span>
+          <div>
+            <p class="font-bold text-amber-900">Regla fiscal</p>
+            <p class="text-sm text-amber-700">Único mecanismo de contención</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 bg-amber-50 border-2 border-amber-300 rounded-lg px-4 py-3 shadow-sm">
+          <span class="text-2xl">💵</span>
+          <div>
+            <p class="font-bold text-amber-900">Deuda pública &gt;60% PIB</p>
+            <p class="text-sm text-amber-700">Nivel crítico de endeudamiento</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-red-50 border border-red-200 rounded-lg p-4 mt-4">
+        <p class="text-red-800">
+          <strong class="text-red-700">⚠️ Importante:</strong> Proponer flexibilizar la regla fiscal sin alternativa, 
+          o aumentar deuda e impuestos sin plan de sostenibilidad, son decisiones que 
+          <strong>afectan directamente</strong> al pueblo costarricense.
+        </p>
+      </div>
+      
+      <p class="mt-4 text-emerald-700 font-medium">
+        ✅ Este análisis premia la <strong class="text-emerald-800">responsabilidad fiscal</strong> y penaliza 
+        las propuestas que ponen en riesgo la estabilidad económica del país.
+      </p>
+    </div>
 
     <hr />
 
     <h2>¿Qué NO hace este análisis?</h2>
-    <ul>
-      <li>❌ <strong>No evalúa viabilidad política</strong> (si es posible aprobar algo en la Asamblea)</li>
-      <li>❌ <strong>No juzga ideología</strong> (si algo es "de izquierda" o "de derecha")</li>
-      <li>❌ <strong>No predice resultados</strong> (si funcionará o no)</li>
-      <li>❌ <strong>No recomienda candidatos</strong> (esa decisión es tuya)</li>
-    </ul>
+    
+    <div class="not-prose grid sm:grid-cols-2 gap-3 mt-4">
+      <div class="flex items-start gap-3 bg-slate-100 border border-slate-200 rounded-lg p-4">
+        <span class="text-2xl">❌</span>
+        <div>
+          <p class="font-semibold text-slate-800">No evalúa viabilidad política</p>
+          <p class="text-sm text-slate-600">Si es posible aprobar algo en la Asamblea Legislativa</p>
+        </div>
+      </div>
+      <div class="flex items-start gap-3 bg-slate-100 border border-slate-200 rounded-lg p-4">
+        <span class="text-2xl">❌</span>
+        <div>
+          <p class="font-semibold text-slate-800">No juzga ideología</p>
+          <p class="text-sm text-slate-600">Si algo es "de izquierda" o "de derecha"</p>
+        </div>
+      </div>
+      <div class="flex items-start gap-3 bg-slate-100 border border-slate-200 rounded-lg p-4">
+        <span class="text-2xl">❌</span>
+        <div>
+          <p class="font-semibold text-slate-800">No predice resultados</p>
+          <p class="text-sm text-slate-600">Si una propuesta funcionará o no en la práctica</p>
+        </div>
+      </div>
+      <div class="flex items-start gap-3 bg-slate-100 border border-slate-200 rounded-lg p-4">
+        <span class="text-2xl">❌</span>
+        <div>
+          <p class="font-semibold text-slate-800">No recomienda candidatos</p>
+          <p class="text-sm text-slate-600">Esa decisión es tuya como ciudadano</p>
+        </div>
+      </div>
+    </div>
 
     <hr />
 
     <h2>Transparencia</h2>
-    <ul>
-      <li>Todos los PDFs originales están disponibles en el sitio</li>
-      <li>Cada propuesta tiene enlace a la página exacta del documento</li>
-      <li>El código de análisis está disponible públicamente</li>
-      <li>No recibimos financiamiento de partidos políticos</li>
-    </ul>
+    
+    <div class="not-prose bg-emerald-50 border border-emerald-200 rounded-xl p-6 mt-4">
+      <div class="grid gap-4">
+        <div class="flex items-start gap-3">
+          <span class="flex items-center justify-center w-8 h-8 bg-emerald-100 text-emerald-700 rounded-full shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+          </span>
+          <div>
+            <p class="font-semibold text-emerald-900">PDFs originales disponibles</p>
+            <p class="text-sm text-emerald-700">Todos los planes de gobierno están disponibles para descarga en este sitio</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="flex items-center justify-center w-8 h-8 bg-emerald-100 text-emerald-700 rounded-full shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+          </span>
+          <div>
+            <p class="font-semibold text-emerald-900">Enlaces a página exacta</p>
+            <p class="text-sm text-emerald-700">Cada propuesta tiene enlace directo a la página del documento fuente</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="flex items-center justify-center w-8 h-8 bg-emerald-100 text-emerald-700 rounded-full shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+          </span>
+          <div>
+            <p class="font-semibold text-emerald-900">Código público</p>
+            <p class="text-sm text-emerald-700">El código de análisis está disponible públicamente para revisión</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="flex items-center justify-center w-8 h-8 bg-emerald-100 text-emerald-700 rounded-full shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+          </span>
+          <div>
+            <p class="font-semibold text-emerald-900">Sin financiamiento político</p>
+            <p class="text-sm text-emerald-700">No recibimos dinero de partidos políticos ni candidatos</p>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <p class="text-sm text-slate-500 mt-12">
       <em>Última actualización: Enero 2026 · Versión del análisis: v5 (Responsabilidad Fiscal)</em>
