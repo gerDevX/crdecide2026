@@ -1,9 +1,18 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ScoreBar from '../components/ui/ScoreBar.astro';
-import { candidates, scoresByCandidate, pillars, pillarIndex } from '../lib/data';
+import { candidates, scoresByCandidate, pillars, pillarIndex, analysisByCandidate, proposals, getPdfUrl } from '../lib/data';
 import { PILLAR_ICONS } from '../lib/types';
 import type { PillarId } from '../lib/types';
+
+// Helper para obtener nombre del candidato
+function getCandidateName(candidate: any): string {
+  const name = candidate?.candidate_name;
+  if (name && name !== 'Por determinar' && name !== 'no_especificado') {
+    return name;
+  }
+  return candidate?.party_name || 'N/A';
+}
 
 // Sort candidates by score for selector
 const sortedCandidates = [...candidates].sort((a, b) => {
@@ -11,105 +20,877 @@ const sortedCandidates = [...candidates].sort((a, b) => {
   const scoreB = scoresByCandidate[b.candidate_id]?.overall.weighted_sum || 0;
   return scoreB - scoreA;
 });
+
+// Prepare candidate data with names
+const candidatesWithNames = sortedCandidates.map(c => ({
+  ...c,
+  displayName: getCandidateName(c)
+}));
+
+// Index proposals by candidate and pillar with PDF info
+type ProposalIndex = Record<string, Record<string, { pdfId: string; page: number }>>;
+const proposalIndex: ProposalIndex = {};
+proposals.forEach(p => {
+  if (!proposalIndex[p.candidate_id]) {
+    proposalIndex[p.candidate_id] = {};
+  }
+  // Guardar solo la primera propuesta por pilar (la más relevante)
+  if (!proposalIndex[p.candidate_id][p.pillar_id]) {
+    proposalIndex[p.candidate_id][p.pillar_id] = {
+      pdfId: p.evidence?.pdf_id || '',
+      page: p.evidence?.page || 1
+    };
+  }
+});
+
+// Helper para generar URL del PDF (para pasar al JS)
+function buildPdfUrl(pdfId: string, page: number): string {
+  return `/planes/${pdfId}.pdf#page=${page}`;
+}
 ---
 
 <BaseLayout title="Comparar Candidatos">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    
-    <!-- Header -->
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold text-slate-900 mb-2">Comparar Candidatos</h1>
-      <p class="text-slate-600">
-        Selecciona de 2 a 4 candidatos para comparar sus propuestas lado a lado.
-      </p>
-    </div>
 
-    <!-- Selector -->
-    <div class="card p-5 mb-8">
-      <div class="flex flex-wrap items-center gap-3 mb-4">
-        <span class="font-medium text-slate-700">Selecciona candidatos:</span>
-        <button id="clear-selection" class="text-sm text-red-600 hover:underline hidden">
-          Limpiar selección
-        </button>
+  <!-- ============================================
+       DASHBOARD MODE (Default) - Modo Visual Detallado
+       ============================================ -->
+  <div class="mode-dashboard-content">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-slate-900 mb-2">⚖️ Comparar Candidatos</h1>
+        <p class="text-slate-600">
+          Selecciona de 2 a 4 candidatos para comparar sus propuestas lado a lado.
+        </p>
       </div>
-      <div id="candidate-selector" class="flex flex-wrap gap-2">
-        {sortedCandidates.map((candidate) => (
-          <button
-            data-candidate-id={candidate.candidate_id}
-            data-party-name={candidate.party_name}
-            class="candidate-btn px-3 py-1.5 rounded-full text-sm border-2 border-slate-200 hover:border-civic-500 transition-colors"
-          >
-            {candidate.pdf_id}
-          </button>
-        ))}
-      </div>
-      <p id="selection-hint" class="mt-3 text-sm text-slate-500">
-        Haz clic en los candidatos que deseas comparar (mínimo 2, máximo 4)
-      </p>
-    </div>
 
-    <!-- Comparison Table (populated by JS) -->
-    <div id="comparison-container" class="hidden">
-      <!-- Sticky Header -->
-      <div id="comparison-header" class="sticky top-16 z-20 bg-white border-b border-slate-200 -mx-4 px-4 py-3">
-        <div class="flex items-center">
-          <div class="w-48 flex-shrink-0 font-medium text-slate-500">Pilar</div>
-          <div id="header-candidates" class="flex-1 flex">
+      <!-- Selector -->
+      <div class="card p-5 mb-8">
+        <div class="flex flex-wrap items-center gap-3 mb-4">
+          <span class="font-medium text-slate-700">Selecciona candidatos:</span>
+<button id="clear-selection" class="text-sm bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700 transition-colors hidden">
+             ✕ Limpiar selección
+            </button>
+        </div>
+        <div id="candidate-selector" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+          {candidatesWithNames.map((candidate) => (
+            <button
+              data-candidate-id={candidate.candidate_id}
+              data-candidate-name={candidate.displayName}
+              data-party-name={candidate.party_name}
+              class="candidate-btn flex flex-col items-start text-left px-4 py-3 rounded-lg border-2 border-slate-200 hover:border-civic-500 transition-colors bg-white"
+            >
+              <span class="font-semibold text-slate-900 text-sm line-clamp-1">{candidate.displayName}</span>
+              <span class="text-xs text-slate-500">{candidate.party_name}</span>
+            </button>
+          ))}
+        </div>
+        <p id="selection-hint" class="mt-3 text-sm text-slate-500">
+          Haz clic en los candidatos que deseas comparar (mínimo 2, máximo 4)
+        </p>
+      </div>
+
+      <!-- Comparison Table (populated by JS) -->
+      <div id="comparison-container" class="hidden">
+        <!-- Sticky Header -->
+        <div id="comparison-header" class="sticky top-16 z-20 bg-white border-b border-slate-200 -mx-4 px-4 py-3">
+          <div class="flex items-center">
+            <div class="w-48 flex-shrink-0 font-medium text-slate-500">Pilar</div>
+            <div id="header-candidates" class="flex-1 flex">
+              <!-- Filled by JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Comparison Body -->
+        <div id="comparison-body" class="divide-y divide-slate-100">
+          {pillars.map((pillar) => {
+            const icon = PILLAR_ICONS[pillar.pillar_id as PillarId];
+            return (
+              <div class="pillar-row py-4" data-pillar-id={pillar.pillar_id}>
+                <div class="flex items-start">
+                  <div class="w-48 flex-shrink-0">
+                    <div class="flex items-center gap-2">
+                      <span>{icon}</span>
+                      <span class="font-medium text-slate-900">{pillar.pillar_id}</span>
+                    </div>
+                    <div class="text-sm text-slate-500 mt-1">{pillar.pillar_name}</div>
+                  </div>
+                  <div class="flex-1 flex gap-4 candidate-scores">
+                    <!-- Filled by JS -->
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <!-- Overall Comparison -->
+        <div id="overall-comparison" class="mt-6 card p-5 bg-civic-50">
+          <h3 class="font-bold text-slate-900 mb-4">Resumen General</h3>
+          <div id="overall-scores" class="grid gap-4">
             <!-- Filled by JS -->
           </div>
         </div>
       </div>
 
-      <!-- Comparison Body -->
-      <div id="comparison-body" class="divide-y divide-slate-100">
-        {pillars.map((pillar) => {
-          const icon = PILLAR_ICONS[pillar.pillar_id as PillarId];
-          return (
-            <div class="pillar-row py-4" data-pillar-id={pillar.pillar_id}>
-              <div class="flex items-start">
-                <div class="w-48 flex-shrink-0">
-                  <div class="flex items-center gap-2">
-                    <span>{icon}</span>
-                    <span class="font-medium text-slate-900">{pillar.pillar_id}</span>
-                  </div>
-                  <div class="text-sm text-slate-500 mt-1">{pillar.pillar_name}</div>
-                </div>
-                <div class="flex-1 flex gap-4 candidate-scores">
-                  <!-- Filled by JS -->
-                </div>
-              </div>
-            </div>
-          );
-        })}
+      <!-- Empty state -->
+      <div id="empty-state" class="card p-12 text-center">
+        <div class="text-4xl mb-4">🔍</div>
+        <h3 class="text-xl font-semibold text-slate-900 mb-2">Selecciona candidatos</h3>
+        <p class="text-slate-600">
+          Elige al menos 2 candidatos de la lista superior para comenzar la comparación.
+        </p>
       </div>
 
-      <!-- Overall Comparison -->
-      <div id="overall-comparison" class="mt-6 card p-5 bg-civic-50">
-        <h3 class="font-bold text-slate-900 mb-4">Resumen General</h3>
-        <div id="overall-scores" class="grid gap-4">
+    </div>
+  </div>
+
+  <!-- ============================================
+       EXPRESS MODE 🚀 - Modo Visual Rápido
+       ============================================ -->
+  <div class="mode-express-content">
+    <div class="express-compare-container">
+      
+      <!-- Header -->
+      <header class="express-compare-header">
+        <h1 class="express-compare-title">⚖️ Comparar Candidatos</h1>
+        <p class="express-compare-subtitle">
+          Selecciona 2-4 candidatos para comparar
+        </p>
+      </header>
+
+      <!-- Selector -->
+      <div class="express-selector-box">
+        <div class="express-selector-header">
+          <span>Selecciona candidatos:</span>
+          <button id="express-clear-selection" class="express-clear-btn hidden">
+            ✕ Limpiar
+          </button>
+        </div>
+        <div id="express-candidate-selector" class="express-candidates-grid">
+          {candidatesWithNames.map((candidate) => (
+            <button
+              data-candidate-id={candidate.candidate_id}
+              data-candidate-name={candidate.displayName}
+              data-party-name={candidate.party_name}
+              class="express-candidate-btn"
+            >
+              <span class="express-btn-name">{candidate.displayName}</span>
+              <span class="express-btn-party">{candidate.party_name}</span>
+            </button>
+          ))}
+        </div>
+        <p id="express-selection-hint" class="express-hint">
+          Mínimo 2, máximo 4 candidatos
+        </p>
+      </div>
+
+      <!-- Comparison (populated by JS) -->
+      <div id="express-comparison-container" class="express-comparison hidden">
+        <div id="express-comparison-content">
           <!-- Filled by JS -->
         </div>
       </div>
-    </div>
 
-    <!-- Empty state -->
-    <div id="empty-state" class="card p-12 text-center">
-      <div class="text-4xl mb-4">🔍</div>
-      <h3 class="text-xl font-semibold text-slate-900 mb-2">Selecciona candidatos</h3>
-      <p class="text-slate-600">
-        Elige al menos 2 candidatos de la lista superior para comenzar la comparación.
-      </p>
-    </div>
+      <!-- Empty state -->
+      <div id="express-empty-state" class="express-empty">
+        <span class="express-empty-icon">🔍</span>
+        <span>Selecciona al menos 2 candidatos</span>
+      </div>
 
+    </div>
   </div>
+
+  <!-- ============================================
+       READING MODE 📖 - Modo Lectura (Adultos Mayores)
+       ============================================ -->
+  <div class="mode-reading-content">
+    <div class="reading-compare-container">
+      
+      <!-- Header -->
+      <header class="reading-compare-header">
+        <h1 class="reading-compare-title">⚖️ Comparar Candidatos</h1>
+        <p class="reading-compare-intro">
+          Esta herramienta le permite comparar las propuestas de varios candidatos lado a lado.
+        </p>
+      </header>
+
+      <!-- Tabs Navigation -->
+      <nav class="reading-tabs-nav">
+        <button class="reading-tab active" data-reading-tab="paso1" id="reading-tab-paso1">
+          <span class="reading-tab-number">1</span>
+          <span class="reading-tab-text">Seleccionar Candidatos</span>
+          <span class="reading-tab-count" id="reading-tab-count">(0)</span>
+        </button>
+        <button class="reading-tab" data-reading-tab="paso2" id="reading-tab-paso2" disabled>
+          <span class="reading-tab-number">2</span>
+          <span class="reading-tab-text">Ver Comparación</span>
+        </button>
+      </nav>
+
+      <!-- Tab Content: Paso 1 - Selección -->
+      <section class="reading-tab-content active" id="reading-content-paso1">
+        <div class="reading-paso-header">
+          <h2 class="reading-section-title">👆 Seleccione los candidatos a comparar</h2>
+          <p class="reading-paso-instructions">
+            Haga clic en los candidatos que desea comparar. Puede seleccionar de 2 a 4 candidatos.
+          </p>
+        </div>
+        
+        <div class="reading-selector-header">
+          <span class="reading-selected-count" id="reading-selected-count">0 candidatos seleccionados</span>
+          <button id="reading-clear-selection" class="reading-clear-btn hidden">
+            ✕ Limpiar selección
+          </button>
+        </div>
+        
+        <div id="reading-candidate-selector" class="reading-candidates-list">
+          {candidatesWithNames.map((candidate) => (
+            <button
+              data-candidate-id={candidate.candidate_id}
+              data-candidate-name={candidate.displayName}
+              data-party-name={candidate.party_name}
+              class="reading-candidate-btn"
+            >
+              <span class="reading-btn-name">{candidate.displayName}</span>
+              <span class="reading-btn-party">{candidate.party_name}</span>
+            </button>
+          ))}
+        </div>
+        
+        <div class="reading-paso-footer">
+          <p id="reading-selection-hint" class="reading-hint">
+            💡 Seleccione al menos 2 candidatos para poder comparar.
+          </p>
+          <button id="reading-go-to-paso2" class="reading-next-btn" disabled>
+            Ver Comparación →
+          </button>
+        </div>
+      </section>
+
+      <!-- Tab Content: Paso 2 - Comparación -->
+      <section class="reading-tab-content" id="reading-content-paso2">
+        <div class="reading-paso-header">
+          <h2 class="reading-section-title">📊 Resultados de la Comparación</h2>
+          <p class="reading-paso-instructions">
+            Aquí puede ver los puntajes de los candidatos seleccionados lado a lado.
+          </p>
+        </div>
+        
+        <div class="reading-back-navigation">
+          <button id="reading-go-back-paso1" class="reading-back-btn">
+            ← Volver a seleccionar candidatos
+          </button>
+        </div>
+        
+        <div id="reading-comparison-content">
+          <!-- Filled by JS -->
+        </div>
+        
+        <div class="reading-comparison-legend">
+          <h3>📖 ¿Cómo leer los resultados?</h3>
+          <ul>
+            <li><strong style="color: #059669;">75% o más:</strong> Propuestas muy completas y detalladas</li>
+            <li><strong style="color: #d97706;">50% - 74%:</strong> Propuestas parcialmente desarrolladas</li>
+            <li><strong style="color: #dc2626;">Menos de 50%:</strong> Propuestas incompletas o ausentes</li>
+          </ul>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
 </BaseLayout>
 
-<script define:vars={{ candidates: sortedCandidates, scoresByCandidate, pillars }}>
+<style>
+  /* Mode visibility */
+  .mode-express-content,
+  .mode-reading-content {
+    display: none;
+  }
+  
+  .mode-dashboard-content {
+    display: block;
+  }
+  
+  html[data-mode="express"] .mode-express-content {
+    display: block;
+  }
+  
+  html[data-mode="express"] .mode-dashboard-content,
+  html[data-mode="express"] .mode-reading-content {
+    display: none;
+  }
+  
+  html[data-mode="reading"] .mode-reading-content {
+    display: block;
+  }
+  
+  html[data-mode="reading"] .mode-dashboard-content,
+  html[data-mode="reading"] .mode-express-content {
+    display: none;
+  }
+
+  /* ===========================================
+     EXPRESS MODE STYLES
+     =========================================== */
+  .express-compare-container {
+    max-width: 50rem;
+    margin: 0 auto;
+    padding: 1.5rem;
+  }
+  
+  .express-compare-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .express-compare-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin: 0 0 0.5rem 0;
+  }
+  
+  .express-compare-subtitle {
+    font-size: 1rem;
+    color: #64748b;
+    margin: 0;
+  }
+  
+  .express-selector-box {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .express-selector-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+    color: #334155;
+  }
+  
+  .express-clear-btn {
+    font-size: 0.85rem;
+    color: white !important;
+    background: #dc2626;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  
+  .express-clear-btn:hover {
+    background: #b91c1c;
+  }
+  
+  .express-candidates-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0.5rem;
+  }
+  
+  .express-candidate-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0.75rem;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+  }
+  
+  .express-candidate-btn:hover {
+    border-color: #0891b2;
+  }
+  
+  .express-candidate-btn.selected {
+    background: #ecfeff;
+    border-color: #0891b2;
+  }
+  
+  .express-btn-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #0f172a;
+    line-height: 1.2;
+  }
+  
+  .express-btn-party {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-top: 0.125rem;
+  }
+  
+  .express-hint {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-top: 0.75rem;
+  }
+  
+  .express-comparison {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 1.25rem;
+  }
+  
+  .express-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 3rem;
+    background: #f8fafc;
+    border: 2px dashed #e2e8f0;
+    border-radius: 1rem;
+    color: #64748b;
+  }
+  
+  .express-empty-icon {
+    font-size: 2.5rem;
+  }
+
+  /* ===========================================
+     READING MODE STYLES
+     =========================================== */
+  .reading-compare-container {
+    max-width: 56rem;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    font-family: Georgia, 'Times New Roman', serif !important;
+  }
+  
+  .reading-compare-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 2rem;
+    background: #f8fafc;
+    border: 3px solid #1e3a5f;
+    border-radius: 1rem;
+  }
+  
+  .reading-compare-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1e3a5f;
+    margin: 0 0 1rem 0;
+  }
+  
+  .reading-compare-intro {
+    font-size: 1.25rem;
+    color: #475569;
+    line-height: 1.7;
+    margin: 0;
+  }
+  
+  .reading-selector-section {
+    margin-bottom: 2rem;
+  }
+  
+  .reading-section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e3a5f;
+    margin: 0 0 1rem 0;
+  }
+  
+  .reading-selector-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .reading-selected-count {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #0891b2;
+  }
+  
+  .reading-clear-btn {
+    font-size: 1.1rem;
+    color: white !important;
+    background: #dc2626;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  
+  .reading-clear-btn:hover {
+    background: #b91c1c;
+  }
+  
+  .reading-candidates-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .reading-candidate-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.25rem;
+    background: white;
+    border: 3px solid #e2e8f0;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    width: 100%;
+  }
+  
+  .reading-candidate-btn:hover {
+    border-color: #1e3a5f;
+  }
+  
+  .reading-candidate-btn.selected {
+    background: #ecfeff;
+    border-color: #0891b2;
+    border-width: 4px;
+  }
+  
+  .reading-btn-name {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.2;
+  }
+  
+  .reading-btn-party {
+    font-size: 1.1rem;
+    color: #64748b;
+    margin-top: 0.25rem;
+  }
+  
+  .reading-hint {
+    font-size: 1.1rem;
+    color: #475569;
+    margin-top: 1rem;
+    padding: 1rem;
+    background: #fef3c7;
+    border-radius: 0.5rem;
+  }
+  
+  .reading-comparison {
+    margin-bottom: 2rem;
+  }
+  
+  .reading-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 3rem;
+    background: #f8fafc;
+    border: 3px dashed #cbd5e1;
+    border-radius: 1rem;
+    text-align: center;
+  }
+  
+  .reading-empty-icon {
+    font-size: 3rem;
+  }
+  
+  .reading-empty h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e3a5f;
+    margin: 0;
+  }
+  
+  .reading-empty p {
+    font-size: 1.15rem;
+    color: #64748b;
+    margin: 0;
+  }
+
+  /* Reading Mode Tabs */
+  .reading-tabs-nav {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    background: #f1f5f9;
+    padding: 0.5rem;
+    border-radius: 1rem;
+  }
+  
+  .reading-tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 1.25rem 1.5rem;
+    background: transparent;
+    border: none;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  
+  .reading-tab:not(:disabled):hover {
+    background: white;
+  }
+  
+  .reading-tab.active {
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .reading-tab:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .reading-tab-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: #e2e8f0;
+    color: #475569;
+    border-radius: 50%;
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+  
+  .reading-tab.active .reading-tab-number {
+    background: #0891b2;
+    color: white;
+  }
+  
+  .reading-tab-text {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #334155;
+  }
+  
+  .reading-tab.active .reading-tab-text {
+    color: #0f172a;
+  }
+  
+  .reading-tab-count {
+    font-size: 1rem;
+    color: #64748b;
+  }
+  
+  /* Tab Content */
+  .reading-tab-content {
+    display: none;
+  }
+  
+  .reading-tab-content.active {
+    display: block;
+  }
+  
+  .reading-paso-header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e2e8f0;
+  }
+  
+  .reading-paso-instructions {
+    font-size: 1.15rem;
+    color: #475569;
+    line-height: 1.6;
+    margin: 0.5rem 0 0 0;
+  }
+  
+  .reading-paso-footer {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .reading-next-btn {
+    width: 100%;
+    padding: 1.25rem 2rem;
+    background: #0891b2;
+    color: white !important;
+    border: none;
+    border-radius: 0.75rem;
+    font-size: 1.35rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  
+  .reading-next-btn:disabled {
+    background: #cbd5e1;
+    cursor: not-allowed;
+  }
+  
+  .reading-next-btn:not(:disabled):hover {
+    background: #0e7490;
+  }
+  
+  .reading-back-navigation {
+    margin-bottom: 1.5rem;
+  }
+  
+  .reading-back-btn {
+    padding: 1rem 1.5rem;
+    background: white;
+    color: #0891b2 !important;
+    border: 3px solid #0891b2;
+    border-radius: 0.75rem;
+    font-size: 1.15rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  
+  .reading-back-btn:hover {
+    background: #ecfeff;
+  }
+  
+  .reading-comparison-legend {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 1rem;
+  }
+  
+  .reading-comparison-legend h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1e3a5f;
+    margin: 0 0 1rem 0;
+  }
+  
+  .reading-comparison-legend ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .reading-comparison-legend li {
+    font-size: 1.1rem;
+    color: #475569;
+    line-height: 1.5;
+  }
+  
+  @media (max-width: 768px) {
+    .express-candidates-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .reading-compare-title {
+      font-size: 2rem;
+    }
+    
+    .reading-tabs-nav {
+      flex-direction: column;
+    }
+    
+    .reading-tab {
+      justify-content: flex-start;
+      padding: 1rem;
+    }
+    
+    .reading-tab-text {
+      font-size: 1.1rem;
+    }
+  }
+
+  /* ===========================================
+     VIEW PLAN LINK STYLES (All Modes)
+     =========================================== */
+  .score-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  
+  /* Dashboard Mode - "Ver >>" link */
+  .view-plan-anchor {
+    display: inline-block;
+    color: #0891b2 !important;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-decoration: none !important;
+    transition: all 0.2s;
+  }
+  
+  .view-plan-anchor:hover {
+    color: #0e7490 !important;
+    text-decoration: underline !important;
+  }
+  
+  .view-plan-anchor.no-proposal {
+    color: #94a3b8 !important;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  
+  /* Express & Reading Mode - Percentage as link */
+  .percent-link {
+    color: inherit !important;
+    text-decoration: none !important;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  
+  .percent-link:hover {
+    text-decoration: underline !important;
+    opacity: 0.8;
+  }
+  
+  .percent-no-link {
+    opacity: 0.5;
+  }
+  
+  /* Reading mode adjustments */
+  html[data-mode="reading"] .percent-link {
+    font-size: 1.75rem;
+    font-weight: 800;
+  }
+</style>
+
+<script define:vars={{ candidates: candidatesWithNames, scoresByCandidate, pillars, proposalIndex }}>
+  // Helper to get candidate display name
+  function getDisplayName(candidate) {
+    if (candidate.displayName) return candidate.displayName;
+    const name = candidate.candidate_name;
+    if (name && name !== 'Por determinar' && name !== 'no_especificado') {
+      return name;
+    }
+    return candidate.party_name || 'N/A';
+  }
+
+  // Dashboard Mode Logic
   const selectedCandidates = new Set();
   const maxSelection = 4;
   const minSelection = 2;
 
-  const candidateBtns = document.querySelectorAll('.candidate-btn');
+  const candidateBtns = document.querySelectorAll('.mode-dashboard-content .candidate-btn');
   const clearBtn = document.getElementById('clear-selection');
   const selectionHint = document.getElementById('selection-hint');
   const comparisonContainer = document.getElementById('comparison-container');
@@ -122,7 +903,7 @@ const sortedCandidates = [...candidates].sort((a, b) => {
   const preselected = urlParams.get('c');
   if (preselected) {
     selectedCandidates.add(preselected);
-    document.querySelector(`[data-candidate-id="${preselected}"]`)?.classList.add('selected', 'bg-civic-100', 'border-civic-500');
+    document.querySelector(`.mode-dashboard-content [data-candidate-id="${preselected}"]`)?.classList.add('selected', 'bg-civic-100', 'border-civic-500');
   }
 
   candidateBtns.forEach(btn => {
@@ -177,6 +958,26 @@ const sortedCandidates = [...candidates].sort((a, b) => {
     }
   }
 
+  // Helper to get PDF link for Dashboard Mode ("Ver >>")
+  function getDashboardPdfLink(candidateId, pillarId) {
+    const proposal = proposalIndex[candidateId]?.[pillarId];
+    if (proposal && proposal.pdfId) {
+      const pdfUrl = `/planes/${proposal.pdfId}.pdf#page=${proposal.page}`;
+      return `<a href="${pdfUrl}" target="_blank" rel="noopener noreferrer" class="view-plan-anchor" title="Ver página ${proposal.page}">Ver »</a>`;
+    }
+    return `<span class="view-plan-anchor no-proposal">—</span>`;
+  }
+
+  // Helper to get percentage as PDF link for Express/Reading Mode
+  function getPercentPdfLink(candidateId, pillarId, percent, textColor) {
+    const proposal = proposalIndex[candidateId]?.[pillarId];
+    if (proposal && proposal.pdfId) {
+      const pdfUrl = `/planes/${proposal.pdfId}.pdf#page=${proposal.page}`;
+      return `<a href="${pdfUrl}" target="_blank" rel="noopener noreferrer" class="percent-link" style="color: ${textColor};" title="Ver plan - página ${proposal.page}">${percent}%</a>`;
+    }
+    return `<span class="percent-no-link" style="color: ${textColor};">${percent}%</span>`;
+  }
+
   function renderComparison() {
     const selected = Array.from(selectedCandidates);
     const candidateData = selected.map(id => {
@@ -185,47 +986,51 @@ const sortedCandidates = [...candidates].sort((a, b) => {
       return { candidate, score };
     });
 
-    // Render header
+    // Render header with candidate names
     if (headerCandidates) {
       headerCandidates.innerHTML = candidateData.map(({ candidate, score }) => `
         <div class="flex-1 text-center px-2">
-          <div class="font-bold text-slate-900">${candidate.pdf_id}</div>
+          <div class="font-bold text-slate-900 text-sm line-clamp-1">${getDisplayName(candidate)}</div>
+          <div class="text-xs text-slate-500">${candidate.party_name}</div>
           <div class="text-lg font-bold text-civic-600">${Math.round(score.overall.weighted_sum * 100)}%</div>
         </div>
       `).join('');
     }
 
-    // Render pillar scores
+    // Render pillar scores with "Ver >>" links (Dashboard)
     document.querySelectorAll('.pillar-row').forEach(row => {
       const pillarId = row.dataset.pillarId;
       const scoresContainer = row.querySelector('.candidate-scores');
       
       if (scoresContainer) {
-        scoresContainer.innerHTML = candidateData.map(({ score }) => {
+        scoresContainer.innerHTML = candidateData.map(({ candidate, score }) => {
           const pillarScore = score.pillar_scores.find(ps => ps.pillar_id === pillarId);
           if (!pillarScore) return '<div class="flex-1">-</div>';
           
+          const percent = Math.round((pillarScore.effective_score / 4) * 100);
+          
           return `
-            <div class="flex-1 px-2">
-              <div class="flex items-center gap-2">
+            <div class="flex-1 px-2 score-cell">
+              <div class="flex items-center gap-2 w-full">
                 <div class="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
-                  <div class="h-full bg-emerald-500 rounded-full" style="width: ${(pillarScore.effective_score / 4) * 100}%"></div>
+                  <div class="h-full bg-emerald-500 rounded-full" style="width: ${percent}%"></div>
                 </div>
-                <span class="font-bold text-sm">${pillarScore.effective_score}/4</span>
+                <span class="font-bold text-sm">${percent}%</span>
               </div>
+              ${getDashboardPdfLink(candidate.candidate_id, pillarId)}
             </div>
           `;
         }).join('');
       }
     });
 
-    // Render overall scores
+    // Render overall scores with candidate names
     if (overallScores) {
       overallScores.innerHTML = candidateData.map(({ candidate, score }) => `
         <div class="flex items-center justify-between p-3 bg-white rounded-lg">
           <div>
-            <div class="font-bold text-slate-900">${candidate.party_name}</div>
-            <div class="text-sm text-slate-500">${candidate.pdf_id}</div>
+            <div class="font-bold text-slate-900">${getDisplayName(candidate)}</div>
+            <div class="text-sm text-slate-500">${candidate.party_name}</div>
           </div>
           <div class="text-right">
             <div class="text-2xl font-bold text-civic-600">${Math.round(score.overall.weighted_sum * 100)}%</div>
@@ -236,6 +1041,297 @@ const sortedCandidates = [...candidates].sort((a, b) => {
     }
   }
 
-  // Initial render
+  // Express Mode Logic
+  const expressSelectedCandidates = new Set();
+  const expressCandidateBtns = document.querySelectorAll('.mode-express-content .express-candidate-btn');
+  const expressClearBtn = document.getElementById('express-clear-selection');
+  const expressSelectionHint = document.getElementById('express-selection-hint');
+  const expressComparisonContainer = document.getElementById('express-comparison-container');
+  const expressEmptyState = document.getElementById('express-empty-state');
+  const expressComparisonContent = document.getElementById('express-comparison-content');
+
+  if (preselected) {
+    expressSelectedCandidates.add(preselected);
+    document.querySelector(`.mode-express-content [data-candidate-id="${preselected}"]`)?.classList.add('selected');
+  }
+
+  expressCandidateBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.candidateId;
+      
+      if (expressSelectedCandidates.has(id)) {
+        expressSelectedCandidates.delete(id);
+        btn.classList.remove('selected');
+      } else if (expressSelectedCandidates.size < maxSelection) {
+        expressSelectedCandidates.add(id);
+        btn.classList.add('selected');
+      }
+      
+      updateExpressUI();
+    });
+  });
+
+  expressClearBtn?.addEventListener('click', () => {
+    expressSelectedCandidates.clear();
+    expressCandidateBtns.forEach(btn => btn.classList.remove('selected'));
+    updateExpressUI();
+  });
+
+  function updateExpressUI() {
+    const count = expressSelectedCandidates.size;
+    
+    expressClearBtn?.classList.toggle('hidden', count === 0);
+    
+    if (count >= minSelection) {
+      expressComparisonContainer?.classList.remove('hidden');
+      expressEmptyState?.classList.add('hidden');
+      renderExpressComparison();
+    } else {
+      expressComparisonContainer?.classList.add('hidden');
+      expressEmptyState?.classList.remove('hidden');
+    }
+  }
+
+  function renderExpressComparison() {
+    const selected = Array.from(expressSelectedCandidates);
+    const candidateData = selected.map(id => {
+      const candidate = candidates.find(c => c.candidate_id === id);
+      const score = scoresByCandidate[id];
+      return { candidate, score };
+    });
+
+    // Calculate column width based on number of candidates
+    const colWidth = candidateData.length <= 2 ? '4rem' : '3.5rem';
+
+    if (expressComparisonContent) {
+      expressComparisonContent.innerHTML = `
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
+          ${candidateData.map(({ candidate, score }) => `
+            <div style="flex: 1; min-width: 140px; text-align: center; padding: 1rem; background: #f0f9ff; border-radius: 0.75rem; border: 2px solid #0891b2;">
+              <div style="font-weight: 700; color: #0f172a; margin-bottom: 0.25rem;">${getDisplayName(candidate)}</div>
+              <div style="font-size: 0.8rem; color: #64748b; margin-bottom: 0.5rem;">${candidate.party_name}</div>
+              <div style="font-size: 1.75rem; font-weight: 800; color: #0891b2;">${Math.round(score.overall.weighted_sum * 100)}%</div>
+            </div>
+          `).join('')}
+        </div>
+        <p style="font-size: 0.75rem; color: #64748b; margin-bottom: 0.5rem; text-align: center;">📄 <strong>Haga clic en el porcentaje</strong> para abrir el plan de gobierno</p>
+        
+        <!-- Header con siglas -->
+        <div style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; background: #1e3a5f; border-radius: 0.5rem 0.5rem 0 0;">
+          <span style="flex: 1; font-size: 0.75rem; font-weight: 600; color: white;">Pilar</span>
+          ${candidateData.map(({ candidate }) => `
+            <div style="width: ${colWidth}; text-align: center; font-weight: 700; font-size: 0.75rem; color: white;">
+              ${candidate.pdf_id}
+            </div>
+          `).join('')}
+        </div>
+        
+        <!-- Filas de pilares -->
+        <div style="display: flex; flex-direction: column; gap: 1px; background: #e2e8f0;">
+          ${pillars.map(pillar => {
+            // Truncate pillar name to max 30 chars
+            const shortName = pillar.pillar_name.length > 35 
+              ? pillar.pillar_name.substring(0, 32) + '...' 
+              : pillar.pillar_name;
+            return `
+              <div style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; background: white;">
+                <span style="flex: 1; font-size: 0.7rem; color: #475569; line-height: 1.2;" title="${pillar.pillar_name}">${shortName}</span>
+                ${candidateData.map(({ candidate, score }) => {
+                  const ps = score.pillar_scores.find(p => p.pillar_id === pillar.pillar_id);
+                  const percent = ps ? Math.round((ps.effective_score / 4) * 100) : 0;
+                  const textColor = percent >= 50 ? '#059669' : '#dc2626';
+                  return `
+                    <div style="width: ${colWidth}; text-align: center; font-weight: 700; font-size: 0.85rem;">
+                      ${getPercentPdfLink(candidate.candidate_id, pillar.pillar_id, percent, textColor)}
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            `;
+          }).join('')}
+        </div>
+        
+        <!-- Botón limpiar al final -->
+        <div style="display: flex; justify-content: center; margin-top: 1.5rem;">
+          <button onclick="document.getElementById('express-clear-selection').click();" style="background: #dc2626; color: white; border: none; border-radius: 0.5rem; padding: 0.75rem 1.5rem; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
+            ✕ Limpiar selección y comparar otros
+          </button>
+        </div>
+      `;
+    }
+  }
+
+  // Reading Mode Logic with Tabs
+  const readingSelectedCandidates = new Set();
+  const readingCandidateBtns = document.querySelectorAll('.mode-reading-content .reading-candidate-btn');
+  const readingClearBtn = document.getElementById('reading-clear-selection');
+  const readingSelectedCount = document.getElementById('reading-selected-count');
+  const readingComparisonContent = document.getElementById('reading-comparison-content');
+  const readingTabCount = document.getElementById('reading-tab-count');
+  
+  // Tab elements
+  const readingTabPaso1 = document.getElementById('reading-tab-paso1');
+  const readingTabPaso2 = document.getElementById('reading-tab-paso2');
+  const readingContentPaso1 = document.getElementById('reading-content-paso1');
+  const readingContentPaso2 = document.getElementById('reading-content-paso2');
+  const readingGoToPaso2 = document.getElementById('reading-go-to-paso2');
+  const readingGoBackPaso1 = document.getElementById('reading-go-back-paso1');
+  const readingSelectionHint = document.getElementById('reading-selection-hint');
+
+  if (preselected) {
+    readingSelectedCandidates.add(preselected);
+    document.querySelector(`.mode-reading-content [data-candidate-id="${preselected}"]`)?.classList.add('selected');
+  }
+
+  // Tab navigation functions
+  function switchToReadingTab(tab) {
+    if (tab === 'paso1') {
+      readingTabPaso1?.classList.add('active');
+      readingTabPaso2?.classList.remove('active');
+      readingContentPaso1?.classList.add('active');
+      readingContentPaso2?.classList.remove('active');
+    } else if (tab === 'paso2') {
+      if (readingSelectedCandidates.size >= minSelection) {
+        readingTabPaso1?.classList.remove('active');
+        readingTabPaso2?.classList.add('active');
+        readingContentPaso1?.classList.remove('active');
+        readingContentPaso2?.classList.add('active');
+        renderReadingComparison();
+      }
+    }
+  }
+
+  // Tab click handlers
+  readingTabPaso1?.addEventListener('click', () => switchToReadingTab('paso1'));
+  readingTabPaso2?.addEventListener('click', () => switchToReadingTab('paso2'));
+  readingGoToPaso2?.addEventListener('click', () => switchToReadingTab('paso2'));
+  readingGoBackPaso1?.addEventListener('click', () => switchToReadingTab('paso1'));
+
+  readingCandidateBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.candidateId;
+      
+      if (readingSelectedCandidates.has(id)) {
+        readingSelectedCandidates.delete(id);
+        btn.classList.remove('selected');
+      } else if (readingSelectedCandidates.size < maxSelection) {
+        readingSelectedCandidates.add(id);
+        btn.classList.add('selected');
+      }
+      
+      updateReadingUI();
+    });
+  });
+
+  readingClearBtn?.addEventListener('click', () => {
+    readingSelectedCandidates.clear();
+    readingCandidateBtns.forEach(btn => btn.classList.remove('selected'));
+    updateReadingUI();
+  });
+
+  function updateReadingUI() {
+    const count = readingSelectedCandidates.size;
+    
+    // Update count displays
+    if (readingSelectedCount) {
+      readingSelectedCount.textContent = `${count} candidato${count !== 1 ? 's' : ''} seleccionado${count !== 1 ? 's' : ''}`;
+    }
+    
+    if (readingTabCount) {
+      readingTabCount.textContent = `(${count})`;
+    }
+    
+    // Update clear button visibility
+    readingClearBtn?.classList.toggle('hidden', count === 0);
+    
+    // Update hint text
+    if (readingSelectionHint) {
+      if (count === 0) {
+        readingSelectionHint.textContent = '💡 Seleccione al menos 2 candidatos para poder comparar.';
+      } else if (count === 1) {
+        readingSelectionHint.textContent = '💡 Seleccione 1 candidato más para ver la comparación.';
+      } else if (count < maxSelection) {
+        readingSelectionHint.textContent = `✅ ¡${count} candidatos seleccionados! Puede agregar ${maxSelection - count} más o ver la comparación.`;
+      } else {
+        readingSelectionHint.textContent = `✅ ¡${count} candidatos seleccionados! Máximo alcanzado.`;
+      }
+    }
+    
+    // Enable/disable tab 2 and next button
+    const canCompare = count >= minSelection;
+    
+    if (readingTabPaso2) {
+      readingTabPaso2.disabled = !canCompare;
+    }
+    
+    if (readingGoToPaso2) {
+      readingGoToPaso2.disabled = !canCompare;
+      readingGoToPaso2.textContent = canCompare ? 'Ver Comparación →' : `Seleccione ${minSelection - count} más`;
+    }
+  }
+
+  function renderReadingComparison() {
+    const selected = Array.from(readingSelectedCandidates);
+    const candidateData = selected.map(id => {
+      const candidate = candidates.find(c => c.candidate_id === id);
+      const score = scoresByCandidate[id];
+      return { candidate, score };
+    });
+
+    if (readingComparisonContent) {
+      readingComparisonContent.innerHTML = `
+        <!-- Header con candidatos -->
+        <div style="display: grid; grid-template-columns: 150px repeat(${candidateData.length}, 1fr); gap: 0.5rem; margin-bottom: 1rem; padding: 1rem; background: #0891b2; border-radius: 0.75rem;">
+          <div style="font-size: 1.1rem; font-weight: 600; color: white;">Pilar</div>
+          ${candidateData.map(({ candidate, score }) => `
+            <div style="text-align: center;">
+              <div style="font-size: 1.5rem; font-weight: 800; color: white;">${candidate.pdf_id}</div>
+              <div style="font-size: 2rem; font-weight: 800; color: #fef3c7;">${Math.round(score.overall.weighted_sum * 100)}%</div>
+            </div>
+          `).join('')}
+        </div>
+        
+        <p style="font-size: 1rem; color: #475569; margin-bottom: 1rem; text-align: center; background: #fef3c7; padding: 0.75rem; border-radius: 0.5rem;">
+          📄 <strong>Haga clic en el porcentaje</strong> para abrir el plan de gobierno y leer la propuesta
+        </p>
+        
+        <!-- Filas de pilares -->
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+          ${pillars.map(pillar => `
+            <div style="display: grid; grid-template-columns: 150px repeat(${candidateData.length}, 1fr); gap: 0.5rem; padding: 1rem; background: white; border: 2px solid #e2e8f0; border-radius: 0.5rem; align-items: center;">
+              <div>
+                <div style="font-size: 1.1rem; font-weight: 700; color: #1e3a5f;">${pillar.pillar_id}</div>
+                <div style="font-size: 0.85rem; color: #64748b; line-height: 1.3;">${pillar.pillar_name}</div>
+              </div>
+              ${candidateData.map(({ candidate, score }) => {
+                const ps = score.pillar_scores.find(p => p.pillar_id === pillar.pillar_id);
+                const percent = ps ? Math.round((ps.effective_score / 4) * 100) : 0;
+                const bgColor = percent >= 75 ? '#d1fae5' : percent >= 50 ? '#fef3c7' : '#fee2e2';
+                const textColor = percent >= 75 ? '#059669' : percent >= 50 ? '#d97706' : '#dc2626';
+                return `
+                  <div style="text-align: center; padding: 0.75rem; background: ${bgColor}; border-radius: 0.5rem;">
+                    <div style="font-size: 1.75rem; font-weight: 800;">
+                      ${getPercentPdfLink(candidate.candidate_id, pillar.pillar_id, percent, textColor)}
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          `).join('')}
+        </div>
+        
+        <!-- Botón limpiar al final -->
+        <div style="display: flex; justify-content: center; margin-top: 2rem;">
+          <button onclick="document.getElementById('reading-clear-selection').click(); document.getElementById('reading-tab-paso1').click();" style="background: #dc2626; color: white; border: none; border-radius: 0.5rem; padding: 1rem 2rem; font-size: 1.1rem; font-weight: 600; cursor: pointer;">
+            ✕ Limpiar selección y comparar otros candidatos
+          </button>
+        </div>
+      `;
+    }
+  }
+
+  // Initial render for all modes
   updateUI();
+  updateExpressUI();
+  updateReadingUI();
 </script>
