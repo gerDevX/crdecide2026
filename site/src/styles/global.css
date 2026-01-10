@@ -248,60 +248,479 @@ html:not([data-mode]) {
 
 /* ============================================
    MODE: READING 📖
+   Optimizado para adultos mayores:
+   - Fuentes grandes (base 20px)
+   - Alto contraste
+   - Interlineado generoso
+   - Espaciado amplio
    ============================================ */
 
 html[data-mode="reading"] {
   font-size: 20px;
   
   body {
-    @apply leading-relaxed;
-    background: #fffef5;
-    color: #1a1a1a;
+    background: #fffef5 !important;
+    color: #1e293b !important;
+    line-height: 1.8 !important;
+    font-family: Georgia, 'Times New Roman', serif !important;
+  }
+  
+  /* Regla global para todo el contenido */
+  body * {
+    font-family: Georgia, 'Times New Roman', serif !important;
+  }
+  
+  /* Excepciones para iconos y emojis */
+  body .emoji, body [class*="icon"] {
+    font-family: inherit;
   }
   
   .page-container {
-    @apply max-w-2xl mx-auto px-6 py-10;
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: 3rem 2rem;
   }
+  
+  /* ===========================================
+     TIPOGRAFÍA PARA ADULTOS MAYORES
+     =========================================== */
+  
+  h1, .reading-title {
+    font-size: 2.5rem !important; /* 40px */
+    font-weight: bold !important;
+    color: #1e293b !important;
+    margin-bottom: 1.5rem !important;
+    font-family: Georgia, 'Times New Roman', serif !important;
+    line-height: 1.3 !important;
+  }
+  
+  h2, .reading-subtitle {
+    font-size: 1.75rem !important; /* 28px */
+    font-weight: bold !important;
+    color: #1e293b !important;
+    margin-bottom: 1rem !important;
+    font-family: Georgia, 'Times New Roman', serif !important;
+    line-height: 1.4 !important;
+  }
+  
+  h3 {
+    font-size: 1.5rem !important; /* 24px */
+    font-weight: bold !important;
+    color: #334155 !important;
+    margin-bottom: 0.75rem !important;
+    font-family: Georgia, 'Times New Roman', serif !important;
+    line-height: 1.4 !important;
+  }
+  
+  p, .reading-body {
+    font-size: 1.25rem !important; /* 20px */
+    line-height: 1.9 !important;
+    color: #334155 !important;
+    font-family: Georgia, 'Times New Roman', serif !important;
+    margin-bottom: 1.25rem !important;
+  }
+  
+  /* ===========================================
+     CARDS Y CONTENEDORES
+     =========================================== */
   
   .card {
-    @apply bg-white rounded-lg border border-slate-200;
-    @apply p-6;
-    @apply shadow-none;
+    background: white;
+    border-radius: 1rem;
+    border: 2px solid #e2e8f0;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: none;
   }
+  
+  .card-header {
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #e2e8f0;
+  }
+  
+  /* ===========================================
+     BOTONES GRANDES Y ACCESIBLES
+     =========================================== */
   
   .btn {
-    @apply py-4 px-8 text-lg font-medium rounded-lg;
-    @apply min-h-[56px];
+    padding: 1.25rem 2rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    border-radius: 0.75rem;
+    min-height: 60px;
+    font-family: Georgia, 'Times New Roman', serif;
+    border: 3px solid;
   }
   
-  .reading-title {
-    @apply text-3xl font-bold text-slate-900 mb-6;
-    font-family: var(--font-serif);
+  .btn-primary {
+    background: #1d4ed8;
+    color: white;
+    border-color: #1d4ed8;
   }
   
-  .reading-subtitle {
-    @apply text-xl text-slate-700 mb-4;
-    font-family: var(--font-serif);
+  .btn-primary:hover {
+    background: #1e40af;
+    border-color: #1e40af;
   }
   
-  .reading-body {
-    @apply text-lg leading-loose text-slate-800;
-    font-family: var(--font-serif);
+  .btn-secondary {
+    background: white;
+    color: #1e293b;
+    border-color: #94a3b8;
   }
   
-  .reading-divider {
-    @apply border-t border-slate-300 my-8;
-  }
-  
-  .reading-nav {
-    @apply flex justify-between items-center py-6;
+  .btn-secondary:hover {
+    background: #f1f5f9;
+    border-color: #64748b;
   }
   
   .reading-nav-btn {
-    @apply py-4 px-6 bg-white border-2 border-slate-300 rounded-lg;
-    @apply text-lg font-medium text-slate-700;
-    @apply hover:bg-slate-50;
-    @apply min-w-[140px] text-center;
+    padding: 1.25rem 2rem;
+    background: white;
+    border: 3px solid #94a3b8;
+    border-radius: 0.75rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1e293b;
+    min-width: 160px;
+    text-align: center;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  
+  .reading-nav-btn:hover {
+    background: #f1f5f9;
+    border-color: #64748b;
+  }
+  
+  /* ===========================================
+     LINKS Y NAVEGACIÓN
+     =========================================== */
+  
+  a {
+    color: #1d4ed8 !important;
+    text-decoration: none !important;
+    font-weight: 600 !important;
+    border-bottom: 2px solid #1d4ed8;
+    padding-bottom: 2px;
+  }
+  
+  a:hover {
+    color: #1e40af !important;
+    border-bottom-color: #1e40af;
+    background-color: rgba(29, 78, 216, 0.05);
+  }
+  
+  .nav-link {
+    font-size: 1.25rem;
+    padding: 0.75rem 1rem;
+  }
+  
+  .reading-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 0;
+    gap: 1.5rem;
+  }
+  
+  /* ===========================================
+     DIVISORES Y ESPACIADO
+     =========================================== */
+  
+  .reading-divider {
+    border-top: 2px solid #94a3b8;
+    margin: 2.5rem 0;
+  }
+  
+  hr {
+    border-top: 2px solid #94a3b8;
+    margin: 2rem 0;
+  }
+  
+  /* ===========================================
+     LISTAS
+     =========================================== */
+  
+  ul, ol {
+    font-size: 1.25rem;
+    line-height: 1.9;
+    margin-bottom: 1.5rem;
+    padding-left: 1.5rem;
+  }
+  
+  li {
+    margin-bottom: 0.75rem;
+    color: #334155;
+  }
+  
+  /* ===========================================
+     TABLAS
+     =========================================== */
+  
+  table {
+    font-size: 1.125rem;
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th, td {
+    padding: 1rem;
+    border: 2px solid #e2e8f0;
+    text-align: left;
+  }
+  
+  th {
+    background: #f8fafc;
+    font-weight: bold;
+    color: #1e293b;
+  }
+  
+  /* ===========================================
+     BADGES Y ETIQUETAS
+     =========================================== */
+  
+  .badge, .pillar-badge, .dimension-badge {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+  }
+  
+  /* ===========================================
+     FORMULARIOS
+     =========================================== */
+  
+  input, select, textarea {
+    font-size: 1.25rem;
+    padding: 1rem;
+    border: 2px solid #94a3b8;
+    border-radius: 0.75rem;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  
+  input:focus, select:focus, textarea:focus {
+    border-color: #1d4ed8;
+    outline: 4px solid rgba(29, 78, 216, 0.2);
+  }
+  
+  label {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+  
+  /* ===========================================
+     ALERTAS Y MENSAJES
+     =========================================== */
+  
+  .alert {
+    font-size: 1.125rem;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    border-left: 4px solid;
+    margin-bottom: 1.5rem;
+  }
+  
+  .alert-info {
+    background: #dbeafe;
+    border-color: #1d4ed8;
+    color: #1e40af;
+  }
+  
+  .alert-warning {
+    background: #fef3c7;
+    border-color: #f59e0b;
+    color: #92400e;
+  }
+  
+  .alert-success {
+    background: #d1fae5;
+    border-color: #10b981;
+    color: #065f46;
+  }
+  
+  .alert-error {
+    background: #fee2e2;
+    border-color: #ef4444;
+    color: #991b1b;
+  }
+  
+  /* ===========================================
+     PUNTAJES Y MÉTRICAS
+     =========================================== */
+  
+  .score-display {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #1e293b;
+  }
+  
+  .score-bar {
+    height: 1rem;
+    border-radius: 0.5rem;
+    background: #e2e8f0;
+  }
+  
+  /* ===========================================
+     RESPONSIVE
+     =========================================== */
+  
+  @media (max-width: 640px) {
+    html[data-mode="reading"] {
+      font-size: 18px;
+    }
+    
+    .page-container {
+      padding: 2rem 1.25rem;
+    }
+    
+    h1, .reading-title {
+      font-size: 2rem;
+    }
+    
+    h2, .reading-subtitle {
+      font-size: 1.5rem;
+    }
+    
+    .reading-nav {
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .reading-nav-btn, .btn {
+      width: 100%;
+      min-width: 100%;
+    }
+  }
+  
+  /* ===========================================
+     SOBRESCRIBIR TAILWIND PROSE
+     =========================================== */
+  
+  .prose {
+    max-width: 48rem;
+    font-size: 1.25rem;
+    line-height: 1.9;
+    color: #334155;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  
+  .prose h1 {
+    font-size: 2.5rem;
+    line-height: 1.3;
+    margin-bottom: 1.5rem;
+    color: #1e293b;
+  }
+  
+  .prose h2 {
+    font-size: 1.75rem;
+    line-height: 1.4;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    color: #1e293b;
+  }
+  
+  .prose h3 {
+    font-size: 1.5rem;
+    line-height: 1.4;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    color: #334155;
+  }
+  
+  .prose p {
+    margin-bottom: 1.5rem;
+    font-size: 1.25rem;
+    line-height: 1.9;
+  }
+  
+  .prose li {
+    margin-bottom: 0.75rem;
+    font-size: 1.25rem;
+  }
+  
+  .prose strong {
+    color: #1e293b;
+    font-weight: 700;
+  }
+  
+  .prose a {
+    color: #1d4ed8 !important;
+    text-decoration: none !important;
+    font-weight: 600 !important;
+    border-bottom: 2px solid #1d4ed8;
+    padding-bottom: 2px;
+  }
+  
+  .prose a:hover {
+    color: #1e40af !important;
+    border-bottom-color: #1e40af;
+    background-color: rgba(29, 78, 216, 0.05);
+  }
+  
+  .prose hr {
+    border-color: #94a3b8;
+    border-width: 2px;
+    margin: 2.5rem 0;
+  }
+  
+  .prose .not-prose {
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  
+  .prose .not-prose p {
+    font-size: 1.125rem;
+    line-height: 1.8;
+  }
+  
+  /* Contenedores con max-width deben expandirse */
+  .max-w-4xl, .max-w-6xl, .max-w-3xl {
+    max-width: 48rem;
+  }
+  
+  /* Padding más amplio */
+  .px-4 {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+  
+  .py-12, .py-8 {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+  
+  /* Cards más amplias */
+  .card {
+    padding: 1.5rem;
+    border-width: 2px;
+  }
+  
+  /* Textos más grandes */
+  .text-sm {
+    font-size: 1rem;
+  }
+  
+  .text-xs {
+    font-size: 0.9rem;
+  }
+  
+  .text-lg {
+    font-size: 1.25rem;
+  }
+  
+  .text-xl {
+    font-size: 1.5rem;
+  }
+  
+  .text-2xl {
+    font-size: 1.75rem;
+  }
+  
+  .text-3xl {
+    font-size: 2.25rem;
   }
   
   /* No animations in reading mode */
@@ -628,11 +1047,8 @@ html[data-mode="reading"] {
 /* High contrast for reading mode */
 html[data-mode="reading"] {
   :focus-visible {
-    @apply outline-4 outline-offset-4 outline-blue-600;
-  }
-  
-  a {
-    @apply underline underline-offset-2;
+    outline: 4px solid #1d4ed8;
+    outline-offset: 4px;
   }
 }
 

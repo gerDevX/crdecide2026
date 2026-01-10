@@ -200,12 +200,34 @@ const howItWorksItems = [
 
           <!-- Tab: Pillars Section -->
           <div class="tab-panel" data-tab="pilares">
-            <div class="flex items-center gap-3 mb-6">
+            <div class="flex items-center gap-3 mb-4">
               <span class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white text-lg shadow-lg">
                 🏛️
               </span>
               <h2 class="text-2xl font-bold text-slate-900">10 Pilares de Evaluación</h2>
             </div>
+            
+            <!-- Leyenda explicativa -->
+            <div class="mb-6 p-4 bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl border border-slate-200">
+              <p class="text-sm text-slate-600 mb-3">
+                <strong class="text-slate-800">¿Cómo interpretar cada pilar?</strong>
+              </p>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
+                <div class="flex items-center gap-2">
+                  <span class="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white text-xs font-bold shadow">%</span>
+                  <span class="text-slate-600"><strong class="text-slate-800">Porcentaje grande:</strong> Promedio de todos los candidatos</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-1 rounded-full bg-slate-200 text-slate-600 text-xs font-semibold">10%</span>
+                  <span class="text-slate-600"><strong class="text-slate-800">Badge superior:</strong> Peso/importancia del pilar</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="w-5 h-5 rounded-full bg-amber-400 flex items-center justify-center text-white text-xs font-bold">1</span>
+                  <span class="text-slate-600"><strong class="text-slate-800">Top 5:</strong> Mejores candidatos en ese pilar</span>
+                </div>
+              </div>
+            </div>
+            
             <PillarGrid />
           </div>
         </div>
