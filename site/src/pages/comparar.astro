@@ -802,7 +802,7 @@ function buildPdfUrl(pdfId: string, page: number): string {
     }
     
     .reading-compare-title {
-      font-size: 2rem;
+      font-size: 1.75rem;
     }
     
     .reading-tabs-nav {
@@ -816,6 +816,167 @@ function buildPdfUrl(pdfId: string, page: number): string {
     
     .reading-tab-text {
       font-size: 1.1rem;
+    }
+    
+    /* Reading Mode Responsive Comparison */
+    .reading-comparison-header {
+      grid-template-columns: 1fr !important;
+      gap: 0.75rem !important;
+    }
+    
+    .reading-comparison-header .header-pilar-label {
+      display: none !important;
+    }
+    
+    .reading-comparison-header .header-candidate {
+      display: flex !important;
+      flex-direction: row !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+      padding: 0.75rem !important;
+      background: rgba(255,255,255,0.1) !important;
+      border-radius: 0.5rem !important;
+    }
+    
+    .reading-comparison-header .header-candidate-name {
+      font-size: 1.25rem !important;
+    }
+    
+    .reading-comparison-header .header-candidate-score {
+      font-size: 1.5rem !important;
+    }
+    
+    .reading-comparison-row {
+      grid-template-columns: 1fr !important;
+      gap: 0.5rem !important;
+      padding: 1rem !important;
+    }
+    
+    .reading-comparison-row .row-pilar-info {
+      margin-bottom: 0.75rem !important;
+      padding-bottom: 0.75rem !important;
+      border-bottom: 2px solid #e2e8f0 !important;
+    }
+    
+    .reading-comparison-row .row-pilar-id {
+      font-size: 1rem !important;
+    }
+    
+    .reading-comparison-row .row-pilar-name {
+      font-size: 0.9rem !important;
+    }
+    
+    .reading-comparison-row .row-scores-container {
+      display: grid !important;
+      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)) !important;
+      gap: 0.5rem !important;
+    }
+    
+    .reading-comparison-row .row-score-cell {
+      padding: 0.5rem !important;
+    }
+    
+    .reading-comparison-row .row-score-candidate {
+      display: block !important;
+      font-size: 0.75rem !important;
+      color: #475569 !important;
+      margin-bottom: 0.25rem !important;
+      font-weight: 600 !important;
+    }
+    
+    .reading-comparison-row .row-score-percent {
+      font-size: 1.35rem !important;
+    }
+    
+    .reading-comparison-row .row-scores-container {
+      display: grid !important;
+      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)) !important;
+      gap: 0.5rem !important;
+    }
+    
+    .reading-clear-bottom-btn {
+      padding: 0.85rem 1.5rem !important;
+      font-size: 1rem !important;
+    }
+    
+    .reading-legend-hint {
+      font-size: 0.9rem !important;
+      padding: 0.65rem !important;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .reading-compare-title {
+      font-size: 1.5rem;
+    }
+    
+    .reading-compare-container {
+      padding: 1rem 0.75rem;
+    }
+    
+    .reading-compare-header {
+      padding: 1.25rem;
+    }
+    
+    .reading-compare-intro {
+      font-size: 1.1rem;
+    }
+    
+    .reading-comparison-header .header-candidate-name {
+      font-size: 1.1rem !important;
+    }
+    
+    .reading-comparison-header .header-candidate-score {
+      font-size: 1.25rem !important;
+    }
+    
+    .reading-comparison-row .row-scores-container {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+    
+    .reading-comparison-row .row-score-percent {
+      font-size: 1.2rem !important;
+    }
+    
+    .reading-next-btn {
+      font-size: 1.15rem;
+      padding: 1rem 1.5rem;
+    }
+    
+    .reading-back-btn {
+      font-size: 1rem;
+      padding: 0.85rem 1.25rem;
+    }
+    
+    .reading-btn-name {
+      font-size: 1.15rem;
+    }
+    
+    .reading-btn-party {
+      font-size: 0.95rem;
+    }
+    
+    .reading-candidate-btn {
+      padding: 1rem;
+    }
+    
+    .reading-section-title {
+      font-size: 1.25rem;
+    }
+    
+    .reading-selected-count {
+      font-size: 1rem;
+    }
+    
+    .reading-clear-btn {
+      font-size: 0.95rem;
+      padding: 0.6rem 1rem;
+    }
+    
+    .reading-selector-header {
+      flex-direction: column;
+      gap: 0.75rem;
+      align-items: flex-start;
     }
   }
 
@@ -871,6 +1032,46 @@ function buildPdfUrl(pdfId: string, page: number): string {
   html[data-mode="reading"] .percent-link {
     font-size: 1.75rem;
     font-weight: 800;
+  }
+  
+  /* Reading mode horizontal scroll container */
+  .reading-table-scroll-container {
+    border: 2px solid #e2e8f0;
+    border-radius: 0.75rem;
+    padding: 0.5rem;
+    background: #f8fafc;
+  }
+  
+  .reading-table-scroll-container::-webkit-scrollbar {
+    height: 10px;
+  }
+  
+  .reading-table-scroll-container::-webkit-scrollbar-track {
+    background: #e2e8f0;
+    border-radius: 5px;
+  }
+  
+  .reading-table-scroll-container::-webkit-scrollbar-thumb {
+    background: #0891b2;
+    border-radius: 5px;
+  }
+  
+  .reading-table-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: #0e7490;
+  }
+  
+  @media (max-width: 768px) {
+    .reading-table-scroll-container {
+      margin-left: -0.5rem;
+      margin-right: -0.5rem;
+      border-radius: 0;
+      border-left: none;
+      border-right: none;
+    }
+    
+    .reading-table-inner {
+      padding: 0 0.5rem;
+    }
   }
 </style>
 
@@ -1278,52 +1479,61 @@ function buildPdfUrl(pdfId: string, page: number): string {
       return { candidate, score };
     });
 
+    // Calculate minimum column width based on number of candidates
+    const minColWidth = candidateData.length <= 2 ? '100px' : candidateData.length === 3 ? '85px' : '75px';
+    
     if (readingComparisonContent) {
       readingComparisonContent.innerHTML = `
-        <!-- Header con candidatos -->
-        <div style="display: grid; grid-template-columns: 150px repeat(${candidateData.length}, 1fr); gap: 0.5rem; margin-bottom: 1rem; padding: 1rem; background: #0891b2; border-radius: 0.75rem;">
-          <div style="font-size: 1.1rem; font-weight: 600; color: white;">Pilar</div>
-          ${candidateData.map(({ candidate, score }) => `
-            <div style="text-align: center;">
-              <div style="font-size: 1.5rem; font-weight: 800; color: white;">${candidate.pdf_id}</div>
-              <div style="font-size: 2rem; font-weight: 800; color: #fef3c7;">${Math.round(score.overall.weighted_sum * 100)}%</div>
-            </div>
-          `).join('')}
-        </div>
-        
-        <p style="font-size: 1rem; color: #475569; margin-bottom: 1rem; text-align: center; background: #fef3c7; padding: 0.75rem; border-radius: 0.5rem;">
-          📄 <strong>Haga clic en el porcentaje</strong> para abrir el plan de gobierno y leer la propuesta
+        <p class="reading-legend-hint" style="font-size: 1rem; color: #475569; margin-bottom: 1rem; text-align: center; background: #fef3c7; padding: 0.75rem; border-radius: 0.5rem;">
+          📄 <strong>Haga clic en el porcentaje</strong> para abrir el plan de gobierno. <span style="color: #0891b2;">⟷ Deslice horizontalmente si es necesario.</span>
         </p>
         
-        <!-- Filas de pilares -->
-        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-          ${pillars.map(pillar => `
-            <div style="display: grid; grid-template-columns: 150px repeat(${candidateData.length}, 1fr); gap: 0.5rem; padding: 1rem; background: white; border: 2px solid #e2e8f0; border-radius: 0.5rem; align-items: center;">
-              <div>
-                <div style="font-size: 1.1rem; font-weight: 700; color: #1e3a5f;">${pillar.pillar_id}</div>
-                <div style="font-size: 0.85rem; color: #64748b; line-height: 1.3;">${pillar.pillar_name}</div>
-              </div>
-              ${candidateData.map(({ candidate, score }) => {
-                const ps = score.pillar_scores.find(p => p.pillar_id === pillar.pillar_id);
-                const percent = ps ? Math.round((ps.effective_score / 4) * 100) : 0;
-                const bgColor = percent >= 75 ? '#d1fae5' : percent >= 50 ? '#fef3c7' : '#fee2e2';
-                const textColor = percent >= 75 ? '#059669' : percent >= 50 ? '#d97706' : '#dc2626';
-                return `
-                  <div style="text-align: center; padding: 0.75rem; background: ${bgColor}; border-radius: 0.5rem;">
-                    <div style="font-size: 1.75rem; font-weight: 800;">
-                      ${getPercentPdfLink(candidate.candidate_id, pillar.pillar_id, percent, textColor)}
-                    </div>
-                  </div>
-                `;
-              }).join('')}
+        <!-- Contenedor con scroll horizontal -->
+        <div class="reading-table-scroll-container" style="overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 1rem;">
+          <div class="reading-table-inner" style="min-width: max-content;">
+            <!-- Header con candidatos -->
+            <div class="reading-comparison-header" style="display: grid; grid-template-columns: 140px repeat(${candidateData.length}, minmax(${minColWidth}, 1fr)); gap: 0.5rem; margin-bottom: 0.5rem; padding: 1rem; background: #0891b2; border-radius: 0.75rem;">
+              <div class="header-pilar-label" style="font-size: 1.1rem; font-weight: 600; color: white; display: flex; align-items: center;">Pilar</div>
+              ${candidateData.map(({ candidate, score }) => `
+                <div class="header-candidate" style="text-align: center; min-width: ${minColWidth};">
+                  <div class="header-candidate-name" style="font-size: 1.25rem; font-weight: 800; color: white;">${candidate.pdf_id}</div>
+                  <div class="header-candidate-score" style="font-size: 1.5rem; font-weight: 800; color: #fef3c7;">${Math.round(score.overall.weighted_sum * 100)}%</div>
+                </div>
+              `).join('')}
             </div>
-          `).join('')}
+            
+            <!-- Filas de pilares -->
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+              ${pillars.map(pillar => `
+                <div class="reading-comparison-row" style="display: grid; grid-template-columns: 140px repeat(${candidateData.length}, minmax(${minColWidth}, 1fr)); gap: 0.5rem; padding: 1rem; background: white; border: 2px solid #e2e8f0; border-radius: 0.5rem; align-items: center;">
+                  <div class="row-pilar-info" style="min-width: 120px;">
+                    <div class="row-pilar-id" style="font-size: 1rem; font-weight: 700; color: #1e3a5f;">${pillar.pillar_id}</div>
+                    <div class="row-pilar-name" style="font-size: 0.8rem; color: #64748b; line-height: 1.3;">${pillar.pillar_name}</div>
+                  </div>
+                  ${candidateData.map(({ candidate, score }) => {
+                    const ps = score.pillar_scores.find(p => p.pillar_id === pillar.pillar_id);
+                    const percent = ps ? Math.round((ps.effective_score / 4) * 100) : 0;
+                    const bgColor = percent >= 75 ? '#d1fae5' : percent >= 50 ? '#fef3c7' : '#fee2e2';
+                    const textColor = percent >= 75 ? '#059669' : percent >= 50 ? '#d97706' : '#dc2626';
+                    return `
+                      <div class="row-score-cell" style="text-align: center; padding: 0.75rem; background: ${bgColor}; border-radius: 0.5rem; min-width: ${minColWidth};">
+                        <div class="row-score-candidate" style="font-size: 0.7rem; color: #475569; margin-bottom: 0.25rem; display: none;">${candidate.pdf_id}</div>
+                        <div class="row-score-percent" style="font-size: 1.5rem; font-weight: 800;">
+                          ${getPercentPdfLink(candidate.candidate_id, pillar.pillar_id, percent, textColor)}
+                        </div>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              `).join('')}
+            </div>
+          </div>
         </div>
         
         <!-- Botón limpiar al final -->
-        <div style="display: flex; justify-content: center; margin-top: 2rem;">
-          <button onclick="document.getElementById('reading-clear-selection').click(); document.getElementById('reading-tab-paso1').click();" style="background: #dc2626; color: white; border: none; border-radius: 0.5rem; padding: 1rem 2rem; font-size: 1.1rem; font-weight: 600; cursor: pointer;">
-            ✕ Limpiar selección y comparar otros candidatos
+        <div style="display: flex; justify-content: center; margin-top: 1.5rem;">
+          <button class="reading-clear-bottom-btn" onclick="document.getElementById('reading-clear-selection').click(); document.getElementById('reading-tab-paso1').click();" style="background: #dc2626; color: white; border: none; border-radius: 0.5rem; padding: 1rem 2rem; font-size: 1.1rem; font-weight: 600; cursor: pointer;">
+            ✕ Limpiar y comparar otros
           </button>
         </div>
       `;
