@@ -354,7 +354,7 @@ const riskEmoji = riskLevel === 'BAJO' ? '🟢' : riskLevel === 'MEDIO' ? '🟠'
                 <div class="combined-dimensions">
                   <span class={`dim-item ${pillarProposals.some(p => p.dimensions.existence) ? 'active' : ''}`}>
                     📋 Existe
-                  </span>
+                </span>
                   <span class={`dim-item ${pillarProposals.some(p => p.dimensions.when) ? 'active' : ''}`}>
                     📅 Cuándo
                   </span>
@@ -364,30 +364,30 @@ const riskEmoji = riskLevel === 'BAJO' ? '🟢' : riskLevel === 'MEDIO' ? '🟠'
                   <span class={`dim-item ${pillarProposals.some(p => p.dimensions.funding) ? 'active' : ''}`}>
                     💰 Fondos
                   </span>
-                </div>
-                
+              </div>
+              
                 <!-- Proposals -->
-                {pillarProposals.length > 0 ? (
+              {pillarProposals.length > 0 ? (
                   <div class="combined-proposals">
                     <h4 class="proposals-subtitle">Propuestas destacadas:</h4>
-                    {pillarProposals.map((proposal) => (
+                  {pillarProposals.map((proposal) => (
                       <div class="combined-proposal-item">
                         <div class="proposal-content">
                           <h5>{proposal.proposal_title}</h5>
                           <p>{proposal.proposal_text}</p>
                         </div>
                         <div class="proposal-meta">
-                          <DimensionBadges dimensions={proposal.dimensions} compact={true} />
-                          <EvidenceLink 
-                            pdfId={proposal.evidence.pdf_id}
-                            page={proposal.evidence.page}
-                            compact={true}
-                          />
-                        </div>
+                        <DimensionBadges dimensions={proposal.dimensions} compact={true} />
+                        <EvidenceLink 
+                          pdfId={proposal.evidence.pdf_id}
+                          page={proposal.evidence.page}
+                          compact={true}
+                        />
                       </div>
-                    ))}
-                  </div>
-                ) : (
+                    </div>
+                  ))}
+                </div>
+              ) : (
                   <div class="combined-no-proposals">
                     <span class="no-proposals-icon">📭</span>
                     <span>No se encontraron propuestas concretas para este pilar.</span>
@@ -670,11 +670,11 @@ const riskEmoji = riskLevel === 'BAJO' ? '🟢' : riskLevel === 'MEDIO' ? '🟠'
                 <span class={`reading-pillar-score ${scorePercent >= 75 ? 'high' : scorePercent >= 50 ? 'medium' : 'low'}`}>
                   {scorePercent}%
                 </span>
-              </div>
-            );
-          })}
-        </div>
-      </section>
+            </div>
+          );
+        })}
+      </div>
+    </section>
 
       <!-- Actions -->
       <section class="reading-actions">
@@ -692,7 +692,7 @@ const riskEmoji = riskLevel === 'BAJO' ? '🟢' : riskLevel === 'MEDIO' ? '🟠'
         </a>
       </section>
 
-    </div>
+  </div>
   </div>
 
 </BaseLayout>
