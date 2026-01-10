@@ -6,6 +6,15 @@ import { CandidateSpotlight } from '../../components/ui/aceternity/CandidateSpot
 import { PILLAR_ICONS } from '../../lib/types';
 import type { PillarId } from '../../lib/types';
 
+// Helper para obtener nombre del candidato
+function getCandidateName(candidate: any): string {
+  const name = candidate?.candidate_name;
+  if (name && name !== 'Por determinar' && name !== 'no_especificado') {
+    return name;
+  }
+  return candidate?.party_name || 'N/A';
+}
+
 // Sort candidates by ranking
 const sortedCandidates = [...candidates].sort((a, b) => {
   const scoreA = scoresByCandidate[a.candidate_id]?.overall.weighted_sum || 0;
@@ -20,8 +29,8 @@ const candidatesData = sortedCandidates.map((candidate, idx) => {
   
   return {
     id: candidate.candidate_id,
-    name: candidate.party_name,
-    party: candidate.pdf_id,
+    candidateName: getCandidateName(candidate),
+    partyName: candidate.party_name,
     score: Math.round((score?.overall.weighted_sum || 0) * 100),
     rank: idx + 1,
     riskLevel: (analysis?.risk_level || 'BAJO') as "BAJO" | "MEDIO" | "ALTO",
@@ -35,54 +44,308 @@ const candidatesData = sortedCandidates.map((candidate, idx) => {
 ---
 
 <BaseLayout title="Candidatos">
-  <div class="candidates-page">
-    <!-- Hero Header -->
-    <header class="page-hero">
-      <div class="hero-bg"></div>
-      <div class="hero-content">
-        <div class="hero-badge">
-          <span class="pulse-dot"></span>
-          <span>{candidates.length} partidos inscritos</span>
+
+  <!-- ============================================
+       DASHBOARD MODE (Default) - Modo Visual Detallado
+       ============================================ -->
+  <div class="mode-dashboard-content">
+    <div class="candidates-page">
+      <!-- Hero Header -->
+      <header class="page-hero">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+          <div class="hero-badge">
+            <span class="pulse-dot"></span>
+            <span>{candidates.length} candidatos registrados</span>
+          </div>
+          <h1 class="page-title">
+            Candidatos
+            <span class="highlight">Presidenciales</span>
+          </h1>
+          <p class="page-subtitle">
+            Planes de gobierno registrados para las elecciones 2026-2030.
+            Ordenados por puntaje ponderado general.
+          </p>
         </div>
-        <h1 class="page-title">
-          Candidatos
-          <span class="highlight">Presidenciales</span>
-        </h1>
-        <p class="page-subtitle">
-          Planes de gobierno registrados para las elecciones 2026-2030.
-        Ordenados por puntaje ponderado general.
-      </p>
-    </div>
-    </header>
+      </header>
 
-    <!-- Content -->
-    <div class="content-container">
-      <!-- Candidate Grid with Aceternity effects -->
-      <CandidateSpotlight 
-        client:visible 
-        candidates={candidatesData}
-        className="mb-12"
-      />
+      <!-- Content -->
+      <div class="content-container">
+        <!-- Legend -->
+        <div class="dashboard-legend-box">
+          <div class="dashboard-legend-row">
+            <div class="dashboard-legend-group">
+              <span class="dashboard-legend-title">⚖️ Riesgo Fiscal</span>
+              <div class="dashboard-legend-items">
+                <span class="dashboard-legend-item"><span class="dot green"></span><strong>BAJO</strong> = Fiscalmente responsable</span>
+                <span class="dashboard-legend-item"><span class="dot amber"></span><strong>MEDIO</strong> = Algunas propuestas riesgosas</span>
+                <span class="dashboard-legend-item"><span class="dot red"></span><strong>ALTO</strong> = Amenaza la estabilidad fiscal</span>
+              </div>
+            </div>
+            <div class="dashboard-legend-group">
+              <span class="dashboard-legend-title">📊 Porcentaje</span>
+              <p class="dashboard-legend-desc">
+                Mide la calidad de las propuestas del plan de gobierno en los 10 pilares evaluados.
+                A mayor porcentaje, más completas y detalladas son las propuestas.
+              </p>
+            </div>
+          </div>
+        </div>
 
-      <!-- CTA Section -->
-      <section class="cta-section">
-        <div class="cta-content">
-          <div class="cta-icon">⚖️</div>
-          <h2>¿Quieres comparar?</h2>
-          <p>Selecciona hasta 4 candidatos y compara sus propuestas lado a lado.</p>
-          <a href="/comparar" class="cta-button">
-            <span>Ir al comparador</span>
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </a>
-    </div>
-      </section>
+        <!-- Candidate Grid with Aceternity effects -->
+        <CandidateSpotlight 
+          client:visible 
+          candidates={candidatesData}
+          className="mb-12"
+        />
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+          <div class="cta-content">
+            <div class="cta-icon">⚖️</div>
+            <h2>¿Quieres comparar?</h2>
+            <p>Selecciona hasta 4 candidatos y compara sus propuestas lado a lado.</p>
+            <a href="/comparar" class="cta-button">
+              <span>Ir al comparador</span>
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </a>
+          </div>
+        </section>
+      </div>
     </div>
   </div>
+
+  <!-- ============================================
+       EXPRESS MODE 🚀 - Modo Visual Rápido
+       ============================================ -->
+  <div class="mode-express-content">
+    <div class="express-candidates-container">
+      
+      <!-- Header -->
+      <header class="express-candidates-header">
+        <h1 class="express-candidates-title">👥 Candidatos Presidenciales</h1>
+        <p class="express-candidates-subtitle">
+          {candidates.length} candidatos • Ordenados por puntaje general
+        </p>
+      </header>
+
+      <!-- Search/Filter -->
+      <div class="express-search-box">
+        <select id="expressSearchSelect" class="express-search-select">
+          <option value="">👥 Todos los candidatos ({candidates.length})</option>
+          {candidatesData.map((candidate) => (
+            <option value={candidate.id}>
+              {candidate.candidateName} - {candidate.partyName}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <!-- Legend -->
+      <div class="express-legend">
+        <div class="express-legend-section">
+          <span class="express-legend-title">⚖️ Riesgo Fiscal:</span>
+          <div class="express-legend-items">
+            <span class="express-legend-item"><span class="dot green"></span><strong>BAJO</strong> = Responsable</span>
+            <span class="express-legend-item"><span class="dot amber"></span><strong>MEDIO</strong> = Algo riesgoso</span>
+            <span class="express-legend-item"><span class="dot red"></span><strong>ALTO</strong> = Amenaza fiscal</span>
+          </div>
+        </div>
+        <div class="express-legend-section">
+          <span class="express-legend-title">📊 Porcentaje:</span>
+          <span class="express-legend-desc">Calidad de las propuestas del plan de gobierno (0-100%)</span>
+        </div>
+      </div>
+
+      <!-- Candidates List -->
+      <div class="express-candidates-list" id="expressCandidatesList">
+        {candidatesData.map((candidate, index) => {
+          const medals = ['🥇', '🥈', '🥉'];
+          const hasMedal = index < 3;
+          const riskColor = candidate.riskLevel === 'BAJO' ? 'green' : candidate.riskLevel === 'MEDIO' ? 'amber' : 'red';
+          const riskEmoji = candidate.riskLevel === 'BAJO' ? '🟢' : candidate.riskLevel === 'MEDIO' ? '🟠' : '🔴';
+          
+          return (
+            <a 
+              href={`/candidatos/${candidate.id}`} 
+              class={`express-candidate-card ${hasMedal ? 'top-three' : ''}`}
+              data-candidate-id={candidate.id}
+            >
+              <div class="express-rank-badge">
+                {hasMedal ? (
+                  <span class="express-medal">{medals[index]}</span>
+                ) : (
+                  <span class="express-rank-number">{candidate.rank}</span>
+                )}
+              </div>
+              
+              <div class="express-candidate-info">
+                <h3 class="express-candidate-name">{candidate.candidateName}</h3>
+                <p class="express-candidate-party">{candidate.partyName}</p>
+              </div>
+              
+              <div class="express-candidate-metrics">
+                <div class={`express-risk-badge ${riskColor}`}>
+                  {riskEmoji} {candidate.riskLevel}
+                </div>
+                <div class="express-score-value">{candidate.score}%</div>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+
+      <!-- CTA -->
+      <div class="express-cta">
+        <a href="/comparar" class="express-cta-button">
+          ⚖️ Comparar candidatos
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================
+       READING MODE 📖 - Modo Lectura (Adultos Mayores)
+       ============================================ -->
+  <div class="mode-reading-content">
+    <div class="reading-candidates-container">
+      
+      <!-- Header -->
+      <header class="reading-candidates-header">
+        <h1 class="reading-candidates-title">👥 Candidatos Presidenciales</h1>
+        <p class="reading-candidates-intro">
+          Lista de los {candidates.length} candidatos a la presidencia para las elecciones 2026-2030.
+          Están ordenados por la calidad de sus propuestas de gobierno.
+        </p>
+        <div class="reading-important-note">
+          <strong>💡 Consejo:</strong> Haga clic en cualquier candidato para ver su perfil completo y propuestas detalladas.
+        </div>
+      </header>
+
+      <!-- Search -->
+      <div class="reading-search-box">
+        <label for="readingSearchSelect" class="reading-search-label">
+          🔍 Seleccione un candidato:
+        </label>
+        <select id="readingSearchSelect" class="reading-search-select">
+          <option value="">👥 Ver todos los candidatos ({candidates.length})</option>
+          {candidatesData.map((candidate) => (
+            <option value={candidate.id}>
+              {candidate.candidateName} - {candidate.partyName}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <!-- Legend -->
+      <div class="reading-legend">
+        <h3>¿Qué significa el riesgo fiscal?</h3>
+        <div class="reading-legend-items">
+          <div class="reading-legend-item">
+            <span class="reading-legend-dot green"></span>
+            <span><strong>🟢 BAJO</strong> - El candidato es fiscalmente responsable</span>
+          </div>
+          <div class="reading-legend-item">
+            <span class="reading-legend-dot orange"></span>
+            <span><strong>🟠 MEDIO</strong> - Tiene algunas propuestas preocupantes</span>
+          </div>
+          <div class="reading-legend-item">
+            <span class="reading-legend-dot red"></span>
+            <span><strong>🔴 ALTO</strong> - Propone medidas que amenazan las finanzas</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Candidates List -->
+      <div class="reading-candidates-list" id="readingCandidatesList">
+        {candidatesData.map((candidate, index) => {
+          const medals = ['🥇', '🥈', '🥉'];
+          const hasMedal = index < 3;
+          const riskColor = candidate.riskLevel === 'BAJO' ? 'green' : candidate.riskLevel === 'MEDIO' ? 'amber' : 'red';
+          const riskEmoji = candidate.riskLevel === 'BAJO' ? '🟢' : candidate.riskLevel === 'MEDIO' ? '🟠' : '🔴';
+          
+          return (
+            <article 
+              class={`reading-candidate-card ${hasMedal ? 'top-three' : ''} ${riskColor}`}
+              data-candidate-id={candidate.id}
+            >
+              <div class="reading-candidate-rank">
+                {hasMedal ? (
+                  <span class="reading-medal">{medals[index]}</span>
+                ) : (
+                  <span class="reading-rank-number">#{candidate.rank}</span>
+                )}
+              </div>
+              
+              <div class="reading-candidate-info">
+                <h3 class="reading-candidate-name">{candidate.candidateName}</h3>
+                <p class="reading-candidate-party">{candidate.partyName}</p>
+              </div>
+              
+              <div class="reading-candidate-metrics">
+                <div class={`reading-risk-badge ${riskColor}`}>
+                  {riskEmoji} Riesgo {candidate.riskLevel}
+                </div>
+                <div class="reading-score-value">{candidate.score}%</div>
+              </div>
+              
+              <a href={`/candidatos/${candidate.id}`} class="reading-profile-link">
+                👤 Ver perfil completo
+              </a>
+            </article>
+          );
+        })}
+      </div>
+
+      <!-- CTA -->
+      <section class="reading-cta">
+        <h2>⚖️ ¿Quiere comparar candidatos?</h2>
+        <p>Puede seleccionar hasta 4 candidatos y ver sus propuestas lado a lado.</p>
+        <a href="/comparar" class="reading-cta-button">
+          Ir al comparador →
+        </a>
+      </section>
+
+    </div>
+  </div>
+
 </BaseLayout>
 
 <style>
+  /* Mode visibility */
+  .mode-express-content,
+  .mode-reading-content {
+    display: none;
+  }
+  
+  .mode-dashboard-content {
+    display: block;
+  }
+  
+  html[data-mode="express"] .mode-express-content {
+    display: block;
+  }
+  
+  html[data-mode="express"] .mode-dashboard-content,
+  html[data-mode="express"] .mode-reading-content {
+    display: none;
+  }
+  
+  html[data-mode="reading"] .mode-reading-content {
+    display: block;
+  }
+  
+  html[data-mode="reading"] .mode-dashboard-content,
+  html[data-mode="reading"] .mode-express-content {
+    display: none;
+  }
+
+  /* ===========================================
+     DASHBOARD MODE STYLES
+     =========================================== */
   .candidates-page {
     min-height: 100vh;
   }
@@ -191,6 +454,65 @@ const candidatesData = sortedCandidates.map((candidate, idx) => {
     padding: 2rem 1rem 4rem;
   }
   
+  /* Dashboard Legend */
+  .dashboard-legend-box {
+    background: linear-gradient(135deg, #f0fdf4 0%, #ecfeff 50%, #fef3c7 100%);
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .dashboard-legend-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+  
+  .dashboard-legend-group {
+    flex: 1;
+    min-width: 280px;
+  }
+  
+  .dashboard-legend-title {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #334155;
+    margin-bottom: 0.5rem;
+  }
+  
+  .dashboard-legend-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  
+  .dashboard-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.8rem;
+    color: #475569;
+  }
+  
+  .dashboard-legend-item .dot {
+    width: 0.625rem;
+    height: 0.625rem;
+    border-radius: 50%;
+  }
+  
+  .dashboard-legend-item .dot.green { background: #22c55e; }
+  .dashboard-legend-item .dot.amber { background: #f59e0b; }
+  .dashboard-legend-item .dot.red { background: #ef4444; }
+  
+  .dashboard-legend-desc {
+    font-size: 0.85rem;
+    color: #475569;
+    margin: 0;
+    line-height: 1.5;
+  }
+  
   /* CTA Section */
   .cta-section {
     margin-top: 3rem;
@@ -266,4 +588,641 @@ const candidatesData = sortedCandidates.map((candidate, idx) => {
       font-size: 2rem;
     }
   }
+
+  /* ===========================================
+     EXPRESS MODE STYLES
+     =========================================== */
+  .express-candidates-container {
+    max-width: 50rem;
+    margin: 0 auto;
+    padding: 1.5rem;
+  }
+  
+  .express-candidates-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .express-candidates-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin: 0 0 0.5rem 0;
+  }
+  
+  .express-candidates-subtitle {
+    font-size: 1rem;
+    color: #64748b;
+    margin: 0;
+  }
+  
+  .express-search-box {
+    margin-bottom: 1.25rem;
+  }
+  
+  .express-search-select {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.75rem;
+    font-size: 1rem;
+    color: #1e293b;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1.25rem;
+    padding-right: 3rem;
+  }
+  
+  .express-search-select:focus {
+    outline: none;
+    border-color: #0891b2;
+    box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.1);
+  }
+  
+  .express-search-select:hover {
+    border-color: #0891b2;
+  }
+  
+  /* Express Legend */
+  .express-legend {
+    background: linear-gradient(135deg, #f0fdf4 0%, #ecfeff 50%, #fef3c7 100%);
+    border: 2px solid #e2e8f0;
+    border-radius: 0.75rem;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .express-legend-section {
+    flex: 1;
+    min-width: 200px;
+  }
+  
+  .express-legend-title {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #334155;
+    margin-bottom: 0.375rem;
+  }
+  
+  .express-legend-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+  }
+  
+  .express-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    color: #475569;
+  }
+  
+  .express-legend-item .dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+  }
+  
+  .express-legend-item .dot.green { background: #22c55e; }
+  .express-legend-item .dot.amber { background: #f59e0b; }
+  .express-legend-item .dot.red { background: #ef4444; }
+  
+  .express-legend-desc {
+    font-size: 0.8rem;
+    color: #475569;
+    margin: 0;
+    line-height: 1.4;
+  }
+  
+  .express-candidates-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .express-candidate-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 1rem;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  
+  .express-candidate-card:hover {
+    border-color: #0891b2;
+    box-shadow: 0 4px 20px rgba(8, 145, 178, 0.15);
+    transform: translateY(-2px);
+  }
+  
+  .express-candidate-card.top-three {
+    background: linear-gradient(135deg, #fffbeb 0%, white 50%);
+    border-color: #fcd34d;
+  }
+  
+  .express-candidate-card.hidden {
+    display: none;
+  }
+  
+  .express-rank-badge {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  
+  .express-medal {
+    font-size: 1.5rem;
+    line-height: 1;
+  }
+  
+  .express-rank-number {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #64748b;
+  }
+  
+  .express-candidate-info {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .express-candidate-name {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 0.125rem 0;
+    line-height: 1.3;
+  }
+  
+  .express-candidate-party {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin: 0;
+  }
+  
+  .express-candidate-metrics {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
+  }
+  
+  .express-risk-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.375rem 0.625rem;
+    border-radius: 0.5rem;
+  }
+  
+  .express-risk-badge.green {
+    background: #dcfce7;
+    color: #15803d;
+  }
+  
+  .express-risk-badge.amber {
+    background: #fef3c7;
+    color: #a16207;
+  }
+  
+  .express-risk-badge.red {
+    background: #fee2e2;
+    color: #dc2626;
+  }
+  
+  .express-score-value {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #0891b2;
+  }
+  
+  .express-cta {
+    margin-top: 1.5rem;
+    text-align: center;
+  }
+  
+  .express-cta-button {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #06b6d4, #0891b2);
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: 0.75rem;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  
+  .express-cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(6, 182, 212, 0.4);
+  }
+  
+  @media (max-width: 640px) {
+    .express-candidates-container {
+      padding: 1rem;
+    }
+    
+    .express-candidate-card {
+      flex-wrap: wrap;
+    }
+    
+    .express-candidate-metrics {
+      width: 100%;
+      justify-content: flex-end;
+      margin-top: 0.5rem;
+    }
+  }
+
+  /* ===========================================
+     READING MODE STYLES (Adultos Mayores)
+     =========================================== */
+  .reading-candidates-container {
+    max-width: 56rem;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    font-family: Georgia, 'Times New Roman', serif !important;
+  }
+  
+  .reading-candidates-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 2rem;
+    background: #f8fafc;
+    border: 3px solid #1e3a5f;
+    border-radius: 1rem;
+  }
+  
+  .reading-candidates-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1e3a5f;
+    margin: 0 0 1rem 0;
+    line-height: 1.3;
+  }
+  
+  .reading-candidates-intro {
+    font-size: 1.35rem;
+    color: #334155;
+    line-height: 1.8;
+    margin: 0 0 1rem 0;
+  }
+  
+  .reading-important-note {
+    font-size: 1.15rem;
+    background: #ecfdf5;
+    border: 2px solid #22c55e;
+    padding: 1rem 1.25rem;
+    border-radius: 0.75rem;
+    color: #166534;
+    line-height: 1.6;
+  }
+  
+  .reading-search-box {
+    margin-bottom: 1.5rem;
+  }
+  
+  .reading-search-label {
+    display: block;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1e3a5f;
+    margin-bottom: 0.75rem;
+  }
+  
+  .reading-search-select {
+    width: 100%;
+    padding: 1.25rem 1.5rem;
+    border: 3px solid #cbd5e1;
+    border-radius: 0.75rem;
+    font-size: 1.25rem;
+    font-family: Georgia, 'Times New Roman', serif !important;
+    color: #1e293b;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%231e3a5f'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1.5rem center;
+    background-size: 1.5rem;
+    padding-right: 4rem;
+  }
+  
+  .reading-search-select:focus {
+    outline: none;
+    border-color: #1e3a5f;
+    box-shadow: 0 0 0 4px rgba(30, 58, 95, 0.1);
+  }
+  
+  .reading-search-select:hover {
+    border-color: #1e3a5f;
+  }
+  
+  .reading-legend {
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .reading-legend h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1e3a5f;
+    margin: 0 0 1rem 0;
+  }
+  
+  .reading-legend-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .reading-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.15rem;
+    color: #334155;
+    line-height: 1.5;
+  }
+  
+  .reading-legend-dot {
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  
+  .reading-legend-dot.green { background: #22c55e; }
+  .reading-legend-dot.orange { background: #f59e0b; }
+  .reading-legend-dot.red { background: #ef4444; }
+  
+  .reading-candidates-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .reading-candidate-card {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: white;
+    border: 3px solid #e2e8f0;
+    border-radius: 1rem;
+    transition: all 0.2s;
+  }
+  
+  .reading-candidate-card:hover {
+    border-color: #1e3a5f;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  }
+  
+  .reading-candidate-card.top-three {
+    background: linear-gradient(135deg, #fffbeb 0%, white 40%);
+    border-color: #fcd34d;
+  }
+  
+  .reading-candidate-card.green {
+    border-left: 6px solid #22c55e;
+  }
+  
+  .reading-candidate-card.amber {
+    border-left: 6px solid #f59e0b;
+  }
+  
+  .reading-candidate-card.red {
+    border-left: 6px solid #ef4444;
+  }
+  
+  .reading-candidate-card.hidden {
+    display: none;
+  }
+  
+  .reading-candidate-rank {
+    width: 4rem;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  
+  .reading-medal {
+    font-size: 2.5rem;
+    line-height: 1;
+  }
+  
+  .reading-rank-number {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #64748b;
+    background: #f1f5f9;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+  }
+  
+  .reading-candidate-info {
+    flex: 1;
+    min-width: 200px;
+  }
+  
+  .reading-candidate-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 0.25rem 0;
+    line-height: 1.3;
+  }
+  
+  .reading-candidate-party {
+    font-size: 1.15rem;
+    color: #64748b;
+    margin: 0;
+  }
+  
+  .reading-candidate-metrics {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .reading-risk-badge {
+    font-size: 1.1rem;
+    font-weight: 700;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+  }
+  
+  .reading-risk-badge.green {
+    background: #dcfce7;
+    color: #15803d;
+  }
+  
+  .reading-risk-badge.amber {
+    background: #fef3c7;
+    color: #a16207;
+  }
+  
+  .reading-risk-badge.red {
+    background: #fee2e2;
+    color: #dc2626;
+  }
+  
+  .reading-score-value {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #0891b2;
+  }
+  
+  .reading-profile-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.25rem;
+    background: #1e3a5f;
+    color: white !important;
+    border-radius: 0.75rem;
+    font-size: 1.15rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  
+  .reading-profile-link:hover {
+    background: #0f172a;
+    transform: translateY(-2px);
+  }
+  
+  .reading-cta {
+    margin-top: 2.5rem;
+    padding: 2rem;
+    background: #1e3a5f;
+    border-radius: 1rem;
+    text-align: center;
+  }
+  
+  .reading-cta h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: white !important;
+    margin: 0 0 0.75rem 0;
+  }
+  
+  .reading-cta p {
+    font-size: 1.25rem;
+    color: white !important;
+    margin: 0 0 1.5rem 0;
+  }
+  
+  .reading-cta-button {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: white;
+    color: #1e3a5f !important;
+    font-size: 1.25rem;
+    font-weight: 700;
+    border-radius: 0.75rem;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  
+  .reading-cta-button:hover {
+    background: #f8fafc;
+    transform: translateY(-2px);
+  }
+  
+  @media (max-width: 768px) {
+    .reading-candidates-container {
+      padding: 1.5rem 1rem;
+    }
+    
+    .reading-candidates-title {
+      font-size: 2rem;
+    }
+    
+    .reading-candidate-card {
+      flex-direction: column;
+      align-items: flex-start;
+      text-align: left;
+    }
+    
+    .reading-candidate-rank {
+      width: auto;
+    }
+    
+    .reading-candidate-metrics {
+      align-items: flex-start;
+    }
+    
+    .reading-profile-link {
+      width: 100%;
+      justify-content: center;
+    }
+  }
 </style>
+
+<script>
+  // Express Mode - Filter functionality
+  const expressSearchSelect = document.getElementById('expressSearchSelect') as HTMLSelectElement;
+  const expressCandidatesList = document.getElementById('expressCandidatesList');
+  
+  if (expressSearchSelect && expressCandidatesList) {
+    expressSearchSelect.addEventListener('change', () => {
+      const selectedId = expressSearchSelect.value;
+      const cards = expressCandidatesList.querySelectorAll('.express-candidate-card');
+      
+      cards.forEach((card) => {
+        const candidateId = card.getAttribute('data-candidate-id') || '';
+        
+        if (selectedId === '' || candidateId === selectedId) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+    });
+  }
+
+  // Reading Mode - Filter functionality
+  const readingSearchSelect = document.getElementById('readingSearchSelect') as HTMLSelectElement;
+  const readingCandidatesList = document.getElementById('readingCandidatesList');
+  
+  if (readingSearchSelect && readingCandidatesList) {
+    readingSearchSelect.addEventListener('change', () => {
+      const selectedId = readingSearchSelect.value;
+      const cards = readingCandidatesList.querySelectorAll('.reading-candidate-card');
+      
+      cards.forEach((card) => {
+        const candidateId = card.getAttribute('data-candidate-id') || '';
+        
+        if (selectedId === '' || candidateId === selectedId) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+    });
+  }
+</script>

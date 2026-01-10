@@ -5,8 +5,8 @@ import { cn } from "../../../lib/utils";
 
 interface CandidateData {
   id: string;
-  name: string;
-  party: string;
+  candidateName: string;
+  partyName: string;
   score: number;
   rank: number;
   riskLevel: "BAJO" | "MEDIO" | "ALTO";
@@ -98,12 +98,12 @@ export const CandidateSpotlight = ({
 
             {/* Header */}
             <div className="mb-4">
-              <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">
-                {candidate.party}
-              </span>
-              <h3 className="font-bold text-lg text-slate-900 group-hover:text-cyan-600 transition-colors line-clamp-1">
-                {candidate.name}
+              <h3 className="font-bold text-lg text-slate-900 group-hover:text-cyan-600 transition-colors line-clamp-2 leading-tight mb-1">
+                {candidate.candidateName}
               </h3>
+              <span className="text-sm text-slate-500 line-clamp-1">
+                {candidate.partyName}
+              </span>
             </div>
 
             {/* Score */}

@@ -85,9 +85,26 @@ const getRiskTextColor = (level: FiscalRiskLevel) => {
     case 'ALTO': return 'text-red-600';
   }
 };
+
+// Helper para obtener nombre del candidato
+function getCandidateName(c: any): string {
+  const name = c?.candidate_name;
+  if (name && name !== 'Por determinar' && name !== 'no_especificado') {
+    return name;
+  }
+  return c?.party_name || 'N/A';
+}
+
+const candidateName = getCandidateName(candidate);
+const riskEmoji = riskLevel === 'BAJO' ? '🟢' : riskLevel === 'MEDIO' ? '🟠' : '🔴';
 ---
 
 <BaseLayout title={candidate.party_name}>
+
+  <!-- ============================================
+       DASHBOARD MODE (Default) - Modo Visual Detallado
+       ============================================ -->
+  <div class="mode-dashboard-content">
   <div class="candidate-page">
     <!-- Hero Header -->
     <header class="candidate-hero">
@@ -275,27 +292,23 @@ const getRiskTextColor = (level: FiscalRiskLevel) => {
       </section>
     )}
 
-    <!-- Matrix -->
-      <section class="matrix-section">
+    <!-- Combined: Evaluation & Proposals by Pillar -->
+      <section class="combined-pillars-section">
         <div class="section-header">
           <span class="section-icon">📊</span>
-          <h2>Evaluación por Pilar</h2>
+          <h2>Evaluación y Propuestas por Pilar</h2>
         </div>
-      <CandidateMatrix score={score} />
-    </section>
-
-    <!-- Proposals by Pillar -->
-      <section class="proposals-section">
-        <div class="section-header">
-          <span class="section-icon">📋</span>
-          <h2>Propuestas por Pilar</h2>
-        </div>
+        
+        <p class="section-description">
+          Desglose del puntaje en cada uno de los 10 pilares evaluados, junto con las propuestas más destacadas.
+        </p>
       
-        <div class="proposals-list">
+        <div class="pillars-combined-list">
         {score.pillar_scores.map((ps) => {
           const pillar = pillarIndex[ps.pillar_id];
           const icon = PILLAR_ICONS[ps.pillar_id as PillarId];
           const weightPercent = pillar?.weight ? Math.round(pillar.weight * 100) : 0;
+          const scorePercent = Math.round((ps.effective_score / 4) * 100);
           const pillarProposals = (proposalsByPillar[ps.pillar_id] || [])
             .sort((a, b) => {
               const scoreA = a.dimensions.existence + a.dimensions.when + a.dimensions.how + a.dimensions.funding;
@@ -305,61 +318,417 @@ const getRiskTextColor = (level: FiscalRiskLevel) => {
             .slice(0, 3);
           
           const hasPenalties = ps.penalties && ps.penalties.length > 0;
+          const scoreColor = scorePercent >= 75 ? 'excellent' : scorePercent >= 50 ? 'good' : scorePercent >= 25 ? 'regular' : 'low';
           
           return (
-              <div class="pillar-section">
-                <div class="pillar-header">
-                  <span class="pillar-icon">{icon}</span>
-                  <div class="pillar-info">
-                    <span class="pillar-id">{ps.pillar_id}</span>
-                    <h3>{pillar?.pillar_name || ps.pillar_id}</h3>
-                  </div>
-                  <div class="pillar-meta">
-                    <span class="weight-badge">Peso: {weightPercent}%</span>
-                    <span class={`score-badge ${hasPenalties ? 'penalized' : ''}`}>
-                      {ps.effective_score}/4
-                  {hasPenalties && ps.raw_score !== ps.effective_score && (
-                        <span class="raw-score">(bruto: {ps.raw_score})</span>
-                  )}
-                </span>
-                {hasPenalties && (
-                      <span class="penalty-badge">Penalizado</span>
-                )}
-                  </div>
-              </div>
-              
-              {pillarProposals.length > 0 ? (
-                  <div class="proposals-cards">
-                  {pillarProposals.map((proposal) => (
-                      <div class={`proposal-card ${hasPenalties ? 'penalized' : ''}`}>
-                        <h4>{proposal.proposal_title}</h4>
-                        <p>{proposal.proposal_text}</p>
-                        <div class="proposal-footer">
-                        <DimensionBadges dimensions={proposal.dimensions} compact={true} />
-                        <EvidenceLink 
-                          pdfId={proposal.evidence.pdf_id}
-                          page={proposal.evidence.page}
-                          compact={true}
-                        />
-                      </div>
+              <div class={`combined-pillar-card ${hasPenalties ? 'penalized' : ''}`}>
+                <!-- Pillar Header with Score -->
+                <div class="combined-pillar-header">
+                  <a href={`/pilares/${ps.pillar_id}`} class="pillar-link">
+                    <span class="combined-pillar-icon">{icon}</span>
+                    <div class="combined-pillar-info">
+                      <span class="combined-pillar-id">{ps.pillar_id}</span>
+                      <h3 class="combined-pillar-name">{pillar?.pillar_name || ps.pillar_id}</h3>
                     </div>
-                  ))}
+                  </a>
+                  
+                  <div class="combined-pillar-scores">
+                    <div class={`combined-score-circle ${scoreColor}`}>
+                      <span class="combined-score-value">{scorePercent}%</span>
+                    </div>
+                    <div class="combined-pillar-badges">
+                      <span class="weight-pill">Peso: {weightPercent}%</span>
+                      {hasPenalties && (
+                        <span class="penalty-pill">⚠️ Penalizado</span>
+                      )}
+                    </div>
+                  </div>
                 </div>
-              ) : (
-                  <p class="no-proposals">
-                  No se encontraron propuestas concretas para este pilar.
-                </p>
-              )}
-            </div>
+                
+                <!-- Score Bar -->
+                <div class="combined-score-bar">
+                  <div class={`combined-score-fill ${scoreColor}`} style={`width: ${scorePercent}%`}></div>
+                </div>
+                
+                <!-- Dimensions Summary -->
+                <div class="combined-dimensions">
+                  <span class={`dim-item ${pillarProposals.some(p => p.dimensions.existence) ? 'active' : ''}`}>
+                    📋 Existe
+                  </span>
+                  <span class={`dim-item ${pillarProposals.some(p => p.dimensions.when) ? 'active' : ''}`}>
+                    📅 Cuándo
+                  </span>
+                  <span class={`dim-item ${pillarProposals.some(p => p.dimensions.how) ? 'active' : ''}`}>
+                    ⚙️ Cómo
+                  </span>
+                  <span class={`dim-item ${pillarProposals.some(p => p.dimensions.funding) ? 'active' : ''}`}>
+                    💰 Fondos
+                  </span>
+                </div>
+                
+                <!-- Proposals -->
+                {pillarProposals.length > 0 ? (
+                  <div class="combined-proposals">
+                    <h4 class="proposals-subtitle">Propuestas destacadas:</h4>
+                    {pillarProposals.map((proposal) => (
+                      <div class="combined-proposal-item">
+                        <div class="proposal-content">
+                          <h5>{proposal.proposal_title}</h5>
+                          <p>{proposal.proposal_text}</p>
+                        </div>
+                        <div class="proposal-meta">
+                          <DimensionBadges dimensions={proposal.dimensions} compact={true} />
+                          <EvidenceLink 
+                            pdfId={proposal.evidence.pdf_id}
+                            page={proposal.evidence.page}
+                            compact={true}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div class="combined-no-proposals">
+                    <span class="no-proposals-icon">📭</span>
+                    <span>No se encontraron propuestas concretas para este pilar.</span>
+                  </div>
+                )}
+              </div>
           );
         })}
       </div>
     </section>
     </div>
   </div>
+  </div>
+
+  <!-- ============================================
+       EXPRESS MODE 🚀 - Modo Visual Rápido
+       ============================================ -->
+  <div class="mode-express-content">
+    <div class="express-detail-container">
+      
+      <!-- Back Button -->
+      <a href="/candidatos" class="express-back-link">
+        ← Volver a candidatos
+      </a>
+      
+      <!-- Header Card -->
+      <header class="express-detail-header">
+        <div class="express-header-main">
+          <div class="express-rank-circle">#{score.overall.rank || 1}</div>
+          <div class="express-header-info">
+            <h1 class="express-header-name">{candidateName}</h1>
+            <p class="express-header-party">{candidate.party_name}</p>
+          </div>
+          <div class="express-header-score">
+            <span class="express-score-value">{weightedPercent}%</span>
+            <span class={`express-risk-pill ${riskLevel.toLowerCase()}`}>
+              {riskEmoji} {riskLevel}
+            </span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Quick Stats -->
+      <div class="express-stats-row">
+        <div class="express-stat">
+          <span class="express-stat-label">📊 Ponderado</span>
+          <span class="express-stat-value">{weightedPercent}%</span>
+        </div>
+        <div class="express-stat">
+          <span class="express-stat-label">🎯 Prioritarios</span>
+          <span class="express-stat-value">{priorityPercent}%</span>
+        </div>
+        <div class="express-stat">
+          <span class="express-stat-label">⚖️ Penalización</span>
+          <span class={`express-stat-value ${totalPenalties < 0 ? 'negative' : 'positive'}`}>{totalPenalties}</span>
+        </div>
+      </div>
+
+      <!-- Fiscal Alerts (if any) -->
+      {activePenalties.length > 0 && (
+        <div class="express-alert danger">
+          <span class="express-alert-icon">🚨</span>
+          <div class="express-alert-content">
+            <strong>Alertas Fiscales:</strong> {activePenalties.length} bandera(s) roja(s)
+          </div>
+        </div>
+      )}
+
+      {riskLevel === 'BAJO' && fiscalFlags?.shows_fiscal_responsibility && (
+        <div class="express-alert success">
+          <span class="express-alert-icon">✅</span>
+          <div class="express-alert-content">
+            <strong>Fiscalmente Responsable</strong>
+          </div>
+        </div>
+      )}
+
+      <!-- Pillar Scores -->
+      <section class="express-pillars-section">
+        <h2 class="express-section-title">📊 Puntaje por Pilar</h2>
+        <div class="express-pillars-grid">
+          {score.pillar_scores.map((ps) => {
+            const pillar = pillarIndex[ps.pillar_id];
+            const icon = PILLAR_ICONS[ps.pillar_id as PillarId];
+            const scorePercent = Math.round((ps.effective_score / 4) * 100);
+            const hasPenalties = ps.penalties && ps.penalties.length > 0;
+            
+            return (
+              <a href={`/pilares/${ps.pillar_id}`} class={`express-pillar-card ${hasPenalties ? 'penalized' : ''}`}>
+                <span class="express-pillar-icon">{icon}</span>
+                <span class="express-pillar-name">{pillar?.pillar_name || ps.pillar_id}</span>
+                <span class={`express-pillar-score ${scorePercent >= 75 ? 'high' : scorePercent >= 50 ? 'medium' : 'low'}`}>
+                  {scorePercent}%
+                </span>
+              </a>
+            );
+          })}
+        </div>
+      </section>
+
+      <!-- Top Proposals -->
+      <section class="express-proposals-section">
+        <h2 class="express-section-title">📋 Propuestas Destacadas</h2>
+        <div class="express-proposals-list">
+          {proposals.slice(0, 5).map((proposal) => {
+            const pillar = pillarIndex[proposal.pillar_id];
+            const icon = PILLAR_ICONS[proposal.pillar_id as PillarId];
+            
+            return (
+              <div class="express-proposal-card">
+                <div class="express-proposal-header">
+                  <span class="express-proposal-icon">{icon}</span>
+                  <span class="express-proposal-pillar">{pillar?.pillar_name}</span>
+                </div>
+                <h3 class="express-proposal-title">{proposal.proposal_title}</h3>
+                <p class="express-proposal-text">{proposal.proposal_text}</p>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      <!-- Actions -->
+      <div class="express-actions">
+        <a 
+          href={candidate.pdf_url && candidate.pdf_url !== 'no_especificado' ? candidate.pdf_url : `/planes/${candidate.pdf_id}.pdf`}
+          target="_blank"
+          class="express-btn primary"
+        >
+          📄 Ver plan de gobierno
+        </a>
+        <a href={`/comparar?c=${candidate.candidate_id}`} class="express-btn secondary">
+          ⚖️ Comparar
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================
+       READING MODE 📖 - Modo Lectura (Adultos Mayores)
+       ============================================ -->
+  <div class="mode-reading-content">
+    <div class="reading-detail-container">
+      
+      <!-- Back Button -->
+      <a href="/candidatos" class="reading-back-link">
+        ← Volver a la lista de candidatos
+      </a>
+      
+      <!-- Header -->
+      <header class="reading-detail-header">
+        <h1 class="reading-detail-name">{candidateName}</h1>
+        <p class="reading-detail-party">{candidate.party_name}</p>
+        
+        <div class="reading-score-box">
+          <div class="reading-score-main">
+            <span class="reading-score-number">{weightedPercent}%</span>
+            <span class="reading-score-label">Puntaje General</span>
+          </div>
+          <div class={`reading-risk-box ${riskLevel.toLowerCase()}`}>
+            <span class="reading-risk-icon">{riskEmoji}</span>
+            <span class="reading-risk-text">Riesgo {riskLevel}</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Legend -->
+      <div class="reading-legend">
+        <h3>¿Qué significa el riesgo fiscal?</h3>
+        <div class="reading-legend-items">
+          <div class="reading-legend-item">
+            <span class="dot green"></span>
+            <span><strong>BAJO</strong> = Propuestas fiscalmente responsables</span>
+          </div>
+          <div class="reading-legend-item">
+            <span class="dot orange"></span>
+            <span><strong>MEDIO</strong> = Algunas propuestas preocupantes</span>
+          </div>
+          <div class="reading-legend-item">
+            <span class="dot red"></span>
+            <span><strong>ALTO</strong> = Amenaza a las finanzas públicas</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <section class="reading-stats-section">
+        <h2 class="reading-section-title">📊 Resumen de Evaluación</h2>
+        <div class="reading-stats-grid">
+          <div class="reading-stat-card">
+            <span class="reading-stat-icon">📊</span>
+            <span class="reading-stat-value">{weightedPercent}%</span>
+            <span class="reading-stat-label">Puntaje Ponderado General</span>
+          </div>
+          <div class="reading-stat-card">
+            <span class="reading-stat-icon">🎯</span>
+            <span class="reading-stat-value">{priorityPercent}%</span>
+            <span class="reading-stat-label">Pilares Prioritarios</span>
+          </div>
+          <div class={`reading-stat-card ${totalPenalties < 0 ? 'negative' : 'positive'}`}>
+            <span class="reading-stat-icon">⚖️</span>
+            <span class="reading-stat-value">{totalPenalties}</span>
+            <span class="reading-stat-label">Penalización Fiscal</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Alerts -->
+      {activePenalties.length > 0 && (
+        <section class="reading-alert-section danger">
+          <h2>🚨 Alertas Fiscales</h2>
+          <p>Este candidato tiene {activePenalties.length} bandera(s) roja(s) fiscal(es):</p>
+          <ul class="reading-alert-list">
+            {activePenalties.map(flag => (
+              <li>
+                <span class="reading-alert-icon">{PENALTY_LABELS[flag]?.emoji}</span>
+                <div class="reading-alert-content">
+                  <strong>{PENALTY_LABELS[flag]?.label}</strong>
+                  <p>{PENALTY_LABELS[flag]?.description}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {riskLevel === 'BAJO' && fiscalFlags?.shows_fiscal_responsibility && (
+        <section class="reading-alert-section success">
+          <h2>✅ Responsabilidad Fiscal</h2>
+          <p>
+            Este plan de gobierno muestra indicadores de responsabilidad fiscal y no presenta 
+            banderas rojas que comprometan las finanzas públicas de Costa Rica.
+          </p>
+        </section>
+      )}
+
+      <!-- Strengths & Weaknesses -->
+      {analysis && (analysis.strengths.length > 0 || analysis.weaknesses.length > 0) && (
+        <section class="reading-analysis-section">
+          {analysis.strengths.length > 0 && (
+            <div class="reading-analysis-card strengths">
+              <h3>💪 Fortalezas del Plan</h3>
+              <ul>
+                {analysis.strengths.map(s => (
+                  <li>✓ {s}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {analysis.weaknesses.length > 0 && (
+            <div class="reading-analysis-card weaknesses">
+              <h3>⚠️ Debilidades del Plan</h3>
+              <ul>
+                {analysis.weaknesses.map(w => (
+                  <li>✗ {w}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </section>
+      )}
+
+      <!-- Pillar Scores -->
+      <section class="reading-pillars-section">
+        <h2 class="reading-section-title">📊 Evaluación por Pilar</h2>
+        <p class="reading-section-intro">
+          Se evalúan 10 pilares diferentes. A mayor porcentaje, más completas son las propuestas.
+        </p>
+        <div class="reading-pillars-list">
+          {score.pillar_scores.map((ps) => {
+            const pillar = pillarIndex[ps.pillar_id];
+            const icon = PILLAR_ICONS[ps.pillar_id as PillarId];
+            const scorePercent = Math.round((ps.effective_score / 4) * 100);
+            
+            return (
+              <div class="reading-pillar-row">
+                <span class="reading-pillar-icon">{icon}</span>
+                <span class="reading-pillar-name">{pillar?.pillar_name || ps.pillar_id}</span>
+                <span class={`reading-pillar-score ${scorePercent >= 75 ? 'high' : scorePercent >= 50 ? 'medium' : 'low'}`}>
+                  {scorePercent}%
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      <!-- Actions -->
+      <section class="reading-actions">
+        <h2>📄 Ver Plan Completo</h2>
+        <p>Puede descargar y leer el plan de gobierno completo en formato PDF.</p>
+        <a 
+          href={candidate.pdf_url && candidate.pdf_url !== 'no_especificado' ? candidate.pdf_url : `/planes/${candidate.pdf_id}.pdf`}
+          target="_blank"
+          class="reading-action-btn primary"
+        >
+          📄 Abrir Plan de Gobierno (PDF)
+        </a>
+        <a href={`/comparar?c=${candidate.candidate_id}`} class="reading-action-btn secondary">
+          ⚖️ Comparar con otros candidatos
+        </a>
+      </section>
+
+    </div>
+  </div>
+
 </BaseLayout>
 
 <style>
+  /* Mode visibility */
+  .mode-express-content,
+  .mode-reading-content {
+    display: none;
+  }
+  
+  .mode-dashboard-content {
+    display: block;
+  }
+  
+  html[data-mode="express"] .mode-express-content {
+    display: block;
+  }
+  
+  html[data-mode="express"] .mode-dashboard-content,
+  html[data-mode="express"] .mode-reading-content {
+    display: none;
+  }
+  
+  html[data-mode="reading"] .mode-reading-content {
+    display: block;
+  }
+  
+  html[data-mode="reading"] .mode-dashboard-content,
+  html[data-mode="reading"] .mode-express-content {
+    display: none;
+  }
+
+  /* ===========================================
+     DASHBOARD MODE STYLES (existing)
+     =========================================== */
   .candidate-page {
     min-height: 100vh;
   }
@@ -781,57 +1150,79 @@ const getRiskTextColor = (level: FiscalRiskLevel) => {
     margin: 0;
   }
   
-  /* Matrix Section */
-  .matrix-section {
+  /* Combined Pillars Section */
+  .combined-pillars-section {
     margin-bottom: 3rem;
   }
   
-  /* Proposals Section */
-  .proposals-section {
-    margin-bottom: 3rem;
+  .section-description {
+    font-size: 0.95rem;
+    color: #64748b;
+    margin: 0 0 1.5rem 0;
   }
   
-  .proposals-list {
+  .pillars-combined-list {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1.5rem;
   }
   
-  .pillar-section {
+  .combined-pillar-card {
     background: white;
     border-radius: 1rem;
     padding: 1.5rem;
     box-shadow: 0 4px 20px -5px rgba(0,0,0,0.05);
     border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
   }
   
-  .pillar-header {
+  .combined-pillar-card:hover {
+    box-shadow: 0 8px 30px -5px rgba(0,0,0,0.1);
+    border-color: #06b6d4;
+  }
+  
+  .combined-pillar-card.penalized {
+    border-left: 4px solid #f43f5e;
+  }
+  
+  .combined-pillar-header {
     display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
     flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+  
+  .pillar-link {
+    display: flex;
     align-items: center;
     gap: 0.75rem;
-    margin-bottom: 1rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid #f1f5f9;
-  }
-  
-  .pillar-icon {
-    font-size: 1.5rem;
-    width: 2.5rem;
-    height: 2.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(59, 130, 246, 0.1));
-    border-radius: 0.5rem;
-  }
-  
-  .pillar-info {
+    text-decoration: none;
     flex: 1;
     min-width: 200px;
   }
   
-  .pillar-id {
+  .pillar-link:hover .combined-pillar-name {
+    color: #0891b2;
+  }
+  
+  .combined-pillar-icon {
+    font-size: 1.75rem;
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(59, 130, 246, 0.1));
+    border-radius: 0.75rem;
+  }
+  
+  .combined-pillar-info {
+    flex: 1;
+  }
+  
+  .combined-pillar-id {
     font-size: 0.7rem;
     font-weight: 600;
     text-transform: uppercase;
@@ -839,54 +1230,139 @@ const getRiskTextColor = (level: FiscalRiskLevel) => {
     color: #94a3b8;
   }
   
-  .pillar-info h3 {
-    font-weight: 600;
+  .combined-pillar-name {
+    font-weight: 700;
     color: #0f172a;
     margin: 0;
-    font-size: 1rem;
+    font-size: 1.125rem;
+    transition: color 0.2s;
   }
   
-  .pillar-meta {
+  .combined-pillar-scores {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: flex-end;
     gap: 0.5rem;
   }
   
-  .weight-badge,
-  .score-badge {
+  .combined-score-circle {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.125rem;
+    border: 3px solid;
+  }
+  
+  .combined-score-circle.excellent {
+    background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+    border-color: #22c55e;
+    color: #15803d;
+  }
+  
+  .combined-score-circle.good {
+    background: linear-gradient(135deg, #fef9c3, #fde68a);
+    border-color: #facc15;
+    color: #a16207;
+  }
+  
+  .combined-score-circle.regular {
+    background: linear-gradient(135deg, #ffedd5, #fed7aa);
+    border-color: #f59e0b;
+    color: #c2410c;
+  }
+  
+  .combined-score-circle.low {
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
+    border-color: #ef4444;
+    color: #dc2626;
+  }
+  
+  .combined-pillar-badges {
+    display: flex;
+    gap: 0.375rem;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  
+  .weight-pill {
     font-size: 0.7rem;
     padding: 0.25rem 0.5rem;
-    border-radius: 0.375rem;
+    border-radius: 9999px;
     background: #f1f5f9;
     color: #64748b;
     font-weight: 500;
   }
   
-  .score-badge.penalized {
-    background: rgba(239, 68, 68, 0.1);
-    color: #dc2626;
-  }
-  
-  .raw-score {
-    opacity: 0.7;
-    margin-left: 0.25rem;
-  }
-  
-  .penalty-badge {
-    font-size: 0.65rem;
+  .penalty-pill {
+    font-size: 0.7rem;
     padding: 0.25rem 0.5rem;
-    border-radius: 0.375rem;
+    border-radius: 9999px;
     background: #fef2f2;
     color: #dc2626;
     font-weight: 600;
   }
   
-  .proposals-cards {
-    display: grid;
-    gap: 1rem;
+  .combined-score-bar {
+    height: 0.5rem;
+    background: #f1f5f9;
+    border-radius: 9999px;
+    overflow: hidden;
+    margin-bottom: 1rem;
   }
   
-  .proposal-card {
+  .combined-score-fill {
+    height: 100%;
+    border-radius: 9999px;
+    transition: width 0.5s ease;
+  }
+  
+  .combined-score-fill.excellent { background: linear-gradient(90deg, #22c55e, #16a34a); }
+  .combined-score-fill.good { background: linear-gradient(90deg, #facc15, #eab308); }
+  .combined-score-fill.regular { background: linear-gradient(90deg, #f59e0b, #d97706); }
+  .combined-score-fill.low { background: linear-gradient(90deg, #ef4444, #dc2626); }
+  
+  .combined-dimensions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  
+  .dim-item {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.625rem;
+    border-radius: 0.375rem;
+    background: #f1f5f9;
+    color: #94a3b8;
+  }
+  
+  .dim-item.active {
+    background: #ecfdf5;
+    color: #059669;
+  }
+  
+  .combined-proposals {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .proposals-subtitle {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    margin: 0;
+  }
+  
+  .combined-proposal-item {
     padding: 1rem;
     background: #f8fafc;
     border-radius: 0.75rem;
@@ -894,24 +1370,24 @@ const getRiskTextColor = (level: FiscalRiskLevel) => {
     transition: all 0.2s ease;
   }
   
-  .proposal-card.penalized {
+  .combined-pillar-card.penalized .combined-proposal-item {
     border-left-color: #f43f5e;
-    background: rgba(254, 242, 242, 0.5);
+    background: rgba(254, 242, 242, 0.3);
   }
   
-  .proposal-card:hover {
+  .combined-proposal-item:hover {
     background: white;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
   }
   
-  .proposal-card h4 {
+  .proposal-content h5 {
     font-weight: 600;
     color: #0f172a;
-    margin: 0 0 0.5rem;
+    margin: 0 0 0.375rem;
     font-size: 0.95rem;
   }
   
-  .proposal-card p {
+  .proposal-content p {
     font-size: 0.875rem;
     color: #64748b;
     margin: 0 0 0.75rem;
@@ -921,7 +1397,7 @@ const getRiskTextColor = (level: FiscalRiskLevel) => {
     overflow: hidden;
   }
   
-  .proposal-footer {
+  .proposal-meta {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
@@ -929,10 +1405,20 @@ const getRiskTextColor = (level: FiscalRiskLevel) => {
     gap: 0.75rem;
   }
   
-  .no-proposals {
+  .combined-no-proposals {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     color: #94a3b8;
     font-style: italic;
     font-size: 0.875rem;
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: 0.5rem;
+  }
+  
+  .no-proposals-icon {
+    font-size: 1.25rem;
   }
   
   @media (max-width: 640px) {
@@ -950,6 +1436,771 @@ const getRiskTextColor = (level: FiscalRiskLevel) => {
     
     .hero-score {
       width: 100%;
+    }
+  }
+
+  /* ===========================================
+     EXPRESS MODE STYLES
+     =========================================== */
+  .express-detail-container {
+    max-width: 50rem;
+    margin: 0 auto;
+    padding: 1.5rem;
+  }
+  
+  .express-back-link {
+    display: inline-block;
+    color: #0891b2;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    text-decoration: none;
+  }
+  
+  .express-back-link:hover {
+    color: #0e7490;
+  }
+  
+  .express-detail-header {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  
+  .express-header-main {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  
+  .express-rank-circle {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #06b6d4, #0891b2);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+  
+  .express-header-info {
+    flex: 1;
+    min-width: 200px;
+  }
+  
+  .express-header-name {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 0.125rem 0;
+    line-height: 1.2;
+  }
+  
+  .express-header-party {
+    font-size: 0.95rem;
+    color: #64748b;
+    margin: 0;
+  }
+  
+  .express-header-score {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.375rem;
+  }
+  
+  .express-score-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #0891b2;
+  }
+  
+  .express-risk-pill {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.375rem 0.75rem;
+    border-radius: 9999px;
+  }
+  
+  .express-risk-pill.bajo {
+    background: #dcfce7;
+    color: #15803d;
+  }
+  
+  .express-risk-pill.medio {
+    background: #fef3c7;
+    color: #a16207;
+  }
+  
+  .express-risk-pill.alto {
+    background: #fee2e2;
+    color: #dc2626;
+  }
+  
+  .express-stats-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+  
+  .express-stat {
+    flex: 1;
+    min-width: 100px;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.75rem;
+    padding: 0.875rem;
+    text-align: center;
+  }
+  
+  .express-stat-label {
+    display: block;
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-bottom: 0.25rem;
+  }
+  
+  .express-stat-value {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #0f172a;
+  }
+  
+  .express-stat-value.negative { color: #dc2626; }
+  .express-stat-value.positive { color: #22c55e; }
+  
+  .express-alert {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 1rem;
+    border-radius: 0.75rem;
+    margin-bottom: 1rem;
+    border: 2px solid;
+  }
+  
+  .express-alert.danger {
+    background: #fef2f2;
+    border-color: #fecaca;
+  }
+  
+  .express-alert.success {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+  }
+  
+  .express-alert-icon {
+    font-size: 1.25rem;
+  }
+  
+  .express-alert-content {
+    font-size: 0.9rem;
+  }
+  
+  .express-alert.danger .express-alert-content { color: #b91c1c; }
+  .express-alert.success .express-alert-content { color: #15803d; }
+  
+  .express-section-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 0.75rem 0;
+  }
+  
+  .express-pillars-section {
+    margin-bottom: 1.5rem;
+  }
+  
+  .express-pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.5rem;
+  }
+  
+  .express-pillar-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.75rem;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.75rem;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  
+  .express-pillar-card:hover {
+    border-color: #0891b2;
+    transform: translateY(-2px);
+  }
+  
+  .express-pillar-card.penalized {
+    border-color: #fecaca;
+    background: #fef2f2;
+  }
+  
+  .express-pillar-icon {
+    font-size: 1.25rem;
+  }
+  
+  .express-pillar-name {
+    font-size: 0.7rem;
+    color: #64748b;
+    text-align: center;
+    line-height: 1.2;
+  }
+  
+  .express-pillar-score {
+    font-size: 1rem;
+    font-weight: 800;
+  }
+  
+  .express-pillar-score.high { color: #15803d; }
+  .express-pillar-score.medium { color: #d97706; }
+  .express-pillar-score.low { color: #dc2626; }
+  
+  .express-proposals-section {
+    margin-bottom: 1.5rem;
+  }
+  
+  .express-proposals-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .express-proposal-card {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.75rem;
+    padding: 1rem;
+  }
+  
+  .express-proposal-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .express-proposal-icon {
+    font-size: 1rem;
+  }
+  
+  .express-proposal-pillar {
+    font-size: 0.75rem;
+    color: #64748b;
+  }
+  
+  .express-proposal-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 0.375rem 0;
+  }
+  
+  .express-proposal-text {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .express-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  
+  .express-btn {
+    flex: 1;
+    min-width: 140px;
+    padding: 0.875rem 1.25rem;
+    border-radius: 0.75rem;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-align: center;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  
+  .express-btn.primary {
+    background: linear-gradient(135deg, #06b6d4, #0891b2);
+    color: white;
+  }
+  
+  .express-btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(6, 182, 212, 0.4);
+  }
+  
+  .express-btn.secondary {
+    background: white;
+    color: #0891b2;
+    border: 2px solid #0891b2;
+  }
+  
+  .express-btn.secondary:hover {
+    background: #f0f9ff;
+  }
+
+  /* ===========================================
+     READING MODE STYLES (Adultos Mayores)
+     =========================================== */
+  .reading-detail-container {
+    max-width: 56rem;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    font-family: Georgia, 'Times New Roman', serif !important;
+  }
+  
+  .reading-back-link {
+    display: inline-block;
+    font-size: 1.15rem;
+    color: #1e3a5f;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    text-decoration: none;
+  }
+  
+  .reading-back-link:hover {
+    color: #0f172a;
+  }
+  
+  .reading-detail-header {
+    background: #f8fafc;
+    border: 3px solid #1e3a5f;
+    border-radius: 1rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  
+  .reading-detail-name {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1e3a5f;
+    margin: 0 0 0.5rem 0;
+    line-height: 1.2;
+  }
+  
+  .reading-detail-party {
+    font-size: 1.35rem;
+    color: #475569;
+    margin: 0 0 1.5rem 0;
+  }
+  
+  .reading-score-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  
+  .reading-score-main {
+    text-align: center;
+  }
+  
+  .reading-score-number {
+    display: block;
+    font-size: 4rem;
+    font-weight: 800;
+    color: #0891b2;
+    line-height: 1;
+  }
+  
+  .reading-score-label {
+    font-size: 1rem;
+    color: #64748b;
+  }
+  
+  .reading-risk-box {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    border-radius: 0.75rem;
+    border: 3px solid;
+  }
+  
+  .reading-risk-box.bajo {
+    background: #f0fdf4;
+    border-color: #22c55e;
+  }
+  
+  .reading-risk-box.medio {
+    background: #fffbeb;
+    border-color: #f59e0b;
+  }
+  
+  .reading-risk-box.alto {
+    background: #fef2f2;
+    border-color: #ef4444;
+  }
+  
+  .reading-risk-icon {
+    font-size: 2rem;
+  }
+  
+  .reading-risk-text {
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+  
+  .reading-risk-box.bajo .reading-risk-text { color: #15803d; }
+  .reading-risk-box.medio .reading-risk-text { color: #a16207; }
+  .reading-risk-box.alto .reading-risk-text { color: #dc2626; }
+  
+  .reading-legend {
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .reading-legend h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1e3a5f;
+    margin: 0 0 1rem 0;
+  }
+  
+  .reading-legend-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .reading-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.15rem;
+    color: #334155;
+  }
+  
+  .reading-legend-item .dot {
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  
+  .reading-legend-item .dot.green { background: #22c55e; }
+  .reading-legend-item .dot.orange { background: #f59e0b; }
+  .reading-legend-item .dot.red { background: #ef4444; }
+  
+  .reading-section-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1e3a5f;
+    margin: 0 0 0.75rem 0;
+  }
+  
+  .reading-section-intro {
+    font-size: 1.15rem;
+    color: #475569;
+    margin: 0 0 1rem 0;
+    line-height: 1.6;
+  }
+  
+  .reading-stats-section {
+    margin-bottom: 2rem;
+  }
+  
+  .reading-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+  }
+  
+  .reading-stat-card {
+    background: white;
+    border: 3px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    text-align: center;
+  }
+  
+  .reading-stat-card.negative {
+    border-color: #fecaca;
+    background: #fef2f2;
+  }
+  
+  .reading-stat-card.positive {
+    border-color: #bbf7d0;
+    background: #f0fdf4;
+  }
+  
+  .reading-stat-icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  
+  .reading-stat-value {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #0f172a;
+    display: block;
+  }
+  
+  .reading-stat-card.negative .reading-stat-value { color: #dc2626; }
+  .reading-stat-card.positive .reading-stat-value { color: #22c55e; }
+  
+  .reading-stat-label {
+    font-size: 1rem;
+    color: #64748b;
+    margin-top: 0.25rem;
+    display: block;
+  }
+  
+  .reading-alert-section {
+    padding: 2rem;
+    border-radius: 1rem;
+    margin-bottom: 2rem;
+    border: 3px solid;
+  }
+  
+  .reading-alert-section.danger {
+    background: #fef2f2;
+    border-color: #fecaca;
+  }
+  
+  .reading-alert-section.success {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+  }
+  
+  .reading-alert-section h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 0.75rem 0;
+  }
+  
+  .reading-alert-section.danger h2 { color: #b91c1c; }
+  .reading-alert-section.success h2 { color: #15803d; }
+  
+  .reading-alert-section > p {
+    font-size: 1.15rem;
+    line-height: 1.6;
+    margin: 0 0 1rem 0;
+  }
+  
+  .reading-alert-section.danger > p { color: #dc2626; }
+  .reading-alert-section.success > p { color: #166534; }
+  
+  .reading-alert-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .reading-alert-list li {
+    display: flex;
+    gap: 1rem;
+    background: white;
+    padding: 1rem;
+    border-radius: 0.75rem;
+  }
+  
+  .reading-alert-list .reading-alert-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+  
+  .reading-alert-list .reading-alert-content strong {
+    display: block;
+    font-size: 1.15rem;
+    color: #0f172a;
+    margin-bottom: 0.25rem;
+  }
+  
+  .reading-alert-list .reading-alert-content p {
+    font-size: 1rem;
+    color: #64748b;
+    margin: 0;
+  }
+  
+  .reading-analysis-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .reading-analysis-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    border-left: 6px solid;
+  }
+  
+  .reading-analysis-card.strengths {
+    border-color: #22c55e;
+  }
+  
+  .reading-analysis-card.weaknesses {
+    border-color: #ef4444;
+  }
+  
+  .reading-analysis-card h3 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin: 0 0 1rem 0;
+  }
+  
+  .reading-analysis-card.strengths h3 { color: #166534; }
+  .reading-analysis-card.weaknesses h3 { color: #b91c1c; }
+  
+  .reading-analysis-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .reading-analysis-card li {
+    font-size: 1.15rem;
+    color: #334155;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f1f5f9;
+    line-height: 1.5;
+  }
+  
+  .reading-analysis-card li:last-child {
+    border-bottom: none;
+  }
+  
+  .reading-pillars-section {
+    margin-bottom: 2rem;
+  }
+  
+  .reading-pillars-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .reading-pillar-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.75rem;
+    padding: 1rem 1.25rem;
+  }
+  
+  .reading-pillar-icon {
+    font-size: 1.5rem;
+  }
+  
+  .reading-pillar-name {
+    flex: 1;
+    font-size: 1.15rem;
+    color: #0f172a;
+    font-weight: 600;
+  }
+  
+  .reading-pillar-score {
+    font-size: 1.5rem;
+    font-weight: 800;
+  }
+  
+  .reading-pillar-score.high { color: #15803d; }
+  .reading-pillar-score.medium { color: #d97706; }
+  .reading-pillar-score.low { color: #dc2626; }
+  
+  .reading-actions {
+    background: #1e3a5f;
+    border-radius: 1rem;
+    padding: 2rem;
+    text-align: center;
+  }
+  
+  .reading-actions h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white !important;
+    margin: 0 0 0.5rem 0;
+  }
+  
+  .reading-actions > p {
+    font-size: 1.15rem;
+    color: white !important;
+    margin: 0 0 1.5rem 0;
+  }
+  
+  .reading-action-btn {
+    display: inline-block;
+    padding: 1rem 2rem;
+    border-radius: 0.75rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-decoration: none;
+    margin: 0.5rem;
+    transition: all 0.2s;
+  }
+  
+  .reading-action-btn.primary {
+    background: white;
+    color: #1e3a5f !important;
+  }
+  
+  .reading-action-btn.primary:hover {
+    background: #f8fafc;
+    transform: translateY(-2px);
+  }
+  
+  .reading-action-btn.secondary {
+    background: transparent;
+    color: white !important;
+    border: 3px solid white;
+  }
+  
+  .reading-action-btn.secondary:hover {
+    background: rgba(255,255,255,0.1);
+  }
+  
+  @media (max-width: 768px) {
+    .reading-detail-container {
+      padding: 1.5rem 1rem;
+    }
+    
+    .reading-detail-name {
+      font-size: 2rem;
+    }
+    
+    .reading-score-number {
+      font-size: 3rem;
+    }
+    
+    .reading-score-box {
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .reading-action-btn {
+      display: block;
+      width: 100%;
+      margin: 0.5rem 0;
     }
   }
 </style>
