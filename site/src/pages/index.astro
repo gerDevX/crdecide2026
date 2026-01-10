@@ -14,6 +14,14 @@ import { RankingTable } from '../components/ui/aceternity/RankingTable';
 import { HoverEffect } from '../components/ui/aceternity/HoverEffect';
 import { BentoGrid, BentoGridItem } from '../components/ui/aceternity/BentoGrid';
 import { MovingBorder } from '../components/ui/aceternity/MovingBorder';
+import { TabsController } from '../components/ui/aceternity/TabsController';
+
+// Define tabs for the main content sections
+const mainTabs = [
+  { id: "como-evaluamos", label: "¿Cómo evaluamos?", icon: "🔍" },
+  { id: "pilares", label: "10 Pilares de Evaluación", icon: "🏛️" },
+  { id: "top-candidatos", label: "Top 10 Candidatos", icon: "🏆" },
+];
 
 // Prepare ranking data for all modes
 const rankingData = getRankingWithCandidates().map((entry, index) => ({
@@ -151,42 +159,56 @@ const howItWorksItems = [
         <StatsCards client:visible stats={statsData} />
       </section>
 
-      <!-- How It Works -->
+      <!-- Tabs Section -->
       <section>
-        <div class="flex items-center gap-3 mb-6">
-          <span class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-lg shadow-lg">
-            🔍
-          </span>
-          <h2 class="text-2xl font-bold text-slate-900">¿Cómo evaluamos?</h2>
+        <div class="mb-6">
+          <TabsController 
+            client:load 
+            tabs={mainTabs} 
+            defaultTab="como-evaluamos"
+            containerId="main-tabs-content"
+          />
         </div>
-        <HoverEffect client:visible items={howItWorksItems} />
-      </section>
 
-      <!-- Pillars Section -->
-      <section>
-        <div class="flex items-center gap-3 mb-6">
-          <span class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white text-lg shadow-lg">
-            🏛️
-          </span>
-          <h2 class="text-2xl font-bold text-slate-900">10 Pilares de Evaluación</h2>
-        </div>
-        <PillarGrid />
-      </section>
+        <div id="main-tabs-content" data-active-tab="como-evaluamos">
+          <!-- Tab: How It Works -->
+          <div class="tab-panel" data-tab="como-evaluamos">
+            <div class="flex items-center gap-3 mb-6">
+              <span class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-lg shadow-lg">
+                🔍
+              </span>
+              <h2 class="text-2xl font-bold text-slate-900">¿Cómo evaluamos?</h2>
+            </div>
+            <HoverEffect client:visible items={howItWorksItems} />
+          </div>
 
-      <!-- Ranking Section -->
-      <section>
-        <div class="flex items-center gap-3 mb-6">
-          <span class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center text-white text-lg shadow-lg">
-            🏆
-          </span>
-          <h2 class="text-2xl font-bold text-slate-900">Top 10 Candidatos</h2>
+          <!-- Tab: Ranking Section -->
+          <div class="tab-panel" data-tab="top-candidatos">
+            <div class="flex items-center gap-3 mb-6">
+              <span class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center text-white text-lg shadow-lg">
+                🏆
+              </span>
+              <h2 class="text-2xl font-bold text-slate-900">Top 10 Candidatos</h2>
+            </div>
+            <RankingTable 
+              client:visible 
+              entries={rankingEntries} 
+              limit={10}
+              showViewAll={true}
+            />
+          </div>
+
+          <!-- Tab: Pillars Section -->
+          <div class="tab-panel" data-tab="pilares">
+            <div class="flex items-center gap-3 mb-6">
+              <span class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white text-lg shadow-lg">
+                🏛️
+              </span>
+              <h2 class="text-2xl font-bold text-slate-900">10 Pilares de Evaluación</h2>
+            </div>
+            <PillarGrid />
+          </div>
         </div>
-        <RankingTable 
-          client:visible 
-          entries={rankingEntries} 
-          limit={10}
-          showViewAll={true}
-        />
       </section>
 
       <!-- CTA Section -->
@@ -258,5 +280,29 @@ const howItWorksItems = [
   html[data-mode="reading"] .mode-dashboard-content,
   html[data-mode="reading"] .mode-express-content {
     display: none;
+  }
+
+  /* Tab panels visibility */
+  .tab-panel {
+    display: none;
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Show active tab panel */
+  #main-tabs-content[data-active-tab="como-evaluamos"] .tab-panel[data-tab="como-evaluamos"],
+  #main-tabs-content[data-active-tab="top-candidatos"] .tab-panel[data-tab="top-candidatos"],
+  #main-tabs-content[data-active-tab="pilares"] .tab-panel[data-tab="pilares"] {
+    display: block;
   }
 </style>
