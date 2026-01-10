@@ -55,96 +55,101 @@ function buildPdfUrl(pdfId: string, page: number): string {
        DASHBOARD MODE (Default) - Modo Visual Detallado
        ============================================ -->
   <div class="mode-dashboard-content">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      
-      <!-- Header -->
-      <div class="mb-8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <!-- Header -->
+    <div class="mb-8">
         <h1 class="text-3xl font-bold text-slate-900 mb-2">⚖️ Comparar Candidatos</h1>
-        <p class="text-slate-600">
-          Selecciona de 2 a 4 candidatos para comparar sus propuestas lado a lado.
-        </p>
-      </div>
+      <p class="text-slate-600">
+        Selecciona de 2 a 4 candidatos para comparar sus propuestas lado a lado.
+      </p>
+    </div>
 
-      <!-- Selector -->
-      <div class="card p-5 mb-8">
-        <div class="flex flex-wrap items-center gap-3 mb-4">
-          <span class="font-medium text-slate-700">Selecciona candidatos:</span>
+    <!-- Selector -->
+    <div class="card p-5 mb-8">
+      <div class="flex flex-wrap items-center gap-3 mb-4">
+        <span class="font-medium text-slate-700">Selecciona candidatos:</span>
 <button id="clear-selection" class="text-sm bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700 transition-colors hidden">
              ✕ Limpiar selección
-            </button>
-        </div>
+        </button>
+      </div>
         <div id="candidate-selector" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
           {candidatesWithNames.map((candidate) => (
-            <button
-              data-candidate-id={candidate.candidate_id}
+          <button
+            data-candidate-id={candidate.candidate_id}
               data-candidate-name={candidate.displayName}
-              data-party-name={candidate.party_name}
+            data-party-name={candidate.party_name}
               class="candidate-btn flex flex-col items-start text-left px-4 py-3 rounded-lg border-2 border-slate-200 hover:border-civic-500 transition-colors bg-white"
-            >
+          >
               <span class="font-semibold text-slate-900 text-sm line-clamp-1">{candidate.displayName}</span>
               <span class="text-xs text-slate-500">{candidate.party_name}</span>
-            </button>
-          ))}
-        </div>
-        <p id="selection-hint" class="mt-3 text-sm text-slate-500">
-          Haz clic en los candidatos que deseas comparar (mínimo 2, máximo 4)
-        </p>
+          </button>
+        ))}
       </div>
+      <p id="selection-hint" class="mt-3 text-sm text-slate-500">
+        Haz clic en los candidatos que deseas comparar (mínimo 2, máximo 4)
+      </p>
+    </div>
 
-      <!-- Comparison Table (populated by JS) -->
-      <div id="comparison-container" class="hidden">
-        <!-- Sticky Header -->
-        <div id="comparison-header" class="sticky top-16 z-20 bg-white border-b border-slate-200 -mx-4 px-4 py-3">
-          <div class="flex items-center">
-            <div class="w-48 flex-shrink-0 font-medium text-slate-500">Pilar</div>
-            <div id="header-candidates" class="flex-1 flex">
-              <!-- Filled by JS -->
-            </div>
-          </div>
-        </div>
-
-        <!-- Comparison Body -->
-        <div id="comparison-body" class="divide-y divide-slate-100">
-          {pillars.map((pillar) => {
-            const icon = PILLAR_ICONS[pillar.pillar_id as PillarId];
-            return (
-              <div class="pillar-row py-4" data-pillar-id={pillar.pillar_id}>
-                <div class="flex items-start">
-                  <div class="w-48 flex-shrink-0">
-                    <div class="flex items-center gap-2">
-                      <span>{icon}</span>
-                      <span class="font-medium text-slate-900">{pillar.pillar_id}</span>
-                    </div>
-                    <div class="text-sm text-slate-500 mt-1">{pillar.pillar_name}</div>
-                  </div>
-                  <div class="flex-1 flex gap-4 candidate-scores">
-                    <!-- Filled by JS -->
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        <!-- Overall Comparison -->
-        <div id="overall-comparison" class="mt-6 card p-5 bg-civic-50">
-          <h3 class="font-bold text-slate-900 mb-4">Resumen General</h3>
-          <div id="overall-scores" class="grid gap-4">
+    <!-- Comparison Table (populated by JS) -->
+    <div id="comparison-container" class="hidden">
+        <!-- Scroll hint for mobile -->
+        <p class="text-sm text-slate-500 mb-3 text-center md:hidden">
+          📄 <strong>Haga clic en el porcentaje</strong> para ver el plan. <span class="text-cyan-600">⟷ Deslice para ver más columnas.</span>
+        </p>
+        
+      <!-- Sticky Header -->
+        <div id="comparison-header" class="bg-white border-b border-slate-200 py-3 rounded-t-lg">
+        <div class="flex items-center">
+            <div class="w-48 flex-shrink-0 font-medium text-slate-500 pl-2">Pilar</div>
+            <div id="header-candidates" class="flex-1 flex gap-4">
             <!-- Filled by JS -->
           </div>
         </div>
       </div>
 
-      <!-- Empty state -->
-      <div id="empty-state" class="card p-12 text-center">
-        <div class="text-4xl mb-4">🔍</div>
-        <h3 class="text-xl font-semibold text-slate-900 mb-2">Selecciona candidatos</h3>
-        <p class="text-slate-600">
-          Elige al menos 2 candidatos de la lista superior para comenzar la comparación.
-        </p>
+      <!-- Comparison Body -->
+      <div id="comparison-body" class="divide-y divide-slate-100">
+        {pillars.map((pillar) => {
+          const icon = PILLAR_ICONS[pillar.pillar_id as PillarId];
+          return (
+            <div class="pillar-row py-4" data-pillar-id={pillar.pillar_id}>
+              <div class="flex items-start">
+                <div class="w-48 flex-shrink-0">
+                  <div class="flex items-center gap-2">
+                    <span>{icon}</span>
+                    <span class="font-medium text-slate-900">{pillar.pillar_id}</span>
+                  </div>
+                  <div class="text-sm text-slate-500 mt-1">{pillar.pillar_name}</div>
+                </div>
+                <div class="flex-1 flex gap-4 candidate-scores">
+                  <!-- Filled by JS -->
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
 
+      <!-- Overall Comparison -->
+      <div id="overall-comparison" class="mt-6 card p-5 bg-civic-50">
+        <h3 class="font-bold text-slate-900 mb-4">Resumen General</h3>
+        <div id="overall-scores" class="grid gap-4">
+          <!-- Filled by JS -->
+        </div>
+      </div>
     </div>
+
+    <!-- Empty state -->
+    <div id="empty-state" class="card p-12 text-center">
+      <div class="text-4xl mb-4">🔍</div>
+      <h3 class="text-xl font-semibold text-slate-900 mb-2">Selecciona candidatos</h3>
+      <p class="text-slate-600">
+        Elige al menos 2 candidatos de la lista superior para comenzar la comparación.
+      </p>
+    </div>
+
+  </div>
   </div>
 
   <!-- ============================================
@@ -334,6 +339,79 @@ function buildPdfUrl(pdfId: string, page: number): string {
   }
 
   /* ===========================================
+     DASHBOARD MODE STYLES
+     =========================================== */
+  
+  /* Candidate button selected state */
+  .mode-dashboard-content .candidate-btn.selected {
+    background: #ecfeff !important;
+    border-color: #0891b2 !important;
+    box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.2);
+  }
+  
+  .mode-dashboard-content .candidate-btn.selected span:first-child {
+    color: #0e7490;
+  }
+  
+  /* Comparison table scroll container - scroll solo en mobile */
+  #comparison-container {
+    overflow-x: visible; /* No scroll en desktop */
+  }
+  
+  @media (max-width: 768px) {
+    #comparison-container {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    #comparison-container::-webkit-scrollbar {
+      height: 8px;
+    }
+    
+    #comparison-container::-webkit-scrollbar-track {
+      background: #e2e8f0;
+      border-radius: 4px;
+    }
+    
+    #comparison-container::-webkit-scrollbar-thumb {
+      background: #0891b2;
+      border-radius: 4px;
+    }
+  }
+  
+  /* Comparison header and body - Desktop */
+  #comparison-header,
+  .pillar-row {
+    min-width: auto;
+  }
+  
+  /* Fixed column widths - Desktop */
+  .pillar-row .w-48 {
+    min-width: 10rem;
+  }
+  
+  .candidate-scores > div {
+    min-width: 100px;
+  }
+  
+  /* Mobile: force min-width for horizontal scroll */
+  @media (max-width: 768px) {
+    #comparison-header,
+    .pillar-row {
+      min-width: max-content;
+    }
+    
+    #comparison-header > .flex,
+    .pillar-row > .flex {
+      min-width: max-content;
+    }
+    
+    .candidate-scores {
+      min-width: max-content;
+    }
+  }
+  
+  /* ===========================================
      DASHBOARD MODE RESPONSIVE - Fluid Typography
      =========================================== */
   .mode-dashboard-content h1 {
@@ -363,18 +441,40 @@ function buildPdfUrl(pdfId: string, page: number): string {
       padding-right: 1rem;
     }
     
-    .mode-dashboard-content .grid-cols-5 {
-      grid-template-columns: repeat(3, 1fr);
-    }
-    
     .mode-dashboard-content .candidate-btn {
       padding: 0.625rem 0.75rem;
+    }
+    
+    #comparison-header {
+      position: relative;
+      top: 0;
+    }
+    
+    .pillar-row .w-48 {
+      min-width: 8rem;
+      font-size: 0.85rem;
+    }
+    
+    .candidate-scores > div {
+      min-width: 80px;
     }
   }
   
   @media (max-width: 640px) {
-    .mode-dashboard-content .grid-cols-5 {
-      grid-template-columns: repeat(2, 1fr);
+    #comparison-container {
+      margin-left: -0.5rem;
+      margin-right: -0.5rem;
+      padding: 0 0.5rem;
+    }
+    
+    .pillar-row .w-48 {
+      min-width: 7rem;
+      font-size: 0.8rem;
+    }
+    
+    .candidate-scores > div {
+      min-width: 70px;
+      font-size: 0.85rem;
     }
   }
   
@@ -384,17 +484,18 @@ function buildPdfUrl(pdfId: string, page: number): string {
       padding-right: 0.75rem;
     }
     
-    .mode-dashboard-content .grid-cols-5 {
-      grid-template-columns: 1fr;
-    }
-    
     .mode-dashboard-content .candidate-btn {
       padding: 0.625rem;
     }
     
-    .mode-dashboard-content table th,
-    .mode-dashboard-content table td {
-      padding: 0.625rem;
+    .pillar-row .w-48 {
+      min-width: 6rem;
+      font-size: 0.75rem;
+    }
+    
+    .candidate-scores > div {
+      min-width: 60px;
+      font-size: 0.8rem;
     }
   }
 
@@ -1207,7 +1308,7 @@ function buildPdfUrl(pdfId: string, page: number): string {
   const preselected = urlParams.get('c');
   if (preselected) {
     selectedCandidates.add(preselected);
-    document.querySelector(`.mode-dashboard-content [data-candidate-id="${preselected}"]`)?.classList.add('selected', 'bg-civic-100', 'border-civic-500');
+    document.querySelector(`.mode-dashboard-content [data-candidate-id="${preselected}"]`)?.classList.add('selected');
   }
 
   candidateBtns.forEach(btn => {
@@ -1216,10 +1317,10 @@ function buildPdfUrl(pdfId: string, page: number): string {
       
       if (selectedCandidates.has(id)) {
         selectedCandidates.delete(id);
-        btn.classList.remove('selected', 'bg-civic-100', 'border-civic-500');
+        btn.classList.remove('selected');
       } else if (selectedCandidates.size < maxSelection) {
         selectedCandidates.add(id);
-        btn.classList.add('selected', 'bg-civic-100', 'border-civic-500');
+        btn.classList.add('selected');
       }
       
       updateUI();
@@ -1229,7 +1330,7 @@ function buildPdfUrl(pdfId: string, page: number): string {
   clearBtn?.addEventListener('click', () => {
     selectedCandidates.clear();
     candidateBtns.forEach(btn => {
-      btn.classList.remove('selected', 'bg-civic-100', 'border-civic-500');
+      btn.classList.remove('selected');
     });
     updateUI();
   });
@@ -1290,15 +1391,31 @@ function buildPdfUrl(pdfId: string, page: number): string {
       return { candidate, score };
     });
 
-    // Render header with candidate names
+    // Check if mobile (768px breakpoint)
+    const isMobile = window.innerWidth < 768;
+
+    // Render header with candidate names (or party acronyms on mobile)
     if (headerCandidates) {
-      headerCandidates.innerHTML = candidateData.map(({ candidate, score }) => `
+      headerCandidates.innerHTML = candidateData.map(({ candidate, score }) => {
+        if (isMobile) {
+          // Mobile: show only party acronym and score
+          return `
+            <div class="flex-1 text-center px-1" style="min-width: 60px;">
+              <div class="font-bold text-slate-900 text-base">${candidate.pdf_id}</div>
+              <div class="text-lg font-bold text-cyan-600">${Math.round(score.overall.weighted_sum * 100)}%</div>
+            </div>
+          `;
+        } else {
+          // Desktop: show full name, party and score
+          return `
         <div class="flex-1 text-center px-2">
-          <div class="font-bold text-slate-900 text-sm line-clamp-1">${getDisplayName(candidate)}</div>
-          <div class="text-xs text-slate-500">${candidate.party_name}</div>
-          <div class="text-lg font-bold text-civic-600">${Math.round(score.overall.weighted_sum * 100)}%</div>
+              <div class="font-bold text-slate-900 text-sm line-clamp-1">${getDisplayName(candidate)}</div>
+              <div class="text-xs text-slate-500">${candidate.party_name}</div>
+              <div class="text-lg font-bold text-cyan-600">${Math.round(score.overall.weighted_sum * 100)}%</div>
         </div>
-      `).join('');
+          `;
+        }
+      }).join('');
     }
 
     // Render pillar scores with "Ver >>" links (Dashboard)
@@ -1652,4 +1769,15 @@ function buildPdfUrl(pdfId: string, page: number): string {
   updateUI();
   updateExpressUI();
   updateReadingUI();
+  
+  // Re-render dashboard comparison on resize (to update mobile/desktop view)
+  let resizeTimeout;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      if (selectedCandidates.size >= minSelection) {
+        renderComparison();
+      }
+    }, 250);
+  });
 </script>

@@ -238,8 +238,8 @@ const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
                       <span class="dashboard-medal">{medals[index]}</span>
                     ) : (
                       <span class={`dashboard-rank-badge ${index < 5 ? 'top-five' : ''}`}>
-                        {index + 1}
-                      </span>
+                    {index + 1}
+                  </span>
                     )}
                   </div>
                   
@@ -596,10 +596,10 @@ const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
               {avgPercent >= 75 ? '✅ En general, los candidatos proponen soluciones en esta área.' : 
                avgPercent >= 50 ? '🟡 Algunos candidatos tienen propuestas, otros no.' : 
                '🔴 Pocos candidatos abordan este tema con propuestas claras.'}
-            </span>
+                </span>
           </p>
-        </div>
-        
+              </div>
+              
         <div class="reading-stats">
           <div class="reading-stat">
             <span class="reading-stat-value">{pillarData.topCandidates.length}</span>
@@ -613,7 +613,7 @@ const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
       </section>
 
       <hr class="reading-divider" />
-
+              
       <!-- Leyenda -->
       <section class="reading-legend">
         <h2 class="reading-legend-title">📌 ¿Cómo interpretar los porcentajes?</h2>
@@ -683,12 +683,12 @@ const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
                     ) : (
                       <span class="reading-rank-number">{index + 1}.</span>
                     )}
-                  </div>
+              </div>
                   
                   <div class="reading-candidate-info">
                     <h3 class="reading-candidate-name">{candidateName}</h3>
                     <p class="reading-candidate-party">Partido: {item.candidate.party_name}</p>
-                  </div>
+            </div>
                   
                   <div class={`reading-candidate-score ${scoreClass}`}>
                     <span class="reading-score-value">{scorePercent}%</span>
@@ -755,10 +755,10 @@ const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
                   )}
                 </div>
               </li>
-            );
-          })}
+          );
+        })}
         </ol>
-      </section>
+    </section>
 
       <hr class="reading-divider" />
 

@@ -55,17 +55,17 @@ function getScoreLevel(scorePercent: number) {
        ============================================ -->
   <div class="mode-dashboard-content">
     <div class="dashboard-ranking-container">
-      
-      <!-- Header -->
+    
+    <!-- Header -->
       <header class="dashboard-ranking-header">
         <div class="dashboard-header-content">
           <h1 class="dashboard-ranking-title">🏆 Rankings de Candidatos</h1>
           <p class="dashboard-ranking-subtitle">
             Clasificación basada en el análisis estructural de planes de gobierno,
-            <strong>incluyendo penalizaciones por irresponsabilidad fiscal</strong>.
-            Estos rankings no son recomendaciones de voto.
-          </p>
-        </div>
+        <strong>incluyendo penalizaciones por irresponsabilidad fiscal</strong>.
+        Estos rankings no son recomendaciones de voto.
+      </p>
+    </div>
       </header>
 
       <!-- Fiscal Risk Stats Cards -->
@@ -86,8 +86,8 @@ function getScoreLevel(scorePercent: number) {
             <div class="dashboard-stat-label">Riesgo Medio</div>
           </div>
           <p class="dashboard-stat-desc">1-2 banderas fiscales</p>
-        </div>
-        
+      </div>
+      
         <div class="dashboard-stat-card red">
           <div class="dashboard-stat-icon">🔴</div>
           <div class="dashboard-stat-content">
@@ -97,7 +97,7 @@ function getScoreLevel(scorePercent: number) {
           <p class="dashboard-stat-desc">Múltiples banderas fiscales</p>
         </div>
       </div>
-
+      
       <!-- Penalties Info Panel -->
       <div class="dashboard-penalties-panel">
         <div class="dashboard-penalties-grid">
@@ -109,9 +109,9 @@ function getScoreLevel(scorePercent: number) {
                 <div class="dashboard-penalty-info">
                   <span class="dashboard-penalty-name">Ataca regla fiscal:</span>
                   <span class="dashboard-penalty-value">-2 puntos</span>
-                </div>
+          </div>
                 <span class="dashboard-penalty-affected">{fiscalStats.attackFiscalRule} afectados</span>
-              </div>
+        </div>
               <div class="dashboard-penalty-item">
                 <span class="dashboard-penalty-icon">💰</span>
                 <div class="dashboard-penalty-info">
@@ -120,9 +120,9 @@ function getScoreLevel(scorePercent: number) {
                 </div>
                 <span class="dashboard-penalty-affected">{fiscalStats.proposeDebt} afectados</span>
               </div>
-            </div>
-          </div>
-          
+      </div>
+    </div>
+
           <div class="dashboard-penalty-section omission">
             <h3 class="dashboard-penalty-title">🟠 Penalizaciones por Omisión</h3>
             <div class="dashboard-penalty-items">
@@ -131,17 +131,17 @@ function getScoreLevel(scorePercent: number) {
                 <div class="dashboard-penalty-info">
                   <span class="dashboard-penalty-name">Ignora seguridad:</span>
                   <span class="dashboard-penalty-value">-1 punto</span>
-                </div>
+          </div>
                 <span class="dashboard-penalty-affected">{fiscalStats.ignoreSecurity} afectados</span>
-              </div>
+        </div>
               <div class="dashboard-penalty-item">
                 <span class="dashboard-penalty-icon">🏥</span>
                 <div class="dashboard-penalty-info">
                   <span class="dashboard-penalty-name">Ignora CCSS:</span>
                   <span class="dashboard-penalty-value">-1 punto</span>
-                </div>
+          </div>
                 <span class="dashboard-penalty-affected">{fiscalStats.ignoreCCSS} afectados</span>
-              </div>
+        </div>
               <div class="dashboard-penalty-item">
                 <span class="dashboard-penalty-icon">💼</span>
                 <div class="dashboard-penalty-info">
@@ -160,9 +160,9 @@ function getScoreLevel(scorePercent: number) {
               </div>
             </div>
           </div>
+          </div>
         </div>
-      </div>
-
+        
       <!-- Tabs Navigation -->
       <div class="dashboard-tabs" id="dashboardTabs">
         <button class="dashboard-tab active" data-tab="critical">
@@ -177,7 +177,7 @@ function getScoreLevel(scorePercent: number) {
         <button class="dashboard-tab" data-tab="methodology">
           📖 Metodología
         </button>
-      </div>
+              </div>
 
       <!-- Tab Content: Critical Ranking -->
       <div class="dashboard-tab-content active" id="dashboard-tab-critical">
@@ -187,7 +187,7 @@ function getScoreLevel(scorePercent: number) {
             Pilares P1-P5, P7 y P10 que representan el <strong>81% del peso total</strong>: 
             economía, empleo, seguridad, salud, educación, reforma del Estado e infraestructura.
           </p>
-        </div>
+            </div>
         
         <!-- Legend -->
         <div class="dashboard-legend">
@@ -197,8 +197,8 @@ function getScoreLevel(scorePercent: number) {
             <span class="dashboard-legend-item"><span class="dot yellow"></span>Bueno (55-69%)</span>
             <span class="dashboard-legend-item"><span class="dot orange"></span>Regular (40-54%)</span>
             <span class="dashboard-legend-item"><span class="dot red"></span>Bajo (&lt;40%)</span>
-          </div>
-        </div>
+              </div>
+            </div>
         
         <div class="dashboard-ranking-table-container">
           <table class="dashboard-ranking-table">
@@ -247,8 +247,8 @@ function getScoreLevel(scorePercent: number) {
               })}
             </tbody>
           </table>
-        </div>
-      </div>
+              </div>
+            </div>
 
       <!-- Tab Content: Overall Ranking -->
       <div class="dashboard-tab-content" id="dashboard-tab-overall">
@@ -257,7 +257,7 @@ function getScoreLevel(scorePercent: number) {
           <p class="dashboard-tab-description">
             Ordenado por <strong>responsabilidad fiscal (riesgo BAJO primero)</strong> y puntaje ponderado de los 10 pilares.
           </p>
-        </div>
+              </div>
         
         <!-- Legend -->
         <div class="dashboard-legend fiscal">
@@ -266,8 +266,8 @@ function getScoreLevel(scorePercent: number) {
             <span class="dashboard-legend-item"><span class="dot green"></span><strong>BAJO</strong> = Fiscalmente responsable</span>
             <span class="dashboard-legend-item"><span class="dot orange"></span><strong>MEDIO</strong> = Algunas propuestas riesgosas</span>
             <span class="dashboard-legend-item"><span class="dot red"></span><strong>ALTO</strong> = Amenaza estabilidad fiscal</span>
+            </div>
           </div>
-        </div>
         
         <div class="dashboard-ranking-table-container">
           <table class="dashboard-ranking-table">
@@ -338,8 +338,8 @@ function getScoreLevel(scorePercent: number) {
           <p class="dashboard-tab-description">
             P3 (Seguridad 18%), P4 (Salud 16%), P1 (Finanzas 14%), P7 (Reforma 12%) - <strong>60% del peso total</strong>.
           </p>
-        </div>
-        
+    </div>
+
         <!-- Legend -->
         <div class="dashboard-legend">
           <span class="dashboard-legend-title">📊 Niveles:</span>
@@ -411,9 +411,9 @@ function getScoreLevel(scorePercent: number) {
               <h3>📊 Ranking General Ponderado</h3>
               <p>
                 Suma ponderada de los 10 pilares. Los pilares prioritarios 
-                (Seguridad 18%, Salud 16%, Finanzas 14%, Reforma Estado 12%) representan el 60% del peso total.
-                <strong>Se aplican penalizaciones fiscales</strong> que reducen el puntaje.
-              </p>
+          (Seguridad 18%, Salud 16%, Finanzas 14%, Reforma Estado 12%) representan el 60% del peso total.
+          <strong>Se aplican penalizaciones fiscales</strong> que reducen el puntaje.
+        </p>
             </div>
             
             <div class="methodology-section">
@@ -421,18 +421,18 @@ function getScoreLevel(scorePercent: number) {
               <p>
                 Considera los pilares P1-P5, P7 y P10, que representan 
                 el <strong>81% del peso total</strong>: economía, empleo, seguridad, salud, educación, reforma del Estado e infraestructura.
-              </p>
+        </p>
             </div>
-            
+        
             <div class="methodology-section">
               <h3>🎯 Ranking Pilares Prioritarios</h3>
               <p>
                 Solo los 4 pilares más críticos: P3 (Seguridad), P4 (Salud), P1 (Finanzas), P7 (Reforma del Estado),
                 que representan el <strong>60% del peso total</strong>.
               </p>
-            </div>
           </div>
-          
+        </div>
+        
           <div class="dashboard-weights-grid">
             <h3>⚖️ Pesos por Pilar (v6)</h3>
             <div class="weights-items">
@@ -488,8 +488,8 @@ function getScoreLevel(scorePercent: number) {
           <span class="express-stat-emoji">🔴</span>
           <span class="express-stat-value">{fiscalStats.highRisk}</span>
           <span class="express-stat-label">Riesgo Alto</span>
-        </div>
       </div>
+    </div>
 
       <!-- Tabs Navigation -->
       <div class="express-tabs">
@@ -502,7 +502,7 @@ function getScoreLevel(scorePercent: number) {
         <button class="express-tab" data-tab="priority">
           🎯 Prioritarios
         </button>
-      </div>
+  </div>
 
       <!-- Tab Content: Critical Ranking -->
       <div class="express-tab-content active" id="tab-critical">

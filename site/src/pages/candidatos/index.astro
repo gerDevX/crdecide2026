@@ -64,8 +64,8 @@ const candidatesData = sortedCandidates.map((candidate, idx) => {
           </h1>
           <p class="page-subtitle">
             Planes de gobierno registrados para las elecciones 2026-2030.
-            Ordenados por puntaje ponderado general.
-          </p>
+        Ordenados por puntaje ponderado general.
+      </p>
         </div>
       </header>
 
@@ -166,8 +166,8 @@ const candidatesData = sortedCandidates.map((candidate, idx) => {
           const hasMedal = index < 3;
           const riskColor = candidate.riskLevel === 'BAJO' ? 'green' : candidate.riskLevel === 'MEDIO' ? 'amber' : 'red';
           const riskEmoji = candidate.riskLevel === 'BAJO' ? '🟢' : candidate.riskLevel === 'MEDIO' ? '🟠' : '🔴';
-          
-          return (
+        
+        return (
             <a 
               href={`/candidatos/${candidate.id}`} 
               class={`express-candidate-card ${hasMedal ? 'top-three' : ''}`}
@@ -193,18 +193,18 @@ const candidatesData = sortedCandidates.map((candidate, idx) => {
                 <div class="express-score-value">{candidate.score}%</div>
               </div>
             </a>
-          );
-        })}
-      </div>
+        );
+      })}
+    </div>
 
-      <!-- CTA -->
+    <!-- CTA -->
       <div class="express-cta">
         <a href="/comparar" class="express-cta-button">
           ⚖️ Comparar candidatos
-        </a>
-      </div>
-
+      </a>
     </div>
+
+  </div>
   </div>
 
   <!-- ============================================
