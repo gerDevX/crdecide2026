@@ -255,6 +255,7 @@ omissionAnalysis?.missing_pillars?.forEach(p => omissionPenalties.push('missing_
         {score.pillar_scores.map((ps) => {
           const pillar = pillarIndex[ps.pillar_id];
           const icon = PILLAR_ICONS[ps.pillar_id as PillarId];
+          const weightPercent = pillar?.weight ? Math.round(pillar.weight * 100) : 0;
           const pillarProposals = (proposalsByPillar[ps.pillar_id] || [])
             .sort((a, b) => {
               const scoreA = a.dimensions.existence + a.dimensions.when + a.dimensions.how + a.dimensions.funding;
@@ -267,9 +268,13 @@ omissionAnalysis?.missing_pillars?.forEach(p => omissionPenalties.push('missing_
           
           return (
             <div>
-              <div class="flex items-center gap-2 mb-3">
+              <div class="flex items-center gap-2 mb-3 flex-wrap">
                 <span class="text-xl">{icon}</span>
+                <span class="text-xs font-medium text-slate-400 uppercase">{ps.pillar_id}</span>
                 <h3 class="font-semibold text-slate-900">{pillar?.pillar_name || ps.pillar_id}</h3>
+                <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded">
+                  Peso: {weightPercent}%
+                </span>
                 <span class={`text-sm ${hasPenalties ? 'text-red-600' : 'text-slate-500'}`}>
                   ({ps.effective_score}/4)
                   {hasPenalties && ps.raw_score !== ps.effective_score && (

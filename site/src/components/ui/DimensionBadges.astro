@@ -34,7 +34,7 @@ const dimensionKeys: DimensionKey[] = ['existence', 'when', 'how', 'funding'];
         ]}
         title={label.long}
       >
-        {label.short}{active ? '✓' : '○'}
+        {label.icon} {label.long}{active ? ' ✓' : ' x'}
       </span>
     ) : (
       <span

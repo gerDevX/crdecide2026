@@ -70,16 +70,16 @@ DATA_DIR = os.path.join(SCRIPT_DIR, "data")
 # ====================================================================
 
 PILLARS = [
-    {"pillar_id": "P1", "name": "Responsabilidad Fiscal", "weight": 0.14},
-    {"pillar_id": "P2", "name": "Empleo e Inversión", "weight": 0.11},
-    {"pillar_id": "P3", "name": "Seguridad Ciudadana", "weight": 0.18},
-    {"pillar_id": "P4", "name": "Salud y CCSS", "weight": 0.16},
-    {"pillar_id": "P5", "name": "Educación", "weight": 0.10},
-    {"pillar_id": "P6", "name": "Ambiente y Sostenibilidad", "weight": 0.03},
-    {"pillar_id": "P7", "name": "Reforma del Estado", "weight": 0.12},
-    {"pillar_id": "P8", "name": "Pobreza y Vulnerabilidad", "weight": 0.05},
-    {"pillar_id": "P9", "name": "Política Exterior", "weight": 0.02},
-    {"pillar_id": "P10", "name": "Infraestructura", "weight": 0.09},
+    {"pillar_id": "P1", "pillar_name": "Responsabilidad Fiscal", "weight": 0.14},
+    {"pillar_id": "P2", "pillar_name": "Empleo e Inversión", "weight": 0.11},
+    {"pillar_id": "P3", "pillar_name": "Seguridad Ciudadana", "weight": 0.18},
+    {"pillar_id": "P4", "pillar_name": "Salud y CCSS", "weight": 0.16},
+    {"pillar_id": "P5", "pillar_name": "Educación", "weight": 0.10},
+    {"pillar_id": "P6", "pillar_name": "Ambiente y Sostenibilidad", "weight": 0.03},
+    {"pillar_id": "P7", "pillar_name": "Reforma del Estado", "weight": 0.12},
+    {"pillar_id": "P8", "pillar_name": "Pobreza y Vulnerabilidad", "weight": 0.05},
+    {"pillar_id": "P9", "pillar_name": "Política Exterior", "weight": 0.02},
+    {"pillar_id": "P10", "pillar_name": "Infraestructura", "weight": 0.09},
 ]
 
 PILLAR_WEIGHTS = {p["pillar_id"]: p["weight"] for p in PILLARS}

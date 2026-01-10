@@ -20,13 +20,20 @@ const { score, class: className = '' } = Astro.props;
     const isCritical = CRITICAL_PILLARS.includes(ps.pillar_id as PillarId);
     const hasPenalty = ps.penalties && ps.penalties.length > 0;
     const penaltyAmount = ps.penalties?.reduce((sum, p) => sum + (p.value || 0), 0) || 0;
+    const weightPercent = pillar?.weight ? Math.round(pillar.weight * 100) : 0;
     
     return (
       <div class={`card p-4 border-l-4 ${hasPenalty ? 'border-red-400 bg-red-50/50' : `pillar-${ps.pillar_id}`}`}>
         <div class="flex items-center justify-between mb-2">
           <div class="flex items-center gap-2 flex-wrap">
             <span class="text-lg">{icon}</span>
+            <span class="text-xs font-medium text-slate-400 uppercase">{ps.pillar_id}</span>
             <span class="font-medium text-slate-900">{pillar?.pillar_name || ps.pillar_id}</span>
+            <span class={`text-xs px-1.5 py-0.5 rounded ${
+              isPriority ? 'bg-purple-100 text-purple-700 font-semibold' : 'bg-slate-100 text-slate-500'
+            }`}>
+              {weightPercent}%
+            </span>
             {isPriority && (
               <span class="text-xs bg-red-100 text-red-700 px-1.5 py-0.5 rounded">Prioritario</span>
             )}
