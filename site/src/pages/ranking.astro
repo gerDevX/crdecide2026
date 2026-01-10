@@ -7,17 +7,17 @@ const fiscalStats = getFiscalStats();
 ---
 
 <BaseLayout title="Rankings">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="ranking-page max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     
     <!-- Header -->
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold text-slate-900 mb-2">Rankings</h1>
-      <p class="text-slate-600 max-w-3xl">
+    <header class="page-header mb-8">
+      <h1 class="page-title text-3xl font-bold text-slate-900 mb-2">Rankings</h1>
+      <p class="page-description text-slate-600 max-w-3xl">
         Clasificación de candidatos según el análisis estructural de sus planes de gobierno,
         <strong>incluyendo penalizaciones por irresponsabilidad fiscal</strong>.
         Estos rankings no son recomendaciones de voto.
       </p>
-    </div>
+    </header>
 
     <!-- Fiscal Risk Summary -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
@@ -123,8 +123,11 @@ const fiscalStats = getFiscalStats();
         </div>
         
         <p class="mt-4">
-          <a href="/metodologia" class="text-civic-600 hover:underline font-medium">
-            Ver metodología completa →
+          <a href="/metodologia" class="inline-flex items-center gap-2 text-civic-600 hover:text-civic-700 font-medium transition-colors">
+            Ver metodología completa
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
           </a>
         </p>
       </div>
@@ -132,3 +135,77 @@ const fiscalStats = getFiscalStats();
 
   </div>
 </BaseLayout>
+
+<style>
+  /* Animación de entrada para secciones */
+  .ranking-page > * {
+    animation: fadeInUp 0.4s ease-out backwards;
+  }
+  
+  .ranking-page > *:nth-child(1) { animation-delay: 0s; }
+  .ranking-page > *:nth-child(2) { animation-delay: 0.1s; }
+  .ranking-page > *:nth-child(3) { animation-delay: 0.15s; }
+  .ranking-page > *:nth-child(4) { animation-delay: 0.2s; }
+  .ranking-page > *:nth-child(5) { animation-delay: 0.25s; }
+  .ranking-page > *:nth-child(6) { animation-delay: 0.3s; }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(15px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* ============================================
+     MODE: EXPRESS 🚀 (18-35)
+     ============================================ */
+  :global(html[data-mode="express"]) .ranking-page {
+    padding: 1rem;
+    max-width: 100%;
+  }
+  
+  :global(html[data-mode="express"]) .page-title {
+    font-size: 1.75rem;
+    text-align: center;
+  }
+  
+  :global(html[data-mode="express"]) .page-description {
+    text-align: center;
+    font-size: 0.95rem;
+  }
+  
+  :global(html[data-mode="express"]) .card {
+    border-radius: 1rem;
+  }
+
+  /* ============================================
+     MODE: READING 📖 (50+)
+     ============================================ */
+  :global(html[data-mode="reading"]) .ranking-page {
+    max-width: 56rem;
+    padding: 2rem 1.5rem;
+  }
+  
+  :global(html[data-mode="reading"]) .page-title {
+    font-size: 2.25rem;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  
+  :global(html[data-mode="reading"]) .page-description {
+    font-size: 1.125rem;
+    line-height: 1.8;
+  }
+  
+  :global(html[data-mode="reading"]) .card {
+    padding: 1.5rem;
+  }
+  
+  :global(html[data-mode="reading"]) .card h2,
+  :global(html[data-mode="reading"]) .card h3 {
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+</style>

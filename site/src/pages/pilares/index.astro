@@ -2,44 +2,50 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PillarCard from '../../components/pillars/PillarCard.astro';
 import { getAllPillarCardData, candidateIndex } from '../../lib/data';
-import { CRITICAL_PILLARS } from '../../lib/types';
+import { CRITICAL_PILLARS, PILLAR_ICONS } from '../../lib/types';
 import type { PillarId } from '../../lib/types';
 
 const pillarData = getAllPillarCardData();
+
+// Sort pillars by weight for priority display
+const sortedByWeight = [...pillarData].sort((a, b) => b.pillar.weight - a.pillar.weight);
 ---
 
 <BaseLayout title="Pilares Nacionales">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="pillars-page max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     
     <!-- Header -->
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold text-slate-900 mb-2">Los 10 Pilares Nacionales</h1>
-      <p class="text-slate-600 max-w-3xl">
-        Organizamos las propuestas de cada candidato en 10 áreas temáticas fundamentales para el país.
-        Los pilares marcados como "críticos" (P1-P5 y P7) representan el 85% del peso total en la evaluación.
+    <div class="page-header mb-8">
+      <h1 class="page-title text-3xl font-bold text-slate-900 mb-2">Los 10 Pilares Nacionales</h1>
+      <p class="page-description text-slate-600 max-w-3xl">
+        Organizamos las propuestas de cada candidato en <strong>10 áreas temáticas</strong> fundamentales para el país.
+        Los pilares marcados como "críticos" representan el <strong>81%</strong> del peso total en la evaluación.
       </p>
     </div>
 
     <!-- Legend -->
-    <div class="flex flex-wrap gap-4 mb-8">
-      <div class="flex items-center gap-2 text-sm">
-        <span class="w-3 h-3 bg-amber-200 rounded"></span>
-        <span class="text-slate-600">Pilar crítico (mayor peso)</span>
+    <div class="legend flex flex-wrap gap-4 mb-8">
+      <div class="flex items-center gap-2 text-sm bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+        <span class="w-3 h-3 bg-amber-400 rounded-full animate-pulse"></span>
+        <span class="text-amber-800 font-medium">Pilar crítico (mayor peso)</span>
       </div>
-      <div class="flex items-center gap-2 text-sm">
-        <span class="w-3 h-3 bg-slate-200 rounded"></span>
+      <div class="flex items-center gap-2 text-sm bg-slate-50 border border-slate-200 rounded-lg px-3 py-2">
+        <span class="w-3 h-3 bg-slate-400 rounded-full"></span>
         <span class="text-slate-600">Pilar complementario</span>
       </div>
     </div>
 
     <!-- Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      {pillarData.map((data) => {
+    <div class="pillar-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {pillarData.map((data, index) => {
         const topCandidate = data.topCandidates[0];
         const isCritical = CRITICAL_PILLARS.includes(data.pillar.pillar_id as PillarId);
         
         return (
-          <div class={isCritical ? 'ring-2 ring-amber-200 rounded-xl' : ''}>
+          <div 
+            class={`pillar-item ${isCritical ? 'ring-2 ring-amber-300 rounded-xl shadow-amber-100 shadow-lg' : ''}`}
+            style={`--animation-delay: ${index * 0.05}s`}
+          >
             <PillarCard
               pillar={data.pillar}
               avgScore={data.avgScore}
@@ -54,26 +60,139 @@ const pillarData = getAllPillarCardData();
     </div>
 
     <!-- Info -->
-    <div class="mt-12 card p-6">
-      <h2 class="text-xl font-bold text-slate-900 mb-4">Sobre los pesos</h2>
+    <div class="mt-12 card p-6 weight-info">
+      <h2 class="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+        <span>⚖️</span> Distribución de pesos
+      </h2>
       <div class="grid md:grid-cols-2 gap-6">
-        <div>
-          <h3 class="font-semibold text-slate-800 mb-2">Pilares críticos (85%)</h3>
-          <ul class="text-sm text-slate-600 space-y-1">
-            <li>• P1-P5: 15% cada uno (economía, empleo, seguridad, salud, educación)</li>
-            <li>• P7: 10% (reforma del Estado y anticorrupción)</li>
+        <div class="bg-amber-50 border border-amber-200 rounded-xl p-4">
+          <h3 class="font-semibold text-amber-800 mb-3 flex items-center gap-2">
+            <span class="w-3 h-3 bg-amber-400 rounded-full"></span>
+            Pilares críticos (81%)
+          </h3>
+          <ul class="text-sm text-amber-700 space-y-2">
+            <li class="flex items-center gap-2">🛡️ <span><strong>P3 Seguridad:</strong> 18%</span></li>
+            <li class="flex items-center gap-2">🏥 <span><strong>P4 Salud:</strong> 16%</span></li>
+            <li class="flex items-center gap-2">💰 <span><strong>P1 Finanzas:</strong> 14%</span></li>
+            <li class="flex items-center gap-2">⚖️ <span><strong>P7 Reforma:</strong> 12%</span></li>
+            <li class="flex items-center gap-2">💼 <span><strong>P2 Empleo:</strong> 11%</span></li>
+            <li class="flex items-center gap-2">📚 <span><strong>P5 Educación:</strong> 10%</span></li>
           </ul>
         </div>
-        <div>
-          <h3 class="font-semibold text-slate-800 mb-2">Pilares complementarios (15%)</h3>
-          <ul class="text-sm text-slate-600 space-y-1">
-            <li>• P8: 8% (política social focalizada)</li>
-            <li>• P6: 5% (ambiente)</li>
-            <li>• P9: 2% (política exterior)</li>
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+          <h3 class="font-semibold text-slate-800 mb-3 flex items-center gap-2">
+            <span class="w-3 h-3 bg-slate-400 rounded-full"></span>
+            Pilares complementarios (19%)
+          </h3>
+          <ul class="text-sm text-slate-600 space-y-2">
+            <li class="flex items-center gap-2">🏗️ <span><strong>P10 Infraestructura:</strong> 9%</span></li>
+            <li class="flex items-center gap-2">🤝 <span><strong>P8 Social:</strong> 5%</span></li>
+            <li class="flex items-center gap-2">🌿 <span><strong>P6 Ambiente:</strong> 3%</span></li>
+            <li class="flex items-center gap-2">🌎 <span><strong>P9 Exterior:</strong> 2%</span></li>
           </ul>
         </div>
+      </div>
+      
+      <div class="mt-4 pt-4 border-t border-slate-200 text-center">
+        <a href="/metodologia" class="inline-flex items-center gap-2 text-civic-600 hover:text-civic-700 font-medium">
+          Ver metodología completa
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </a>
       </div>
     </div>
 
   </div>
 </BaseLayout>
+
+<style>
+  /* Animación de entrada */
+  .pillar-item {
+    animation: slideUp 0.4s ease-out backwards;
+    animation-delay: var(--animation-delay);
+  }
+  
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* ============================================
+     MODE: EXPRESS 🚀 (18-35)
+     ============================================ */
+  :global(html[data-mode="express"]) .pillars-page {
+    padding: 1rem;
+  }
+  
+  :global(html[data-mode="express"]) .page-title {
+    font-size: 1.75rem;
+    text-align: center;
+  }
+  
+  :global(html[data-mode="express"]) .page-description {
+    text-align: center;
+    font-size: 0.95rem;
+  }
+  
+  :global(html[data-mode="express"]) .legend {
+    justify-content: center;
+  }
+  
+  :global(html[data-mode="express"]) .pillar-grid {
+    gap: 1rem;
+  }
+  
+  :global(html[data-mode="express"]) .pillar-item {
+    border-radius: 1rem;
+  }
+  
+  :global(html[data-mode="express"]) .weight-info {
+    border-radius: 1.5rem;
+    padding: 1.25rem;
+  }
+
+  /* ============================================
+     MODE: READING 📖 (50+)
+     ============================================ */
+  :global(html[data-mode="reading"]) .pillars-page {
+    max-width: 56rem;
+    padding: 2rem 1.5rem;
+  }
+  
+  :global(html[data-mode="reading"]) .page-title {
+    font-size: 2.25rem;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  
+  :global(html[data-mode="reading"]) .page-description {
+    font-size: 1.125rem;
+    line-height: 1.8;
+  }
+  
+  :global(html[data-mode="reading"]) .pillar-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  :global(html[data-mode="reading"]) .weight-info {
+    font-size: 1.125rem;
+    padding: 2rem;
+  }
+  
+  :global(html[data-mode="reading"]) .weight-info h2 {
+    font-size: 1.5rem;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  
+  :global(html[data-mode="reading"]) .weight-info ul {
+    font-size: 1rem;
+    line-height: 2;
+  }
+</style>

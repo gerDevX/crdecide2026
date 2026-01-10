@@ -12,61 +12,75 @@ interface Props {
 const { limit = 5, class: className = '' } = Astro.props;
 
 const ranking = getRankingWithCandidates().slice(0, limit);
+
+// Medal emojis for top 3
+const medals = ['🥇', '🥈', '🥉'];
 ---
 
-<section class={`${className}`}>
+<section class={`quick-ranking ${className}`}>
   <div class="flex items-center justify-between mb-4">
-    <h2 class="text-xl font-bold text-slate-900">Ranking General</h2>
-    <a href="/ranking" class="text-civic-600 hover:text-civic-700 text-sm font-medium">
-      Ver completo →
+    <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+      <span class="text-2xl">🏆</span>
+      Ranking General
+    </h2>
+    <a href="/ranking" class="text-civic-600 hover:text-civic-700 text-sm font-medium inline-flex items-center gap-1 group">
+      Ver completo 
+      <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
     </a>
   </div>
   
-  <div class="card">
+  <div class="card magic-card overflow-hidden">
     <div class="divide-y divide-slate-100">
       {ranking.map((entry, index) => {
         const score = entry.weighted_sum || 0;
         const scorePercent = Math.round(score * 100);
         const riskLevel = (entry.analysis?.risk_level || 'BAJO') as FiscalRiskLevel;
         const fiscalPenalty = (entry as any).fiscal_penalty || 0;
+        const isTopThree = index < 3;
         
         return (
           <a
             href={`/candidatos/${entry.candidate_id}`}
-            class="flex items-center gap-4 p-4 hover:bg-slate-50 transition-colors group"
+            class={`ranking-item flex items-center gap-4 p-4 hover:bg-slate-50 transition-all group ${isTopThree ? 'bg-gradient-to-r from-transparent via-transparent to-slate-50/50' : ''}`}
+            style={`--animation-delay: ${index * 0.1}s`}
           >
             <span class={`
-              w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm
-              ${index === 0 ? 'bg-amber-100 text-amber-700' : 
-                index === 1 ? 'bg-slate-200 text-slate-600' :
-                index === 2 ? 'bg-orange-100 text-orange-700' :
+              rank-badge w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm relative
+              ${index === 0 ? 'bg-gradient-to-br from-amber-200 to-amber-400 text-amber-800 shadow-lg shadow-amber-200/50' : 
+                index === 1 ? 'bg-gradient-to-br from-slate-200 to-slate-400 text-slate-700 shadow-lg shadow-slate-200/50' :
+                index === 2 ? 'bg-gradient-to-br from-orange-200 to-orange-400 text-orange-800 shadow-lg shadow-orange-200/50' :
                 'bg-slate-100 text-slate-500'}
             `}>
-              {entry.rank}
+              {isTopThree ? medals[index] : entry.rank}
             </span>
             
             <div class="flex-1 min-w-0">
               <div class="font-medium text-slate-900 group-hover:text-civic-600 transition-colors truncate">
                 {entry.candidate?.party_name || entry.candidate_id.toUpperCase()}
               </div>
-              <div class="text-sm text-slate-500">{entry.candidate?.pdf_id || entry.candidate_id.toUpperCase()}</div>
+              <div class="text-sm text-slate-500 flex items-center gap-2">
+                <span>{entry.candidate?.pdf_id || entry.candidate_id.toUpperCase()}</span>
+                {fiscalPenalty < 0 && (
+                  <span class="inline-flex items-center px-1.5 py-0.5 bg-red-50 text-red-600 rounded text-xs font-medium">
+                    {fiscalPenalty}
+                  </span>
+                )}
+              </div>
             </div>
             
             <div class="hidden md:block">
               <FiscalRiskBadge riskLevel={riskLevel} size="sm" />
             </div>
             
-            {fiscalPenalty < 0 && (
-              <span class="hidden lg:inline-flex items-center px-2 py-0.5 bg-red-50 text-red-600 rounded text-xs font-medium">
-                {fiscalPenalty}
-              </span>
-            )}
-            
             <div class="w-24 hidden sm:block">
-              <ScoreBar score={Math.round(score * 4)} max={4} showLabel={false} size="sm" />
+              <div class="score-bar-animated">
+                <ScoreBar score={Math.round(score * 4)} max={4} showLabel={false} size="sm" />
+              </div>
             </div>
             
-            <span class={`font-bold min-w-[4rem] text-right ${
+            <span class={`score-value font-bold min-w-[4rem] text-right text-lg ${
               riskLevel === 'BAJO' ? 'text-green-600' :
               riskLevel === 'MEDIO' ? 'text-amber-600' :
               'text-red-600'
@@ -79,3 +93,46 @@ const ranking = getRankingWithCandidates().slice(0, limit);
     </div>
   </div>
 </section>
+
+<style>
+  .ranking-item {
+    animation: ranking-enter 0.4s ease-out backwards;
+    animation-delay: var(--animation-delay);
+  }
+  
+  @keyframes ranking-enter {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  .rank-badge {
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  
+  .ranking-item:hover .rank-badge {
+    transform: scale(1.1) rotate(-5deg);
+  }
+  
+  .score-value {
+    transition: all 0.3s ease-out;
+  }
+  
+  .ranking-item:hover .score-value {
+    transform: scale(1.1);
+  }
+  
+  /* Score bar animation on hover */
+  .score-bar-animated {
+    transition: transform 0.3s ease-out;
+  }
+  
+  .ranking-item:hover .score-bar-animated {
+    transform: scaleX(1.02);
+  }
+</style>

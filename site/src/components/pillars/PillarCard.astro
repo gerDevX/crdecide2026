@@ -1,6 +1,6 @@
 ---
 import type { Pillar, PillarId } from '../../lib/types';
-import { PILLAR_ICONS } from '../../lib/types';
+import { PILLAR_ICONS, CRITICAL_PILLARS } from '../../lib/types';
 import ScoreBar from '../ui/ScoreBar.astro';
 
 interface Props {
@@ -19,49 +19,133 @@ const { pillar, avgScore, topCandidate, isPriority = false, rank, class: classNa
 
 const icon = PILLAR_ICONS[pillar?.pillar_id as PillarId] || '📌';
 const weightPercent = Math.round((pillar?.weight || 0) * 100);
+const isCritical = CRITICAL_PILLARS.includes(pillar?.pillar_id as PillarId);
 ---
 
 <a
   href={`/pilares/${pillar?.pillar_id?.toLowerCase()}`}
-  class={`card block group border-l-4 ${isPriority ? 'border-red-400 bg-red-50/30' : `pillar-${pillar?.pillar_id}`} ${className}`}
+  class={`pillar-card card block group border-l-4 ${isPriority ? 'border-red-400 bg-red-50/30' : `pillar-${pillar?.pillar_id}`} ${className}`}
 >
   <div class="p-4">
-    <div class="flex items-start justify-between mb-2">
+    <!-- Icon with glow effect for critical pillars -->
+    <div class="flex items-start justify-between mb-3">
       <div class="flex items-center gap-2">
-        <span class="text-xl" aria-hidden="true">{icon}</span>
-        <span class="text-xs font-medium text-slate-400 uppercase">{pillar?.pillar_id}</span>
-        {rank && rank <= 4 && (
-          <span class="text-xs font-bold text-red-600">#{rank}</span>
-        )}
+        <span class={`pillar-icon text-2xl transition-transform group-hover:scale-110 ${isCritical ? 'pillar-icon-critical' : ''}`} aria-hidden="true">{icon}</span>
+        <div class="flex flex-col">
+          <span class="text-xs font-bold text-slate-500 uppercase">{pillar?.pillar_id}</span>
+          {rank && rank <= 4 && (
+            <span class="text-xs font-bold text-red-600">Prioridad #{rank}</span>
+          )}
+        </div>
       </div>
-      <span class={`text-xs px-2 py-0.5 rounded-full ${
-        isPriority 
-          ? 'text-red-700 bg-red-100 font-medium' 
-          : 'text-slate-500 bg-slate-100'
+      <span class={`weight-badge text-xs px-2.5 py-1 rounded-full font-medium transition-all ${
+        isCritical 
+          ? 'text-amber-800 bg-gradient-to-r from-amber-100 to-amber-200 shadow-sm' 
+          : 'text-slate-600 bg-slate-100'
       }`}>
         {weightPercent}%
       </span>
     </div>
     
-    <h3 class="font-semibold text-slate-900 group-hover:text-civic-600 transition-colors mb-2 line-clamp-2 text-sm">
+    <h3 class="pillar-name font-semibold text-slate-900 group-hover:text-civic-600 transition-colors mb-3 line-clamp-2 text-sm">
       {pillar?.pillar_name}
     </h3>
     
-    <div class="space-y-1">
+    <!-- Score section with visual improvement -->
+    <div class="score-section space-y-2 p-3 bg-slate-50 rounded-lg">
       <div class="flex items-center justify-between text-xs">
-        <span class="text-slate-500">Promedio</span>
-        <span class="font-medium text-slate-700">{avgScore.toFixed(1)}/4</span>
+        <span class="text-slate-500 font-medium">Promedio candidatos</span>
+        <span class="font-bold text-slate-800 text-sm">{avgScore.toFixed(1)}/4</span>
       </div>
-      <ScoreBar score={Math.round(avgScore)} max={4} showLabel={false} size="sm" />
+      <div class="score-bar-wrapper">
+        <ScoreBar score={Math.round(avgScore)} max={4} showLabel={false} size="sm" />
+      </div>
     </div>
     
     {topCandidate && (
-      <div class="mt-2 pt-2 border-t border-slate-100">
-        <div class="flex items-center justify-between text-xs">
-          <span class="text-slate-500">Mejor:</span>
-          <span class="font-medium text-emerald-600 truncate ml-1">{topCandidate.name}</span>
+      <div class="top-candidate mt-3 pt-3 border-t border-slate-100">
+        <div class="flex items-center gap-2">
+          <span class="text-xs">🏆</span>
+          <span class="text-xs text-slate-500">Mejor:</span>
+          <span class="font-medium text-emerald-600 truncate text-xs flex-1">{topCandidate.name}</span>
+          <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">{topCandidate.score}/4</span>
         </div>
       </div>
     )}
   </div>
 </a>
+
+<style>
+  .pillar-card {
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .pillar-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 
+      0 20px 40px -10px rgba(0, 0, 0, 0.12),
+      0 0 0 1px rgba(2, 132, 199, 0.1);
+  }
+  
+  /* Subtle shine effect on hover */
+  .pillar-card::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      to right,
+      transparent 0%,
+      rgba(255, 255, 255, 0.3) 50%,
+      transparent 100%
+    );
+    transform: rotate(45deg) translateX(-100%);
+    transition: transform 0.6s;
+    pointer-events: none;
+  }
+  
+  .pillar-card:hover::after {
+    transform: rotate(45deg) translateX(100%);
+  }
+  
+  /* Critical pillar icon glow */
+  .pillar-icon-critical {
+    filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.4));
+  }
+  
+  /* Weight badge animation */
+  .weight-badge {
+    transition: all 0.3s ease-out;
+  }
+  
+  .pillar-card:hover .weight-badge {
+    transform: scale(1.1);
+  }
+  
+  /* Score bar wrapper animation */
+  .score-bar-wrapper {
+    transition: transform 0.3s ease-out;
+  }
+  
+  .pillar-card:hover .score-bar-wrapper {
+    transform: scaleX(1.02);
+  }
+  
+  /* Top candidate animation */
+  .top-candidate {
+    transition: all 0.3s ease-out;
+  }
+  
+  .pillar-card:hover .top-candidate {
+    background: rgba(236, 253, 245, 0.3);
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    border-radius: 0.5rem;
+  }
+</style>

@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CandidateCard from '../../components/candidates/CandidateCard.astro';
-import { candidates, scoresByCandidate, ranking } from '../../lib/data';
+import { candidates, scoresByCandidate, ranking, getFiscalStats } from '../../lib/data';
 
 // Sort candidates by ranking
 const sortedCandidates = [...candidates].sort((a, b) => {
@@ -9,38 +9,148 @@ const sortedCandidates = [...candidates].sort((a, b) => {
   const scoreB = scoresByCandidate[b.candidate_id]?.overall.weighted_sum || 0;
   return scoreB - scoreA;
 });
+
+const fiscalStats = getFiscalStats();
 ---
 
 <BaseLayout title="Candidatos">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="candidates-page max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     
     <!-- Header -->
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold text-slate-900 mb-2">Candidatos Presidenciales</h1>
-      <p class="text-slate-600 max-w-3xl">
+    <header class="page-header mb-8">
+      <h1 class="page-title text-3xl font-bold text-slate-900 mb-2">Candidatos Presidenciales</h1>
+      <p class="page-description text-slate-600 max-w-3xl">
         {candidates.length} partidos con planes de gobierno registrados para las elecciones 2026-2030.
         Ordenados por puntaje ponderado general.
       </p>
+    </header>
+
+    <!-- Quick Stats -->
+    <div class="quick-stats flex flex-wrap items-center justify-center gap-3 mb-8">
+      <div class="flex items-center gap-2 bg-green-50 border border-green-200 rounded-full px-4 py-2">
+        <span class="text-lg">🟢</span>
+        <span class="text-green-700 font-medium">{fiscalStats.lowRisk} riesgo bajo</span>
+      </div>
+      <div class="flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-full px-4 py-2">
+        <span class="text-lg">🟠</span>
+        <span class="text-amber-700 font-medium">{fiscalStats.mediumRisk} riesgo medio</span>
+      </div>
+      <div class="flex items-center gap-2 bg-red-50 border border-red-200 rounded-full px-4 py-2">
+        <span class="text-lg">🔴</span>
+        <span class="text-red-700 font-medium">{fiscalStats.highRisk} riesgo alto</span>
+      </div>
     </div>
 
     <!-- Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-      {sortedCandidates.map((candidate) => {
+    <div class="candidates-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      {sortedCandidates.map((candidate, index) => {
         const score = scoresByCandidate[candidate.candidate_id];
         if (!score) return null;
         
         return (
-          <CandidateCard candidate={candidate} score={score} />
+          <div class="candidate-item" style={`--animation-delay: ${index * 0.03}s`}>
+            <CandidateCard candidate={candidate} score={score} />
+          </div>
         );
       })}
     </div>
 
     <!-- CTA -->
     <div class="mt-12 text-center">
-      <a href="/comparar" class="btn btn-primary py-3 px-8">
-        Comparar candidatos
-      </a>
+      <div class="card inline-block p-6 bg-gradient-to-r from-civic-50 to-blue-50 border-civic-200">
+        <h3 class="font-bold text-slate-900 mb-2">¿Quieres comparar?</h3>
+        <p class="text-sm text-slate-600 mb-4">Selecciona hasta 4 candidatos y compara lado a lado</p>
+        <a href="/comparar" class="btn btn-primary py-3 px-8">
+          Comparar candidatos
+        </a>
+      </div>
     </div>
 
   </div>
 </BaseLayout>
+
+<style>
+  /* Animación de entrada */
+  .candidate-item {
+    animation: slideUp 0.4s ease-out backwards;
+    animation-delay: var(--animation-delay);
+  }
+  
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* ============================================
+     MODE: EXPRESS 🚀 (18-35)
+     ============================================ */
+  :global(html[data-mode="express"]) .candidates-page {
+    padding: 1rem;
+  }
+  
+  :global(html[data-mode="express"]) .page-title {
+    font-size: 1.75rem;
+    text-align: center;
+  }
+  
+  :global(html[data-mode="express"]) .page-description {
+    text-align: center;
+    font-size: 0.95rem;
+  }
+  
+  :global(html[data-mode="express"]) .quick-stats {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    padding-bottom: 0.5rem;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  :global(html[data-mode="express"]) .candidates-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  :global(html[data-mode="express"]) .candidate-item {
+    border-radius: 1rem;
+  }
+
+  /* ============================================
+     MODE: READING 📖 (50+)
+     ============================================ */
+  :global(html[data-mode="reading"]) .candidates-page {
+    max-width: 56rem;
+    padding: 2rem 1.5rem;
+  }
+  
+  :global(html[data-mode="reading"]) .page-title {
+    font-size: 2.25rem;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  
+  :global(html[data-mode="reading"]) .page-description {
+    font-size: 1.125rem;
+    line-height: 1.8;
+  }
+  
+  :global(html[data-mode="reading"]) .candidates-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  :global(html[data-mode="reading"]) .quick-stats {
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  :global(html[data-mode="reading"]) .quick-stats > div {
+    font-size: 1.125rem;
+    padding: 0.75rem 1.25rem;
+  }
+</style>
