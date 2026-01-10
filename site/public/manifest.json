@@ -1,0 +1,26 @@
+{
+  "name": "Costa Rica Decide 2026",
+  "short_name": "CR Decide",
+  "description": "Compara los planes de gobierno de los 20 candidatos presidenciales de Costa Rica",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0284c7",
+  "theme_color": "#0284c7",
+  "orientation": "portrait-primary",
+  "categories": ["news", "politics", "education"],
+  "lang": "es-CR",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

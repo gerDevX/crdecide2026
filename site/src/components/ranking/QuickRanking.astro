@@ -1,6 +1,8 @@
 ---
 import { getRankingWithCandidates } from '../../lib/data';
 import ScoreBar from '../ui/ScoreBar.astro';
+import FiscalRiskBadge from '../ui/FiscalRiskBadge.astro';
+import type { FiscalRiskLevel } from '../../lib/types';
 
 interface Props {
   limit?: number;
@@ -25,6 +27,8 @@ const ranking = getRankingWithCandidates().slice(0, limit);
       {ranking.map((entry, index) => {
         const score = entry.weighted_sum || 0;
         const scorePercent = Math.round(score * 100);
+        const riskLevel = (entry.analysis?.risk_level || 'BAJO') as FiscalRiskLevel;
+        const fiscalPenalty = (entry as any).fiscal_penalty || 0;
         
         return (
           <a
@@ -45,14 +49,28 @@ const ranking = getRankingWithCandidates().slice(0, limit);
               <div class="font-medium text-slate-900 group-hover:text-civic-600 transition-colors truncate">
                 {entry.candidate?.party_name || entry.candidate_id.toUpperCase()}
               </div>
-              <div class="text-sm text-slate-500">{entry.candidate_id.toUpperCase()}</div>
+              <div class="text-sm text-slate-500">{entry.candidate?.pdf_id || entry.candidate_id.toUpperCase()}</div>
             </div>
             
-            <div class="w-32 hidden sm:block">
+            <div class="hidden md:block">
+              <FiscalRiskBadge riskLevel={riskLevel} size="sm" />
+            </div>
+            
+            {fiscalPenalty < 0 && (
+              <span class="hidden lg:inline-flex items-center px-2 py-0.5 bg-red-50 text-red-600 rounded text-xs font-medium">
+                {fiscalPenalty}
+              </span>
+            )}
+            
+            <div class="w-24 hidden sm:block">
               <ScoreBar score={Math.round(score * 4)} max={4} showLabel={false} size="sm" />
             </div>
             
-            <span class="font-bold text-civic-600 min-w-[4rem] text-right">
+            <span class={`font-bold min-w-[4rem] text-right ${
+              riskLevel === 'BAJO' ? 'text-green-600' :
+              riskLevel === 'MEDIO' ? 'text-amber-600' :
+              'text-red-600'
+            }`}>
               {scorePercent}%
             </span>
           </a>

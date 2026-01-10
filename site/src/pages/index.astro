@@ -2,106 +2,246 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PillarGrid from '../components/pillars/PillarGrid.astro';
 import QuickRanking from '../components/ranking/QuickRanking.astro';
-import { candidates, candidateScores } from '../lib/data';
+import ExpressSwiper from '../components/modes/express/ExpressSwiper.astro';
+import ReadingRanking from '../components/modes/reading/ReadingRanking.astro';
+import { candidates, candidateScores, getRankingWithCandidates, scoresByCandidate, getFiscalStats, analysisByCandidate } from '../lib/data';
+
+// Prepare ranking data for Express and Reading modes
+const rankingData = getRankingWithCandidates().map((entry, index) => ({
+  candidate: entry.candidate,
+  score: scoresByCandidate[entry.candidate_id],
+  analysis: analysisByCandidate[entry.candidate_id],
+  rank: index + 1,
+}));
+
+const fiscalStats = getFiscalStats();
 ---
 
 <BaseLayout title="Inicio">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    
-    <!-- Hero -->
-    <section class="text-center py-12 mb-8">
-      <h1 class="text-4xl md:text-5xl font-bold text-slate-900 mb-4">
-        Costa Rica <span class="text-civic-600">Decide</span> 2026
-      </h1>
-      <p class="text-xl text-slate-600 max-w-2xl mx-auto mb-8">
-        Compara los planes de gobierno de los {candidates.length} candidatos presidenciales.
-        Sin sesgos. Sin recomendaciones. Solo datos.
-      </p>
-      <div class="flex flex-wrap justify-center gap-4">
-        <a href="/comparar" class="btn btn-primary py-3 px-6">
-          Comparar candidatos
-        </a>
-        <a href="/metodologia" class="btn btn-secondary py-3 px-6">
-          ¿Cómo funciona?
-        </a>
-      </div>
-    </section>
-
-    <!-- Stats -->
-    <section class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-      <div class="card p-5 text-center">
-        <span class="text-3xl font-bold text-civic-600">{candidates.length}</span>
-        <p class="text-slate-600 text-sm mt-1">Candidatos</p>
-      </div>
-      <div class="card p-5 text-center">
-        <span class="text-3xl font-bold text-civic-600">9</span>
-        <p class="text-slate-600 text-sm mt-1">Pilares</p>
-      </div>
-      <div class="card p-5 text-center">
-        <span class="text-3xl font-bold text-civic-600">3,400+</span>
-        <p class="text-slate-600 text-sm mt-1">Propuestas</p>
-      </div>
-      <div class="card p-5 text-center">
-        <span class="text-3xl font-bold text-civic-600">4</span>
-        <p class="text-slate-600 text-sm mt-1">Dimensiones</p>
-      </div>
-    </section>
-
-    <!-- How it works -->
-    <section class="mb-12">
-      <h2 class="text-2xl font-bold text-slate-900 mb-6 text-center">¿Cómo evaluamos?</h2>
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div class="card p-5">
-          <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center mb-3">
-            <span class="text-xl">📋</span>
-          </div>
-          <h3 class="font-semibold text-slate-900 mb-1">Existencia</h3>
-          <p class="text-sm text-slate-600">¿Es una propuesta concreta?</p>
-        </div>
-        <div class="card p-5">
-          <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mb-3">
-            <span class="text-xl">📅</span>
-          </div>
-          <h3 class="font-semibold text-slate-900 mb-1">Cuándo</h3>
-          <p class="text-sm text-slate-600">¿Tiene plazo definido?</p>
-        </div>
-        <div class="card p-5">
-          <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mb-3">
-            <span class="text-xl">⚙️</span>
-          </div>
-          <h3 class="font-semibold text-slate-900 mb-1">Cómo</h3>
-          <p class="text-sm text-slate-600">¿Explica el mecanismo?</p>
-        </div>
-        <div class="card p-5">
-          <div class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center mb-3">
-            <span class="text-xl">💰</span>
-          </div>
-          <h3 class="font-semibold text-slate-900 mb-1">Fondos</h3>
-          <p class="text-sm text-slate-600">¿Indica financiamiento?</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Pillars -->
-    <PillarGrid />
-
-    <!-- Quick Ranking -->
-    <QuickRanking limit={10} class="mt-12" />
-
-    <!-- CTA -->
-    <section class="mt-12 text-center">
-      <div class="card p-8 bg-civic-50 border-civic-200">
-        <h2 class="text-2xl font-bold text-slate-900 mb-3">
-          ¿Listo para comparar?
-        </h2>
-        <p class="text-slate-600 mb-6">
-          Selecciona hasta 4 candidatos y compara sus propuestas lado a lado.
-        </p>
-        <a href="/comparar" class="btn btn-primary py-3 px-8">
-          Ir al comparador
-        </a>
-      </div>
-    </section>
-
+  
+  <!-- ============================================
+       EXPRESS MODE 🚀
+       ============================================ -->
+  <div class="mode-express-content">
+    <ExpressSwiper candidates={rankingData} />
   </div>
+
+  <!-- ============================================
+       DASHBOARD MODE 📊 (Default)
+       ============================================ -->
+  <div class="mode-dashboard-content">
+    <div class="page-container">
+      
+      <!-- Hero -->
+      <section class="text-center py-12 mb-8">
+        <h1 class="text-4xl md:text-5xl font-bold text-slate-900 mb-4">
+          Costa Rica <span class="text-gradient">Decide</span> 2026
+        </h1>
+        <p class="text-xl text-slate-600 max-w-2xl mx-auto mb-8">
+          Compara los planes de gobierno de los {candidates.length} candidatos presidenciales.
+          <strong>Ahora con análisis de responsabilidad fiscal.</strong>
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href="/ranking" class="btn btn-primary py-3 px-6">
+            Ver rankings
+          </a>
+          <a href="/metodologia" class="btn btn-secondary py-3 px-6">
+            ¿Cómo funciona?
+          </a>
+        </div>
+      </section>
+
+      <!-- Fiscal Risk Summary -->
+      <section class="mb-12">
+        <h2 class="dashboard-section-title">
+          <span>⚠️</span> Riesgo Fiscal de los Planes
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="card p-5 border-l-4 border-green-500">
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="text-3xl font-bold text-green-600">{fiscalStats.lowRisk}</span>
+                <p class="text-slate-600 text-sm mt-1">Riesgo Bajo 🟢</p>
+              </div>
+              <span class="text-4xl opacity-50">🟢</span>
+            </div>
+            <p class="text-xs text-slate-500 mt-2">No comprometen las finanzas públicas</p>
+          </div>
+          <div class="card p-5 border-l-4 border-amber-500">
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="text-3xl font-bold text-amber-600">{fiscalStats.mediumRisk}</span>
+                <p class="text-slate-600 text-sm mt-1">Riesgo Medio 🟠</p>
+              </div>
+              <span class="text-4xl opacity-50">🟠</span>
+            </div>
+            <p class="text-xs text-slate-500 mt-2">1-2 banderas fiscales</p>
+          </div>
+          <div class="card p-5 border-l-4 border-red-500">
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="text-3xl font-bold text-red-600">{fiscalStats.highRisk}</span>
+                <p class="text-slate-600 text-sm mt-1">Riesgo Alto 🔴</p>
+              </div>
+              <span class="text-4xl opacity-50">🔴</span>
+            </div>
+            <p class="text-xs text-slate-500 mt-2">Múltiples banderas fiscales</p>
+          </div>
+        </div>
+        
+        <div class="card p-4 mt-4 bg-slate-50 border-slate-200">
+          <h3 class="font-semibold text-slate-800 mb-2">Banderas rojas detectadas:</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+            <div class="flex items-center gap-2">
+              <span>⚠️</span>
+              <span><strong>{fiscalStats.attackFiscalRule}</strong> atacan la regla fiscal</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span>💰</span>
+              <span><strong>{fiscalStats.proposeDebt}</strong> proponen más deuda</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span>📈</span>
+              <span><strong>{fiscalStats.proposeTax}</strong> proponen más impuestos</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Stats -->
+      <section class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+        <div class="card p-5 text-center">
+          <span class="text-3xl font-bold text-gradient">{candidates.length}</span>
+          <p class="text-slate-600 text-sm mt-1">Candidatos</p>
+        </div>
+        <div class="card p-5 text-center">
+          <span class="text-3xl font-bold text-gradient">10</span>
+          <p class="text-slate-600 text-sm mt-1">Pilares</p>
+        </div>
+        <div class="card p-5 text-center">
+          <span class="text-3xl font-bold text-gradient">3</span>
+          <p class="text-slate-600 text-sm mt-1">Penalizaciones</p>
+        </div>
+        <div class="card p-5 text-center">
+          <span class="text-3xl font-bold text-gradient">4</span>
+          <p class="text-slate-600 text-sm mt-1">Dimensiones</p>
+        </div>
+      </section>
+
+      <!-- How it works -->
+      <section class="mb-12">
+        <h2 class="dashboard-section-title">
+          <span>📊</span> ¿Cómo evaluamos?
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <div class="card p-5">
+            <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center mb-3">
+              <span class="text-xl">📋</span>
+            </div>
+            <h3 class="font-semibold text-slate-900 mb-1">Existencia</h3>
+            <p class="text-sm text-slate-600">¿Es una propuesta concreta?</p>
+          </div>
+          <div class="card p-5">
+            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mb-3">
+              <span class="text-xl">📅</span>
+            </div>
+            <h3 class="font-semibold text-slate-900 mb-1">Cuándo</h3>
+            <p class="text-sm text-slate-600">¿Tiene plazo definido?</p>
+          </div>
+          <div class="card p-5">
+            <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mb-3">
+              <span class="text-xl">⚙️</span>
+            </div>
+            <h3 class="font-semibold text-slate-900 mb-1">Cómo</h3>
+            <p class="text-sm text-slate-600">¿Explica el mecanismo?</p>
+          </div>
+          <div class="card p-5">
+            <div class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center mb-3">
+              <span class="text-xl">💰</span>
+            </div>
+            <h3 class="font-semibold text-slate-900 mb-1">Fondos</h3>
+            <p class="text-sm text-slate-600">¿Indica financiamiento?</p>
+          </div>
+          <div class="card p-5 bg-red-50 border-red-200">
+            <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center mb-3">
+              <span class="text-xl">⚠️</span>
+            </div>
+            <h3 class="font-semibold text-red-800 mb-1">Penalizaciones</h3>
+            <p class="text-sm text-red-600">¿Afecta finanzas públicas?</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pillars -->
+      <PillarGrid />
+
+      <!-- Quick Ranking -->
+      <QuickRanking limit={10} class="mt-12" />
+
+      <!-- CTA -->
+      <section class="mt-12 text-center">
+        <div class="card p-8 bg-gradient-to-br from-civic-50 to-purple-50 border-civic-200">
+          <h2 class="text-2xl font-bold text-slate-900 mb-3">
+            ¿Listo para comparar?
+          </h2>
+          <p class="text-slate-600 mb-6">
+            Selecciona hasta 4 candidatos y compara sus propuestas lado a lado.
+            Ahora puedes ver el riesgo fiscal de cada plan.
+          </p>
+          <a href="/comparar" class="btn btn-primary py-3 px-8">
+            Ir al comparador
+          </a>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- ============================================
+       READING MODE 📖
+       ============================================ -->
+  <div class="mode-reading-content">
+    <ReadingRanking candidates={rankingData} currentPage={1} />
+  </div>
+
 </BaseLayout>
+
+<style>
+  /* Mode visibility */
+  .mode-express-content,
+  .mode-reading-content {
+    display: none;
+  }
+  
+  .mode-dashboard-content {
+    display: block;
+  }
+  
+  /* Express mode */
+  html[data-mode="express"] .mode-express-content {
+    display: block;
+  }
+  
+  html[data-mode="express"] .mode-dashboard-content,
+  html[data-mode="express"] .mode-reading-content {
+    display: none;
+  }
+  
+  /* Reading mode */
+  html[data-mode="reading"] .mode-reading-content {
+    display: block;
+  }
+  
+  html[data-mode="reading"] .mode-dashboard-content,
+  html[data-mode="reading"] .mode-express-content {
+    display: none;
+  }
+  
+  /* Text gradient - Costa Caribe */
+  .text-gradient {
+    background: linear-gradient(135deg, #0284c7, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+</style>

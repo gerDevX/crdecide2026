@@ -1,0 +1,203 @@
+---
+import type { Candidate, CandidateScore, PillarScore } from '../../../lib/types';
+import { pillarIndex } from '../../../lib/data';
+import ScoreBar from '../../ui/ScoreBar.astro';
+
+interface Props {
+  candidate: Candidate;
+  score: CandidateScore;
+  rank: number;
+  totalCandidates: number;
+}
+
+const { candidate, score, rank, totalCandidates } = Astro.props;
+
+// Get top 6 pillar scores
+const topPillars = score.pillar_scores
+  .slice(0, 6)
+  .map(ps => ({
+    ...ps,
+    pillar: pillarIndex[ps.pillar_id],
+  }));
+---
+
+<div class="express-card-wrapper">
+  <div class="card-express">
+    <!-- Rank Badge -->
+    <div class="absolute top-4 right-4">
+      <span class="express-rank-badge">
+        #{rank}
+      </span>
+    </div>
+
+    <!-- Party Name -->
+    <div class="text-center mb-6">
+      <div class="text-5xl mb-4">🗳️</div>
+      <h2 class="text-2xl font-bold text-slate-900 mb-1">
+        {candidate.party_name}
+      </h2>
+      <p class="text-slate-500 text-sm">
+        {candidate.candidate_name !== 'Por determinar' ? candidate.candidate_name : ''}
+      </p>
+    </div>
+
+    <!-- Score -->
+    <div class="text-center mb-8">
+      <div class="express-score">
+        {score.overall.weighted_sum.toFixed(2)}
+      </div>
+      <p class="text-slate-500 text-sm mt-1">
+        Puntaje ponderado
+      </p>
+    </div>
+
+    <!-- Score Bar -->
+    <div class="mb-8">
+      <ScoreBar 
+        score={Math.round(score.overall.weighted_sum * 4)} 
+        max={4} 
+        size="lg" 
+        showLabel={true}
+      />
+    </div>
+
+    <!-- Pillar Grid -->
+    <div class="grid grid-cols-3 gap-3 mb-8">
+      {topPillars.map(({ pillar_id, effective_score, pillar }) => (
+        <div class={`p-3 rounded-xl bg-slate-50 text-center pillar-${pillar_id}`}>
+          <div class="text-xs text-slate-500 mb-1">{pillar_id}</div>
+          <div class="text-lg font-bold text-slate-900">
+            {effective_score}/4
+          </div>
+          <div class="flex justify-center gap-0.5 mt-1">
+            {[1,2,3,4].map(i => (
+              <span class={`w-2 h-2 rounded-full ${i <= effective_score ? 'bg-emerald-500' : 'bg-slate-200'}`}></span>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <!-- CTA Buttons -->
+    <div class="flex gap-3">
+      <a 
+        href={`/candidatos/${candidate.candidate_id}`} 
+        class="flex-1 btn btn-secondary text-center"
+      >
+        Ver propuestas
+      </a>
+      <a 
+        href={`/comparar?c=${candidate.candidate_id}`} 
+        class="flex-1 btn btn-primary text-center"
+      >
+        Comparar
+      </a>
+    </div>
+  </div>
+
+  <!-- Swipe Hint -->
+  <div class="swipe-hint">
+    <span>← Desliza para ver más →</span>
+  </div>
+
+  <!-- Navigation Dots -->
+  <div class="express-dots">
+    {Array.from({ length: Math.min(totalCandidates, 10) }).map((_, i) => (
+      <span class={`express-dot ${i === rank - 1 ? 'active' : ''}`}></span>
+    ))}
+    {totalCandidates > 10 && (
+      <span class="text-white/50 text-xs ml-2">+{totalCandidates - 10}</span>
+    )}
+  </div>
+</div>
+
+<style>
+  .express-card-wrapper {
+    min-height: calc(100vh - 80px);
+    min-height: calc(100dvh - 80px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1.5rem 1rem;
+  }
+  
+  .card-express {
+    background: white;
+    border-radius: 1.5rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    padding: 1.5rem;
+    position: relative;
+    animation: scaleIn 0.2s ease-out;
+  }
+  
+  .express-rank-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    background: linear-gradient(135deg, #f43f5e, #fb7185);
+    color: white;
+    font-weight: bold;
+    font-size: 0.875rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .express-score {
+    font-size: 3rem;
+    font-weight: bold;
+    background: linear-gradient(135deg, #0284c7, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .swipe-hint {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.875rem;
+    margin-top: 1rem;
+  }
+  
+  .express-dots {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+  
+  .express-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.3);
+    transition: all 0.3s;
+  }
+  
+  .express-dot.active {
+    width: 1.5rem;
+    background: white;
+  }
+  
+  /* Pillar colors */
+  .pillar-P1 { border-left: 4px solid #10b981; }
+  .pillar-P2 { border-left: 4px solid #3b82f6; }
+  .pillar-P3 { border-left: 4px solid #ef4444; }
+  .pillar-P4 { border-left: 4px solid #ec4899; }
+  .pillar-P5 { border-left: 4px solid #f59e0b; }
+  .pillar-P6 { border-left: 4px solid #22c55e; }
+  .pillar-P7 { border-left: 4px solid #8b5cf6; }
+  .pillar-P8 { border-left: 4px solid #f97316; }
+  .pillar-P9 { border-left: 4px solid #06b6d4; }
+  
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+</style>

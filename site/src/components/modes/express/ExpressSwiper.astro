@@ -1,0 +1,268 @@
+---
+import type { Candidate, CandidateScore } from '../../../lib/types';
+import ExpressCard from './ExpressCard.astro';
+
+interface Props {
+  candidates: Array<{
+    candidate: Candidate;
+    score: CandidateScore;
+    rank: number;
+  }>;
+}
+
+const { candidates } = Astro.props;
+---
+
+<div class="express-swiper-container" id="express-swiper">
+  <div class="express-swiper-track" id="swiper-track">
+    {candidates.map(({ candidate, score, rank }, index) => (
+      <div 
+        class="express-swiper-slide" 
+        data-index={index}
+        style={index === 0 ? '' : 'display: none;'}
+      >
+        <ExpressCard 
+          candidate={candidate} 
+          score={score} 
+          rank={rank}
+          totalCandidates={candidates.length}
+        />
+      </div>
+    ))}
+  </div>
+  
+  <!-- Navigation Arrows (for desktop) -->
+  <button 
+    id="swiper-prev" 
+    class="swiper-nav-btn swiper-nav-prev"
+    aria-label="Candidato anterior"
+  >
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+    </svg>
+  </button>
+  <button 
+    id="swiper-next" 
+    class="swiper-nav-btn swiper-nav-next"
+    aria-label="Siguiente candidato"
+  >
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+    </svg>
+  </button>
+</div>
+
+<script>
+  const swiper = document.getElementById('express-swiper');
+  const track = document.getElementById('swiper-track');
+  const slides = track?.querySelectorAll('.express-swiper-slide') as NodeListOf<HTMLElement>;
+  const prevBtn = document.getElementById('swiper-prev');
+  const nextBtn = document.getElementById('swiper-next');
+  
+  let currentIndex = 0;
+  let startX = 0;
+  let currentX = 0;
+  let isDragging = false;
+  
+  const totalSlides = slides?.length || 0;
+  
+  function showSlide(index: number, direction: 'left' | 'right' = 'right') {
+    if (!slides || index < 0 || index >= totalSlides) return;
+    
+    // Hide current
+    slides[currentIndex].style.display = 'none';
+    slides[currentIndex].classList.remove('animate-slide-in-left', 'animate-slide-in-right');
+    
+    // Show new
+    currentIndex = index;
+    slides[currentIndex].style.display = 'block';
+    slides[currentIndex].classList.add(direction === 'left' ? 'animate-slide-in-left' : 'animate-slide-in-right');
+    
+    // Update dots
+    updateDots();
+  }
+  
+  function updateDots() {
+    const dots = document.querySelectorAll('.express-dot');
+    dots.forEach((dot, i) => {
+      dot.classList.toggle('active', i === currentIndex);
+    });
+  }
+  
+  function goNext() {
+    if (currentIndex < totalSlides - 1) {
+      showSlide(currentIndex + 1, 'right');
+    }
+  }
+  
+  function goPrev() {
+    if (currentIndex > 0) {
+      showSlide(currentIndex - 1, 'left');
+    }
+  }
+  
+  // Button navigation
+  nextBtn?.addEventListener('click', goNext);
+  prevBtn?.addEventListener('click', goPrev);
+  
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') goNext();
+    if (e.key === 'ArrowLeft') goPrev();
+  });
+  
+  // Touch/swipe handling
+  swiper?.addEventListener('touchstart', (e) => {
+    startX = (e as TouchEvent).touches[0].clientX;
+    isDragging = true;
+  }, { passive: true });
+  
+  swiper?.addEventListener('touchmove', (e) => {
+    if (!isDragging) return;
+    currentX = (e as TouchEvent).touches[0].clientX;
+  }, { passive: true });
+  
+  swiper?.addEventListener('touchend', () => {
+    if (!isDragging) return;
+    isDragging = false;
+    
+    const diff = currentX - startX;
+    const threshold = 50;
+    
+    if (Math.abs(diff) > threshold) {
+      if (diff > 0) {
+        goPrev();
+      } else {
+        goNext();
+      }
+    }
+    
+    startX = 0;
+    currentX = 0;
+  });
+  
+  // Mouse drag for desktop
+  swiper?.addEventListener('mousedown', (e) => {
+    startX = (e as MouseEvent).clientX;
+    isDragging = true;
+    swiper.style.cursor = 'grabbing';
+  });
+  
+  swiper?.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    currentX = (e as MouseEvent).clientX;
+  });
+  
+  swiper?.addEventListener('mouseup', () => {
+    if (!isDragging) return;
+    isDragging = false;
+    swiper.style.cursor = 'grab';
+    
+    const diff = currentX - startX;
+    const threshold = 50;
+    
+    if (Math.abs(diff) > threshold) {
+      if (diff > 0) {
+        goPrev();
+      } else {
+        goNext();
+      }
+    }
+    
+    startX = 0;
+    currentX = 0;
+  });
+  
+  swiper?.addEventListener('mouseleave', () => {
+    isDragging = false;
+    swiper.style.cursor = 'grab';
+  });
+</script>
+
+<style>
+  .express-swiper-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    cursor: grab;
+  }
+  
+  .express-swiper-track {
+    position: relative;
+    width: 100%;
+  }
+  
+  .express-swiper-slide {
+    width: 100%;
+  }
+  
+  .swiper-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 20;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    color: #475569;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+  }
+  
+  @media (min-width: 768px) {
+    .swiper-nav-btn {
+      display: flex;
+    }
+  }
+  
+  .swiper-nav-btn:hover {
+    transform: translateY(-50%) scale(1.1);
+    color: #0f172a;
+    background: white;
+  }
+  
+  .swiper-nav-prev {
+    left: 16px;
+  }
+  
+  .swiper-nav-next {
+    right: 16px;
+  }
+  
+  /* Slide animations */
+  .animate-slide-in-right {
+    animation: slideInRight 0.3s ease-out;
+  }
+  
+  .animate-slide-in-left {
+    animation: slideInLeft 0.3s ease-out;
+  }
+  
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+</style>

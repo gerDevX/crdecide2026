@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ScoreBar from '../components/ui/ScoreBar.astro';
-import DimensionBadges from '../components/ui/DimensionBadges.astro';
 import { candidates, scoresByCandidate, pillars, pillarIndex } from '../lib/data';
 import { PILLAR_ICONS } from '../lib/types';
 import type { PillarId } from '../lib/types';
@@ -206,20 +205,13 @@ const sortedCandidates = [...candidates].sort((a, b) => {
           const pillarScore = score.pillar_scores.find(ps => ps.pillar_id === pillarId);
           if (!pillarScore) return '<div class="flex-1">-</div>';
           
-          const dims = pillarScore.dimension_counts;
           return `
             <div class="flex-1 px-2">
-              <div class="flex items-center gap-2 mb-1">
+              <div class="flex items-center gap-2">
                 <div class="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
                   <div class="h-full bg-emerald-500 rounded-full" style="width: ${(pillarScore.effective_score / 4) * 100}%"></div>
                 </div>
                 <span class="font-bold text-sm">${pillarScore.effective_score}/4</span>
-              </div>
-              <div class="flex gap-1 text-xs">
-                <span class="${dims.existence ? 'text-emerald-600' : 'text-slate-300'}">E${dims.existence ? '✓' : '○'}</span>
-                <span class="${dims.when ? 'text-emerald-600' : 'text-slate-300'}">C${dims.when ? '✓' : '○'}</span>
-                <span class="${dims.how ? 'text-emerald-600' : 'text-slate-300'}">H${dims.how ? '✓' : '○'}</span>
-                <span class="${dims.funding ? 'text-emerald-600' : 'text-slate-300'}">F${dims.funding ? '✓' : '○'}</span>
               </div>
             </div>
           `;

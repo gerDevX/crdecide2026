@@ -1,0 +1,253 @@
+---
+import type { Candidate, CandidateScore } from '../../../lib/types';
+
+interface Props {
+  candidates: Array<{
+    candidate: Candidate;
+    score: CandidateScore;
+    rank: number;
+  }>;
+  currentPage?: number;
+  itemsPerPage?: number;
+}
+
+const { 
+  candidates, 
+  currentPage = 1, 
+  itemsPerPage = 5 
+} = Astro.props;
+
+const totalPages = Math.ceil(candidates.length / itemsPerPage);
+const startIndex = (currentPage - 1) * itemsPerPage;
+const pageItems = candidates.slice(startIndex, startIndex + itemsPerPage);
+---
+
+<article class="reading-container">
+  <header class="mb-8">
+    <h1 class="reading-title">Ranking de Candidatos</h1>
+    <p class="reading-body">
+      Estos son los {candidates.length} candidatos presidenciales ordenados 
+      según su puntaje ponderado, basado en el análisis de sus planes de gobierno.
+    </p>
+  </header>
+
+  <div class="reading-divider"></div>
+
+  <section>
+    {pageItems.map(({ candidate, score, rank }) => (
+      <article class="reading-candidate-item">
+        <div class="reading-rank">
+          {rank}.
+        </div>
+        <div class="reading-candidate-content">
+          <h2 class="reading-subtitle">
+            {candidate.party_name}
+          </h2>
+          {candidate.candidate_name !== 'Por determinar' && (
+            <p class="text-slate-600 mb-2">
+              Candidato: {candidate.candidate_name}
+            </p>
+          )}
+          <div class="reading-score-box">
+            <div class="reading-score-value">
+              Puntaje: {score.overall.weighted_sum.toFixed(2)} de 1.00
+            </div>
+            <div class="reading-score-bar">
+              <div 
+                class="reading-score-fill" 
+                style={`width: ${score.overall.weighted_sum * 100}%`}
+              ></div>
+            </div>
+          </div>
+          <div class="reading-dimensions">
+            <strong>Dimensiones cumplidas (promedio):</strong>
+            <ul class="mt-2">
+              <li>✓ Propuestas concretas: {Math.round(score.overall.raw_sum / 9 * 25)}%</li>
+              <li>✓ Plazos definidos: Variable por pilar</li>
+              <li>✓ Mecanismos explicados: Variable por pilar</li>
+              <li>✓ Financiamiento indicado: Variable por pilar</li>
+            </ul>
+          </div>
+          <a 
+            href={`/candidatos/${candidate.candidate_id}`}
+            class="reading-link"
+          >
+            Ver propuestas completas →
+          </a>
+        </div>
+      </article>
+    ))}
+  </section>
+
+  <div class="reading-divider"></div>
+
+  <!-- Pagination -->
+  <nav class="reading-nav" aria-label="Paginación">
+    {currentPage > 1 ? (
+      <a href={`?page=${currentPage - 1}`} class="reading-nav-btn">
+        ← Anterior
+      </a>
+    ) : (
+      <span class="reading-nav-btn opacity-50 cursor-not-allowed">
+        ← Anterior
+      </span>
+    )}
+    
+    <span class="text-slate-600">
+      Página {currentPage} de {totalPages}
+    </span>
+    
+    {currentPage < totalPages ? (
+      <a href={`?page=${currentPage + 1}`} class="reading-nav-btn">
+        Siguiente →
+      </a>
+    ) : (
+      <span class="reading-nav-btn opacity-50 cursor-not-allowed">
+        Siguiente →
+      </span>
+    )}
+  </nav>
+
+  <div class="reading-divider"></div>
+
+  <footer class="text-center">
+    <a href="/metodologia" class="reading-link">
+      ¿Cómo se calcula el puntaje? →
+    </a>
+  </footer>
+</article>
+
+<style>
+  .reading-container {
+    max-width: 42rem;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem;
+  }
+  
+  .reading-title {
+    font-size: 1.875rem;
+    font-weight: bold;
+    color: #0f172a;
+    margin-bottom: 1rem;
+    font-family: Georgia, serif;
+  }
+  
+  .reading-subtitle {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #0f172a;
+    margin-bottom: 0.5rem;
+    font-family: Georgia, serif;
+  }
+  
+  .reading-body {
+    font-size: 1.125rem;
+    line-height: 1.75;
+    color: #334155;
+    font-family: Georgia, serif;
+  }
+  
+  .reading-divider {
+    border-top: 1px solid #cbd5e1;
+    margin: 2rem 0;
+  }
+  
+  .reading-candidate-item {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  .reading-rank {
+    font-size: 2.25rem;
+    font-weight: bold;
+    color: #cbd5e1;
+    font-family: Georgia, serif;
+    min-width: 3rem;
+  }
+  
+  .reading-candidate-content {
+    flex: 1;
+  }
+  
+  .reading-score-box {
+    background: #f1f5f9;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin: 1rem 0;
+  }
+  
+  .reading-score-value {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #0f172a;
+    margin-bottom: 0.5rem;
+  }
+  
+  .reading-score-bar {
+    height: 1rem;
+    background: #e2e8f0;
+    border-radius: 9999px;
+    overflow: hidden;
+  }
+  
+  .reading-score-fill {
+    height: 100%;
+    background: #22c55e;
+    border-radius: 9999px;
+  }
+  
+  .reading-dimensions {
+    color: #334155;
+    margin: 1rem 0;
+    font-family: Georgia, serif;
+  }
+  
+  .reading-dimensions ul {
+    list-style: none;
+    padding-left: 0;
+  }
+  
+  .reading-dimensions li {
+    padding: 0.25rem 0;
+  }
+  
+  .reading-link {
+    color: #1d4ed8;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    font-weight: 500;
+  }
+  
+  .reading-link:hover {
+    color: #1e3a8a;
+  }
+  
+  .reading-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 0;
+  }
+  
+  .reading-nav-btn {
+    padding: 1rem 1.5rem;
+    background: white;
+    border: 2px solid #cbd5e1;
+    border-radius: 0.5rem;
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: #334155;
+    min-width: 140px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
+  .reading-nav-btn:hover {
+    background: #f8fafc;
+    border-color: #94a3b8;
+  }
+</style>

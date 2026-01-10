@@ -1,5 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { pillars, getFiscalStats } from '../lib/data';
+
+const fiscalStats = getFiscalStats();
 ---
 
 <BaseLayout title="Metodología">
@@ -32,36 +35,88 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     <h2>¿Qué son los pilares?</h2>
     <p>
-      Organizamos las propuestas en <strong>9 áreas temáticas</strong> que consideramos 
-      fundamentales para el país:
+      Organizamos las propuestas en <strong>10 áreas temáticas</strong> fundamentales para el país.
+      Los pesos reflejan las <strong>urgencias actuales de Costa Rica</strong>:
     </p>
 
     <div class="not-prose overflow-x-auto">
       <table class="min-w-full text-sm">
         <thead>
-          <tr class="border-b">
-            <th class="text-left py-2 px-3">Pilar</th>
-            <th class="text-left py-2 px-3">¿De qué trata?</th>
-            <th class="text-right py-2 px-3">Peso</th>
+          <tr class="border-b bg-slate-50">
+            <th class="text-left py-3 px-3">#</th>
+            <th class="text-left py-3 px-3">Pilar</th>
+            <th class="text-left py-3 px-3">¿De qué trata?</th>
+            <th class="text-right py-3 px-3">Peso</th>
           </tr>
         </thead>
         <tbody>
-          <tr class="border-b"><td class="py-2 px-3 font-medium">P1. Sostenibilidad fiscal</td><td class="py-2 px-3">Impuestos, deuda, gasto público</td><td class="py-2 px-3 text-right">15%</td></tr>
-          <tr class="border-b"><td class="py-2 px-3 font-medium">P2. Empleo y competitividad</td><td class="py-2 px-3">Trabajo, empresas, inversión</td><td class="py-2 px-3 text-right">15%</td></tr>
-          <tr class="border-b"><td class="py-2 px-3 font-medium">P3. Seguridad ciudadana</td><td class="py-2 px-3">Policía, crimen, justicia</td><td class="py-2 px-3 text-right">15%</td></tr>
-          <tr class="border-b"><td class="py-2 px-3 font-medium">P4. Salud pública (CCSS)</td><td class="py-2 px-3">Hospitales, medicina, pensiones</td><td class="py-2 px-3 text-right">15%</td></tr>
-          <tr class="border-b"><td class="py-2 px-3 font-medium">P5. Educación</td><td class="py-2 px-3">Escuelas, universidades, capacitación</td><td class="py-2 px-3 text-right">15%</td></tr>
-          <tr class="border-b"><td class="py-2 px-3 font-medium">P6. Ambiente</td><td class="py-2 px-3">Cambio climático, conservación</td><td class="py-2 px-3 text-right">5%</td></tr>
-          <tr class="border-b"><td class="py-2 px-3 font-medium">P7. Reforma del Estado</td><td class="py-2 px-3">Corrupción, eficiencia, transparencia</td><td class="py-2 px-3 text-right">10%</td></tr>
-          <tr class="border-b"><td class="py-2 px-3 font-medium">P8. Política social</td><td class="py-2 px-3">Pobreza, vulnerabilidad, subsidios</td><td class="py-2 px-3 text-right">8%</td></tr>
-          <tr><td class="py-2 px-3 font-medium">P9. Política exterior</td><td class="py-2 px-3">Comercio internacional, diplomacia</td><td class="py-2 px-3 text-right">2%</td></tr>
+          <tr class="border-b bg-red-50">
+            <td class="py-2 px-3 font-bold text-red-600">1°</td>
+            <td class="py-2 px-3 font-medium">🛡️ P3. Seguridad ciudadana</td>
+            <td class="py-2 px-3">Policía, crimen organizado, narcotráfico, justicia</td>
+            <td class="py-2 px-3 text-right font-bold text-red-600">18%</td>
+          </tr>
+          <tr class="border-b bg-pink-50">
+            <td class="py-2 px-3 font-bold text-pink-600">2°</td>
+            <td class="py-2 px-3 font-medium">🏥 P4. Salud pública (CCSS)</td>
+            <td class="py-2 px-3">Hospitales, listas de espera, pensiones</td>
+            <td class="py-2 px-3 text-right font-bold text-pink-600">16%</td>
+          </tr>
+          <tr class="border-b bg-emerald-50">
+            <td class="py-2 px-3 font-bold text-emerald-600">3°</td>
+            <td class="py-2 px-3 font-medium">💰 P1. Sostenibilidad fiscal</td>
+            <td class="py-2 px-3">Regla fiscal, deuda, gasto público</td>
+            <td class="py-2 px-3 text-right font-bold text-emerald-600">14%</td>
+          </tr>
+          <tr class="border-b bg-purple-50">
+            <td class="py-2 px-3 font-bold text-purple-600">4°</td>
+            <td class="py-2 px-3 font-medium">⚖️ P7. Reforma del Estado</td>
+            <td class="py-2 px-3">Corrupción, eficiencia, transparencia</td>
+            <td class="py-2 px-3 text-right font-bold text-purple-600">12%</td>
+          </tr>
+          <tr class="border-b">
+            <td class="py-2 px-3">5°</td>
+            <td class="py-2 px-3 font-medium">💼 P2. Empleo e IED</td>
+            <td class="py-2 px-3">Inversión extranjera, zonas francas, empleo</td>
+            <td class="py-2 px-3 text-right">11%</td>
+          </tr>
+          <tr class="border-b">
+            <td class="py-2 px-3">6°</td>
+            <td class="py-2 px-3 font-medium">📚 P5. Educación</td>
+            <td class="py-2 px-3">Calidad educativa, deserción, universidades</td>
+            <td class="py-2 px-3 text-right">10%</td>
+          </tr>
+          <tr class="border-b">
+            <td class="py-2 px-3">7°</td>
+            <td class="py-2 px-3 font-medium">🏗️ P10. Infraestructura</td>
+            <td class="py-2 px-3">Carreteras, puertos, APP, obra pública</td>
+            <td class="py-2 px-3 text-right">9%</td>
+          </tr>
+          <tr class="border-b">
+            <td class="py-2 px-3">8°</td>
+            <td class="py-2 px-3 font-medium">🤝 P8. Política social</td>
+            <td class="py-2 px-3">Pobreza, vulnerabilidad, subsidios focalizados</td>
+            <td class="py-2 px-3 text-right">5%</td>
+          </tr>
+          <tr class="border-b">
+            <td class="py-2 px-3">9°</td>
+            <td class="py-2 px-3 font-medium">🌿 P6. Ambiente</td>
+            <td class="py-2 px-3">Cambio climático, conservación</td>
+            <td class="py-2 px-3 text-right">3%</td>
+          </tr>
+          <tr>
+            <td class="py-2 px-3">10°</td>
+            <td class="py-2 px-3 font-medium">🌎 P9. Política exterior</td>
+            <td class="py-2 px-3">Comercio internacional, diplomacia</td>
+            <td class="py-2 px-3 text-right">2%</td>
+          </tr>
         </tbody>
       </table>
     </div>
 
-    <p>
-      Los <strong>pilares críticos</strong> (P1-P5 y P7) suman el 85% del peso total porque son 
-      los temas que más impactan el día a día de los costarricenses.
+    <p class="text-sm text-slate-600 mt-4">
+      Los <strong>pilares prioritarios</strong> (P3, P4, P1, P7) suman el <strong>60%</strong> del peso total 
+      porque representan las urgencias más críticas de Costa Rica en 2026.
     </p>
 
     <hr />
@@ -101,20 +156,105 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     <hr />
 
-    <h2>¿Qué es la compatibilidad normativa?</h2>
+    <h2 class="text-red-700">⚠️ Penalizaciones por Irresponsabilidad Fiscal</h2>
+    
     <p>
-      Además de las 4 preguntas anteriores, verificamos si la propuesta 
-      <strong>presenta conflictos claros</strong> con:
+      <strong>Costa Rica enfrenta urgencias fiscales reales.</strong> La regla fiscal es lo que mantiene 
+      las finanzas del país a flote y permite cumplir compromisos con el FMI. Por eso, penalizamos 
+      propuestas que comprometen la estabilidad financiera:
     </p>
-    <ul>
-      <li>La <strong>Constitución Política</strong> de Costa Rica</li>
-      <li>La <strong>regla fiscal</strong> vigente</li>
-      <li>El <strong>destino legal</strong> de ciertos fondos (como los de la CCSS)</li>
-    </ul>
-    <p>
-      <strong>Importante:</strong> Solo marcamos conflicto cuando es <strong>explícito y documentable</strong>. 
-      Si el candidato propone reformar la ley para hacer algo, no hay conflicto.
-    </p>
+
+    <div class="not-prose overflow-x-auto">
+      <table class="min-w-full text-sm border border-red-200">
+        <thead>
+          <tr class="bg-red-50 border-b border-red-200">
+            <th class="text-left py-3 px-4">Bandera Roja</th>
+            <th class="text-left py-3 px-4">¿Qué significa?</th>
+            <th class="text-center py-3 px-4">Penalización</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-red-100">
+            <td class="py-3 px-4 font-medium">
+              <span class="text-lg">⚠️</span> Ataca regla fiscal
+            </td>
+            <td class="py-3 px-4 text-slate-600">
+              Propone flexibilizar, reformar o eliminar la regla fiscal sin alternativa de sostenibilidad
+            </td>
+            <td class="py-3 px-4 text-center font-bold text-red-600">-2 puntos</td>
+          </tr>
+          <tr class="border-b border-red-100">
+            <td class="py-3 px-4 font-medium">
+              <span class="text-lg">💰</span> Propone más deuda
+            </td>
+            <td class="py-3 px-4 text-slate-600">
+              Propone aumentar la deuda pública sin plan de sostenibilidad o mecanismo de pago
+            </td>
+            <td class="py-3 px-4 text-center font-bold text-red-600">-1 punto</td>
+          </tr>
+          <tr>
+            <td class="py-3 px-4 font-medium">
+              <span class="text-lg">📈</span> Propone más impuestos
+            </td>
+            <td class="py-3 px-4 text-slate-600">
+              Propone aumentar la carga tributaria al pueblo costarricense
+            </td>
+            <td class="py-3 px-4 text-center font-bold text-red-600">-1 punto</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="not-prose bg-slate-50 border border-slate-200 rounded-lg p-4 mt-4">
+      <h4 class="font-semibold text-slate-900 mb-2">📊 Estadísticas actuales:</h4>
+      <ul class="text-sm text-slate-600 space-y-1">
+        <li>• <strong>{fiscalStats.attackFiscalRule}</strong> de {fiscalStats.total} partidos atacan la regla fiscal</li>
+        <li>• <strong>{fiscalStats.proposeDebt}</strong> de {fiscalStats.total} partidos proponen más deuda</li>
+        <li>• <strong>{fiscalStats.proposeTax}</strong> de {fiscalStats.total} partidos proponen más impuestos</li>
+        <li class="pt-2">• 🟢 <strong>{fiscalStats.lowRisk}</strong> partidos con riesgo BAJO</li>
+        <li>• 🟠 <strong>{fiscalStats.mediumRisk}</strong> partidos con riesgo MEDIO</li>
+        <li>• 🔴 <strong>{fiscalStats.highRisk}</strong> partidos con riesgo ALTO</li>
+      </ul>
+    </div>
+
+    <hr />
+
+    <h2>Niveles de Riesgo Fiscal</h2>
+    
+    <div class="not-prose grid gap-3">
+      <div class="flex items-start gap-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+        <span class="text-2xl">🟢</span>
+        <div>
+          <h4 class="font-semibold text-green-800">Riesgo BAJO</h4>
+          <p class="text-sm text-green-700">
+            El partido NO ataca la regla fiscal, NO propone más deuda ni más impuestos al pueblo.
+            Plan fiscalmente responsable.
+          </p>
+        </div>
+      </div>
+      
+      <div class="flex items-start gap-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+        <span class="text-2xl">🟠</span>
+        <div>
+          <h4 class="font-semibold text-amber-800">Riesgo MEDIO</h4>
+          <p class="text-sm text-amber-700">
+            El partido tiene 1-2 banderas rojas fiscales. Puede proponer más deuda O atacar 
+            la regla fiscal, pero no ambas.
+          </p>
+        </div>
+      </div>
+      
+      <div class="flex items-start gap-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+        <span class="text-2xl">🔴</span>
+        <div>
+          <h4 class="font-semibold text-red-800">Riesgo ALTO</h4>
+          <p class="text-sm text-red-700">
+            El partido tiene múltiples banderas rojas fiscales. Propone flexibilizar la regla fiscal 
+            Y aumentar deuda Y/O impuestos. Riesgo significativo para las finanzas públicas.
+          </p>
+        </div>
+      </div>
+    </div>
 
     <hr />
 
@@ -123,18 +263,42 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <p>Para cada pilar, tomamos la <strong>mejor propuesta</strong> del candidato en ese tema.</p>
     <p>El puntaje final se calcula así:</p>
     <ol>
-      <li>Se normaliza el puntaje de cada pilar (0 a 1)</li>
+      <li>Se calcula el puntaje bruto (raw) de cada pilar (0-4)</li>
+      <li><strong>Se aplican penalizaciones fiscales</strong> (el puntaje puede bajar)</li>
+      <li>Se normaliza el puntaje efectivo (0 a 1)</li>
       <li>Se multiplica por el peso del pilar</li>
       <li>Se suman todos los pilares</li>
     </ol>
-    <p><strong>Máximo posible:</strong> 1.0 (todas las propuestas perfectas en todos los pilares)</p>
+    <p><strong>Máximo posible:</strong> 100% (propuestas perfectas en todos los pilares, sin penalizaciones)</p>
+
+    <hr />
+
+    <h2>¿Por qué penalizar propuestas fiscales irresponsables?</h2>
+    <p>
+      Costa Rica vive una realidad concreta:
+    </p>
+    <ul>
+      <li>📉 <strong>Déficit fiscal</strong> que requiere control constante</li>
+      <li>🏦 <strong>Compromisos con el FMI</strong> que deben cumplirse</li>
+      <li>📊 <strong>Regla fiscal</strong> como único mecanismo de contención del gasto</li>
+      <li>💵 <strong>Deuda pública</strong> que ya representa más del 60% del PIB</li>
+    </ul>
+    <p>
+      Proponer flexibilizar la regla fiscal sin alternativa, o aumentar deuda e impuestos 
+      sin plan de sostenibilidad, son decisiones que <strong>afectan directamente</strong> 
+      al pueblo costarricense.
+    </p>
+    <p>
+      Por eso, este análisis premia la <strong>responsabilidad fiscal</strong> y penaliza 
+      las propuestas que ponen en riesgo la estabilidad económica del país.
+    </p>
 
     <hr />
 
     <h2>¿Qué NO hace este análisis?</h2>
     <ul>
       <li>❌ <strong>No evalúa viabilidad política</strong> (si es posible aprobar algo en la Asamblea)</li>
-      <li>❌ <strong>No juzga calidad ideológica</strong> (si algo es "de izquierda" o "de derecha")</li>
+      <li>❌ <strong>No juzga ideología</strong> (si algo es "de izquierda" o "de derecha")</li>
       <li>❌ <strong>No predice resultados</strong> (si funcionará o no)</li>
       <li>❌ <strong>No recomienda candidatos</strong> (esa decisión es tuya)</li>
     </ul>
@@ -150,7 +314,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </ul>
 
     <p class="text-sm text-slate-500 mt-12">
-      <em>Última actualización: Enero 2026 · Versión del análisis: v2</em>
+      <em>Última actualización: Enero 2026 · Versión del análisis: v5 (Responsabilidad Fiscal)</em>
     </p>
 
   </article>

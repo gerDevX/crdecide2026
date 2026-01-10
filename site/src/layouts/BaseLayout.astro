@@ -2,7 +2,7 @@
 import '../styles/global.css';
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
-import AgeGateModal from '../components/ui/AgeGateModal.astro';
+import ModeSelector from '../components/ui/ModeSelector.astro';
 
 interface Props {
   title: string;
@@ -16,15 +16,34 @@ const { title, description = 'Compara los planes de gobierno de los candidatos p
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="description" content={description} />
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#667eea" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="CR Decide" />
+    
+    <!-- Icons -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    
     <title>{title} | Costa Rica Decide</title>
     
     <!-- Preload fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content={`${title} | Costa Rica Decide`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_CR" />
   </head>
   <body class="min-h-screen flex flex-col">
     <a href="#main" class="skip-link">Saltar al contenido</a>
@@ -37,13 +56,47 @@ const { title, description = 'Compara los planes de gobierno de los candidatos p
     
     <Footer />
     
-    <AgeGateModal />
+    <ModeSelector />
     
     <script>
-      // Initialize age group from localStorage
-      const stored = localStorage.getItem('costarica-decide-age-group');
-      if (stored) {
-        document.documentElement.setAttribute('data-age-group', stored);
+      // Initialize mode from localStorage
+      const initializeMode = () => {
+        const mode = localStorage.getItem('costarica-decide-mode');
+        const ageGroup = localStorage.getItem('costarica-decide-age-group');
+        
+        // If mode exists, use it
+        if (mode) {
+          document.documentElement.setAttribute('data-mode', mode);
+          return;
+        }
+        
+        // Migrate from old age group system
+        if (ageGroup) {
+          const modeMap: Record<string, string> = {
+            '18-35': 'express',
+            '36-49': 'dashboard',
+            '50+': 'reading',
+          };
+          const migratedMode = modeMap[ageGroup] || 'dashboard';
+          localStorage.setItem('costarica-decide-mode', migratedMode);
+          document.documentElement.setAttribute('data-mode', migratedMode);
+          document.documentElement.setAttribute('data-age-group', ageGroup);
+        }
+      };
+      
+      initializeMode();
+      
+      // Register Service Worker
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+              console.log('[PWA] Service Worker registered:', registration.scope);
+            })
+            .catch((error) => {
+              console.log('[PWA] Service Worker registration failed:', error);
+            });
+        });
       }
     </script>
   </body>

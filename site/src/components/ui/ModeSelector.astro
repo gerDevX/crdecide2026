@@ -1,0 +1,210 @@
+---
+---
+
+<div id="mode-selector-modal" class="hidden">
+  <div class="modal-backdrop" id="mode-selector-backdrop"></div>
+  <div class="modal-content p-6" role="dialog" aria-modal="true" aria-labelledby="mode-selector-title">
+    
+    <!-- Header -->
+    <div class="text-center mb-6">
+      <div class="w-16 h-16 bg-gradient-ocean rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+        <span class="text-3xl">🗳️</span>
+      </div>
+      <h2 id="mode-selector-title" class="text-2xl font-bold text-slate-900 mb-2">
+        ¿Cómo prefieres explorar?
+      </h2>
+      <p class="text-slate-600 text-sm">
+        Elige el estilo que mejor se adapte a ti
+      </p>
+    </div>
+
+    <!-- Mode Options -->
+    <div class="space-y-3">
+      
+      <!-- Express Mode -->
+      <button
+        data-mode="express"
+        class="mode-option group"
+      >
+        <div class="mode-preview bg-gradient-ocean relative">
+          <div class="absolute inset-2 bg-white/90 rounded-lg flex items-center justify-center">
+            <div class="text-center">
+              <div class="text-2xl font-bold text-gradient">0.98</div>
+              <div class="flex gap-1 justify-center mt-1">
+                <span class="w-4 h-1 bg-cyan-500 rounded"></span>
+                <span class="w-4 h-1 bg-cyan-500 rounded"></span>
+                <span class="w-4 h-1 bg-cyan-500 rounded"></span>
+                <span class="w-4 h-1 bg-slate-200 rounded"></span>
+              </div>
+            </div>
+          </div>
+          <div class="absolute bottom-2 left-0 right-0 flex justify-center gap-1">
+            <span class="w-4 h-1 bg-white rounded-full"></span>
+            <span class="w-1 h-1 bg-white/50 rounded-full"></span>
+            <span class="w-1 h-1 bg-white/50 rounded-full"></span>
+          </div>
+        </div>
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="text-lg font-semibold text-slate-900 group-hover:text-civic-600 flex items-center gap-2">
+              🚀 Express
+            </span>
+            <span class="text-sm text-slate-500">Rápido y visual · Desliza para explorar</span>
+          </div>
+          <svg class="w-5 h-5 text-slate-400 group-hover:text-civic-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </div>
+      </button>
+
+      <!-- Dashboard Mode -->
+      <button
+        data-mode="dashboard"
+        class="mode-option group"
+      >
+        <div class="mode-preview bg-slate-100 relative p-2">
+          <div class="grid grid-cols-3 gap-1 h-full">
+            <div class="bg-white rounded shadow-sm"></div>
+            <div class="bg-white rounded shadow-sm"></div>
+            <div class="bg-white rounded shadow-sm"></div>
+            <div class="bg-white rounded shadow-sm col-span-2"></div>
+            <div class="bg-white rounded shadow-sm"></div>
+          </div>
+        </div>
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="text-lg font-semibold text-slate-900 group-hover:text-civic-600 flex items-center gap-2">
+              📊 Dashboard
+            </span>
+            <span class="text-sm text-slate-500">Completo con detalles · Todo en un vistazo</span>
+          </div>
+          <svg class="w-5 h-5 text-slate-400 group-hover:text-civic-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </div>
+      </button>
+
+      <!-- Reading Mode -->
+      <button
+        data-mode="reading"
+        class="mode-option group"
+      >
+        <div class="mode-preview bg-[#fffef5] relative p-3">
+          <div class="space-y-2">
+            <div class="h-3 bg-slate-800 rounded w-3/4"></div>
+            <div class="h-2 bg-slate-300 rounded w-full"></div>
+            <div class="h-2 bg-slate-300 rounded w-full"></div>
+            <div class="h-2 bg-slate-300 rounded w-5/6"></div>
+            <div class="h-2 bg-slate-300 rounded w-full"></div>
+          </div>
+        </div>
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="text-lg font-semibold text-slate-900 group-hover:text-civic-600 flex items-center gap-2">
+              📖 Lectura
+            </span>
+            <span class="text-sm text-slate-500">Claro y sin distracciones · Texto grande</span>
+          </div>
+          <svg class="w-5 h-5 text-slate-400 group-hover:text-civic-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </div>
+      </button>
+
+    </div>
+
+    <!-- Footer -->
+    <p class="mt-6 text-center text-xs text-slate-400">
+      Puedes cambiar esto en cualquier momento desde el menú
+    </p>
+  </div>
+</div>
+
+<script>
+  const modal = document.getElementById('mode-selector-modal');
+  const buttons = document.querySelectorAll('.mode-option');
+
+  // Check if mode is stored
+  const storedMode = localStorage.getItem('costarica-decide-mode');
+  const storedAge = localStorage.getItem('costarica-decide-age-group');
+  
+  if (!storedMode && !storedAge && modal) {
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const mode = (e.currentTarget as HTMLElement).dataset.mode;
+      if (mode) {
+        // Set mode
+        localStorage.setItem('costarica-decide-mode', mode);
+        document.documentElement.setAttribute('data-mode', mode);
+        
+        // Also set age group for backward compatibility
+        const ageMap: Record<string, string> = {
+          express: '18-35',
+          dashboard: '36-49',
+          reading: '50+',
+        };
+        localStorage.setItem('costarica-decide-age-group', ageMap[mode]);
+        document.documentElement.setAttribute('data-age-group', ageMap[mode]);
+        
+        // Close modal
+        modal?.classList.add('hidden');
+        document.body.style.overflow = '';
+        
+        // Reload to apply changes
+        window.location.reload();
+      }
+    });
+  });
+  
+  // Close on backdrop click (optional - maybe remove for first-time users)
+  // const backdrop = document.getElementById('mode-selector-backdrop');
+  // backdrop?.addEventListener('click', () => {
+  //   modal?.classList.add('hidden');
+  //   document.body.style.overflow = '';
+  // });
+</script>
+
+<style>
+  .mode-option {
+    width: 100%;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    border: 2px solid #e2e8f0;
+    transition: all 0.2s;
+    text-align: left;
+    cursor: pointer;
+    background: white;
+  }
+  
+  .mode-option:hover {
+    border-color: #38bdf8;
+    background: rgba(224, 242, 254, 0.5);
+  }
+  
+  .mode-option:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px white, 0 0 0 4px #0ea5e9;
+  }
+  
+  .mode-preview {
+    height: 5rem;
+    border-radius: 0.5rem;
+    margin-bottom: 0.75rem;
+    overflow: hidden;
+  }
+  
+  .text-gradient {
+    background: linear-gradient(135deg, #0284c7, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .bg-gradient-ocean {
+    background: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%);
+  }
+</style>

@@ -1,218 +1,360 @@
 {
-  "method_version": "v2",
+  "method_version": "v5_fiscal_strict",
   "weights": {
-    "P1": 0.15,
-    "P2": 0.15,
-    "P3": 0.15,
-    "P4": 0.15,
-    "P5": 0.15,
-    "P6": 0.05,
-    "P7": 0.1,
-    "P8": 0.08,
-    "P9": 0.02
+    "P1": 0.14,
+    "P2": 0.11,
+    "P3": 0.18,
+    "P4": 0.16,
+    "P5": 0.1,
+    "P6": 0.03,
+    "P7": 0.12,
+    "P8": 0.05,
+    "P9": 0.02,
+    "P10": 0.09
+  },
+  "priority_pillars": [
+    "P3",
+    "P4",
+    "P1",
+    "P7"
+  ],
+  "critical_pillars": [
+    "P3",
+    "P7",
+    "P5",
+    "P1",
+    "P2",
+    "P4"
+  ],
+  "penalties_applied": {
+    "attacks_fiscal_rule": -2,
+    "proposes_debt_increase": -1,
+    "proposes_tax_increase": -1
   },
   "ranking_overall_weighted": [
     {
       "rank": 1,
-      "candidate_id": "fa",
-      "weighted_sum": 0.9825
+      "candidate_id": "elicer-feinzaig-mintz",
+      "weighted_sum": 0.6675,
+      "fiscal_penalty": -3
     },
     {
       "rank": 2,
-      "candidate_id": "psd",
-      "weighted_sum": 0.91
+      "candidate_id": "laura-fernandez-delgado",
+      "weighted_sum": 0.6675,
+      "fiscal_penalty": 0
     },
     {
       "rank": 3,
-      "candidate_id": "pnr",
-      "weighted_sum": 0.8625
+      "candidate_id": "fernando-zamora-castellanos",
+      "weighted_sum": 0.66,
+      "fiscal_penalty": -1
     },
     {
       "rank": 4,
-      "candidate_id": "ppso",
-      "weighted_sum": 0.83
+      "candidate_id": "frente-amplio-ariel-robles-barrantes",
+      "weighted_sum": 0.65,
+      "fiscal_penalty": -4
     },
     {
       "rank": 5,
-      "candidate_id": "png",
-      "weighted_sum": 0.82
+      "candidate_id": "fabricio-alvarado-munoz",
+      "weighted_sum": 0.6225,
+      "fiscal_penalty": -4
     },
     {
       "rank": 6,
-      "candidate_id": "pel",
-      "weighted_sum": 0.8125
+      "candidate_id": "luz-mary",
+      "weighted_sum": 0.6125,
+      "fiscal_penalty": -2
     },
     {
       "rank": 7,
-      "candidate_id": "plp",
-      "weighted_sum": 0.7675
+      "candidate_id": "luis-amadorjimenez",
+      "weighted_sum": 0.6025,
+      "fiscal_penalty": -3
     },
     {
       "rank": 8,
-      "candidate_id": "acrm",
-      "weighted_sum": 0.7525
+      "candidate_id": "ana-virginia-calzada",
+      "weighted_sum": 0.585,
+      "fiscal_penalty": -3
     },
     {
       "rank": 9,
-      "candidate_id": "cds",
-      "weighted_sum": 0.75
+      "candidate_id": "walter-hernandez",
+      "weighted_sum": 0.5575,
+      "fiscal_penalty": -1
     },
     {
       "rank": 10,
-      "candidate_id": "pusc",
-      "weighted_sum": 0.745
+      "candidate_id": "marco-rodriguez",
+      "weighted_sum": 0.555,
+      "fiscal_penalty": -3
     },
     {
       "rank": 11,
-      "candidate_id": "cac",
-      "weighted_sum": 0.72
+      "candidate_id": "natalia-diaz",
+      "weighted_sum": 0.5375,
+      "fiscal_penalty": -2
     },
     {
       "rank": 12,
-      "candidate_id": "pin",
-      "weighted_sum": 0.7125
+      "candidate_id": "claudia-dobles",
+      "weighted_sum": 0.53,
+      "fiscal_penalty": -3
     },
     {
       "rank": 13,
-      "candidate_id": "pa",
-      "weighted_sum": 0.7
+      "candidate_id": "douglas-caamano-q",
+      "weighted_sum": 0.53,
+      "fiscal_penalty": 0
     },
     {
       "rank": 14,
-      "candidate_id": "pjsc",
-      "weighted_sum": 0.695
+      "candidate_id": "juan-carlos-hidalgo",
+      "weighted_sum": 0.4975,
+      "fiscal_penalty": -3
     },
     {
       "rank": 15,
-      "candidate_id": "pln",
-      "weighted_sum": 0.6825
+      "candidate_id": "ronny-castillo-gonzalez",
+      "weighted_sum": 0.49,
+      "fiscal_penalty": -1
     },
     {
       "rank": 16,
-      "candidate_id": "pdlct",
-      "weighted_sum": 0.68
+      "candidate_id": "alvaro-ramos",
+      "weighted_sum": 0.4775,
+      "fiscal_penalty": -2
     },
     {
       "rank": 17,
-      "candidate_id": "up",
-      "weighted_sum": 0.6425
+      "candidate_id": "jose-aguilar-ussegl",
+      "weighted_sum": 0.3775,
+      "fiscal_penalty": -3
     },
     {
       "rank": 18,
-      "candidate_id": "pucd",
-      "weighted_sum": 0.6225
+      "candidate_id": "claudio-alpizar",
+      "weighted_sum": 0.315,
+      "fiscal_penalty": -2
     },
     {
       "rank": 19,
-      "candidate_id": "pen",
-      "weighted_sum": 0.615
+      "candidate_id": "boris-molina",
+      "weighted_sum": 0.2575,
+      "fiscal_penalty": 0
     },
     {
       "rank": 20,
-      "candidate_id": "cr1",
-      "weighted_sum": 0.53
+      "candidate_id": "david-hernandez-brenes",
+      "weighted_sum": 0.19,
+      "fiscal_penalty": -2
+    }
+  ],
+  "ranking_priority_weighted": [
+    {
+      "rank": 1,
+      "candidate_id": "elicer-feinzaig-mintz",
+      "priority_weighted_sum": 0.385
+    },
+    {
+      "rank": 2,
+      "candidate_id": "fernando-zamora-castellanos",
+      "priority_weighted_sum": 0.385
+    },
+    {
+      "rank": 3,
+      "candidate_id": "douglas-caamano-q",
+      "priority_weighted_sum": 0.38
+    },
+    {
+      "rank": 4,
+      "candidate_id": "laura-fernandez-delgado",
+      "priority_weighted_sum": 0.375
+    },
+    {
+      "rank": 5,
+      "candidate_id": "frente-amplio-ariel-robles-barrantes",
+      "priority_weighted_sum": 0.345
+    },
+    {
+      "rank": 6,
+      "candidate_id": "luis-amadorjimenez",
+      "priority_weighted_sum": 0.345
+    },
+    {
+      "rank": 7,
+      "candidate_id": "fabricio-alvarado-munoz",
+      "priority_weighted_sum": 0.345
+    },
+    {
+      "rank": 8,
+      "candidate_id": "ronny-castillo-gonzalez",
+      "priority_weighted_sum": 0.34
+    },
+    {
+      "rank": 9,
+      "candidate_id": "luz-mary",
+      "priority_weighted_sum": 0.34
+    },
+    {
+      "rank": 10,
+      "candidate_id": "walter-hernandez",
+      "priority_weighted_sum": 0.33
+    },
+    {
+      "rank": 11,
+      "candidate_id": "ana-virginia-calzada",
+      "priority_weighted_sum": 0.305
+    },
+    {
+      "rank": 12,
+      "candidate_id": "marco-rodriguez",
+      "priority_weighted_sum": 0.305
+    },
+    {
+      "rank": 13,
+      "candidate_id": "natalia-diaz",
+      "priority_weighted_sum": 0.295
+    },
+    {
+      "rank": 14,
+      "candidate_id": "claudia-dobles",
+      "priority_weighted_sum": 0.275
+    },
+    {
+      "rank": 15,
+      "candidate_id": "alvaro-ramos",
+      "priority_weighted_sum": 0.23
+    },
+    {
+      "rank": 16,
+      "candidate_id": "juan-carlos-hidalgo",
+      "priority_weighted_sum": 0.23
+    },
+    {
+      "rank": 17,
+      "candidate_id": "jose-aguilar-ussegl",
+      "priority_weighted_sum": 0.175
+    },
+    {
+      "rank": 18,
+      "candidate_id": "boris-molina",
+      "priority_weighted_sum": 0.17
+    },
+    {
+      "rank": 19,
+      "candidate_id": "claudio-alpizar",
+      "priority_weighted_sum": 0.15
+    },
+    {
+      "rank": 20,
+      "candidate_id": "david-hernandez-brenes",
+      "priority_weighted_sum": 0.045
     }
   ],
   "ranking_critical_weighted": [
     {
       "rank": 1,
-      "candidate_id": "fa",
-      "coverage_critical_weighted_sum": 0.85
+      "candidate_id": "elicer-feinzaig-mintz",
+      "critical_weighted_sum": 0.5425
     },
     {
       "rank": 2,
-      "candidate_id": "psd",
-      "coverage_critical_weighted_sum": 0.775
+      "candidate_id": "fernando-zamora-castellanos",
+      "critical_weighted_sum": 0.5425
     },
     {
       "rank": 3,
-      "candidate_id": "pnr",
-      "coverage_critical_weighted_sum": 0.75
+      "candidate_id": "laura-fernandez-delgado",
+      "critical_weighted_sum": 0.5325
     },
     {
       "rank": 4,
-      "candidate_id": "pel",
-      "coverage_critical_weighted_sum": 0.7125
+      "candidate_id": "frente-amplio-ariel-robles-barrantes",
+      "critical_weighted_sum": 0.5025
     },
     {
       "rank": 5,
-      "candidate_id": "ppso",
-      "coverage_critical_weighted_sum": 0.7125
+      "candidate_id": "fabricio-alvarado-munoz",
+      "critical_weighted_sum": 0.5025
     },
     {
       "rank": 6,
-      "candidate_id": "acrm",
-      "coverage_critical_weighted_sum": 0.675
+      "candidate_id": "douglas-caamano-q",
+      "critical_weighted_sum": 0.485
     },
     {
       "rank": 7,
-      "candidate_id": "plp",
-      "coverage_critical_weighted_sum": 0.675
+      "candidate_id": "luis-amadorjimenez",
+      "critical_weighted_sum": 0.475
     },
     {
       "rank": 8,
-      "candidate_id": "png",
-      "coverage_critical_weighted_sum": 0.675
+      "candidate_id": "luz-mary",
+      "critical_weighted_sum": 0.4725
     },
     {
       "rank": 9,
-      "candidate_id": "cds",
-      "coverage_critical_weighted_sum": 0.6375
+      "candidate_id": "ana-virginia-calzada",
+      "critical_weighted_sum": 0.4625
     },
     {
       "rank": 10,
-      "candidate_id": "pusc",
-      "coverage_critical_weighted_sum": 0.6375
+      "candidate_id": "marco-rodriguez",
+      "critical_weighted_sum": 0.4625
     },
     {
       "rank": 11,
-      "candidate_id": "pa",
-      "coverage_critical_weighted_sum": 0.625
+      "candidate_id": "walter-hernandez",
+      "critical_weighted_sum": 0.4625
     },
     {
       "rank": 12,
-      "candidate_id": "cac",
-      "coverage_critical_weighted_sum": 0.6
+      "candidate_id": "natalia-diaz",
+      "critical_weighted_sum": 0.4525
     },
     {
       "rank": 13,
-      "candidate_id": "pdlct",
-      "coverage_critical_weighted_sum": 0.6
+      "candidate_id": "ronny-castillo-gonzalez",
+      "critical_weighted_sum": 0.445
     },
     {
       "rank": 14,
-      "candidate_id": "pin",
-      "coverage_critical_weighted_sum": 0.6
+      "candidate_id": "claudia-dobles",
+      "critical_weighted_sum": 0.405
     },
     {
       "rank": 15,
-      "candidate_id": "pjsc",
-      "coverage_critical_weighted_sum": 0.6
+      "candidate_id": "alvaro-ramos",
+      "critical_weighted_sum": 0.3875
     },
     {
       "rank": 16,
-      "candidate_id": "pln",
-      "coverage_critical_weighted_sum": 0.575
+      "candidate_id": "juan-carlos-hidalgo",
+      "critical_weighted_sum": 0.3625
     },
     {
       "rank": 17,
-      "candidate_id": "up",
-      "coverage_critical_weighted_sum": 0.5625
+      "candidate_id": "jose-aguilar-ussegl",
+      "critical_weighted_sum": 0.28
     },
     {
       "rank": 18,
-      "candidate_id": "pen",
-      "coverage_critical_weighted_sum": 0.5375
+      "candidate_id": "boris-molina",
+      "critical_weighted_sum": 0.25
     },
     {
       "rank": 19,
-      "candidate_id": "pucd",
-      "coverage_critical_weighted_sum": 0.5375
+      "candidate_id": "claudio-alpizar",
+      "critical_weighted_sum": 0.23
     },
     {
       "rank": 20,
-      "candidate_id": "cr1",
-      "coverage_critical_weighted_sum": 0.5
+      "candidate_id": "david-hernandez-brenes",
+      "critical_weighted_sum": 0.175
     }
   ]
 }

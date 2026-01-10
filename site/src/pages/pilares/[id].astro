@@ -6,9 +6,7 @@ import EvidenceLink from '../../components/ui/EvidenceLink.astro';
 import { 
   pillars, 
   getPillarCardData, 
-  getProposalsByPillar, 
-  candidateIndex,
-  scoresByCandidate
+  getProposalsByPillar
 } from '../../lib/data';
 import { PILLAR_ICONS, CRITICAL_PILLARS } from '../../lib/types';
 import type { PillarId } from '../../lib/types';
@@ -80,7 +78,6 @@ const proposalsByCandidate = proposals.reduce((acc, p) => {
             <tr class="bg-slate-50">
               <th class="px-4 py-3 w-16">#</th>
               <th class="px-4 py-3">Partido</th>
-              <th class="px-4 py-3 hidden md:table-cell">Dimensiones</th>
               <th class="px-4 py-3 w-40 hidden sm:table-cell">Puntaje</th>
               <th class="px-4 py-3 w-20 text-right">Score</th>
             </tr>
@@ -107,9 +104,6 @@ const proposalsByCandidate = proposals.reduce((acc, p) => {
                     <div class="font-medium text-slate-900">{item.candidate.party_name}</div>
                     <div class="text-sm text-slate-500">{item.candidate.pdf_id}</div>
                   </a>
-                </td>
-                <td class="px-4 py-3 hidden md:table-cell">
-                  <DimensionBadges dimensions={item.score.dimension_counts} compact={true} />
                 </td>
                 <td class="px-4 py-3 hidden sm:table-cell">
                   <ScoreBar score={item.score.effective_score} max={4} showLabel={false} size="sm" />

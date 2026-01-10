@@ -1,40 +1,129 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import RankingTable from '../components/ranking/RankingTable.astro';
+import { getFiscalStats, ranking } from '../lib/data';
+
+const fiscalStats = getFiscalStats();
 ---
 
 <BaseLayout title="Rankings">
-  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     
     <!-- Header -->
     <div class="mb-8">
       <h1 class="text-3xl font-bold text-slate-900 mb-2">Rankings</h1>
       <p class="text-slate-600 max-w-3xl">
-        Clasificación de candidatos según el análisis estructural de sus planes de gobierno.
+        Clasificación de candidatos según el análisis estructural de sus planes de gobierno,
+        <strong>incluyendo penalizaciones por irresponsabilidad fiscal</strong>.
         Estos rankings no son recomendaciones de voto.
       </p>
     </div>
 
+    <!-- Fiscal Risk Summary -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+      <div class="card p-4 border-l-4 border-green-500">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">🟢</span>
+          <div>
+            <div class="text-2xl font-bold text-green-600">{fiscalStats.lowRisk}</div>
+            <div class="text-sm text-slate-600">Riesgo Bajo</div>
+          </div>
+        </div>
+        <p class="text-xs text-slate-500 mt-2">Sin banderas rojas fiscales</p>
+      </div>
+      
+      <div class="card p-4 border-l-4 border-amber-500">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">🟠</span>
+          <div>
+            <div class="text-2xl font-bold text-amber-600">{fiscalStats.mediumRisk}</div>
+            <div class="text-sm text-slate-600">Riesgo Medio</div>
+          </div>
+        </div>
+        <p class="text-xs text-slate-500 mt-2">1-2 banderas fiscales</p>
+      </div>
+      
+      <div class="card p-4 border-l-4 border-red-500">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">🔴</span>
+          <div>
+            <div class="text-2xl font-bold text-red-600">{fiscalStats.highRisk}</div>
+            <div class="text-sm text-slate-600">Riesgo Alto</div>
+          </div>
+        </div>
+        <p class="text-xs text-slate-500 mt-2">Múltiples banderas fiscales</p>
+      </div>
+    </div>
+
+    <!-- Penalties applied info -->
+    <div class="card p-4 bg-red-50 border-red-200 mb-8">
+      <h3 class="font-semibold text-red-800 mb-2">⚠️ Penalizaciones aplicadas en este ranking:</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+        <div class="flex items-center gap-2">
+          <span class="text-lg">⚠️</span>
+          <div>
+            <span class="font-medium text-red-700">Ataca regla fiscal:</span>
+            <span class="text-red-600 font-bold"> -2 puntos</span>
+            <p class="text-xs text-red-600/80">{fiscalStats.attackFiscalRule} partidos afectados</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-lg">💰</span>
+          <div>
+            <span class="font-medium text-red-700">Propone más deuda:</span>
+            <span class="text-red-600 font-bold"> -1 punto</span>
+            <p class="text-xs text-red-600/80">{fiscalStats.proposeDebt} partidos afectados</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-lg">📈</span>
+          <div>
+            <span class="font-medium text-red-700">Propone más impuestos:</span>
+            <span class="text-red-600 font-bold"> -1 punto</span>
+            <p class="text-xs text-red-600/80">{fiscalStats.proposeTax} partidos afectados</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Overall Ranking -->
-    <RankingTable type="overall" class="mb-12" />
+    <RankingTable type="overall" showFiscal={true} class="mb-12" />
 
     <!-- Critical Ranking -->
-    <RankingTable type="critical" class="mb-12" />
+    <RankingTable type="critical" showFiscal={false} class="mb-12" />
 
     <!-- Methodology note -->
     <div class="card p-6 bg-slate-50 border-slate-200">
       <h2 class="text-lg font-bold text-slate-900 mb-3">¿Cómo se calcula?</h2>
-      <div class="text-sm text-slate-600 space-y-2">
+      <div class="text-sm text-slate-600 space-y-3">
         <p>
-          <strong>Ranking General:</strong> Suma ponderada de los 9 pilares. Cada pilar tiene un peso 
-          asignado (15% para los principales, menos para los complementarios).
+          <strong>Ranking General:</strong> Suma ponderada de los 10 pilares. Los pilares prioritarios 
+          (Seguridad 18%, Salud 16%, Finanzas 14%, Reforma Estado 12%) representan el 60% del peso total.
+          <strong>Se aplican penalizaciones fiscales</strong> que reducen el puntaje.
         </p>
         <p>
-          <strong>Ranking Crítico:</strong> Solo considera los pilares P1-P5 y P7, que representan 
-          las áreas de mayor impacto: economía, empleo, seguridad, salud, educación y reforma del Estado.
+          <strong>Ranking Crítico:</strong> Considera los pilares P1-P5, P7 y P10, que representan 
+          el 81% del peso total: economía, empleo, seguridad, salud, educación, reforma del Estado e infraestructura.
         </p>
+        
+        <div class="bg-white p-3 rounded border border-slate-200 mt-4">
+          <h4 class="font-semibold text-slate-800 mb-2">Pesos por pilar (v5):</h4>
+          <div class="grid grid-cols-2 md:grid-cols-5 gap-2 text-xs">
+            <div><span class="font-medium">P3 Seguridad:</span> 18%</div>
+            <div><span class="font-medium">P4 Salud:</span> 16%</div>
+            <div><span class="font-medium">P1 Finanzas:</span> 14%</div>
+            <div><span class="font-medium">P7 Reforma:</span> 12%</div>
+            <div><span class="font-medium">P2 Empleo:</span> 11%</div>
+            <div><span class="font-medium">P5 Educación:</span> 10%</div>
+            <div><span class="font-medium">P10 Infra:</span> 9%</div>
+            <div><span class="font-medium">P8 Social:</span> 5%</div>
+            <div><span class="font-medium">P6 Ambiente:</span> 3%</div>
+            <div><span class="font-medium">P9 Exterior:</span> 2%</div>
+          </div>
+        </div>
+        
         <p class="mt-4">
-          <a href="/metodologia" class="text-civic-600 hover:underline">
+          <a href="/metodologia" class="text-civic-600 hover:underline font-medium">
             Ver metodología completa →
           </a>
         </p>

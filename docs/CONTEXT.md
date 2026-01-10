@@ -130,10 +130,18 @@ Verifica conflictos explícitos con:
 ```
 src/components/
 ├── ui/
-│   ├── AgeGateModal.astro    # Modal de selección de edad
+│   ├── ModeSelector.astro    # Modal de selección de modo visual
 │   ├── ScoreBar.astro        # Barra visual de puntaje
 │   ├── DimensionBadges.astro # Badges E/C/H/F
 │   └── EvidenceLink.astro    # Link a PDF + página
+├── modes/
+│   ├── express/
+│   │   ├── ExpressCard.astro     # Card full-screen de candidato
+│   │   └── ExpressSwiper.astro   # Contenedor con swipe
+│   ├── dashboard/
+│   │   └── (usa componentes base)
+│   └── reading/
+│       └── ReadingRanking.astro  # Vista de ranking con paginación
 ├── pillars/
 │   ├── PillarCard.astro      # Card de pilar individual
 │   └── PillarGrid.astro      # Grid de 9 pilares
@@ -144,23 +152,28 @@ src/components/
 │   ├── RankingTable.astro    # Tabla completa de ranking
 │   └── QuickRanking.astro    # Top 10 rápido
 └── layout/
-    ├── Header.astro          # Navegación + selector edad
+    ├── Header.astro          # Navegación + selector de modo
     └── Footer.astro          # Pie de página
 ```
 
-### UX Adaptativa por Edad
+### 3 Modos Visuales
 
-El sitio pregunta el rango de edad al inicio y adapta la experiencia:
+El sitio ofrece 3 experiencias visuales completamente distintas:
 
-| Aspecto | 18-35 | 36-49 | 50+ |
-|---------|-------|-------|-----|
-| Grid | 3-4 columnas | 2-3 columnas | 1 columna |
-| Tipografía | 16px base | 16px base | 20px base |
-| Animaciones | Sí (sutiles) | Mínimas | Ninguna |
-| Vista default | Resumen | Resumen + tabs | Detalle completo |
-| CTA | "Ver más" | "Ver detalle" | "Ver propuesta completa" |
+| Modo | Emoji | Estilo | Target |
+|------|-------|--------|--------|
+| **Express** | 🚀 | Cards full-screen, swipe, gradientes vibrantes | Usuarios que quieren info rápida |
+| **Dashboard** | 📊 | Grid de cards, tabs, estilo analítico | Vista completa con detalles |
+| **Lectura** | 📖 | Tipografía serif, 20px, una columna | Usuarios que prefieren leer con calma |
 
-**Almacenamiento**: `localStorage.setItem('costarica-decide-age-group', value)`
+**Almacenamiento**: `localStorage.setItem('costarica-decide-mode', value)`
+
+### PWA (Progressive Web App)
+
+El sitio es instalable como app:
+- **manifest.json**: Configuración de la app
+- **sw.js**: Service Worker para cache offline
+- **offline.html**: Página de fallback sin conexión
 
 ---
 

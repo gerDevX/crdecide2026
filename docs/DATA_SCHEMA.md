@@ -2,6 +2,8 @@
 
 Referencia rápida de la estructura de datos JSON del proyecto.
 
+**Versión 3.0** - Scoring estructural sin penalizaciones + Coherencia contextual separada.
+
 ---
 
 ## candidates.json
@@ -10,24 +12,24 @@ Array de candidatos presidenciales.
 
 ```typescript
 interface Candidate {
-  candidate_id: string;     // Slug único (ej: "pln", "fa")
-  candidate_name: string;   // Nombre del candidato
-  party_name: string;       // Nombre del partido
+  candidate_id: string;     // Slug único basado en nombre (ej: "alvaro-ramos")
+  candidate_name: string;   // Nombre del candidato o "no_especificado"
+  party_name: string;       // Nombre del partido o "no_especificado"
   pdf_id: string;           // ID del PDF (uppercase: "PLN", "FA")
   pdf_title: string;        // Título del plan de gobierno
-  pdf_url: string;          // Ruta al PDF
+  pdf_url: string;          // Ruta al PDF o "no_especificado"
 }
 ```
 
 **Ejemplo:**
 ```json
 {
-  "candidate_id": "pln",
-  "candidate_name": "Marvin Taylor Dormond",
-  "party_name": "Partido Liberación Nacional",
+  "candidate_id": "alvaro-ramos",
+  "candidate_name": "Álvaro Ramos",
+  "party_name": "Liberación Nacional",
   "pdf_id": "PLN",
-  "pdf_title": "Plan de Gobierno PLN 2026-2030",
-  "pdf_url": "local://analysis/planes/PLN.pdf"
+  "pdf_title": "Plan de Gobierno 2026–2030",
+  "pdf_url": "no_especificado"
 }
 ```
 
@@ -62,25 +64,26 @@ type PillarId = 'P1' | 'P2' | 'P3' | 'P4' | 'P5' | 'P6' | 'P7' | 'P8' | 'P9';
 
 Array de propuestas extraídas de los planes de gobierno.
 
+**Regla clave:** MÁXIMO 1 propuesta por pilar por candidato (9 propuestas máximo por candidato).
+
 ```typescript
 interface Proposal {
-  proposal_id: string;              // ID único
+  proposal_id: string;              // ID único (hash)
   candidate_id: string;             // Ref a candidate
   pillar_id: PillarId;              // Ref a pillar
   proposal_title: string;           // Título corto
-  proposal_text: string;            // Texto resumen
+  proposal_text: string;            // Texto resumen (máx 500 chars)
   dimensions: Dimensions;           // Evaluación D1-D4
   extracted_fields: ExtractedFields;// Textos extraídos
-  compatibility: Compatibility;     // Evaluación D5
   evidence: Evidence;               // Referencia al PDF
-  multi_pillar_source_proposal_id: string | null;
+  multi_pillar_source_proposal_id: string; // "no_especificado" o ID
 }
 
 interface Dimensions {
-  existence: 0 | 1;  // D1: ¿Es concreta?
-  when: 0 | 1;       // D2: ¿Tiene plazo?
-  how: 0 | 1;        // D3: ¿Explica cómo?
-  funding: 0 | 1;    // D4: ¿Indica fondos?
+  existence: 0 | 1;  // D1: ¿Es acción concreta?
+  when: 0 | 1;       // D2: ¿Tiene plazo verificable?
+  how: 0 | 1;        // D3: ¿Describe mecanismo concreto?
+  funding: 0 | 1;    // D4: ¿Indica fuente de financiamiento?
 }
 
 interface ExtractedFields {
@@ -88,15 +91,6 @@ interface ExtractedFields {
   how_text: string;     // Texto del mecanismo o "no_especificado"
   funding_text: string; // Texto del financiamiento o "no_especificado"
 }
-
-interface Compatibility {
-  normative_fiscal: 0 | 1;     // D5: ¿Compatible?
-  conflict_type: ConflictType; // Tipo de conflicto
-  reference: string;           // Referencia legal
-  note: string;                // Nota técnica
-}
-
-type ConflictType = 'constitutional' | 'fiscal' | 'none';
 
 interface Evidence {
   pdf_id: string;   // ID del PDF
@@ -108,8 +102,8 @@ interface Evidence {
 **Ejemplo:**
 ```json
 {
-  "proposal_id": "FA_p23_i0_P1",
-  "candidate_id": "fa",
+  "proposal_id": "pln-a1b2c3d4",
+  "candidate_id": "alvaro-ramos",
   "pillar_id": "P1",
   "proposal_title": "Reforma tributaria progresiva",
   "proposal_text": "Modificar la estructura del impuesto sobre la renta...",
@@ -124,18 +118,12 @@ interface Evidence {
     "how_text": "reforma a la Ley del Impuesto sobre la Renta",
     "funding_text": "reasignación de exoneraciones fiscales"
   },
-  "compatibility": {
-    "normative_fiscal": 1,
-    "conflict_type": "none",
-    "reference": "",
-    "note": ""
-  },
   "evidence": {
-    "pdf_id": "FA",
+    "pdf_id": "PLN",
     "page": 23,
-    "snippet": "...modificar la estructura del impuesto sobre la renta para hacerla más progresiva..."
+    "snippet": "...modificar la estructura del impuesto sobre la renta..."
   },
-  "multi_pillar_source_proposal_id": null
+  "multi_pillar_source_proposal_id": "no_especificado"
 }
 ```
 
@@ -144,6 +132,8 @@ interface Evidence {
 ## candidate_scores.json
 
 Array de puntajes calculados por candidato.
+
+**Nota:** NO se aplican penalizaciones en el scoring. Las evaluaciones de coherencia están en archivo separado.
 
 ```typescript
 interface CandidateScore {
@@ -154,39 +144,25 @@ interface CandidateScore {
 
 interface PillarScore {
   pillar_id: PillarId;
-  raw_score: number;           // 0-4 (suma de dimensiones)
-  effective_score: number;     // raw_score - penalizaciones
+  raw_score: number;           // 0-4 (suma de D1+D2+D3+D4)
+  effective_score: number;     // = raw_score (sin penalizaciones)
   normalized: number;          // 0.0-1.0 (effective/4)
   weighted: number;            // normalized * peso_pilar
-  dimension_counts: Dimensions;// Conteo de dimensiones
-  penalties: Penalty[];        // Penalizaciones aplicadas
-  evidence_refs: EvidenceRef[];// Referencias a propuestas
-}
-
-interface Penalty {
-  type: 'compatibility';
-  value: number;    // -1
-  reason: string;   // Explicación
-}
-
-interface EvidenceRef {
-  proposal_id: string;
-  page: number;
+  penalties: [];               // Siempre vacío en v3
 }
 
 interface Overall {
   raw_sum: number;                      // Suma de raw_scores (0-36)
-  effective_sum: number;                // Suma de effective_scores
   weighted_sum: number;                 // Suma ponderada (0.0-1.0)
   coverage_critical_weighted_sum: number;// Solo pilares críticos
-  notes: string;                        // Observaciones
+  notes: string;                        // Observaciones técnicas neutrales
 }
 ```
 
 **Ejemplo:**
 ```json
 {
-  "candidate_id": "fa",
+  "candidate_id": "alvaro-ramos",
   "pillar_scores": [
     {
       "pillar_id": "P1",
@@ -194,24 +170,14 @@ interface Overall {
       "effective_score": 4,
       "normalized": 1.0,
       "weighted": 0.15,
-      "dimension_counts": {
-        "existence": 1,
-        "when": 1,
-        "how": 1,
-        "funding": 1
-      },
-      "penalties": [],
-      "evidence_refs": [
-        { "proposal_id": "FA_p23_i0_P1", "page": 23 }
-      ]
+      "penalties": []
     }
   ],
   "overall": {
-    "raw_sum": 34,
-    "effective_sum": 34,
-    "weighted_sum": 0.9825,
-    "coverage_critical_weighted_sum": 0.85,
-    "notes": ""
+    "raw_sum": 28,
+    "weighted_sum": 0.82,
+    "coverage_critical_weighted_sum": 0.72,
+    "notes": "Sin propuestas identificadas: P9"
   }
 }
 ```
@@ -224,7 +190,7 @@ Rankings ordenados de candidatos.
 
 ```typescript
 interface Ranking {
-  method_version: string;                    // "v2"
+  method_version: string;                    // "v3"
   weights: Record<string, number>;           // Pesos por pilar
   ranking_overall_weighted: RankingEntry[];  // Ranking general
   ranking_critical_weighted: RankingEntry[]; // Ranking pilares críticos
@@ -241,19 +207,74 @@ interface RankingEntry {
 **Ejemplo:**
 ```json
 {
-  "method_version": "v2",
+  "method_version": "v3",
   "weights": {
     "P1": 0.15, "P2": 0.15, "P3": 0.15, "P4": 0.15, "P5": 0.15,
     "P6": 0.05, "P7": 0.10, "P8": 0.08, "P9": 0.02
   },
   "ranking_overall_weighted": [
-    { "rank": 1, "candidate_id": "fa", "weighted_sum": 0.9825 },
-    { "rank": 2, "candidate_id": "psd", "weighted_sum": 0.91 }
+    { "rank": 1, "candidate_id": "alvaro-ramos", "weighted_sum": 0.82 },
+    { "rank": 2, "candidate_id": "claudia-dobles", "weighted_sum": 0.78 }
   ],
   "ranking_critical_weighted": [
-    { "rank": 1, "candidate_id": "fa", "coverage_critical_weighted_sum": 0.85 },
-    { "rank": 2, "candidate_id": "psd", "coverage_critical_weighted_sum": 0.775 }
+    { "rank": 1, "candidate_id": "alvaro-ramos", "coverage_critical_weighted_sum": 0.72 },
+    { "rank": 2, "candidate_id": "claudia-dobles", "coverage_critical_weighted_sum": 0.68 }
   ]
+}
+```
+
+---
+
+## contextual_coherence.json (NUEVO)
+
+Array de análisis de coherencia contextual por candidato.
+
+**Esta información NO afecta puntajes ni ranking.** Es una capa informativa adicional.
+
+```typescript
+interface ContextualCoherence {
+  candidate_id: string;
+  contextual_coherence: {
+    constitutional_alignment: CoherenceAlignment;
+    fiscal_context_alignment: CoherenceAlignment;
+    national_context_notes: ContextNote[];
+  };
+}
+
+interface CoherenceAlignment {
+  status: 'aligned' | 'potential_conflict' | 'unclear';
+  reference: string;   // Artículo o norma
+  note: string;        // Nota técnica neutral (≤240 chars)
+}
+
+interface ContextNote {
+  topic: string;       // Tema
+  observation: string; // Observación neutral (≤240 chars)
+}
+```
+
+**Ejemplo:**
+```json
+{
+  "candidate_id": "alvaro-ramos",
+  "contextual_coherence": {
+    "constitutional_alignment": {
+      "status": "aligned",
+      "reference": "",
+      "note": ""
+    },
+    "fiscal_context_alignment": {
+      "status": "unclear",
+      "reference": "Regla fiscal vigente - Déficit fiscal",
+      "note": "El plan propone gastos sin especificar fuentes de financiamiento claras."
+    },
+    "national_context_notes": [
+      {
+        "topic": "Inversión extranjera",
+        "observation": "No se menciona inversión extranjera directa pese a su peso en empleo nacional."
+      }
+    ]
+  }
 }
 ```
 
@@ -271,6 +292,8 @@ pillars.json ←───── pillar_id ─────→ candidate_scores.js
                                          candidate_id
                                               ↓
                                       ranking.json
+
+candidates.json ←──── candidate_id ────→ contextual_coherence.json
 ```
 
 ---
@@ -280,11 +303,12 @@ pillars.json ←───── pillar_id ─────→ candidate_scores.js
 ```
 analysis/
 ├── data/
-│   ├── candidates.json      # ~5 KB
-│   ├── pillars.json         # ~1 KB
-│   ├── proposals.json       # ~5 MB (3,400+ propuestas)
-│   ├── candidate_scores.json# ~140 KB
-│   └── ranking.json         # ~4 KB
+│   ├── candidates.json           # 20 candidatos
+│   ├── pillars.json              # 9 pilares
+│   ├── proposals.json            # 180 propuestas (9 por candidato)
+│   ├── candidate_scores.json     # Scores por candidato/pilar
+│   ├── ranking.json              # Rankings ponderados
+│   └── contextual_coherence.json # Coherencia contextual (informativo)
 └── planes/
     ├── PLN.pdf
     ├── FA.pdf
@@ -302,3 +326,16 @@ const CRITICAL_PILLARS: PillarId[] = ['P1', 'P2', 'P3', 'P4', 'P5', 'P7'];
 ```
 
 Suman el **85%** del peso total.
+
+---
+
+## Dimensiones D1-D4
+
+| Dimensión | Nombre | Pregunta | Ejemplos Válidos |
+|-----------|--------|----------|------------------|
+| D1 | Existencia | ¿Es acción concreta? | "Crear...", "Implementar...", "Reformar..." |
+| D2 | Cuándo | ¿Tiene plazo verificable? | "primer año", "primeros 100 días", "2026–2030" |
+| D3 | Cómo | ¿Describe mecanismo? | programa definido, reforma legal, creación de institución |
+| D4 | Fondos | ¿Indica financiamiento? | presupuesto, impuestos, cooperación, APP |
+
+**raw_score = D1 + D2 + D3 + D4** (0-4)

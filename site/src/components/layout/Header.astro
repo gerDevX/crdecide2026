@@ -4,36 +4,37 @@ const navItems = [
   { href: '/candidatos', label: 'Candidatos' },
   { href: '/comparar', label: 'Comparar' },
   { href: '/ranking', label: 'Ranking' },
-  { href: '/metodologia', label: 'Metodología' },
 ];
 
 const currentPath = Astro.url.pathname;
 ---
 
-<header class="bg-white border-b border-slate-200 sticky top-0 z-30">
+<header class="header-container">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex items-center justify-between h-16">
       <!-- Logo -->
       <a href="/" class="flex items-center gap-3 group">
-        <div class="w-10 h-10 bg-civic-600 rounded-lg flex items-center justify-center">
+        <div class="w-10 h-10 bg-gradient-ocean rounded-xl flex items-center justify-center shadow-md">
           <span class="text-white text-xl">🗳️</span>
         </div>
-        <div>
+        <div class="hidden sm:block">
           <span class="font-bold text-slate-900 group-hover:text-civic-600 transition-colors">
-            Costa Rica Decide
+            CR Decide
           </span>
-          <span class="hidden sm:inline text-slate-400 text-sm ml-2">2026</span>
+          <span class="text-slate-400 text-sm ml-1">2026</span>
         </div>
       </a>
 
-      <!-- Navigation -->
-      <nav class="hidden md:flex items-center gap-6" aria-label="Navegación principal">
+      <!-- Navigation (Desktop) -->
+      <nav class="hidden md:flex items-center gap-1" aria-label="Navegación principal">
         {navItems.map(item => (
           <a
             href={item.href}
             class:list={[
-              'nav-link',
-              { 'active': currentPath.startsWith(item.href) }
+              'px-4 py-2 rounded-lg font-medium transition-colors',
+              currentPath.startsWith(item.href)
+                ? 'bg-civic-100 text-civic-700'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
             ]}
           >
             {item.label}
@@ -41,45 +42,68 @@ const currentPath = Astro.url.pathname;
         ))}
       </nav>
 
-      <!-- Age Selector + Mobile Menu -->
-      <div class="flex items-center gap-3">
-        <!-- Age Group Selector -->
+      <!-- Mode Selector + Mobile Menu -->
+      <div class="flex items-center gap-2">
+        <!-- Mode Selector -->
         <div class="relative">
           <button
-            id="age-selector-btn"
-            class="btn btn-ghost text-sm"
+            id="mode-selector-btn"
+            class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors"
             aria-haspopup="true"
             aria-expanded="false"
           >
-            <span id="current-age-label">Edad</span>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <span id="current-mode-icon">📊</span>
+            <span id="current-mode-label" class="hidden sm:inline">Dashboard</span>
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
             </svg>
           </button>
           <div
-            id="age-dropdown"
-            class="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-lg border border-slate-200 hidden"
+            id="mode-dropdown"
+            class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-slate-200 hidden z-50 overflow-hidden"
           >
-            <button data-age="18-35" class="age-option w-full text-left px-4 py-2 hover:bg-slate-50 rounded-t-lg">
-              18-35 años
-            </button>
-            <button data-age="36-49" class="age-option w-full text-left px-4 py-2 hover:bg-slate-50">
-              36-49 años
-            </button>
-            <button data-age="50+" class="age-option w-full text-left px-4 py-2 hover:bg-slate-50 rounded-b-lg">
-              50+ años
-            </button>
+            <div class="p-2">
+              <button data-mode="express" class="mode-dropdown-option">
+                <span class="text-lg">🚀</span>
+                <div class="flex-1 text-left">
+                  <div class="font-medium text-slate-900">Express</div>
+                  <div class="text-xs text-slate-500">Rápido y visual</div>
+                </div>
+              </button>
+              <button data-mode="dashboard" class="mode-dropdown-option">
+                <span class="text-lg">📊</span>
+                <div class="flex-1 text-left">
+                  <div class="font-medium text-slate-900">Dashboard</div>
+                  <div class="text-xs text-slate-500">Completo con detalles</div>
+                </div>
+              </button>
+              <button data-mode="reading" class="mode-dropdown-option">
+                <span class="text-lg">📖</span>
+                <div class="flex-1 text-left">
+                  <div class="font-medium text-slate-900">Lectura</div>
+                  <div class="text-xs text-slate-500">Texto grande, sin distracciones</div>
+                </div>
+              </button>
+            </div>
+            <div class="border-t border-slate-100 p-2">
+              <a href="/metodologia" class="block px-3 py-2 text-sm text-slate-600 hover:bg-slate-50 rounded-lg">
+                ¿Cómo funciona?
+              </a>
+            </div>
           </div>
         </div>
 
         <!-- Mobile Menu Button -->
         <button
           id="mobile-menu-btn"
-          class="md:hidden btn btn-ghost p-2"
+          class="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100"
           aria-label="Abrir menú"
         >
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg id="menu-icon-open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+          <svg id="menu-icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
       </div>
@@ -89,7 +113,7 @@ const currentPath = Astro.url.pathname;
   <!-- Mobile Navigation -->
   <nav
     id="mobile-nav"
-    class="md:hidden hidden border-t border-slate-200 bg-white"
+    class="md:hidden hidden border-t border-slate-200"
     aria-label="Navegación móvil"
   >
     <div class="px-4 py-3 space-y-1">
@@ -97,44 +121,79 @@ const currentPath = Astro.url.pathname;
         <a
           href={item.href}
           class:list={[
-            'block py-2 px-3 rounded-lg',
+            'block py-3 px-4 rounded-xl font-medium',
             currentPath.startsWith(item.href)
-              ? 'bg-civic-50 text-civic-600'
+              ? 'bg-civic-100 text-civic-700'
               : 'text-slate-600 hover:bg-slate-50'
           ]}
         >
           {item.label}
         </a>
       ))}
+      <div class="border-t border-slate-200 my-2 pt-2">
+        <a href="/metodologia" class="block py-3 px-4 rounded-xl text-slate-600 hover:bg-slate-50">
+          Metodología
+        </a>
+        <a href="/acerca" class="block py-3 px-4 rounded-xl text-slate-600 hover:bg-slate-50">
+          Acerca de
+        </a>
+      </div>
     </div>
   </nav>
 </header>
 
 <script>
-  // Age selector
-  const ageBtn = document.getElementById('age-selector-btn');
-  const ageDropdown = document.getElementById('age-dropdown');
-  const ageLabel = document.getElementById('current-age-label');
-  const ageOptions = document.querySelectorAll('.age-option');
+  // Mode configuration
+  const modeConfig: Record<string, { icon: string; label: string }> = {
+    express: { icon: '🚀', label: 'Express' },
+    dashboard: { icon: '📊', label: 'Dashboard' },
+    reading: { icon: '📖', label: 'Lectura' },
+  };
+
+  // Mode selector
+  const modeBtn = document.getElementById('mode-selector-btn');
+  const modeDropdown = document.getElementById('mode-dropdown');
+  const modeIcon = document.getElementById('current-mode-icon');
+  const modeLabel = document.getElementById('current-mode-label');
+  const modeOptions = document.querySelectorAll('.mode-dropdown-option');
 
   // Update label from stored value
-  const stored = localStorage.getItem('costarica-decide-age-group');
-  if (stored && ageLabel) {
-    ageLabel.textContent = stored;
+  const storedMode = localStorage.getItem('costarica-decide-mode') || 'dashboard';
+  if (storedMode && modeIcon && modeLabel) {
+    const config = modeConfig[storedMode] || modeConfig.dashboard;
+    modeIcon.textContent = config.icon;
+    modeLabel.textContent = config.label;
   }
 
-  ageBtn?.addEventListener('click', () => {
-    ageDropdown?.classList.toggle('hidden');
+  // Toggle dropdown
+  modeBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    modeDropdown?.classList.toggle('hidden');
   });
 
-  ageOptions.forEach(opt => {
+  // Mode selection
+  modeOptions.forEach(opt => {
     opt.addEventListener('click', (e) => {
-      const age = (e.target as HTMLElement).dataset.age;
-      if (age) {
-        localStorage.setItem('costarica-decide-age-group', age);
-        document.documentElement.setAttribute('data-age-group', age);
-        if (ageLabel) ageLabel.textContent = age;
-        ageDropdown?.classList.add('hidden');
+      const mode = (e.currentTarget as HTMLElement).dataset.mode;
+      if (mode) {
+        localStorage.setItem('costarica-decide-mode', mode);
+        document.documentElement.setAttribute('data-mode', mode);
+        
+        // Also set age group for backward compatibility
+        const ageMap: Record<string, string> = {
+          express: '18-35',
+          dashboard: '36-49',
+          reading: '50+',
+        };
+        localStorage.setItem('costarica-decide-age-group', ageMap[mode]);
+        document.documentElement.setAttribute('data-age-group', ageMap[mode]);
+        
+        // Update UI
+        const config = modeConfig[mode];
+        if (modeIcon) modeIcon.textContent = config.icon;
+        if (modeLabel) modeLabel.textContent = config.label;
+        
+        modeDropdown?.classList.add('hidden');
         window.location.reload();
       }
     });
@@ -142,16 +201,69 @@ const currentPath = Astro.url.pathname;
 
   // Close dropdown on outside click
   document.addEventListener('click', (e) => {
-    if (!ageBtn?.contains(e.target as Node) && !ageDropdown?.contains(e.target as Node)) {
-      ageDropdown?.classList.add('hidden');
+    if (!modeBtn?.contains(e.target as Node) && !modeDropdown?.contains(e.target as Node)) {
+      modeDropdown?.classList.add('hidden');
     }
   });
 
   // Mobile menu
   const mobileBtn = document.getElementById('mobile-menu-btn');
   const mobileNav = document.getElementById('mobile-nav');
+  const menuIconOpen = document.getElementById('menu-icon-open');
+  const menuIconClose = document.getElementById('menu-icon-close');
 
   mobileBtn?.addEventListener('click', () => {
-    mobileNav?.classList.toggle('hidden');
+    const isHidden = mobileNav?.classList.toggle('hidden');
+    menuIconOpen?.classList.toggle('hidden', !isHidden);
+    menuIconClose?.classList.toggle('hidden', isHidden);
   });
 </script>
+
+<style>
+  .header-container {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid #e2e8f0;
+    position: sticky;
+    top: 0;
+    z-index: 30;
+  }
+  
+  /* Express mode header */
+  :global(html[data-mode="express"]) .header-container {
+    background: rgba(255, 255, 255, 0.8);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+  
+  /* Reading mode header */
+  :global(html[data-mode="reading"]) .header-container {
+    background: white;
+    border-color: #cbd5e1;
+  }
+  
+  .mode-dropdown-option {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.15s;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+  }
+  
+  .mode-dropdown-option:hover {
+    background: #f1f5f9;
+  }
+  
+  .mode-dropdown-option:focus {
+    outline: none;
+    background: #f1f5f9;
+  }
+  
+  .bg-gradient-ocean {
+    background: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%);
+  }
+</style>

@@ -3,15 +3,17 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import CandidateMatrix from '../../components/candidates/CandidateMatrix.astro';
 import DimensionBadges from '../../components/ui/DimensionBadges.astro';
 import EvidenceLink from '../../components/ui/EvidenceLink.astro';
+import FiscalRiskBadge from '../../components/ui/FiscalRiskBadge.astro';
 import ScoreBar from '../../components/ui/ScoreBar.astro';
 import { 
   candidates, 
   getCandidateScore, 
+  getCandidateAnalysis,
   getProposalsByCandidate,
   pillarIndex 
 } from '../../lib/data';
-import { PILLAR_ICONS } from '../../lib/types';
-import type { PillarId } from '../../lib/types';
+import { PILLAR_ICONS, PENALTY_LABELS } from '../../lib/types';
+import type { PillarId, FiscalRiskLevel } from '../../lib/types';
 
 export function getStaticPaths() {
   return candidates.map(candidate => ({
@@ -22,6 +24,7 @@ export function getStaticPaths() {
 
 const { candidate } = Astro.props;
 const score = getCandidateScore(candidate.candidate_id);
+const analysis = getCandidateAnalysis(candidate.candidate_id);
 const proposals = getProposalsByCandidate(candidate.candidate_id);
 
 if (!score) {
@@ -29,7 +32,11 @@ if (!score) {
 }
 
 const weightedPercent = Math.round(score.overall.weighted_sum * 100);
-const criticalPercent = Math.round(score.overall.coverage_critical_weighted_sum * 100);
+const criticalPercent = Math.round(score.overall.critical_weighted_sum * 100);
+const priorityPercent = Math.round(score.overall.priority_weighted_sum * 100);
+const fiscalPenalty = score.overall.fiscal_penalty_applied;
+const riskLevel = (analysis?.risk_level || 'BAJO') as FiscalRiskLevel;
+const fiscalFlags = score.fiscal_analysis?.flags;
 
 // Group proposals by pillar
 const proposalsByPillar = proposals.reduce((acc, p) => {
@@ -37,6 +44,13 @@ const proposalsByPillar = proposals.reduce((acc, p) => {
   acc[p.pillar_id].push(p);
   return acc;
 }, {} as Record<string, typeof proposals>);
+
+// Get active penalties
+const activePenalties = [
+  fiscalFlags?.attacks_fiscal_rule && 'attacks_fiscal_rule',
+  fiscalFlags?.proposes_debt_increase && 'proposes_debt_increase',
+  fiscalFlags?.proposes_tax_increase && 'proposes_tax_increase',
+].filter(Boolean) as string[];
 ---
 
 <BaseLayout title={candidate.party_name}>
@@ -53,56 +67,145 @@ const proposalsByPillar = proposals.reduce((acc, p) => {
         <div>
           <span class="text-sm font-medium text-slate-400 uppercase">{candidate.pdf_id}</span>
           <h1 class="text-3xl font-bold text-slate-900 mt-1">{candidate.party_name}</h1>
-          {candidate.candidate_name !== 'Por determinar' && (
+          {candidate.candidate_name !== 'no_especificado' && candidate.candidate_name !== 'Por determinar' && (
             <p class="text-lg text-slate-600 mt-1">{candidate.candidate_name}</p>
           )}
         </div>
         <div class="text-right">
-          <div class="text-4xl font-bold text-civic-600">{weightedPercent}%</div>
+          <div class={`text-4xl font-bold ${
+            riskLevel === 'BAJO' ? 'text-green-600' :
+            riskLevel === 'MEDIO' ? 'text-amber-600' :
+            'text-red-600'
+          }`}>{weightedPercent}%</div>
           <div class="text-sm text-slate-500">Puntaje ponderado</div>
+          <div class="mt-2">
+            <FiscalRiskBadge riskLevel={riskLevel} size="md" />
+          </div>
         </div>
       </div>
       
-      <div class="mt-6 grid sm:grid-cols-3 gap-4">
+      <div class="mt-6 grid sm:grid-cols-4 gap-4">
         <div class="bg-slate-50 rounded-lg p-4">
-          <div class="text-2xl font-bold text-slate-900">{score.overall.raw_sum}/36</div>
+          <div class="text-2xl font-bold text-slate-900">{score.overall.raw_sum}/40</div>
           <div class="text-sm text-slate-500">Puntaje bruto</div>
         </div>
         <div class="bg-emerald-50 rounded-lg p-4">
           <div class="text-2xl font-bold text-emerald-700">{weightedPercent}%</div>
           <div class="text-sm text-slate-500">Ponderado general</div>
         </div>
-        <div class="bg-amber-50 rounded-lg p-4">
-          <div class="text-2xl font-bold text-amber-700">{criticalPercent}%</div>
-          <div class="text-sm text-slate-500">Pilares críticos</div>
+        <div class="bg-purple-50 rounded-lg p-4">
+          <div class="text-2xl font-bold text-purple-700">{priorityPercent}%</div>
+          <div class="text-sm text-slate-500">Pilares prioritarios</div>
+        </div>
+        <div class={`rounded-lg p-4 ${fiscalPenalty < 0 ? 'bg-red-50' : 'bg-green-50'}`}>
+          <div class={`text-2xl font-bold ${fiscalPenalty < 0 ? 'text-red-600' : 'text-green-600'}`}>
+            {fiscalPenalty}
+          </div>
+          <div class="text-sm text-slate-500">Penalización fiscal</div>
         </div>
       </div>
       
       <div class="mt-6 flex flex-wrap gap-3">
         <a
-          href={`/planes/${candidate.pdf_id}.pdf`}
+          href={candidate.pdf_url && candidate.pdf_url !== 'no_especificado' ? candidate.pdf_url : `/planes/${candidate.pdf_id}.pdf`}
           target="_blank"
           rel="noopener noreferrer"
           class="btn btn-primary"
         >
           📄 Ver plan de gobierno (PDF)
         </a>
+        {candidate.pdf_url && candidate.pdf_url.includes('tse.go.cr') && (
+          <span class="inline-flex items-center text-xs text-green-600 bg-green-50 px-2 py-1 rounded">
+            ✓ Fuente oficial TSE
+          </span>
+        )}
         <a href={`/comparar?c=${candidate.candidate_id}`} class="btn btn-secondary">
           Comparar con otros
         </a>
       </div>
-      
-      {score.overall.notes && (
-        <div class="mt-4 text-sm text-slate-600 bg-slate-50 p-3 rounded-lg">
-          <strong>Notas:</strong> {score.overall.notes}
-        </div>
-      )}
     </header>
+
+    <!-- Fiscal Analysis Section -->
+    {activePenalties.length > 0 && (
+      <section class="card p-6 mb-8 bg-red-50 border-red-200">
+        <h2 class="text-xl font-bold text-red-800 mb-4">⚠️ Alertas Fiscales</h2>
+        <p class="text-sm text-red-700 mb-4">
+          Este plan de gobierno tiene <strong>{activePenalties.length}</strong> bandera(s) roja(s) 
+          que afectan su puntaje:
+        </p>
+        <div class="grid gap-3">
+          {activePenalties.map(flag => (
+            <div class="flex items-start gap-3 bg-white p-3 rounded-lg border border-red-200">
+              <span class="text-2xl">{PENALTY_LABELS[flag]?.emoji}</span>
+              <div>
+                <h4 class="font-semibold text-red-800">{PENALTY_LABELS[flag]?.label}</h4>
+                <p class="text-sm text-red-600">{PENALTY_LABELS[flag]?.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        {score.fiscal_analysis?.evidence && score.fiscal_analysis.evidence.length > 0 && (
+          <div class="mt-4">
+            <h4 class="font-semibold text-red-800 mb-2">Evidencia del documento:</h4>
+            <div class="space-y-2">
+              {score.fiscal_analysis.evidence.slice(0, 2).map(ev => (
+                <blockquote class="text-sm text-red-700 bg-white p-3 rounded border-l-4 border-red-400 italic">
+                  "{ev}"
+                </blockquote>
+              ))}
+            </div>
+          </div>
+        )}
+      </section>
+    )}
+
+    <!-- Fiscal Responsibility if good -->
+    {fiscalFlags?.shows_fiscal_responsibility && riskLevel === 'BAJO' && (
+      <section class="card p-6 mb-8 bg-green-50 border-green-200">
+        <h2 class="text-xl font-bold text-green-800 mb-2">✅ Responsabilidad Fiscal</h2>
+        <p class="text-sm text-green-700">
+          Este plan de gobierno muestra indicadores de responsabilidad fiscal y no presenta 
+          banderas rojas que comprometan las finanzas públicas de Costa Rica.
+        </p>
+      </section>
+    )}
+
+    <!-- Strengths & Weaknesses -->
+    {analysis && (analysis.strengths.length > 0 || analysis.weaknesses.length > 0) && (
+      <section class="grid md:grid-cols-2 gap-6 mb-8">
+        {analysis.strengths.length > 0 && (
+          <div class="card p-5 border-l-4 border-green-500">
+            <h3 class="font-bold text-green-800 mb-3">💪 Fortalezas</h3>
+            <ul class="space-y-2 text-sm">
+              {analysis.strengths.map(s => (
+                <li class="flex items-start gap-2 text-green-700">
+                  <span class="text-green-500">✓</span>
+                  <span>{s}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {analysis.weaknesses.length > 0 && (
+          <div class="card p-5 border-l-4 border-red-500">
+            <h3 class="font-bold text-red-800 mb-3">⚠️ Debilidades</h3>
+            <ul class="space-y-2 text-sm">
+              {analysis.weaknesses.map(w => (
+                <li class="flex items-start gap-2 text-red-700">
+                  <span class="text-red-500">✗</span>
+                  <span>{w}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </section>
+    )}
 
     <!-- Matrix -->
     <section class="mb-12">
       <h2 class="text-2xl font-bold text-slate-900 mb-4">Evaluación por Pilar</h2>
-      <CandidateMatrix score={score} showDetail={true} />
+      <CandidateMatrix score={score} />
     </section>
 
     <!-- Proposals by Pillar -->
@@ -121,18 +224,30 @@ const proposalsByPillar = proposals.reduce((acc, p) => {
             })
             .slice(0, 3);
           
+          const hasPenalties = ps.penalties && ps.penalties.length > 0;
+          
           return (
             <div>
               <div class="flex items-center gap-2 mb-3">
                 <span class="text-xl">{icon}</span>
-                <h3 class="font-semibold text-slate-900">{pillar.pillar_name}</h3>
-                <span class="text-sm text-slate-500">({ps.effective_score}/4)</span>
+                <h3 class="font-semibold text-slate-900">{pillar?.pillar_name || ps.pillar_id}</h3>
+                <span class={`text-sm ${hasPenalties ? 'text-red-600' : 'text-slate-500'}`}>
+                  ({ps.effective_score}/4)
+                  {hasPenalties && ps.raw_score !== ps.effective_score && (
+                    <span class="text-xs ml-1">(bruto: {ps.raw_score})</span>
+                  )}
+                </span>
+                {hasPenalties && (
+                  <span class="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded">
+                    Penalizado
+                  </span>
+                )}
               </div>
               
               {pillarProposals.length > 0 ? (
                 <div class="space-y-3">
                   {pillarProposals.map((proposal) => (
-                    <div class={`card p-4 border-l-4 pillar-${ps.pillar_id}`}>
+                    <div class={`card p-4 border-l-4 ${hasPenalties ? 'border-red-400' : `pillar-${ps.pillar_id}`}`}>
                       <h4 class="font-medium text-slate-900 mb-2">{proposal.proposal_title}</h4>
                       <p class="text-sm text-slate-600 mb-3 line-clamp-2">{proposal.proposal_text}</p>
                       <div class="flex flex-wrap items-center justify-between gap-3">

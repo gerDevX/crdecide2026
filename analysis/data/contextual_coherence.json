@@ -1,0 +1,337 @@
+[
+  {
+    "candidate_id": "ronny-castillo-gonzalez",
+    "contextual_coherence": {
+      "constitutional_alignment": {
+        "status": "aligned",
+        "reference": "",
+        "note": ""
+      },
+      "fiscal_context_alignment": {
+        "status": "unclear",
+        "reference": "Regla fiscal vigente - Déficit fiscal",
+        "note": "El plan propone gastos sin especificar fuentes de financiamiento claras."
+      },
+      "national_context_notes": []
+    }
+  },
+  {
+    "candidate_id": "cac",
+    "contextual_coherence": {
+      "constitutional_alignment": {
+        "status": "aligned",
+        "reference": "",
+        "note": ""
+      },
+      "fiscal_context_alignment": {
+        "status": "aligned",
+        "reference": "",
+        "note": ""
+      },
+      "national_context_notes": []
+    }
+  },
+  {
+    "candidate_id": "cds",
+    "contextual_coherence": {
+      "constitutional_alignment": {
+        "status": "aligned",
+        "reference": "",
+        "note": ""
+      },
+      "fiscal_context_alignment": {
+        "status": "aligned",
+        "reference": "",
+        "note": ""
+      },
+      "national_context_notes": []
+    }
+  },
+  {
+    "candidate_id": "de-la-republica-de-costa",
+    "contextual_coherence": {
+      "constitutional_alignment": {
+        "status": "aligned",
+        "reference": "",
+        "note": ""
+      },
+      "fiscal_context_alignment": {
+        "status": "unclear",
+        "reference": "Regla fiscal vigente - Déficit fiscal",
+        "note": "El plan propone gastos sin especificar fuentes de financiamiento claras."
+      },
+      "national_context_notes": [
+        {
+          "topic": "Inversión extranjera",
+          "observation": "No se menciona inversión extranjera directa pese a su peso en empleo nacional."
+        }
+      ]
+    }
+  },
+  {
+    "candidate_id": "fa",
+    "contextual_coherence": {
+      "constitutional_alignment": {
+        "status": "aligned",
+        "reference": "",
+        "note": ""
+      },
+      "fiscal_context_alignment": {
+        "status": "aligned",
+        "reference": "",
+        "note": ""
+      },
+      "national_context_notes": []
+    }
+  },
+  {
+    "candidate_id": "pa",
+    "contextual_coherence": {
+      "constitutional_alignment": {
+        "status": "aligned",
+        "reference": "",
+        "note": ""
+      },
+      "fiscal_context_alignment": {
+        "status": "aligned",
+        "reference": "",
+        "note": ""
+      },
+      "national_context_notes": []
+    }
+  },
+  {
+    "candidate_id": "pdlct",
+    "contextual_coherence": {
+      "constitutional_alignment": {
+        "status": "aligned",
+        "reference": "",
+        "note": ""
+      },
+      "fiscal_context_alignment": {
+        "status": "aligned",
+        "reference": "",
+        "note": ""
+      },
+      "national_context_notes": []
+    }
+  },
+  {
+    "candidate_id": "pel",
+    "contextual_coherence": {
+      "constitutional_alignment": {
+        "status": "aligned",
+        "reference": "",
+        "note": ""
+      },
+      "fiscal_context_alignment": {
+        "status": "aligned",
+        "reference": "",
+        "note": ""
+      },
+      "national_context_notes": []
+    }
+  },
+  {
+    "candidate_id": "pen",
+    "contextual_coherence": {
+      "constitutional_alignment": {
+        "status": "aligned",
+        "reference": "",
+        "note": ""
+      },
+      "fiscal_context_alignment": {
+        "status": "aligned",
+        "reference": "",
+        "note": ""
+      },
+      "national_context_notes": []
+    }
+  },
+  {
+    "candidate_id": "pin",
+    "contextual_coherence": {
+      "constitutional_alignment": {
+        "status": "aligned",
+        "reference": "",
+        "note": ""
+      },
+      "fiscal_context_alignment": {
+        "status": "aligned",
+        "reference": "",
+        "note": ""
+      },
+      "national_context_notes": []
+    }
+  },
+  {
+    "candidate_id": "pjsc",
+    "contextual_coherence": {
+      "constitutional_alignment": {
+        "status": "aligned",
+        "reference": "",
+        "note": ""
+      },
+      "fiscal_context_alignment": {
+        "status": "aligned",
+        "reference": "",
+        "note": ""
+      },
+      "national_context_notes": [
+        {
+          "topic": "Inversión extranjera",
+          "observation": "No se menciona inversión extranjera directa pese a su peso en empleo nacional."
+        }
+      ]
+    }
+  },
+  {
+    "candidate_id": "marvin-taylor-dormond",
+    "contextual_coherence": {
+      "constitutional_alignment": {
+        "status": "aligned",
+        "reference": "",
+        "note": ""
+      },
+      "fiscal_context_alignment": {
+        "status": "unclear",
+        "reference": "Regla fiscal vigente - Déficit fiscal",
+        "note": "El plan propone gastos sin especificar fuentes de financiamiento claras."
+      },
+      "national_context_notes": []
+    }
+  },
+  {
+    "candidate_id": "plp",
+    "contextual_coherence": {
+      "constitutional_alignment": {
+        "status": "aligned",
+        "reference": "",
+        "note": ""
+      },
+      "fiscal_context_alignment": {
+        "status": "aligned",
+        "reference": "",
+        "note": ""
+      },
+      "national_context_notes": []
+    }
+  },
+  {
+    "candidate_id": "oliver-mora-tumminelli",
+    "contextual_coherence": {
+      "constitutional_alignment": {
+        "status": "aligned",
+        "reference": "",
+        "note": ""
+      },
+      "fiscal_context_alignment": {
+        "status": "aligned",
+        "reference": "",
+        "note": ""
+      },
+      "national_context_notes": []
+    }
+  },
+  {
+    "candidate_id": "pnr",
+    "contextual_coherence": {
+      "constitutional_alignment": {
+        "status": "aligned",
+        "reference": "",
+        "note": ""
+      },
+      "fiscal_context_alignment": {
+        "status": "aligned",
+        "reference": "",
+        "note": ""
+      },
+      "national_context_notes": []
+    }
+  },
+  {
+    "candidate_id": "ppso",
+    "contextual_coherence": {
+      "constitutional_alignment": {
+        "status": "aligned",
+        "reference": "",
+        "note": ""
+      },
+      "fiscal_context_alignment": {
+        "status": "unclear",
+        "reference": "Regla fiscal vigente - Déficit fiscal",
+        "note": "El plan propone gastos sin especificar fuentes de financiamiento claras."
+      },
+      "national_context_notes": []
+    }
+  },
+  {
+    "candidate_id": "psd",
+    "contextual_coherence": {
+      "constitutional_alignment": {
+        "status": "aligned",
+        "reference": "",
+        "note": ""
+      },
+      "fiscal_context_alignment": {
+        "status": "aligned",
+        "reference": "",
+        "note": ""
+      },
+      "national_context_notes": []
+    }
+  },
+  {
+    "candidate_id": "pucd",
+    "contextual_coherence": {
+      "constitutional_alignment": {
+        "status": "aligned",
+        "reference": "",
+        "note": ""
+      },
+      "fiscal_context_alignment": {
+        "status": "aligned",
+        "reference": "",
+        "note": ""
+      },
+      "national_context_notes": [
+        {
+          "topic": "Inversión extranjera",
+          "observation": "No se menciona inversión extranjera directa pese a su peso en empleo nacional."
+        }
+      ]
+    }
+  },
+  {
+    "candidate_id": "pusc",
+    "contextual_coherence": {
+      "constitutional_alignment": {
+        "status": "aligned",
+        "reference": "",
+        "note": ""
+      },
+      "fiscal_context_alignment": {
+        "status": "aligned",
+        "reference": "",
+        "note": ""
+      },
+      "national_context_notes": []
+    }
+  },
+  {
+    "candidate_id": "quiero-ser",
+    "contextual_coherence": {
+      "constitutional_alignment": {
+        "status": "aligned",
+        "reference": "",
+        "note": ""
+      },
+      "fiscal_context_alignment": {
+        "status": "aligned",
+        "reference": "",
+        "note": ""
+      },
+      "national_context_notes": []
+    }
+  }
+]
