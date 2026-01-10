@@ -28,7 +28,7 @@ const topPillars = score.pillar_scores
   <!-- Header Row -->
   <div class="card-header-row">
     <div class="rank-badge" class:list={{ 'top-3': rank <= 3 }}>
-      #{rank}
+        #{rank}
     </div>
     <div class="party-info">
       <h2 class="candidate-title">
@@ -42,36 +42,36 @@ const topPillars = score.pillar_scores
       <span class="score-number">{scorePercent}</span>
       <span class="score-percent">%</span>
     </div>
-  </div>
-  
-  <!-- Score Bar -->
+    </div>
+
+    <!-- Score Bar -->
   <div class="score-bar-container">
     <div class="score-bar" style={`width: ${scorePercent}%`}></div>
-  </div>
-  
+    </div>
+
   <!-- Pillars Grid -->
   <div class="pillars-grid">
     {topPillars.map(({ pillar_id, effective_score, pillar, scorePercent }) => {
       const isHigh = scorePercent >= 75;
       const isMedium = scorePercent >= 50 && scorePercent < 75;
       
-      return (
+        return (
         <div class={`pillar-item ${isHigh ? 'high' : isMedium ? 'medium' : 'low'}`}>
           <span class="pillar-label">{pillar?.pillar_name?.split(' ').slice(0, 2).join(' ') || pillar_id}</span>
           <span class="pillar-score">{scorePercent}%</span>
-        </div>
-      );
-    })}
-  </div>
-  
+          </div>
+        );
+      })}
+    </div>
+
   <!-- Actions -->
   <div class="card-actions">
     <a href={`/candidatos/${candidate.candidate_id}`} class="action-btn secondary">
       Ver detalles
-    </a>
+      </a>
     <a href={`/comparar?c=${candidate.candidate_id}`} class="action-btn primary">
-      Comparar
-    </a>
+        Comparar
+      </a>
   </div>
 </div>
 
@@ -272,7 +272,7 @@ const topPillars = score.pillar_scores
     background: linear-gradient(135deg, #06b6d4, #3b82f6);
     color: white;
     box-shadow: 0 4px 12px rgba(6, 182, 212, 0.25);
-  }
+    }
   
   .action-btn.primary:hover {
     box-shadow: 0 8px 20px rgba(6, 182, 212, 0.35);

@@ -123,7 +123,7 @@ const howItWorksItems = [
        DASHBOARD MODE 📊 (Default) - ACETERNITY UI
        ============================================ -->
   <div class="mode-dashboard-content">
-    
+      
     <!-- Hero Section -->
     <HeroSection
       client:load
@@ -155,7 +155,7 @@ const howItWorksItems = [
             📊
           </span>
           <h2 class="text-2xl font-bold text-slate-900">En números</h2>
-        </div>
+              </div>
         <StatsCards client:visible stats={statsData} />
       </section>
 
@@ -168,7 +168,7 @@ const howItWorksItems = [
             defaultTab="como-evaluamos"
             containerId="main-tabs-content"
           />
-        </div>
+            </div>
 
         <div id="main-tabs-content" data-active-tab="como-evaluamos">
           <!-- Tab: How It Works -->
@@ -196,8 +196,8 @@ const howItWorksItems = [
               limit={10}
               showViewAll={true}
             />
-          </div>
-
+        </div>
+        
           <!-- Tab: Pillars Section -->
           <div class="tab-panel" data-tab="pilares">
             <div class="flex items-center gap-3 mb-4">
@@ -213,15 +213,15 @@ const howItWorksItems = [
                 <strong class="text-slate-800">¿Cómo interpretar cada pilar?</strong>
               </p>
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
-                <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2">
                   <span class="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white text-xs font-bold shadow">%</span>
                   <span class="text-slate-600"><strong class="text-slate-800">Porcentaje grande:</strong> Promedio de todos los candidatos</span>
-                </div>
+            </div>
                 <div class="flex items-center gap-2">
                   <span class="px-2 py-1 rounded-full bg-slate-200 text-slate-600 text-xs font-semibold">10%</span>
                   <span class="text-slate-600"><strong class="text-slate-800">Badge superior:</strong> Peso/importancia del pilar</span>
                 </div>
-                <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2">
                   <span class="w-5 h-5 rounded-full bg-amber-400 flex items-center justify-center text-white text-xs font-bold">1</span>
                   <span class="text-slate-600"><strong class="text-slate-800">Top 5:</strong> Mejores candidatos en ese pilar</span>
                 </div>
@@ -303,7 +303,7 @@ const howItWorksItems = [
   html[data-mode="reading"] .mode-express-content {
     display: none;
   }
-
+  
   /* Tab panels visibility */
   .tab-panel {
     display: none;

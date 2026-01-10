@@ -100,16 +100,16 @@ const getRiskTextColor = (level: FiscalRiskLevel) => {
             </svg>
             Volver a candidatos
           </a>
-        </nav>
-        
+    </nav>
+
         <div class="hero-grid">
           <div class="hero-info">
             <span class="party-code">{candidate.pdf_id}</span>
             <h1 class="party-name">{candidate.party_name}</h1>
-            {candidate.candidate_name !== 'no_especificado' && candidate.candidate_name !== 'Por determinar' && (
+          {candidate.candidate_name !== 'no_especificado' && candidate.candidate_name !== 'Por determinar' && (
               <p class="candidate-name">{candidate.candidate_name}</p>
-            )}
-          </div>
+          )}
+        </div>
           
           <div class="hero-score">
             <div class={`score-circle ${getRiskTextColor(riskLevel)}`}>
@@ -119,194 +119,194 @@ const getRiskTextColor = (level: FiscalRiskLevel) => {
             <div class="score-label">Puntaje Ponderado</div>
             <div class="mt-3">
               <FiscalRiskBadge riskLevel={riskLevel} size="lg" />
-            </div>
           </div>
         </div>
-        
+      </div>
+      
         <!-- Stats Row -->
         <div class="stats-grid">
           <div class="stat-card">
             <div class="stat-icon">📊</div>
             <div class="stat-value">{score.overall.raw_sum}/40</div>
             <div class="stat-label">Puntaje bruto</div>
-          </div>
+        </div>
           <div class="stat-card highlight-emerald">
             <div class="stat-icon">📈</div>
             <div class="stat-value">{weightedPercent}%</div>
             <div class="stat-label">Ponderado general</div>
-          </div>
+        </div>
           <div class="stat-card highlight-purple">
             <div class="stat-icon">🎯</div>
             <div class="stat-value">{priorityPercent}%</div>
             <div class="stat-label">Pilares prioritarios</div>
-          </div>
+        </div>
           <div class={`stat-card ${totalPenalties < 0 ? 'highlight-red' : 'highlight-green'}`}>
             <div class="stat-icon">⚖️</div>
             <div class="stat-value">{totalPenalties}</div>
             <div class="stat-label">Penalización total</div>
-          </div>
         </div>
-        
+      </div>
+      
         <!-- Action Buttons -->
         <div class="action-buttons">
-          <a
-            href={candidate.pdf_url && candidate.pdf_url !== 'no_especificado' ? candidate.pdf_url : `/planes/${candidate.pdf_id}.pdf`}
-            target="_blank"
-            rel="noopener noreferrer"
+        <a
+          href={candidate.pdf_url && candidate.pdf_url !== 'no_especificado' ? candidate.pdf_url : `/planes/${candidate.pdf_id}.pdf`}
+          target="_blank"
+          rel="noopener noreferrer"
             class="btn-primary"
-          >
+        >
             <span>📄</span>
             Ver plan de gobierno (PDF)
-            {candidate.pdf_url && candidate.pdf_url.includes('tse.go.cr') && (
+        {candidate.pdf_url && candidate.pdf_url.includes('tse.go.cr') && (
               <span class="tse-badge">TSE</span>
-            )}
+        )}
           </a>
           <a href={`/comparar?c=${candidate.candidate_id}`} class="btn-secondary">
             <span>⚖️</span>
-            Comparar con otros
-          </a>
+          Comparar con otros
+        </a>
         </div>
       </div>
     </header>
 
     <div class="content-container">
-      <!-- Fiscal Alerts Section -->
-      {activePenalties.length > 0 && (
+    <!-- Fiscal Alerts Section -->
+    {activePenalties.length > 0 && (
         <section class="alert-section alert-danger">
           <div class="alert-header">
             <span class="alert-icon">🚨</span>
             <h2>Alertas Fiscales</h2>
           </div>
           <p class="alert-description">
-            Este plan de gobierno tiene <strong>{activePenalties.length}</strong> bandera(s) roja(s) fiscal(es):
-          </p>
+          Este plan de gobierno tiene <strong>{activePenalties.length}</strong> bandera(s) roja(s) fiscal(es):
+        </p>
           <div class="alert-items">
-            {activePenalties.map(flag => (
+          {activePenalties.map(flag => (
               <div class="alert-item">
                 <span class="item-icon">{PENALTY_LABELS[flag]?.emoji}</span>
                 <div class="item-content">
                   <h4>{PENALTY_LABELS[flag]?.label}</h4>
                   <p>{PENALTY_LABELS[flag]?.description}</p>
-                </div>
               </div>
-            ))}
-          </div>
-          {score.fiscal_analysis?.evidence && score.fiscal_analysis.evidence.length > 0 && (
+            </div>
+          ))}
+        </div>
+        {score.fiscal_analysis?.evidence && score.fiscal_analysis.evidence.length > 0 && (
             <div class="evidence-section">
               <h4>Evidencia del documento:</h4>
               <div class="evidence-quotes">
-                {score.fiscal_analysis.evidence.slice(0, 2).map(ev => (
+              {score.fiscal_analysis.evidence.slice(0, 2).map(ev => (
                   <blockquote>"{ev}"</blockquote>
-                ))}
-              </div>
+              ))}
             </div>
-          )}
-        </section>
-      )}
+          </div>
+        )}
+      </section>
+    )}
 
-      <!-- Omission Alerts Section -->
-      {omissionPenalties.length > 0 && (
+    <!-- Omission Alerts Section -->
+    {omissionPenalties.length > 0 && (
         <section class="alert-section alert-warning">
           <div class="alert-header">
             <span class="alert-icon">⚠️</span>
             <h2>Urgencias Nacionales No Abordadas</h2>
           </div>
           <p class="alert-description">
-            Este plan de gobierno no menciona <strong>{omissionPenalties.length}</strong> tema(s) crítico(s) 
-            para Costa Rica:
-          </p>
+          Este plan de gobierno no menciona <strong>{omissionPenalties.length}</strong> tema(s) crítico(s) 
+          para Costa Rica:
+        </p>
           <div class="alert-items">
-            {omissionPenalties.map(flag => (
+          {omissionPenalties.map(flag => (
               <div class="alert-item">
                 <span class="item-icon">{PENALTY_LABELS[flag]?.emoji}</span>
                 <div class="item-content">
                   <h4>{PENALTY_LABELS[flag]?.label}</h4>
                   <p>{PENALTY_LABELS[flag]?.description}</p>
-                </div>
               </div>
-            ))}
-          </div>
-        </section>
-      )}
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
 
-      <!-- Fiscal Responsibility if good -->
-      {fiscalFlags?.shows_fiscal_responsibility && riskLevel === 'BAJO' && (
+    <!-- Fiscal Responsibility if good -->
+    {fiscalFlags?.shows_fiscal_responsibility && riskLevel === 'BAJO' && (
         <section class="alert-section alert-success">
           <div class="alert-header">
             <span class="alert-icon">✅</span>
             <h2>Responsabilidad Fiscal</h2>
           </div>
           <p class="alert-description">
-            Este plan de gobierno muestra indicadores de responsabilidad fiscal y no presenta 
-            banderas rojas que comprometan las finanzas públicas de Costa Rica.
-          </p>
-        </section>
-      )}
+          Este plan de gobierno muestra indicadores de responsabilidad fiscal y no presenta 
+          banderas rojas que comprometan las finanzas públicas de Costa Rica.
+        </p>
+      </section>
+    )}
 
-      <!-- Strengths & Weaknesses -->
-      {analysis && (analysis.strengths.length > 0 || analysis.weaknesses.length > 0) && (
+    <!-- Strengths & Weaknesses -->
+    {analysis && (analysis.strengths.length > 0 || analysis.weaknesses.length > 0) && (
         <section class="analysis-grid">
-          {analysis.strengths.length > 0 && (
+        {analysis.strengths.length > 0 && (
             <div class="analysis-card strengths">
               <h3>💪 Fortalezas</h3>
               <ul>
-                {analysis.strengths.map(s => (
+              {analysis.strengths.map(s => (
                   <li>
                     <span class="check-icon">✓</span>
-                    <span>{s}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-          {analysis.weaknesses.length > 0 && (
+                  <span>{s}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {analysis.weaknesses.length > 0 && (
             <div class="analysis-card weaknesses">
               <h3>⚠️ Debilidades</h3>
               <ul>
-                {analysis.weaknesses.map(w => (
+              {analysis.weaknesses.map(w => (
                   <li>
                     <span class="x-icon">✗</span>
-                    <span>{w}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </section>
-      )}
+                  <span>{w}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </section>
+    )}
 
-      <!-- Matrix -->
+    <!-- Matrix -->
       <section class="matrix-section">
         <div class="section-header">
           <span class="section-icon">📊</span>
           <h2>Evaluación por Pilar</h2>
         </div>
-        <CandidateMatrix score={score} />
-      </section>
+      <CandidateMatrix score={score} />
+    </section>
 
-      <!-- Proposals by Pillar -->
+    <!-- Proposals by Pillar -->
       <section class="proposals-section">
         <div class="section-header">
           <span class="section-icon">📋</span>
           <h2>Propuestas por Pilar</h2>
         </div>
-        
+      
         <div class="proposals-list">
-          {score.pillar_scores.map((ps) => {
-            const pillar = pillarIndex[ps.pillar_id];
-            const icon = PILLAR_ICONS[ps.pillar_id as PillarId];
-            const weightPercent = pillar?.weight ? Math.round(pillar.weight * 100) : 0;
-            const pillarProposals = (proposalsByPillar[ps.pillar_id] || [])
-              .sort((a, b) => {
-                const scoreA = a.dimensions.existence + a.dimensions.when + a.dimensions.how + a.dimensions.funding;
-                const scoreB = b.dimensions.existence + b.dimensions.when + b.dimensions.how + b.dimensions.funding;
-                return scoreB - scoreA;
-              })
-              .slice(0, 3);
-            
-            const hasPenalties = ps.penalties && ps.penalties.length > 0;
-            
-            return (
+        {score.pillar_scores.map((ps) => {
+          const pillar = pillarIndex[ps.pillar_id];
+          const icon = PILLAR_ICONS[ps.pillar_id as PillarId];
+          const weightPercent = pillar?.weight ? Math.round(pillar.weight * 100) : 0;
+          const pillarProposals = (proposalsByPillar[ps.pillar_id] || [])
+            .sort((a, b) => {
+              const scoreA = a.dimensions.existence + a.dimensions.when + a.dimensions.how + a.dimensions.funding;
+              const scoreB = b.dimensions.existence + b.dimensions.when + b.dimensions.how + b.dimensions.funding;
+              return scoreB - scoreA;
+            })
+            .slice(0, 3);
+          
+          const hasPenalties = ps.penalties && ps.penalties.length > 0;
+          
+          return (
               <div class="pillar-section">
                 <div class="pillar-header">
                   <span class="pillar-icon">{icon}</span>
@@ -318,43 +318,43 @@ const getRiskTextColor = (level: FiscalRiskLevel) => {
                     <span class="weight-badge">Peso: {weightPercent}%</span>
                     <span class={`score-badge ${hasPenalties ? 'penalized' : ''}`}>
                       {ps.effective_score}/4
-                      {hasPenalties && ps.raw_score !== ps.effective_score && (
+                  {hasPenalties && ps.raw_score !== ps.effective_score && (
                         <span class="raw-score">(bruto: {ps.raw_score})</span>
-                      )}
-                    </span>
-                    {hasPenalties && (
+                  )}
+                </span>
+                {hasPenalties && (
                       <span class="penalty-badge">Penalizado</span>
-                    )}
+                )}
                   </div>
-                </div>
-                
-                {pillarProposals.length > 0 ? (
+              </div>
+              
+              {pillarProposals.length > 0 ? (
                   <div class="proposals-cards">
-                    {pillarProposals.map((proposal) => (
+                  {pillarProposals.map((proposal) => (
                       <div class={`proposal-card ${hasPenalties ? 'penalized' : ''}`}>
                         <h4>{proposal.proposal_title}</h4>
                         <p>{proposal.proposal_text}</p>
                         <div class="proposal-footer">
-                          <DimensionBadges dimensions={proposal.dimensions} compact={true} />
-                          <EvidenceLink 
-                            pdfId={proposal.evidence.pdf_id}
-                            page={proposal.evidence.page}
-                            compact={true}
-                          />
-                        </div>
+                        <DimensionBadges dimensions={proposal.dimensions} compact={true} />
+                        <EvidenceLink 
+                          pdfId={proposal.evidence.pdf_id}
+                          page={proposal.evidence.page}
+                          compact={true}
+                        />
                       </div>
-                    ))}
-                  </div>
-                ) : (
+                    </div>
+                  ))}
+                </div>
+              ) : (
                   <p class="no-proposals">
-                    No se encontraron propuestas concretas para este pilar.
-                  </p>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </section>
+                  No se encontraron propuestas concretas para este pilar.
+                </p>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </section>
     </div>
   </div>
 </BaseLayout>

@@ -105,36 +105,36 @@ function getRiskColor(riskLevel: string): string {
       
       return (
         <article class="reading-candidate-item" data-rank={rank}>
-          <div class="reading-rank">
-            {rank}.
-          </div>
-          <div class="reading-candidate-content">
-            <h2 class="reading-subtitle">
+        <div class="reading-rank">
+          {rank}.
+        </div>
+        <div class="reading-candidate-content">
+          <h2 class="reading-subtitle">
               {candidateName}
             </h2>
             {candidate.candidate_name && candidate.candidate_name !== 'Por determinar' && candidate.candidate_name !== 'no_especificado' && (
               <p class="reading-party-name">
-                {candidate.party_name}
-              </p>
-            )}
+            {candidate.party_name}
+            </p>
+          )}
             
-            <div class="reading-score-box">
+          <div class="reading-score-box">
               <div class="reading-score-header">
-                <div class="reading-score-value">
+            <div class="reading-score-value">
                   <span class="reading-percentage">{percentage}%</span>
                   <span class="reading-score-label">Puntaje General</span>
                 </div>
                 <div class="reading-risk-badge" style={`background-color: ${riskColor}20; color: ${riskColor}; border-color: ${riskColor}`}>
                   Riesgo {riskLevel.toLowerCase()}
                 </div>
-              </div>
-              <div class="reading-score-bar">
-                <div 
-                  class="reading-score-fill" 
-                  style={`width: ${percentage}%; background-color: ${riskColor}`}
-                ></div>
-              </div>
             </div>
+            <div class="reading-score-bar">
+              <div 
+                class="reading-score-fill" 
+                  style={`width: ${percentage}%; background-color: ${riskColor}`}
+              ></div>
+            </div>
+          </div>
             
             <div class="reading-pillars">
               <strong>Puntaje por Pilar:</strong>
@@ -159,16 +159,16 @@ function getRiskColor(riskLevel: string): string {
                   );
                 })}
               </div>
-            </div>
-            
-            <a 
-              href={`/candidatos/${candidate.candidate_id}`}
-              class="reading-link"
-            >
-              Ver propuestas completas →
-            </a>
           </div>
-        </article>
+            
+          <a 
+            href={`/candidatos/${candidate.candidate_id}`}
+            class="reading-link"
+          >
+            Ver propuestas completas →
+          </a>
+        </div>
+      </article>
       );
     })}
   </section>
@@ -178,7 +178,7 @@ function getRiskColor(riskLevel: string): string {
   <!-- Pagination -->
   <nav class="reading-nav" aria-label="Paginación">
     <button id="reading-prev-btn" class="reading-nav-btn" disabled>
-      ← Anterior
+        ← Anterior
     </button>
     
     <span id="reading-page-info" class="text-slate-600">
@@ -186,7 +186,7 @@ function getRiskColor(riskLevel: string): string {
     </span>
     
     <button id="reading-next-btn" class="reading-nav-btn">
-      Siguiente →
+        Siguiente →
     </button>
   </nav>
 

@@ -24,6 +24,7 @@ const proposals = getProposalsByPillar(pillarId as PillarId);
 const icon = PILLAR_ICONS[pillarId as PillarId];
 const isCritical = CRITICAL_PILLARS.includes(pillarId as PillarId);
 const weightPercent = Math.round(pillarData.pillar.weight * 100);
+const avgPercent = Math.round((pillarData.avgScore / 4) * 100);
 
 // Group proposals by candidate for display
 const proposalsByCandidate = proposals.reduce((acc, p) => {
@@ -31,102 +32,363 @@ const proposalsByCandidate = proposals.reduce((acc, p) => {
   acc[p.candidate_id].push(p);
   return acc;
 }, {} as Record<string, typeof proposals>);
+
+// Helper para obtener nombre del candidato
+function getCandidateName(candidate: any): string {
+  const name = candidate?.candidate_name;
+  if (name && name !== 'Por determinar' && name !== 'no_especificado') {
+    return name;
+  }
+  return candidate?.party_name || 'N/A';
+}
+
+// Descripciones detalladas de cada pilar (qué abarca)
+const PILLAR_DESCRIPTIONS: Record<string, string> = {
+  'P1': 'Evalúa las propuestas relacionadas con el manejo responsable de las finanzas del Estado, incluyendo control del gasto público, sostenibilidad de la deuda, eficiencia tributaria y equilibrio fiscal.',
+  'P2': 'Analiza los planes para generar empleo formal, atraer inversión extranjera, apoyar a las PYMES, fomentar el emprendimiento y fortalecer el sector productivo nacional.',
+  'P3': 'Revisa las estrategias para combatir la criminalidad, fortalecer la policía, mejorar el sistema penitenciario, reducir la violencia y proteger la seguridad de las personas.',
+  'P4': 'Examina las propuestas para reformar la CCSS, reducir listas de espera, mejorar la atención médica, garantizar el acceso a medicamentos y fortalecer la salud pública.',
+  'P5': 'Evalúa los planes para mejorar la calidad educativa, formar docentes, actualizar currículos, reducir deserción escolar y fortalecer la educación técnica.',
+  'P6': 'Analiza las iniciativas de protección ambiental, acción climática, conservación de recursos naturales, energías limpias y desarrollo sostenible.',
+  'P7': 'Revisa las propuestas de modernización del Estado, simplificación de trámites, digitalización gubernamental, transparencia y eficiencia institucional.',
+  'P8': 'Examina los programas de reducción de pobreza, protección a grupos vulnerables, ayudas sociales, acceso a vivienda y desarrollo comunitario.',
+  'P9': 'Evalúa las estrategias de relaciones internacionales, comercio exterior, tratados de libre comercio y posicionamiento de Costa Rica en el mundo.',
+  'P10': 'Analiza los planes de desarrollo de carreteras, puentes, transporte público, puertos, aeropuertos e infraestructura nacional.',
+};
+
+// Cómo afecta al ciudadano cada pilar
+const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
+  'P1': '💰 Impacto directo: Si no hay responsabilidad fiscal, aumentan los impuestos, sube el costo de vida y hay menos recursos para servicios públicos como salud y educación.',
+  'P2': '👷 Impacto directo: Más empleos formales significa más oportunidades de trabajo digno con seguro social, mejores salarios y estabilidad económica para las familias.',
+  'P3': '🔒 Impacto directo: Una mejor seguridad permite a las familias salir tranquilas a la calle, que los negocios prosperen y que los barrios sean lugares seguros.',
+  'P4': '🏥 Impacto directo: Menos tiempo en listas de espera, mejor atención médica, acceso a medicamentos cuando los necesita y hospitales funcionando correctamente.',
+  'P5': '📚 Impacto directo: Mejor educación para sus hijos y nietos, más oportunidades de empleo para jóvenes, maestros capacitados y escuelas con buenos recursos.',
+  'P6': '🌿 Impacto directo: Aire y agua más limpios, protección de recursos naturales para futuras generaciones, menos vulnerabilidad ante desastres naturales.',
+  'P7': '📱 Impacto directo: Menos filas y trámites engorrosos, servicios públicos más rápidos y eficientes, gobierno que responde a las necesidades ciudadanas.',
+  'P8': '🏠 Impacto directo: Ayuda para quienes más lo necesitan, programas de vivienda accesible, protección de adultos mayores y personas en condición de pobreza.',
+  'P9': '🌍 Impacto directo: Más oportunidades de exportación para productores nacionales, mejor imagen del país, cooperación internacional para desarrollo.',
+  'P10': '🚗 Impacto directo: Mejores carreteras para viajar seguro, transporte público eficiente, menos tiempo en presas y mejor conectividad entre comunidades.',
+};
 ---
 
 <BaseLayout title={pillarData.pillar.pillar_name}>
+
+  <!-- ============================================
+       DASHBOARD MODE (Default) - Modo Visual Detallado
+       ============================================ -->
+  <div class="mode-dashboard-content">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     
     <!-- Breadcrumb -->
     <nav class="mb-6 text-sm">
-      <a href="/pilares" class="text-civic-600 hover:underline">← Pilares</a>
+        <a href="/pilares" class="text-cyan-600 hover:text-cyan-700 font-medium flex items-center gap-2 w-fit">
+          <span>←</span> Volver a Pilares
+        </a>
     </nav>
 
-    <!-- Header -->
-    <header class={`card p-6 mb-8 border-l-4 pillar-${pillarId}`}>
-      <div class="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <div class="flex items-center gap-3 mb-2">
-            <span class="text-4xl">{icon}</span>
-            <span class="text-sm font-medium text-slate-400 uppercase">{pillarId}</span>
+      <!-- Header Card Mejorado -->
+      <header class={`dashboard-pilar-header ${isCritical ? 'critical' : ''}`}>
+        <div class="dashboard-header-grid">
+          <!-- Left: Icon and Title -->
+          <div class="dashboard-header-left">
+            <div class="dashboard-icon-row">
+              <span class="dashboard-pilar-icon">{icon}</span>
+              <div class="dashboard-badges">
+                <span class="dashboard-badge-id">{pillarId}</span>
             {isCritical && (
-              <span class="text-xs bg-amber-100 text-amber-700 px-2 py-1 rounded-full">
-                Pilar crítico
-              </span>
+                  <span class="dashboard-badge-critical">⭐ Pilar Crítico</span>
             )}
           </div>
-          <h1 class="text-3xl font-bold text-slate-900">{pillarData.pillar.pillar_name}</h1>
         </div>
-        <div class="text-right">
-          <div class="text-3xl font-bold text-civic-600">{weightPercent}%</div>
-          <div class="text-sm text-slate-500">Peso en ranking</div>
+            <h1 class="dashboard-pilar-title">{pillarData.pillar.pillar_name}</h1>
+          </div>
+
+          <!-- Right: Weight and Stats -->
+          <div class="dashboard-header-right">
+            <div class={`dashboard-weight-card ${isCritical ? 'critical' : ''}`}>
+              <div class="dashboard-weight-value">
+                <span class="dashboard-weight-number">{weightPercent}</span>
+                <span class="dashboard-weight-symbol">%</span>
+              </div>
+              <span class="dashboard-weight-label">Peso en evaluación</span>
+            </div>
         </div>
       </div>
       
-      <div class="mt-4 flex items-center gap-4 text-sm text-slate-600">
-        <span>Promedio: <strong>{pillarData.avgScore.toFixed(1)}/4</strong></span>
-        <span>•</span>
-        <span>{pillarData.topCandidates.length} candidatos evaluados</span>
+        <!-- Descripción del Pilar -->
+        <div class="dashboard-pilar-description">
+          <div class="dashboard-desc-icon">📋</div>
+          <div class="dashboard-desc-content">
+            <h2 class="dashboard-desc-title">¿Qué evalúa este pilar?</h2>
+            <p class="dashboard-desc-text">
+              {PILLAR_DESCRIPTIONS[pillarId] || 'Información no disponible.'}
+            </p>
+          </div>
+        </div>
+
+        <!-- Impacto al Ciudadano -->
+        <div class={`dashboard-citizen-impact ${isCritical ? 'critical' : ''}`}>
+          <p class="dashboard-impact-text">
+            {PILLAR_CITIZEN_IMPACT[pillarId] || ''}
+          </p>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="dashboard-stats-row">
+          <div class="dashboard-stat-item">
+            <div class={`dashboard-stat-value ${isCritical ? 'critical' : ''}`}>
+              {avgPercent}%
+            </div>
+            <div class="dashboard-stat-label">Promedio general</div>
+          </div>
+          <div class="dashboard-stat-divider"></div>
+          <div class="dashboard-stat-item">
+            <div class="dashboard-stat-value">{pillarData.topCandidates.length}</div>
+            <div class="dashboard-stat-label">Candidatos evaluados</div>
+          </div>
+          <div class="dashboard-stat-divider"></div>
+          <div class="dashboard-stat-item">
+            <div class="dashboard-stat-value">{proposals.length}</div>
+            <div class="dashboard-stat-label">Propuestas analizadas</div>
+          </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="dashboard-progress-container">
+          <div class="dashboard-progress-labels">
+            <span>0%</span>
+            <span>Promedio: {avgPercent}%</span>
+            <span>100%</span>
+          </div>
+          <div class="dashboard-progress-bar">
+            <div class={`dashboard-progress-fill ${isCritical ? 'critical' : ''}`} style={`width: ${avgPercent}%`}></div>
+          </div>
       </div>
     </header>
 
-    <!-- Ranking in this pillar -->
-    <section class="mb-12">
-      <h2 class="text-2xl font-bold text-slate-900 mb-4">Ranking en este pilar</h2>
-      <div class="card overflow-hidden">
-        <table class="table-ranking">
-          <thead>
-            <tr class="bg-slate-50">
-              <th class="px-4 py-3 w-16">#</th>
-              <th class="px-4 py-3">Partido</th>
-              <th class="px-4 py-3 w-40 hidden sm:table-cell">Puntaje</th>
-              <th class="px-4 py-3 w-20 text-right">Score</th>
-            </tr>
-          </thead>
-          <tbody>
-            {pillarData.topCandidates.map((item, index) => (
-              <tr class="group">
-                <td class="px-4 py-3">
-                  <span class={`
-                    w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm
-                    ${index === 0 ? 'bg-amber-100 text-amber-700' : 
-                      index === 1 ? 'bg-slate-200 text-slate-600' :
-                      index === 2 ? 'bg-orange-100 text-orange-700' :
-                      'bg-slate-100 text-slate-500'}
-                  `}>
-                    {index + 1}
-                  </span>
-                </td>
-                <td class="px-4 py-3">
+      <!-- Leyenda de Interpretación -->
+      <div class="dashboard-legend">
+        <h3 class="dashboard-legend-title">📊 ¿Cómo interpretar el porcentaje de cobertura?</h3>
+        <div class="dashboard-legend-grid">
+          <div class="dashboard-legend-item perfect">
+            <span class="dashboard-legend-dot"></span>
+            <div>
+              <strong>100%</strong>
+              <span>Propuesta completa: existe, con plazo, mecanismo y financiamiento</span>
+            </div>
+          </div>
+          <div class="dashboard-legend-item high">
+            <span class="dashboard-legend-dot"></span>
+            <div>
+              <strong>75-99%</strong>
+              <span>Propuesta bien desarrollada</span>
+            </div>
+          </div>
+          <div class="dashboard-legend-item medium">
+            <span class="dashboard-legend-dot"></span>
+            <div>
+              <strong>50-74%</strong>
+              <span>Propuesta con información parcial</span>
+            </div>
+          </div>
+          <div class="dashboard-legend-item low">
+            <span class="dashboard-legend-dot"></span>
+            <div>
+              <strong>0-49%</strong>
+              <span>Propuesta incompleta o vaga</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Combined Ranking + Proposals Section -->
+      <section class="dashboard-candidates-section">
+        <div class="dashboard-section-header">
+          <div class="dashboard-section-icon">🏆</div>
+          <div>
+            <h2 class="dashboard-section-title">Ranking de Candidatos y Propuestas</h2>
+            <p class="dashboard-section-subtitle">
+              Candidatos ordenados por calidad de propuesta en este pilar
+            </p>
+          </div>
+        </div>
+
+        <div class="dashboard-candidates-grid">
+          {pillarData.topCandidates.map((item, index) => {
+            const candidateProposals = proposalsByCandidate[item.candidate.candidate_id] || [];
+            const bestProposal = candidateProposals
+              .sort((a, b) => {
+                const scoreA = a.dimensions.existence + a.dimensions.when + a.dimensions.how + a.dimensions.funding;
+                const scoreB = b.dimensions.existence + b.dimensions.when + b.dimensions.how + b.dimensions.funding;
+                return scoreB - scoreA;
+              })[0];
+            
+            const scorePercent = Math.round((item.score.effective_score / 4) * 100);
+            const candidateName = getCandidateName(item.candidate);
+            const medals = ['🥇', '🥈', '🥉'];
+            const hasMedal = index < 3;
+            
+            return (
                   <a
                     href={`/candidatos/${item.candidate.candidate_id}`}
-                    class="group-hover:text-civic-600 transition-colors"
-                  >
-                    <div class="font-medium text-slate-900">{item.candidate.party_name}</div>
-                    <div class="text-sm text-slate-500">{item.candidate.pdf_id}</div>
-                  </a>
-                </td>
-                <td class="px-4 py-3 hidden sm:table-cell">
-                  <ScoreBar score={item.score.effective_score} max={4} showLabel={false} size="sm" />
-                </td>
-                <td class="px-4 py-3 text-right">
-                  <span class="font-bold text-civic-600">{item.score.effective_score}/4</span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                class={`dashboard-candidate-card ${hasMedal ? 'top-three' : ''} ${isCritical ? 'pillar-critical' : ''}`}
+              >
+                <!-- Header -->
+                <div class="dashboard-card-header">
+                  <div class="dashboard-rank-container">
+                    {hasMedal ? (
+                      <span class="dashboard-medal">{medals[index]}</span>
+                    ) : (
+                      <span class={`dashboard-rank-badge ${index < 5 ? 'top-five' : ''}`}>
+                        {index + 1}
+                      </span>
+                    )}
+                  </div>
+                  
+                  <div class="dashboard-candidate-info">
+                    <h3 class="dashboard-candidate-name">{candidateName}</h3>
+                    <p class="dashboard-candidate-party">{item.candidate.party_name}</p>
+                  </div>
+                  
+                  <div class={`dashboard-score-badge ${
+                    scorePercent === 100 ? 'perfect' : 
+                    scorePercent >= 75 ? 'high' : 
+                    scorePercent >= 50 ? 'medium' : 'low'
+                  }`}>
+                    <span class="dashboard-score-number">{scorePercent}</span>
+                    <span class="dashboard-score-symbol">%</span>
+                  </div>
+                </div>
+                
+                <!-- Proposal Preview -->
+                {bestProposal && (
+                  <div class="dashboard-proposal-section">
+                    <h4 class="dashboard-proposal-title">{bestProposal.proposal_title}</h4>
+                    <p class="dashboard-proposal-text">{bestProposal.proposal_text}</p>
+                    
+                    <!-- Dimensions -->
+                    <div class="dashboard-dimensions">
+                      <span class={`dashboard-dim ${bestProposal.dimensions.existence ? 'active' : ''}`}>
+                        <span class="dashboard-dim-icon">📋</span>
+                        <span class="dashboard-dim-label">Existe</span>
+                      </span>
+                      <span class={`dashboard-dim ${bestProposal.dimensions.when ? 'active' : ''}`}>
+                        <span class="dashboard-dim-icon">📅</span>
+                        <span class="dashboard-dim-label">Cuándo</span>
+                      </span>
+                      <span class={`dashboard-dim ${bestProposal.dimensions.how ? 'active' : ''}`}>
+                        <span class="dashboard-dim-icon">⚙️</span>
+                        <span class="dashboard-dim-label">Cómo</span>
+                      </span>
+                      <span class={`dashboard-dim ${bestProposal.dimensions.funding ? 'active' : ''}`}>
+                        <span class="dashboard-dim-icon">💰</span>
+                        <span class="dashboard-dim-label">Fondos</span>
+                      </span>
+                    </div>
+
+                    <!-- Evidence -->
+                    <div class="dashboard-evidence">
+                      <span class="dashboard-evidence-icon">📄</span>
+                      <span class="dashboard-evidence-text">
+                        Fuente: {bestProposal.evidence.pdf_id} - Pág. {bestProposal.evidence.page}
+                      </span>
+                    </div>
+                  </div>
+                )}
+                
+                <!-- Footer -->
+                <div class="dashboard-card-footer">
+                  <span class="dashboard-view-profile">Ver perfil completo →</span>
+                </div>
+              </a>
+            );
+          })}
       </div>
     </section>
 
-    <!-- Top proposals -->
-    <section>
-      <h2 class="text-2xl font-bold text-slate-900 mb-4">Propuestas destacadas</h2>
-      <p class="text-slate-600 mb-6">
-        Mostrando las mejores propuestas por candidato en este pilar.
-      </p>
+    </div>
+  </div>
+
+  <!-- ============================================
+       EXPRESS MODE 🚀 - Modo Visual Rápido
+       ============================================ -->
+  <div class="mode-express-content">
+    <div class="express-detail-container">
       
-      <div class="space-y-4">
-        {pillarData.topCandidates.slice(0, 10).map((item) => {
+      <!-- Navigation -->
+      <nav class="express-breadcrumb">
+        <a href="/pilares" class="express-back-link">
+          ← Volver a Pilares
+        </a>
+      </nav>
+
+      <!-- Header Card - Información del Pilar -->
+      <header class={`express-pilar-header ${isCritical ? 'critical' : ''}`}>
+        <div class="express-header-top">
+          <div class="express-icon-container">
+            <span class="express-pilar-icon">{icon}</span>
+            <div class="express-badges">
+              <span class="express-badge-id">{pillarId}</span>
+              {isCritical && <span class="express-badge-critical">⭐ Crítico</span>}
+            </div>
+          </div>
+          <div class="express-weight-display">
+            <span class="express-weight-number">{weightPercent}</span>
+            <span class="express-weight-symbol">%</span>
+            <span class="express-weight-label">Peso</span>
+          </div>
+        </div>
+
+        <h1 class="express-pilar-title">{pillarData.pillar.pillar_name}</h1>
+        
+        <!-- Descripción del pilar -->
+        <div class="express-pilar-description">
+          <h2 class="express-section-subtitle">📋 ¿Qué evalúa este pilar?</h2>
+          <p class="express-description-text">
+            {PILLAR_DESCRIPTIONS[pillarId] || 'Información no disponible.'}
+          </p>
+        </div>
+
+        <!-- Impacto al ciudadano -->
+        <div class="express-citizen-impact">
+          <p class="express-impact-text">
+            {PILLAR_CITIZEN_IMPACT[pillarId] || ''}
+          </p>
+        </div>
+
+        <!-- Promedio General -->
+        <div class="express-avg-score">
+          <div class="express-avg-visual">
+            <div class="express-avg-number">{avgPercent}</div>
+            <div class="express-avg-percent">%</div>
+          </div>
+          <div class="express-avg-info">
+            <span class="express-avg-label">Promedio de todos los candidatos</span>
+            <span class="express-avg-hint">
+              {avgPercent >= 75 ? '✅ Buen desempeño general' : 
+               avgPercent >= 50 ? '🟡 Desempeño moderado' : 
+               '🔴 Área con poca atención'}
+            </span>
+          </div>
+        </div>
+
+        <!-- Barra de progreso -->
+        <div class="express-progress-bar">
+          <div class="express-progress-fill" style={`width: ${avgPercent}%`}></div>
+        </div>
+      </header>
+
+      <!-- Lista Combinada: Ranking + Propuestas -->
+      <section class="express-candidates-section">
+        <div class="express-section-header">
+          <h2 class="express-section-title">🏆 Candidatos y sus Propuestas</h2>
+          <p class="express-section-description">
+            Ordenados por calidad de propuesta en este pilar. El porcentaje indica qué tan completa es la propuesta.
+          </p>
+        </div>
+
+        <div class="express-candidates-list">
+          {pillarData.topCandidates.map((item, index) => {
           const candidateProposals = proposalsByCandidate[item.candidate.candidate_id] || [];
           const bestProposal = candidateProposals
             .sort((a, b) => {
@@ -135,44 +397,1217 @@ const proposalsByCandidate = proposals.reduce((acc, p) => {
               return scoreB - scoreA;
             })[0];
           
-          if (!bestProposal) return null;
+            const scorePercent = Math.round((item.score.effective_score / 4) * 100);
+            const candidateName = getCandidateName(item.candidate);
+            const medals = ['🥇', '🥈', '🥉'];
+            const hasMedal = index < 3;
           
           return (
-            <div class={`card p-5 border-l-4 pillar-${pillarId}`}>
-              <div class="flex flex-wrap items-start justify-between gap-4 mb-3">
-                <div>
                   <a 
                     href={`/candidatos/${item.candidate.candidate_id}`}
-                    class="text-sm text-civic-600 hover:underline"
+                class={`express-candidate-card ${hasMedal ? 'top-three' : ''}`}
                   >
-                    {item.candidate.party_name}
-                  </a>
-                  <h3 class="font-semibold text-slate-900 mt-1">
-                    {bestProposal.proposal_title}
-                  </h3>
+                <div class="express-candidate-header">
+                  <div class="express-rank-badge">
+                    {hasMedal ? (
+                      <span class="express-medal">{medals[index]}</span>
+                    ) : (
+                      <span class="express-rank-number">{index + 1}</span>
+                    )}
                 </div>
-                <span class="font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded">
-                  {item.score.effective_score}/4
-                </span>
+                  
+                  <div class="express-candidate-info">
+                    <h3 class="express-candidate-name">{candidateName}</h3>
+                    <p class="express-candidate-party">{item.candidate.party_name}</p>
               </div>
               
-              <p class="text-slate-600 text-sm mb-3 line-clamp-2">
-                {bestProposal.proposal_text}
-              </p>
-              
-              <div class="flex flex-wrap items-center justify-between gap-4">
-                <DimensionBadges dimensions={bestProposal.dimensions} compact={true} />
-                <EvidenceLink 
-                  pdfId={bestProposal.evidence.pdf_id}
-                  page={bestProposal.evidence.page}
-                  compact={true}
-                />
+                  <div class={`express-score-badge ${scorePercent === 100 ? 'perfect' : scorePercent >= 75 ? 'high' : scorePercent >= 50 ? 'medium' : 'low'}`}>
+                    <span class="express-score-number">{scorePercent}</span>
+                    <span class="express-score-symbol">%</span>
+                  </div>
+                </div>
+                
+                {bestProposal && (
+                  <div class="express-proposal-preview">
+                    <h4 class="express-proposal-title">{bestProposal.proposal_title}</h4>
+                    <p class="express-proposal-text">{bestProposal.proposal_text}</p>
+                    
+                    <div class="express-dimensions">
+                      <span class={`express-dim ${bestProposal.dimensions.existence ? 'active' : ''}`}>
+                        📋 Existe
+                      </span>
+                      <span class={`express-dim ${bestProposal.dimensions.when ? 'active' : ''}`}>
+                        📅 Cuándo
+                      </span>
+                      <span class={`express-dim ${bestProposal.dimensions.how ? 'active' : ''}`}>
+                        ⚙️ Cómo
+                      </span>
+                      <span class={`express-dim ${bestProposal.dimensions.funding ? 'active' : ''}`}>
+                        💰 Fondos
+                      </span>
               </div>
             </div>
+                )}
+                
+                <div class="express-view-more">
+                  Ver perfil completo →
+                </div>
+              </a>
           );
         })}
       </div>
     </section>
 
+      <!-- Leyenda -->
+      <div class="express-legend">
+        <h3 class="express-legend-title">📊 ¿Cómo interpretar el porcentaje?</h3>
+        <div class="express-legend-items">
+          <div class="express-legend-item">
+            <span class="express-legend-dot perfect"></span>
+            <span><strong>100%</strong> = Propuesta completa (existe, con plazo, mecanismo y financiamiento)</span>
   </div>
+          <div class="express-legend-item">
+            <span class="express-legend-dot high"></span>
+            <span><strong>75-99%</strong> = Propuesta bien desarrollada</span>
+          </div>
+          <div class="express-legend-item">
+            <span class="express-legend-dot medium"></span>
+            <span><strong>50-74%</strong> = Propuesta con información parcial</span>
+          </div>
+          <div class="express-legend-item">
+            <span class="express-legend-dot low"></span>
+            <span><strong>0-49%</strong> = Propuesta incompleta o vaga</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
 </BaseLayout>
+
+<style>
+  /* Mode visibility */
+  .mode-express-content {
+    display: none;
+  }
+  
+  .mode-dashboard-content {
+    display: block;
+  }
+  
+  html[data-mode="express"] .mode-express-content {
+    display: block;
+  }
+  
+  html[data-mode="express"] .mode-dashboard-content {
+    display: none;
+  }
+
+  /* ===========================================
+     EXPRESS MODE STYLES
+     =========================================== */
+  
+  .express-detail-container {
+    max-width: 50rem;
+    margin: 0 auto;
+    padding: 1.5rem;
+  }
+  
+  .express-breadcrumb {
+    margin-bottom: 1.5rem;
+  }
+  
+  .express-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #0891b2;
+    padding: 0.75rem 1rem;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.75rem;
+    transition: all 0.2s;
+  }
+  
+  .express-back-link:hover {
+    background: #f0fdfa;
+    border-color: #0891b2;
+  }
+  
+  /* Header Card */
+  .express-pilar-header {
+    background: white;
+    border-radius: 1.5rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 3px solid #e2e8f0;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  }
+  
+  .express-pilar-header.critical {
+    border-color: #fcd34d;
+    background: linear-gradient(135deg, #fffbeb 0%, white 50%);
+  }
+  
+  .express-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+  }
+  
+  .express-icon-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .express-pilar-icon {
+    font-size: 3.5rem;
+    line-height: 1;
+  }
+  
+  .express-badges {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  
+  .express-badge-id {
+    font-size: 0.875rem;
+    font-weight: 700;
+    padding: 0.25rem 0.75rem;
+    background: #f1f5f9;
+    color: #475569;
+    border-radius: 9999px;
+  }
+  
+  .express-badge-critical {
+    font-size: 0.875rem;
+    font-weight: 700;
+    padding: 0.25rem 0.75rem;
+    background: #fef3c7;
+    color: #92400e;
+    border-radius: 9999px;
+  }
+  
+  .express-weight-display {
+    text-align: center;
+    background: linear-gradient(135deg, #06b6d4, #0891b2);
+    color: white;
+    padding: 1rem;
+    border-radius: 1rem;
+    min-width: 5rem;
+  }
+  
+  .express-pilar-header.critical .express-weight-display {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+  }
+  
+  .express-weight-number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1;
+    display: block;
+  }
+  
+  .express-weight-symbol {
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+  
+  .express-weight-label {
+    font-size: 0.75rem;
+    opacity: 0.9;
+    display: block;
+    margin-top: 0.25rem;
+  }
+  
+  .express-pilar-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+  }
+  
+  .express-section-subtitle {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #475569;
+    margin-bottom: 0.5rem;
+  }
+  
+  .express-pilar-description {
+    margin-bottom: 1rem;
+  }
+  
+  .express-description-text {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #475569;
+  }
+  
+  .express-citizen-impact {
+    background: linear-gradient(135deg, #ecfeff, #f0fdf4);
+    border: 2px solid #a7f3d0;
+    border-radius: 1rem;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .express-pilar-header.critical .express-citizen-impact {
+    background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    border-color: #fcd34d;
+  }
+  
+  .express-impact-text {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #1e293b;
+    font-weight: 500;
+  }
+  
+  .express-avg-score {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .express-avg-visual {
+    display: flex;
+    align-items: baseline;
+  }
+  
+  .express-avg-number {
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1;
+    background: linear-gradient(135deg, #06b6d4, #0891b2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .express-pilar-header.critical .express-avg-number {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .express-avg-percent {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0891b2;
+  }
+  
+  .express-pilar-header.critical .express-avg-percent {
+    color: #d97706;
+  }
+  
+  .express-avg-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .express-avg-label {
+    font-size: 0.875rem;
+    color: #64748b;
+  }
+  
+  .express-avg-hint {
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+  
+  .express-progress-bar {
+    height: 0.75rem;
+    background: #e2e8f0;
+    border-radius: 9999px;
+    overflow: hidden;
+  }
+  
+  .express-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #06b6d4, #0891b2);
+    border-radius: 9999px;
+    transition: width 0.5s ease;
+  }
+  
+  .express-pilar-header.critical .express-progress-fill {
+    background: linear-gradient(90deg, #f59e0b, #d97706);
+  }
+  
+  /* Candidates Section */
+  .express-candidates-section {
+    margin-bottom: 1.5rem;
+  }
+  
+  .express-section-header {
+    margin-bottom: 1rem;
+  }
+  
+  .express-section-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+  }
+  
+  .express-section-description {
+    font-size: 0.95rem;
+    color: #64748b;
+  }
+  
+  .express-candidates-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .express-candidate-card {
+    display: block;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 1.25rem;
+    padding: 1.25rem;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  
+  .express-candidate-card:hover {
+    border-color: #0891b2;
+    box-shadow: 0 4px 20px rgba(8, 145, 178, 0.15);
+    transform: translateY(-2px);
+  }
+  
+  .express-candidate-card.top-three {
+    background: linear-gradient(135deg, #fffbeb 0%, white 50%);
+    border-color: #fcd34d;
+  }
+  
+  .express-candidate-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .express-rank-badge {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  
+  .express-medal {
+    font-size: 1.75rem;
+    line-height: 1;
+  }
+  
+  .express-rank-number {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #64748b;
+  }
+  
+  .express-candidate-info {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .express-candidate-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.125rem;
+    line-height: 1.3;
+  }
+  
+  .express-candidate-party {
+    font-size: 0.95rem;
+    color: #64748b;
+  }
+  
+  .express-score-badge {
+    display: flex;
+    align-items: baseline;
+    gap: 0.125rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.75rem;
+    flex-shrink: 0;
+  }
+  
+  .express-score-badge.perfect {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+  }
+  
+  .express-score-badge.high {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+  }
+  
+  .express-score-badge.medium {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+  }
+  
+  .express-score-badge.low {
+    background: #f1f5f9;
+    color: #64748b;
+  }
+  
+  .express-score-number {
+    font-size: 1.5rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+  
+  .express-score-symbol {
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+  
+  .express-proposal-preview {
+    background: #f8fafc;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .express-proposal-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+  }
+  
+  .express-proposal-text {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #475569;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+  }
+  
+  .express-dimensions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .express-dim {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.5rem;
+    background: #f1f5f9;
+    color: #94a3b8;
+  }
+  
+  .express-dim.active {
+    background: #d1fae5;
+    color: #059669;
+  }
+  
+  .express-view-more {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #0891b2;
+    text-align: right;
+  }
+  
+  /* Legend */
+  .express-legend {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 1.25rem;
+  }
+  
+  .express-legend-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.75rem;
+  }
+  
+  .express-legend-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .express-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+    color: #475569;
+  }
+  
+  .express-legend-dot {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 0.25rem;
+    flex-shrink: 0;
+  }
+  
+  .express-legend-dot.perfect {
+    background: linear-gradient(135deg, #10b981, #059669);
+  }
+  
+  .express-legend-dot.high {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+  }
+  
+  .express-legend-dot.medium {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+  }
+  
+  .express-legend-dot.low {
+    background: #e2e8f0;
+  }
+  
+  /* Responsive */
+  @media (max-width: 640px) {
+    .express-detail-container {
+      padding: 1rem;
+    }
+    
+    .express-pilar-title {
+      font-size: 1.5rem;
+    }
+    
+    .express-header-top {
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .express-weight-display {
+      align-self: flex-start;
+    }
+    
+    .express-candidate-header {
+      flex-wrap: wrap;
+    }
+    
+    .express-score-badge {
+      margin-left: auto;
+    }
+    
+    .express-avg-score {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  /* ===========================================
+     DASHBOARD MODE STYLES - Modo Visual Detallado
+     =========================================== */
+  
+  /* Header Card */
+  .dashboard-pilar-header {
+    background: white;
+    border-radius: 1.5rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 2px solid #e2e8f0;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  }
+  
+  .dashboard-pilar-header.critical {
+    border-color: #fcd34d;
+    background: linear-gradient(135deg, #fffbeb 0%, white 30%);
+  }
+  
+  .dashboard-header-grid {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  .dashboard-header-left {
+    flex: 1;
+  }
+  
+  .dashboard-icon-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .dashboard-pilar-icon {
+    font-size: 4rem;
+    line-height: 1;
+  }
+  
+  .dashboard-badges {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  
+  .dashboard-badge-id {
+    font-size: 0.875rem;
+    font-weight: 700;
+    padding: 0.375rem 0.875rem;
+    background: #f1f5f9;
+    color: #475569;
+    border-radius: 9999px;
+  }
+  
+  .dashboard-badge-critical {
+    font-size: 0.875rem;
+    font-weight: 700;
+    padding: 0.375rem 0.875rem;
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    color: #92400e;
+    border-radius: 9999px;
+  }
+  
+  .dashboard-pilar-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #1e293b;
+    line-height: 1.2;
+  }
+  
+  .dashboard-header-right {
+    flex-shrink: 0;
+  }
+  
+  .dashboard-weight-card {
+    background: linear-gradient(135deg, #06b6d4, #0891b2);
+    color: white;
+    padding: 1.5rem 2rem;
+    border-radius: 1.25rem;
+    text-align: center;
+    box-shadow: 0 8px 24px rgba(6, 182, 212, 0.3);
+  }
+  
+  .dashboard-weight-card.critical {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    box-shadow: 0 8px 24px rgba(245, 158, 11, 0.3);
+  }
+  
+  .dashboard-weight-value {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.125rem;
+  }
+  
+  .dashboard-weight-number {
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+  
+  .dashboard-weight-symbol {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+  
+  .dashboard-weight-label {
+    font-size: 0.875rem;
+    opacity: 0.9;
+    margin-top: 0.5rem;
+    display: block;
+  }
+  
+  /* Description Section */
+  .dashboard-pilar-description {
+    display: flex;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: #f8fafc;
+    border-radius: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .dashboard-desc-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+  }
+  
+  .dashboard-desc-content {
+    flex: 1;
+  }
+  
+  .dashboard-desc-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+  }
+  
+  .dashboard-desc-text {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #475569;
+  }
+  
+  /* Citizen Impact */
+  .dashboard-citizen-impact {
+    background: linear-gradient(135deg, #ecfeff, #f0fdf4);
+    border: 2px solid #a7f3d0;
+    border-radius: 1rem;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .dashboard-citizen-impact.critical {
+    background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    border-color: #fcd34d;
+  }
+  
+  .dashboard-impact-text {
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: #1e293b;
+    font-weight: 500;
+  }
+  
+  /* Stats Row */
+  .dashboard-stats-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    padding: 1.5rem;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .dashboard-stat-item {
+    text-align: center;
+  }
+  
+  .dashboard-stat-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #0891b2;
+    line-height: 1;
+  }
+  
+  .dashboard-stat-value.critical {
+    color: #d97706;
+  }
+  
+  .dashboard-stat-label {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin-top: 0.375rem;
+  }
+  
+  .dashboard-stat-divider {
+    width: 2px;
+    height: 3rem;
+    background: #e2e8f0;
+  }
+  
+  /* Progress Bar */
+  .dashboard-progress-container {
+    margin-bottom: 0;
+  }
+  
+  .dashboard-progress-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-bottom: 0.5rem;
+  }
+  
+  .dashboard-progress-bar {
+    height: 1rem;
+    background: #e2e8f0;
+    border-radius: 9999px;
+    overflow: hidden;
+  }
+  
+  .dashboard-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #06b6d4, #0891b2);
+    border-radius: 9999px;
+    transition: width 0.5s ease;
+  }
+  
+  .dashboard-progress-fill.critical {
+    background: linear-gradient(90deg, #f59e0b, #d97706);
+  }
+  
+  /* Legend */
+  .dashboard-legend {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .dashboard-legend-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 1rem;
+  }
+  
+  .dashboard-legend-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+  }
+  
+  .dashboard-legend-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+    color: #475569;
+  }
+  
+  .dashboard-legend-item .dashboard-legend-dot {
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 0.375rem;
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+  }
+  
+  .dashboard-legend-item.perfect .dashboard-legend-dot {
+    background: linear-gradient(135deg, #10b981, #059669);
+  }
+  
+  .dashboard-legend-item.high .dashboard-legend-dot {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+  }
+  
+  .dashboard-legend-item.medium .dashboard-legend-dot {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+  }
+  
+  .dashboard-legend-item.low .dashboard-legend-dot {
+    background: #e2e8f0;
+  }
+  
+  .dashboard-legend-item div {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .dashboard-legend-item strong {
+    color: #1e293b;
+    margin-bottom: 0.125rem;
+  }
+  
+  .dashboard-legend-item span {
+    font-size: 0.8rem;
+  }
+  
+  /* Candidates Section */
+  .dashboard-candidates-section {
+    margin-bottom: 2rem;
+  }
+  
+  .dashboard-section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .dashboard-section-icon {
+    font-size: 2.5rem;
+    line-height: 1;
+  }
+  
+  .dashboard-section-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 0.25rem;
+  }
+  
+  .dashboard-section-subtitle {
+    font-size: 1rem;
+    color: #64748b;
+  }
+  
+  .dashboard-candidates-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  /* Candidate Card */
+  .dashboard-candidate-card {
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 1.25rem;
+    padding: 1.5rem;
+    transition: all 0.25s ease;
+    text-decoration: none;
+  }
+  
+  .dashboard-candidate-card:hover {
+    border-color: #0891b2;
+    box-shadow: 0 8px 32px rgba(8, 145, 178, 0.15);
+    transform: translateY(-4px);
+  }
+  
+  .dashboard-candidate-card.top-three {
+    background: linear-gradient(135deg, #fffbeb 0%, white 50%);
+    border-color: #fcd34d;
+  }
+  
+  .dashboard-candidate-card.top-three:hover {
+    border-color: #f59e0b;
+    box-shadow: 0 8px 32px rgba(245, 158, 11, 0.2);
+  }
+  
+  .dashboard-card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  
+  .dashboard-rank-container {
+    flex-shrink: 0;
+  }
+  
+  .dashboard-medal {
+    font-size: 2.5rem;
+    line-height: 1;
+  }
+  
+  .dashboard-rank-badge {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #64748b;
+  }
+  
+  .dashboard-rank-badge.top-five {
+    background: linear-gradient(135deg, #e0f2fe, #cffafe);
+    color: #0891b2;
+  }
+  
+  .dashboard-candidate-info {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .dashboard-candidate-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.125rem;
+    line-height: 1.3;
+  }
+  
+  .dashboard-candidate-party {
+    font-size: 0.95rem;
+    color: #64748b;
+  }
+  
+  .dashboard-score-badge {
+    display: flex;
+    align-items: baseline;
+    gap: 0.125rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 1rem;
+    flex-shrink: 0;
+  }
+  
+  .dashboard-score-badge.perfect {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+  }
+  
+  .dashboard-score-badge.high {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+  }
+  
+  .dashboard-score-badge.medium {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+  }
+  
+  .dashboard-score-badge.low {
+    background: #f1f5f9;
+    color: #64748b;
+  }
+  
+  .dashboard-score-number {
+    font-size: 1.75rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+  
+  .dashboard-score-symbol {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  
+  /* Proposal Section */
+  .dashboard-proposal-section {
+    flex: 1;
+    margin-bottom: 1rem;
+  }
+  
+  .dashboard-proposal-title {
+    font-size: 1.0625rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+  }
+  
+  .dashboard-proposal-text {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: #475569;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+  
+  /* Dimensions */
+  .dashboard-dimensions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .dashboard-dim {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.8rem;
+    padding: 0.375rem 0.625rem;
+    border-radius: 0.5rem;
+    background: #f1f5f9;
+    color: #94a3b8;
+  }
+  
+  .dashboard-dim.active {
+    background: #d1fae5;
+    color: #059669;
+  }
+  
+  .dashboard-dim-icon {
+    font-size: 0.875rem;
+  }
+  
+  .dashboard-dim-label {
+    font-weight: 500;
+  }
+  
+  /* Evidence */
+  .dashboard-evidence {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: #64748b;
+    padding: 0.5rem;
+    background: #f8fafc;
+    border-radius: 0.5rem;
+  }
+  
+  .dashboard-evidence-icon {
+    font-size: 1rem;
+  }
+  
+  /* Card Footer */
+  .dashboard-card-footer {
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid #f1f5f9;
+  }
+  
+  .dashboard-view-profile {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #0891b2;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .dashboard-candidate-card:hover .dashboard-view-profile {
+    color: #0e7490;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .dashboard-pilar-header {
+      padding: 1.5rem;
+    }
+    
+    .dashboard-header-grid {
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    
+    .dashboard-pilar-title {
+      font-size: 1.75rem;
+    }
+    
+    .dashboard-weight-card {
+      align-self: flex-start;
+    }
+    
+    .dashboard-stats-row {
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .dashboard-stat-divider {
+      width: 80%;
+      height: 2px;
+    }
+    
+    .dashboard-candidates-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .dashboard-legend-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

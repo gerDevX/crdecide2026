@@ -583,9 +583,9 @@ html[data-mode="reading"] {
     
     h2, .reading-subtitle {
       font-size: 1.5rem;
-    }
-    
-    .reading-nav {
+  }
+  
+  .reading-nav {
       flex-direction: column;
       gap: 1rem;
     }

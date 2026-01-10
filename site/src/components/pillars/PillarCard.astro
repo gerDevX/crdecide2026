@@ -45,21 +45,21 @@ const top5 = topCandidates.slice(0, 5);
           <span class="pillar-icon">{icon}</span>
           <div class="pillar-meta">
             <span class="pillar-id">{pillar?.pillar_id}</span>
-            {rank && rank <= 4 && (
+        {rank && rank <= 4 && (
               <span class="rank-badge">#{rank}</span>
-            )}
-          </div>
+        )}
+      </div>
         </div>
         <span class={`weight-badge ${isPriority ? 'priority' : ''}`}>
           Peso: {weightPercent}%
-        </span>
-      </div>
-      
+      </span>
+    </div>
+    
       <!-- Title -->
       <h3 class="pillar-title">
-        {pillar?.pillar_name}
-      </h3>
-      
+      {pillar?.pillar_name}
+    </h3>
+    
       <!-- Score Display -->
       <div class="score-display">
         <div class="score-main">
@@ -72,8 +72,8 @@ const top5 = topCandidates.slice(0, 5);
       <!-- Score Bar -->
       <div class="score-bar-container">
         <div class="score-bar-fill" style={`width: ${avgPercent}%`}></div>
-      </div>
-      
+    </div>
+    
       <!-- Top 5 Candidates -->
       {top5.length > 0 && (
         <div class="top-candidates">
@@ -98,7 +98,7 @@ const top5 = topCandidates.slice(0, 5);
           </div>
         </div>
       )}
-    </div>
+      </div>
   </div>
 </a>
 
