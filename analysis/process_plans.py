@@ -875,12 +875,6 @@ def process_all_pdfs():
             json.dump(data, f, ensure_ascii=False, indent=2)
         print(f"   ✅ {filepath}")
     
-    # Guardar archivo combinado
-    combined_path = os.path.join(DATA_DIR, "all_data.json")
-    with open(combined_path, 'w', encoding='utf-8') as f:
-        json.dump(output, f, ensure_ascii=False, indent=2)
-    print(f"   ✅ {combined_path}")
-    
     return output
 
 
