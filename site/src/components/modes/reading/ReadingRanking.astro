@@ -10,12 +10,22 @@ interface Props {
   }>;
   currentPage?: number;
   itemsPerPage?: number;
+  fiscalStats?: {
+    lowRisk: number;
+    mediumRisk: number;
+    highRisk: number;
+    attackFiscalRule: number;
+    proposeDebt: number;
+    ignoreSecurity: number;
+    ignoreCCSS: number;
+  };
 }
 
 const { 
   candidates, 
   currentPage = 1, 
-  itemsPerPage = 5 
+  itemsPerPage = 5,
+  fiscalStats
 } = Astro.props;
 
 const totalPages = Math.ceil(candidates.length / itemsPerPage);
@@ -62,6 +72,92 @@ function getRiskColor(riskLevel: string): string {
       según su puntaje ponderado, basado en el análisis de sus planes de gobierno.
     </p>
   </header>
+
+  <!-- Fiscal Risk Section (before filters) -->
+  {fiscalStats && (
+    <div class="reading-fiscal-section">
+      <h2 class="reading-fiscal-title">⚠️ Riesgo Fiscal y Responsabilidad de los Planes</h2>
+      
+      <div class="reading-fiscal-intro">
+        <p class="reading-fiscal-text">
+          Evaluamos si los planes de gobierno <strong>comprometen la estabilidad financiera</strong> del país 
+          o <strong>omiten urgencias nacionales</strong> que deben abordarse. Esta información le ayuda a entender 
+          qué tan completas y responsables son las propuestas.
+        </p>
+      </div>
+      
+      <div class="reading-fiscal-types">
+        <div class="reading-fiscal-type-box reading-type-fiscal">
+          <h3 class="reading-type-title">🔴 Penalizaciones Fiscales</h3>
+          <p class="reading-type-desc">Atacan la regla fiscal o proponen más deuda sin plan de sostenibilidad.</p>
+          <div class="reading-type-stats">
+            <div class="reading-type-stat">
+              <span class="reading-stat-icon">⚠️</span>
+              <span class="reading-stat-text"><strong>{fiscalStats.attackFiscalRule}</strong> atacan la regla fiscal</span>
+            </div>
+            <div class="reading-type-stat">
+              <span class="reading-stat-icon">💰</span>
+              <span class="reading-stat-text"><strong>{fiscalStats.proposeDebt}</strong> proponen más deuda</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="reading-fiscal-type-box reading-type-omissions">
+          <h3 class="reading-type-title">🟠 Omisiones de Urgencias</h3>
+          <p class="reading-type-desc">Ignoran temas críticos como seguridad operativa o crisis de la CCSS.</p>
+          <div class="reading-type-stats">
+            <div class="reading-type-stat">
+              <span class="reading-stat-icon">🚨</span>
+              <span class="reading-stat-text"><strong>{fiscalStats.ignoreSecurity}</strong> ignoran seguridad operativa</span>
+            </div>
+            <div class="reading-type-stat">
+              <span class="reading-stat-icon">🏥</span>
+              <span class="reading-stat-text"><strong>{fiscalStats.ignoreCCSS}</strong> ignoran crisis CCSS</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="reading-fiscal-levels">
+        <h2 class="reading-levels-title">Niveles de Riesgo</h2>
+        <div class="reading-levels-grid">
+          <div class="reading-level-card reading-level-low">
+            <div class="reading-level-header">
+              <span class="reading-level-emoji">🟢</span>
+              <strong class="reading-level-name">Riesgo BAJO</strong>
+              <span class="reading-level-count">{fiscalStats.lowRisk} candidatos</span>
+            </div>
+            <p class="reading-level-desc">El plan no compromete las finanzas públicas y aborda las urgencias nacionales.</p>
+          </div>
+          <div class="reading-level-card reading-level-medium">
+            <div class="reading-level-header">
+              <span class="reading-level-emoji">🟠</span>
+              <strong class="reading-level-name">Riesgo MEDIO</strong>
+              <span class="reading-level-count">{fiscalStats.mediumRisk} candidatos</span>
+            </div>
+            <p class="reading-level-desc">El plan tiene 1-2 banderas rojas fiscales u omite algunas urgencias.</p>
+          </div>
+          <div class="reading-level-card reading-level-high">
+            <div class="reading-level-header">
+              <span class="reading-level-emoji">🔴</span>
+              <strong class="reading-level-name">Riesgo ALTO</strong>
+              <span class="reading-level-count">{fiscalStats.highRisk} candidatos</span>
+            </div>
+            <p class="reading-level-desc">El plan tiene múltiples banderas rojas que comprometen la estabilidad fiscal.</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="reading-fiscal-note">
+        <p>
+          Esta evaluación se basa en el <strong>texto literal</strong> de los planes de gobierno. 
+          No juzga ideologías ni predice resultados. Es una herramienta para que usted, como ciudadano, 
+          pueda tomar decisiones más informadas.
+        </p>
+        <a href="/metodologia#penalizaciones" class="reading-fiscal-link">Ver metodología completa →</a>
+      </div>
+    </div>
+  )}
 
   <!-- Buscador de candidatos -->
   <div class="reading-search-container">
@@ -853,6 +949,226 @@ function getRiskColor(riskLevel: string): string {
     .reading-filter-btn {
       padding: 0.5rem 0.75rem;
       font-size: 0.9rem;
+    }
+  }
+
+  /* Fiscal Risk Section Styles */
+  .reading-fiscal-section {
+    margin: 0 0 2rem 0;
+    padding: 1.5rem;
+    background: #fffef5;
+    border: 3px solid #0891b2;
+    border-radius: 1rem;
+  }
+  
+  .reading-fiscal-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  
+  .reading-fiscal-intro {
+    background: linear-gradient(135deg, #eff6ff, #ecfeff);
+    border: 3px solid #0891b2;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .reading-fiscal-text {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    color: #1a1a1a;
+    margin: 0;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  
+  .reading-fiscal-types {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .reading-fiscal-type-box {
+    padding: 1.5rem;
+    border-radius: 1rem;
+    border: 3px solid;
+  }
+  
+  .reading-type-fiscal {
+    background: #fef2f2;
+    border-color: #ef4444;
+  }
+  
+  .reading-type-omissions {
+    background: #fffbeb;
+    border-color: #f59e0b;
+  }
+  
+  .reading-type-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0 0 0.75rem;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  
+  .reading-type-desc {
+    font-size: 1.1rem;
+    color: #374151;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  
+  .reading-type-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .reading-type-stat {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: white;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 1.05rem;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  
+  .reading-stat-icon {
+    font-size: 1.5rem;
+  }
+  
+  .reading-stat-text {
+    color: #1a1a1a;
+  }
+  
+  .reading-stat-text strong {
+    color: #1a1a1a;
+    font-weight: 700;
+  }
+  
+  .reading-fiscal-levels {
+    margin-bottom: 2rem;
+  }
+  
+  .reading-levels-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 1rem;
+    text-align: center;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  
+  .reading-levels-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .reading-level-card {
+    padding: 1.25rem;
+    border-radius: 1rem;
+    border: 3px solid;
+  }
+  
+  .reading-level-low {
+    background: #ecfdf5;
+    border-color: #10b981;
+  }
+  
+  .reading-level-medium {
+    background: #fffbeb;
+    border-color: #f59e0b;
+  }
+  
+  .reading-level-high {
+    background: #fef2f2;
+    border-color: #ef4444;
+  }
+  
+  .reading-level-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .reading-level-emoji {
+    font-size: 1.75rem;
+  }
+  
+  .reading-level-name {
+    font-size: 1.25rem;
+    color: #1a1a1a;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  
+  .reading-level-count {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #64748b;
+    margin-left: auto;
+    background: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  
+  .reading-level-desc {
+    font-size: 1.1rem;
+    color: #374151;
+    line-height: 1.6;
+    margin: 0;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  
+  .reading-fiscal-note {
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    text-align: center;
+  }
+  
+  .reading-fiscal-note p {
+    font-size: 1.1rem;
+    color: #374151;
+    line-height: 1.7;
+    margin-bottom: 1rem;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  
+  .reading-fiscal-link {
+    display: inline-block;
+    font-size: 1.15rem;
+    color: #0891b2;
+    text-decoration: underline;
+    font-weight: 600;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  
+  @media (max-width: 640px) {
+    .reading-fiscal-title {
+      font-size: 1.5rem;
+    }
+    .reading-fiscal-text {
+      font-size: 1.1rem;
+    }
+    .reading-type-title {
+      font-size: 1.2rem;
+    }
+    .reading-type-desc {
+      font-size: 1rem;
     }
   }
 </style>

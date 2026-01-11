@@ -8,9 +8,18 @@ interface Props {
     score: CandidateScore;
     rank: number;
   }>;
+  fiscalStats?: {
+    lowRisk: number;
+    mediumRisk: number;
+    highRisk: number;
+    attackFiscalRule: number;
+    proposeDebt: number;
+    ignoreSecurity: number;
+    ignoreCCSS: number;
+  };
 }
 
-const { candidates } = Astro.props;
+const { candidates, fiscalStats } = Astro.props;
 
 // Create list of candidates for the dropdown
 const candidateList = candidates.map(c => ({
@@ -24,6 +33,74 @@ const candidateList = candidates.map(c => ({
 ---
 
 <div class="express-list-container">
+  <!-- Fiscal Risk Section (before filters) -->
+  {fiscalStats && (
+    <div class="express-fiscal-section">
+      <div class="express-fiscal-header">
+        <h2 class="express-fiscal-title">⚠️ Riesgo Fiscal y Responsabilidad</h2>
+        <p class="express-fiscal-subtitle">Evaluamos si los planes comprometen la estabilidad financiera o omiten urgencias nacionales</p>
+      </div>
+      
+      <div class="express-fiscal-content">
+        <div class="express-fiscal-explanation">
+          <p>Analizamos dos tipos de penalizaciones:</p>
+          <div class="express-fiscal-types">
+            <div class="express-fiscal-type express-fiscal-red">
+              <span>🔴</span>
+              <div>
+                <strong>Fiscales:</strong> Atacan la regla fiscal o proponen más deuda sin plan de sostenibilidad
+              </div>
+            </div>
+            <div class="express-fiscal-type express-fiscal-amber">
+              <span>🟠</span>
+              <div>
+                <strong>Omisiones:</strong> Ignoran urgencias como seguridad operativa o crisis de la CCSS
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="express-fiscal-stats">
+          <div class="express-fiscal-stat express-stat-low">
+            <div class="express-stat-number">{fiscalStats.lowRisk}</div>
+            <div class="express-stat-label">🟢 Bajo</div>
+          </div>
+          <div class="express-fiscal-stat express-stat-medium">
+            <div class="express-stat-number">{fiscalStats.mediumRisk}</div>
+            <div class="express-stat-label">🟠 Medio</div>
+          </div>
+          <div class="express-fiscal-stat express-stat-high">
+            <div class="express-stat-number">{fiscalStats.highRisk}</div>
+            <div class="express-stat-label">🔴 Alto</div>
+          </div>
+        </div>
+        
+        <div class="express-fiscal-details">
+          <div class="express-fiscal-detail">
+            <span class="express-detail-icon">⚠️</span>
+            <span class="express-detail-text"><strong>{fiscalStats.attackFiscalRule}</strong> atacan la regla fiscal</span>
+          </div>
+          <div class="express-fiscal-detail">
+            <span class="express-detail-icon">💰</span>
+            <span class="express-detail-text"><strong>{fiscalStats.proposeDebt}</strong> proponen más deuda</span>
+          </div>
+          <div class="express-fiscal-detail">
+            <span class="express-detail-icon">🚨</span>
+            <span class="express-detail-text"><strong>{fiscalStats.ignoreSecurity}</strong> ignoran seguridad</span>
+          </div>
+          <div class="express-fiscal-detail">
+            <span class="express-detail-icon">🏥</span>
+            <span class="express-detail-text"><strong>{fiscalStats.ignoreCCSS}</strong> ignoran crisis CCSS</span>
+          </div>
+        </div>
+        
+        <p class="express-fiscal-note">
+          Basado en el texto literal de los planes. <a href="/metodologia#penalizaciones" class="express-fiscal-link">Ver metodología →</a>
+        </p>
+      </div>
+    </div>
+  )}
+
   <!-- Header with Filter -->
   <div class="express-header">
     <div class="header-content">
@@ -320,7 +397,7 @@ const candidateList = candidates.map(c => ({
     max-width: 32rem;
     margin: 0 auto;
     padding: 1rem;
-    display: flex;
+      display: flex;
     flex-direction: column;
     gap: 1rem;
   }
@@ -364,6 +441,176 @@ const candidateList = candidates.map(c => ({
     to {
       opacity: 1;
       transform: translateY(0);
+    }
+  }
+  
+  /* Fiscal Risk Section Styles */
+  .express-fiscal-section {
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 1rem;
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  .express-fiscal-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .express-fiscal-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 0.5rem;
+  }
+  
+  .express-fiscal-subtitle {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin: 0;
+  }
+  
+  .express-fiscal-content {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.25rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  
+  .express-fiscal-explanation {
+    margin-bottom: 1.25rem;
+  }
+  
+  .express-fiscal-explanation > p {
+    font-size: 0.9rem;
+    color: #475569;
+    margin-bottom: 0.75rem;
+  }
+  
+  .express-fiscal-types {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .express-fiscal-type {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.85rem;
+  }
+  
+  .express-fiscal-red {
+    background: #fef2f2;
+    border-left: 3px solid #ef4444;
+  }
+  
+  .express-fiscal-amber {
+    background: #fffbeb;
+    border-left: 3px solid #f59e0b;
+  }
+  
+  .express-fiscal-type span {
+    font-size: 1.25rem;
+  }
+  
+  .express-fiscal-type strong {
+    color: #1e293b;
+  }
+  
+  .express-fiscal-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e2e8f0;
+  }
+  
+  .express-fiscal-stat {
+    text-align: center;
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+    }
+  
+  .express-stat-low {
+    background: #ecfdf5;
+    border: 2px solid #10b981;
+  }
+  
+  .express-stat-medium {
+    background: #fffbeb;
+    border: 2px solid #f59e0b;
+  }
+  
+  .express-stat-high {
+    background: #fef2f2;
+    border: 2px solid #ef4444;
+  }
+  
+  .express-stat-number {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 0.25rem;
+  }
+  
+  .express-stat-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #64748b;
+  }
+  
+  .express-fiscal-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e2e8f0;
+  }
+  
+  .express-fiscal-detail {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: #475569;
+  }
+  
+  .express-detail-icon {
+    font-size: 1.1rem;
+  }
+  
+  .express-detail-text strong {
+    color: #1e293b;
+    font-weight: 700;
+  }
+  
+  .express-fiscal-note {
+    font-size: 0.75rem;
+    color: #64748b;
+    text-align: center;
+    margin: 0;
+    padding-top: 1rem;
+    border-top: 1px solid #e2e8f0;
+  }
+  
+  .express-fiscal-link {
+    color: #0891b2;
+    text-decoration: underline;
+    font-weight: 500;
+  }
+
+  @media (max-width: 640px) {
+    .express-fiscal-stats {
+      grid-template-columns: 1fr;
+    }
+    .express-fiscal-details {
+      grid-template-columns: 1fr;
     }
   }
 </style>

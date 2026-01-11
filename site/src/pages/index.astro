@@ -116,7 +116,7 @@ const howItWorksItems = [
        EXPRESS MODE 🚀
        ============================================ -->
   <div class="mode-express-content">
-    <ExpressSwiper candidates={rankingData} />
+    <ExpressSwiper candidates={rankingData} fiscalStats={fiscalStats} />
   </div>
 
   <!-- ============================================
@@ -139,12 +139,40 @@ const howItWorksItems = [
 
       <!-- Fiscal Risk Dashboard -->
       <section>
-        <div class="flex items-center gap-3 mb-6">
+        <div class="flex items-center gap-3 mb-4">
           <span class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-red-500 flex items-center justify-center text-white text-lg shadow-lg">
             ⚠️
           </span>
-          <h2 class="text-2xl font-bold text-slate-900">Riesgo Fiscal de los Planes</h2>
+          <h2 class="text-2xl font-bold text-slate-900">Riesgo Fiscal y Responsabilidad de los Planes</h2>
         </div>
+
+        <!-- Contexto educativo y neutral -->
+        <div class="mb-6 p-5 bg-gradient-to-br from-slate-50 to-blue-50 border border-slate-200 rounded-xl">
+          <p class="text-slate-700 leading-relaxed mb-3">
+            Evaluamos si los planes de gobierno <strong>comprometen la estabilidad financiera</strong> del país 
+            o <strong>omiten urgencias nacionales</strong> que deben abordarse. Esta información le ayuda a entender 
+            qué tan completas y responsables son las propuestas.
+          </p>
+          <div class="grid md:grid-cols-2 gap-3 text-sm">
+            <div class="flex items-start gap-2">
+              <span class="text-red-600 mt-0.5">🔴</span>
+              <div>
+                <strong class="text-slate-800">Penalizaciones fiscales:</strong> Atacan la regla fiscal o proponen más deuda sin plan de sostenibilidad.
+              </div>
+            </div>
+            <div class="flex items-start gap-2">
+              <span class="text-amber-600 mt-0.5">🟠</span>
+              <div>
+                <strong class="text-slate-800">Omisiones de urgencias:</strong> Ignoran temas críticos como seguridad operativa o crisis de la CCSS.
+              </div>
+            </div>
+          </div>
+          <p class="text-xs text-slate-500 mt-3 pt-3 border-t border-slate-200">
+            Esta evaluación se basa en el <strong>texto literal</strong> de los planes. No juzga ideologías. 
+            <a href="/metodologia#penalizaciones" class="text-cyan-600 hover:text-cyan-700 underline">Ver metodología completa →</a>
+          </p>
+        </div>
+        
         <FiscalRiskDashboard client:visible stats={fiscalStats} />
       </section>
 
@@ -268,7 +296,7 @@ const howItWorksItems = [
        READING MODE 📖
        ============================================ -->
   <div class="mode-reading-content">
-    <ReadingRanking candidates={rankingData} currentPage={1} />
+    <ReadingRanking candidates={rankingData} currentPage={1} fiscalStats={fiscalStats} />
   </div>
 
 </BaseLayout>
