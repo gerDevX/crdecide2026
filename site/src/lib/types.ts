@@ -295,7 +295,7 @@ export const CRITICAL_PILLARS: PillarId[] = ['P3', 'P4', 'P1', 'P7', 'P2', 'P5']
 // CONSTANTES DE PENALIZACIÓN (v6 - Neutral + Estricto)
 // ============================================
 
-// Penalizaciones fiscales (objetivas - basadas en ley vigente)
+// Penalizaciones por irresponsabilidad (objetivas - basadas en ley vigente)
 export const FISCAL_PENALTIES: Record<FiscalPenaltyType, number> = {
   attacks_fiscal_rule: -2,      // Ataca ley vigente = penalización fuerte
   proposes_debt_increase: -1,   // Más deuda en contexto de déficit
@@ -311,7 +311,7 @@ export const OMISSION_PENALTIES: Record<OmissionPenaltyType, number> = {
 };
 
 // ============================================
-// CONSTANTES DE RIESGO FISCAL
+// CONSTANTES DE RIESGO Y RESPONSABILIDAD
 // ============================================
 
 export const FISCAL_RISK_COLORS: Record<FiscalRiskLevel, string> = {

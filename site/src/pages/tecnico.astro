@@ -263,7 +263,7 @@ CORRUPT_THRESHOLD = 0.02`}></code></pre>
             <div class="bg-white border border-slate-200 rounded-xl p-4 flex-1 shadow-sm">
               <h4 class="font-bold text-slate-900">Evaluación y Penalización</h4>
               <p class="text-sm text-slate-600 mt-1">
-                Se evalúan las 4 dimensiones y se aplican penalizaciones fiscales y por omisión.
+                Se evalúan las 4 dimensiones y se aplican penalizaciones por irresponsabilidad y por omisión.
               </p>
             </div>
           </div>
@@ -360,7 +360,7 @@ python process_plans_v6.py
     <h2>📐 Constantes de Penalización</h2>
 
     <div class="not-prose bg-slate-900 rounded-xl p-5 mt-4 overflow-x-auto">
-      <pre class="text-sm text-slate-100 font-mono"><code set:text={`# Penalizaciones fiscales (basadas en ley vigente)
+      <pre class="text-sm text-slate-100 font-mono"><code set:text={`# Penalizaciones por irresponsabilidad (basadas en ley vigente)
 FISCAL_PENALTIES = {
     "attacks_fiscal_rule": -2,      # Ataca la regla fiscal (Ley 9635)
     "proposes_debt_increase": -1,   # Propone más deuda sin plan

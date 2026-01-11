@@ -99,7 +99,7 @@ export function getPillarScoreForCandidate(candidateId: string, pillarId: Pillar
 }
 
 // ============================================
-// FUNCIONES DE RIESGO FISCAL
+// FUNCIONES DE RIESGO Y RESPONSABILIDAD
 // ============================================
 
 export function getFiscalRiskLevel(candidateId: string): FiscalRiskLevel {
@@ -302,7 +302,7 @@ export function getAllPenalties(candidateId: string): { type: PenaltyType; label
 
   const penalties: { type: PenaltyType; label: string; value: number }[] = [];
 
-  // Penalizaciones fiscales
+  // Penalizaciones por irresponsabilidad
   if (score.fiscal_analysis.flags.attacks_fiscal_rule) {
     penalties.push({ type: 'attacks_fiscal_rule', label: 'Ataca regla fiscal', value: -2 });
   }

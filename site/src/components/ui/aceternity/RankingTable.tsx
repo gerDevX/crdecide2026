@@ -71,7 +71,7 @@ export const RankingTable = ({
       {/* Risk Level Legend */}
       <div className="px-6 py-3 bg-slate-50 border-b border-slate-100">
         <div className="flex flex-wrap items-center gap-4 text-xs">
-          <span className="text-slate-500 font-medium">Riesgo Fiscal:</span>
+          <span className="text-slate-500 font-medium">Riesgo y Responsabilidad:</span>
           <div className="flex items-center gap-1.5">
             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-semibold">
               🟢 BAJO

@@ -60,7 +60,7 @@ export const FiscalRiskDashboard = ({ stats, className }: FiscalRiskDashboardPro
           <div>
             <h3 className="font-bold text-red-800 mb-3 sm:mb-4 flex items-center gap-2 text-base sm:text-lg">
               <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-red-100 flex items-center justify-center text-sm sm:text-base">🔴</span>
-              Penalizaciones fiscales
+              Penalizaciones por irresponsabilidad
             </h3>
             <div className="space-y-2 sm:space-y-3">
               <PenaltyItem
