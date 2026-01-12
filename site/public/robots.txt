@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /*.json$
+
+# Sitemap
+Sitemap: https://costaricadecide.org/sitemap.xml

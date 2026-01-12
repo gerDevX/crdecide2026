@@ -43,7 +43,10 @@ const candidatesData = sortedCandidates.map((candidate, idx) => {
 });
 ---
 
-<BaseLayout title="Candidatos">
+<BaseLayout 
+  title="Candidatos"
+  description="Lista completa de los 20 candidatos presidenciales de Costa Rica 2026. Perfiles, puntajes, análisis fiscal y propuestas detalladas. Compara y analiza cada candidato."
+>
 
   <!-- ============================================
        DASHBOARD MODE (Default) - Modo Visual Detallado
@@ -107,7 +110,7 @@ const candidatesData = sortedCandidates.map((candidate, idx) => {
             <p>Selecciona hasta 4 candidatos y compara sus propuestas lado a lado.</p>
             <a href="/comparar" class="cta-button">
               <span>Ir al comparador</span>
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
             </a>

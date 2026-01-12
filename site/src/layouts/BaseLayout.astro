@@ -3,13 +3,26 @@ import '../styles/global.css';
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
 import ModeSelector from '../components/ui/ModeSelector.astro';
+import { SITE_CONFIG } from '../lib/config';
 
 interface Props {
   title: string;
   description?: string;
+  image?: string;
+  canonical?: string;
+  noindex?: boolean;
 }
 
-const { title, description = 'Compara los planes de gobierno de los candidatos presidenciales de Costa Rica 2026-2030' } = Astro.props;
+const { 
+  title, 
+  description = 'Compara los planes de gobierno de los candidatos presidenciales de Costa Rica 2026-2030. Análisis neutral y verificable de propuestas electorales.',
+  image = 'https://costaricadecide.org/og-image.jpg',
+  canonical = Astro.url.href,
+  noindex = false
+} = Astro.props;
+
+const siteUrl = SITE_CONFIG.url;
+const fullTitle = `${title} | ${SITE_CONFIG.name}`;
 ---
 
 <!DOCTYPE html>
@@ -19,6 +32,12 @@ const { title, description = 'Compara los planes de gobierno de los candidatos p
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="description" content={description} />
     
+    <!-- Robots -->
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonical} />
+    
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#667eea" />
     <meta name="mobile-web-app-capable" content="yes" />
@@ -27,13 +46,13 @@ const { title, description = 'Compara los planes de gobierno de los candidatos p
     <meta name="apple-mobile-web-app-title" content="CR Decide" />
     
     <!-- Icons -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" alt="Logo de Costa Rica Decide - Bandera de Costa Rica" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" alt="Icono de Costa Rica Decide para dispositivos Apple" />
     
     <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json" />
     
-    <title>{title} | Costa Rica Decide</title>
+    <title>{fullTitle}</title>
     
     <!-- Preload fonts - Modern Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -41,10 +60,68 @@ const { title, description = 'Compara los planes de gobierno de los candidatos p
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Literata:opsz,wght@7..72,400;7..72,500;7..72,600;7..72,700&display=swap" rel="stylesheet" />
     
     <!-- Open Graph -->
-    <meta property="og:title" content={`${title} | Costa Rica Decide`} />
+    <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
-    <meta property="og:locale" content="es_CR" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={image} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${title} - ${SITE_CONFIG.name} 2026`} />
+    <meta property="og:locale" content={SITE_CONFIG.locale} />
+    <meta property="og:site_name" content={SITE_CONFIG.name} />
+    
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={image} />
+    <meta name="twitter:image:alt" content={`${title} - ${SITE_CONFIG.name} 2026`} />
+    
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": `${siteUrl}/#website`,
+          "url": siteUrl,
+          "name": SITE_CONFIG.name,
+          "description": SITE_CONFIG.description,
+          "inLanguage": "es-CR",
+          "publisher": {
+            "@id": `${siteUrl}/#organization`
+          },
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": `${siteUrl}/buscar?q={search_term_string}`
+            },
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@type": "Organization",
+          "@id": `${siteUrl}/#organization`,
+          "name": SITE_CONFIG.name,
+          "url": siteUrl,
+          "logo": {
+            "@type": "ImageObject",
+            "url": `${siteUrl}/icons/icon.svg`,
+            "width": 192,
+            "height": 192
+          },
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "email": SITE_CONFIG.email,
+            "contactType": "customer service",
+            "areaServed": "CR",
+            "availableLanguage": "es"
+          }
+        }
+      ]
+    }, null, 2)} />
   </head>
   <body class="min-h-screen flex flex-col">
     <a href="#main" class="skip-link">Saltar al contenido</a>

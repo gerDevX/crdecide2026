@@ -11,6 +11,7 @@ import {
   getPillarBonuses
 } from '../../lib/data';
 import { PILLAR_ICONS, CRITICAL_PILLARS } from '../../lib/types';
+import { SITE_CONFIG } from '../../lib/config';
 import type { PillarId } from '../../lib/types';
 
 export function getStaticPaths() {
@@ -71,9 +72,40 @@ const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
   'P9': '🌍 Impacto directo: Más oportunidades de exportación para productores nacionales, mejor imagen del país, cooperación internacional para desarrollo.',
   'P10': '🚗 Impacto directo: Mejores carreteras para viajar seguro, transporte público eficiente, menos tiempo en presas y mejor conectividad entre comunidades.',
 };
+
+// SEO: Description específica para el pilar
+const pillarDescription = `Análisis del pilar ${pillarData.pillar.pillar_name} en los planes de gobierno de Costa Rica 2026. Peso: ${weightPercent}%. Compara propuestas de todos los candidatos en ${pillarData.pillar.pillar_name.toLowerCase()}.`;
+
+// Schema.org structured data para Article
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": `Pilar: ${pillarData.pillar.pillar_name}`,
+  "description": pillarDescription,
+  "author": {
+    "@type": "Organization",
+    "name": SITE_CONFIG.name,
+    "url": SITE_CONFIG.url
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": SITE_CONFIG.name,
+    "logo": {
+      "@type": "ImageObject",
+      "url": `${SITE_CONFIG.url}/icons/icon.svg`
+    }
+  },
+  "url": `${SITE_CONFIG.url}/pilares/${pillarId.toLowerCase()}`,
+  "datePublished": "2026-01-01",
+  "inLanguage": SITE_CONFIG.locale
+};
 ---
 
-<BaseLayout title={pillarData.pillar.pillar_name}>
+<BaseLayout 
+  title={pillarData.pillar.pillar_name}
+  description={pillarDescription}
+  canonical={`${SITE_CONFIG.url}/pilares/${pillarId.toLowerCase()}`}
+>
 
   <!-- ============================================
        DASHBOARD MODE (Default) - Modo Visual Detallado
@@ -886,7 +918,9 @@ const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
 
     </article>
   </div>
-
+  
+  <!-- Schema.org Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
 </BaseLayout>
 
 <style>
