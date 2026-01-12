@@ -1123,8 +1123,8 @@
       },
       "urgency_penalty": 0,
       "missing_pillars": [
-        "P7",
-        "P4"
+        "P4",
+        "P7"
       ],
       "pillar_penalty": -1.0
     },
@@ -1135,7 +1135,7 @@
       "priority_weighted_sum": 0.045,
       "critical_weighted_sum": 0.175,
       "total_penalties_applied": -3.0,
-      "notes": "🔴 ATACA REGLA FISCAL (-2) | ✅ Responsabilidad fiscal | ❌ Sin propuesta: P7, P4"
+      "notes": "🔴 ATACA REGLA FISCAL (-2) | ✅ Responsabilidad fiscal | ❌ Sin propuesta: P4, P7"
     }
   },
   {
@@ -2479,18 +2479,18 @@
       },
       {
         "pillar_id": "P3",
-        "raw_score": 4,
-        "effective_score": 4,
-        "normalized": 1.0,
-        "weighted": 0.18,
+        "raw_score": 3,
+        "effective_score": 3,
+        "normalized": 0.75,
+        "weighted": 0.135,
         "penalties": []
       },
       {
         "pillar_id": "P4",
-        "raw_score": 4,
-        "effective_score": 4,
-        "normalized": 1.0,
-        "weighted": 0.16,
+        "raw_score": 3,
+        "effective_score": 3,
+        "normalized": 0.75,
+        "weighted": 0.12,
         "penalties": []
       },
       {
@@ -2519,10 +2519,10 @@
       },
       {
         "pillar_id": "P8",
-        "raw_score": 0,
-        "effective_score": 0,
-        "normalized": 0.0,
-        "weighted": 0.0,
+        "raw_score": 2,
+        "effective_score": 2,
+        "normalized": 0.5,
+        "weighted": 0.025,
         "penalties": []
       },
       {
@@ -2546,7 +2546,7 @@
       "flags": {
         "attacks_fiscal_rule": false,
         "proposes_debt_increase": false,
-        "shows_fiscal_responsibility": true
+        "shows_fiscal_responsibility": false
       },
       "total_penalty": 0,
       "evidence": []
@@ -2557,8 +2557,6 @@
           "covered": true,
           "terms_found": [
             "policía",
-            "fuerza pública",
-            "OIJ",
             "inteligencia",
             "patrullaje",
             "operativo",
@@ -2588,9 +2586,7 @@
           "covered": true,
           "terms_found": [
             "crimen organizado",
-            "narcotráfico",
-            "sicariato",
-            "lavado de dinero"
+            "sicariato"
           ],
           "description": "Crimen organizado"
         }
@@ -2602,11 +2598,11 @@
     "overall": {
       "raw_sum": 26,
       "effective_sum": 26,
-      "weighted_sum": 0.7825,
-      "priority_weighted_sum": 0.535,
-      "critical_weighted_sum": 0.6925,
+      "weighted_sum": 0.7225,
+      "priority_weighted_sum": 0.45,
+      "critical_weighted_sum": 0.6075,
       "total_penalties_applied": 0,
-      "notes": "✅ Responsabilidad fiscal"
+      "notes": ""
     }
   },
   {

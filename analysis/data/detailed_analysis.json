@@ -459,8 +459,8 @@
       }
     },
     "missing_priority_pillars": [
-      "P7",
-      "P4"
+      "P4",
+      "P7"
     ],
     "strengths": [
       "✅ Aborda: Seguridad operativa",
@@ -471,8 +471,8 @@
     ],
     "weaknesses": [
       "🔴 ATACA REGLA FISCAL - Riesgo alto para finanzas públicas",
-      "❌ Sin propuesta en pilar prioritario P7",
-      "❌ Sin propuesta en pilar prioritario P4"
+      "❌ Sin propuesta en pilar prioritario P4",
+      "❌ Sin propuesta en pilar prioritario P7"
     ],
     "risk_level": "MEDIO",
     "candidate_id": "david-hernandez-brenes"
@@ -1045,12 +1045,12 @@
   },
   {
     "pdf_id": "PPSO",
-    "total_pages": 87,
+    "total_pages": 85,
     "version": "v6_neutral_strict",
     "fiscal_flags": {
       "attacks_fiscal_rule": false,
       "proposes_debt_increase": false,
-      "shows_fiscal_responsibility": true
+      "shows_fiscal_responsibility": false
     },
     "fiscal_evidence": [],
     "urgency_coverage": {
@@ -1058,8 +1058,6 @@
         "covered": true,
         "terms_found": [
           "policía",
-          "fuerza pública",
-          "OIJ",
           "inteligencia",
           "patrullaje",
           "operativo",
@@ -1089,9 +1087,7 @@
         "covered": true,
         "terms_found": [
           "crimen organizado",
-          "narcotráfico",
-          "sicariato",
-          "lavado de dinero"
+          "sicariato"
         ],
         "description": "Crimen organizado"
       }
@@ -1101,8 +1097,7 @@
       "✅ Aborda: Seguridad operativa",
       "✅ Aborda: Crisis de la CCSS",
       "✅ Aborda: Empleo formal",
-      "✅ Aborda: Crimen organizado",
-      "✅ Demuestra responsabilidad fiscal"
+      "✅ Aborda: Crimen organizado"
     ],
     "weaknesses": [],
     "risk_level": "BAJO",

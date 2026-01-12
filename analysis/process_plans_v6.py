@@ -486,43 +486,58 @@ def extract_text_from_pdf(pdf_path: str) -> Tuple[List[Tuple[int, str]], str]:
         doc.close()
         doc = None  # Marcar como cerrado
         
-        # ESTRATEGIA: Si hay corrupción significativa, usar pdfplumber
+        # ESTRATEGIA RECOMENDADA:
+        # 1. Si hay corrupción significativa (>5%) y pdfplumber disponible → usar pdfplumber
+        # 2. Si pdfplumber falla o no disponible → usar PyMuPDF + OCR
+        # 3. Si no hay corrupción → usar PyMuPDF directo (rápido)
+        
         if is_corrupt and ratio > 0.05 and PDFPLUMBER_AVAILABLE:
+            # ESTRATEGIA 1: pdfplumber para PDFs corruptos (mejor calidad, sin OCR)
             print(f"  ⚠️  {pdf_name}: Texto corrupto ({ratio*100:.1f}%), usando pdfplumber...")
             pages, full_text = extract_text_with_pdfplumber(pdf_path)
             if pages:
                 print(f"  ✅ pdfplumber completado: {len(pages)} páginas procesadas")
                 return pages, full_text
             else:
-                print(f"  ⚠️  pdfplumber falló, intentando con PyMuPDF + OCR...")
-                # Reabrir documento si pdfplumber falló
+                # pdfplumber falló, usar OCR como último recurso
+                print(f"  ⚠️  pdfplumber falló, usando PyMuPDF + OCR como último recurso...")
                 doc = fitz.open(pdf_path)
-        else:
-            # Si no hay corrupción o pdfplumber no disponible, usar PyMuPDF
-            doc = fitz.open(pdf_path)
-        use_ocr = is_corrupt and OCR_AVAILABLE
-        
-        if is_corrupt and not PDFPLUMBER_AVAILABLE:
+                use_ocr = True  # Forzar OCR ya que hay corrupción
+        elif is_corrupt and ratio > 0.05 and not PDFPLUMBER_AVAILABLE:
+            # ESTRATEGIA 2: Corrupción detectada pero pdfplumber no disponible → usar OCR
             if OCR_AVAILABLE:
                 engine = "EasyOCR" if EASYOCR_AVAILABLE else ("Tesseract" if TESSERACT_AVAILABLE else "N/A")
                 print(f"  ⚠️  {pdf_name}: Texto corrupto ({ratio*100:.1f}%), extrayendo con {engine}...")
+                doc = fitz.open(pdf_path)
+                use_ocr = True
             else:
                 print(f"  ⚠️  {pdf_name}: Texto corrupto ({ratio*100:.1f}%) pero OCR no disponible")
+                doc = fitz.open(pdf_path)
+                use_ocr = False
+        else:
+            # ESTRATEGIA 3: PDF limpio → usar PyMuPDF directo (rápido y fidedigno)
+            if is_corrupt:
+                print(f"  ℹ️  {pdf_name}: Corrupción menor ({ratio*100:.1f}%), usando PyMuPDF directo...")
+            else:
+                print(f"  ✅ {pdf_name}: Texto limpio, usando PyMuPDF directo...")
+            doc = fitz.open(pdf_path)
+            use_ocr = False  # No usar OCR para PDFs limpios
         
-        # Segunda pasada: extraer texto con PyMuPDF
+        # Segunda pasada: extraer texto con PyMuPDF (con o sin OCR según estrategia)
         for page_num in range(num_pages):
             page = doc[page_num]
             
             if use_ocr:
-                # Usar OCR para esta página
+                # Usar OCR para esta página (último recurso)
                 text = extract_page_with_ocr(page)
                 ocr_pages += 1
             else:
-                # Extracción directa
+                # Extracción directa con PyMuPDF
                 text = page.get_text()
-                # Verificar si esta página específica tiene problemas
+                # Verificar si esta página específica tiene problemas (fallback por página)
                 page_corrupt, _ = detect_corrupt_text(text)
                 if page_corrupt and OCR_AVAILABLE:
+                    # Solo esta página tiene problemas, usar OCR solo para esta
                     text = extract_page_with_ocr(page)
                     ocr_pages += 1
             
