@@ -53,6 +53,9 @@ const fiscalStats = getFiscalStats();
 const rankingEntries = sortedRanking.slice(0, 10).map((entry, idx) => {
   const candidateName = entry.candidate?.candidate_name;
   const hasValidName = candidateName && candidateName !== 'Por determinar' && candidateName !== 'no_especificado';
+  // total_penalties viene del ranking.json y es negativo (ej: -3, -2, 0)
+  // Mantenemos el valor negativo para que el componente RankingTable lo muestre correctamente
+  const totalPenalty = (entry as any).total_penalties || 0;
   
   return {
     id: entry.candidate_id,
@@ -61,7 +64,7 @@ const rankingEntries = sortedRanking.slice(0, 10).map((entry, idx) => {
     score: Math.round((entry.weighted_sum || 0) * 100),
     rank: idx + 1,
     riskLevel: (entry.analysis?.risk_level || 'BAJO') as "BAJO" | "MEDIO" | "ALTO",
-    penalty: (entry as any).total_penalties || 0,
+    penalty: totalPenalty,
   };
 });
 
