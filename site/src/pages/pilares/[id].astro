@@ -520,6 +520,27 @@ const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
                   </div>
                 </div>
                 
+                {/* Bonus Alert */}
+                {(() => {
+                  const bonuses = getPillarBonuses(item.candidate.candidate_id, pillarId as PillarId);
+                  return bonuses.total > 0.01 && (
+                    <div class="express-bonus-alert">
+                      🎁 <strong>Bonos aplicados:</strong>
+                      <div class="express-bonus-list">
+                        {bonuses.multiple > 0.01 && (
+                          <span>+{bonuses.multiple.toFixed(1)} múltiples (3+)</span>
+                        )}
+                        {bonuses.quality > 0.01 && (
+                          <span>+{bonuses.quality.toFixed(2)} completas (4/4)</span>
+                        )}
+                        {bonuses.funding > 0.01 && (
+                          <span>+{bonuses.funding.toFixed(1)} financiamiento</span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })()}
+                
                 {/* Penalty Alert */}
                 {item.score.penalties && item.score.penalties.length > 0 && (
                   <div class="express-penalty-alert">
@@ -757,6 +778,33 @@ const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
                     )}
                   </div>
                 </div>
+                
+                {/* Bonus Alert for Reading Mode */}
+                {(() => {
+                  const bonuses = getPillarBonuses(item.candidate.candidate_id, pillarId as PillarId);
+                  return bonuses.total > 0.01 && (
+                    <div class="reading-bonus-alert">
+                      <h4 class="reading-bonus-title">🎁 Bonos aplicados:</h4>
+                      <div class="reading-bonus-list">
+                        {bonuses.multiple > 0.01 && (
+                          <p class="reading-bonus-item">
+                            <strong>+{bonuses.multiple.toFixed(1)}</strong> por múltiples propuestas (3+ válidas)
+                          </p>
+                        )}
+                        {bonuses.quality > 0.01 && (
+                          <p class="reading-bonus-item">
+                            <strong>+{bonuses.quality.toFixed(2)}</strong> por propuestas completas (4/4 dimensiones)
+                          </p>
+                        )}
+                        {bonuses.funding > 0.01 && (
+                          <p class="reading-bonus-item">
+                            <strong>+{bonuses.funding.toFixed(1)}</strong> por propuestas con financiamiento claro
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })()}
                 
                 {/* Penalty Alert for Reading Mode */}
                 {item.score.penalties && item.score.penalties.length > 0 && (
@@ -1265,6 +1313,35 @@ const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
     font-size: 0.8rem;
     color: #7f1d1d;
     line-height: 1.5;
+  }
+  
+  /* Express Bonus Alert */
+  .express-bonus-alert {
+    padding: 0.625rem 0.875rem;
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 2px solid #86efac;
+    border-radius: 0.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.8rem;
+    color: #166534;
+    line-height: 1.5;
+  }
+  
+  .express-bonus-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.375rem;
+  }
+  
+  .express-bonus-list span {
+    font-size: 0.75rem;
+    color: #15803d;
+  }
+  
+  .express-bonus-alert strong {
+    color: #15803d;
+    font-weight: 700;
   }
   
   .express-score-symbol {
@@ -2718,6 +2795,40 @@ const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
   
   .reading-penalty-title {
     font-size: 1.25rem;
+    font-weight: 700;
+  }
+  
+  /* Reading Bonus Alert */
+  .reading-bonus-alert {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 3px solid #86efac;
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  
+  .reading-bonus-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #15803d;
+    margin: 0 0 0.75rem 0;
+  }
+  
+  .reading-bonus-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .reading-bonus-item {
+    font-size: 1.125rem;
+    line-height: 1.7;
+    color: #166534;
+    margin: 0;
+  }
+  
+  .reading-bonus-item strong {
+    color: #15803d;
     font-weight: 700;
     color: #dc2626;
     margin: 0 0 0.75rem 0;
