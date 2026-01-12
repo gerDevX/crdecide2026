@@ -1,0 +1,2583 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ScoreBar from '../components/ui/ScoreBar.astro';
+import { candidates, scoresByCandidate, pillars, pillarIndex, analysisByCandidate, proposals, getPdfUrl, getInformativeFlags, hasActiveInformativeFlags, getTotalBonuses, getPillarBonuses, getProposalsByCandidateAndPillar } from '../lib/data';
+import { PILLAR_ICONS } from '../lib/types';
+import type { PillarId } from '../lib/types';
+
+// Helper para obtener nombre del candidato
+function getCandidateName(candidate: any): string {
+  const name = candidate?.candidate_name;
+  if (name && name !== 'Por determinar' && name !== 'no_especificado') {
+    return name;
+  }
+  return candidate?.party_name || 'N/A';
+}
+
+// Sort candidates by score for selector
+const sortedCandidates = [...candidates].sort((a, b) => {
+  const scoreA = scoresByCandidate[a.candidate_id]?.overall.weighted_sum || 0;
+  const scoreB = scoresByCandidate[b.candidate_id]?.overall.weighted_sum || 0;
+  return scoreB - scoreA;
+});
+
+// Prepare candidate data with names
+const candidatesWithNames = sortedCandidates.map(c => ({
+  ...c,
+  displayName: getCandidateName(c)
+}));
+
+// Index proposals by candidate and pillar with PDF info
+type ProposalIndex = Record<string, Record<string, { pdfId: string; page: number }>>;
+const proposalIndex: ProposalIndex = {};
+proposals.forEach(p => {
+  if (!proposalIndex[p.candidate_id]) {
+    proposalIndex[p.candidate_id] = {};
+  }
+  // Guardar solo la primera propuesta por pilar (la más relevante)
+  if (!proposalIndex[p.candidate_id][p.pillar_id]) {
+    proposalIndex[p.candidate_id][p.pillar_id] = {
+      pdfId: p.evidence?.pdf_id || '',
+      page: p.evidence?.page || 1
+    };
+  }
+});
+
+// Helper para generar URL del PDF (para pasar al JS)
+function buildPdfUrl(pdfId: string, page: number): string {
+  return `/planes/${pdfId}.pdf#page=${page}`;
+}
+---
+
+<BaseLayout title="Comparar Candidatos">
+
+  <!-- ============================================
+       DASHBOARD MODE (Default) - Modo Visual Detallado
+       ============================================ -->
+  <div class="mode-dashboard-content">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-slate-900 mb-2">⚖️ Comparar Candidatos</h1>
+      <p class="text-slate-600">
+        Selecciona de 2 a 4 candidatos para comparar sus propuestas lado a lado.
+      </p>
+    </div>
+
+    <!-- Selector -->
+    <div class="card p-5 mb-8">
+      <div class="flex flex-wrap items-center gap-3 mb-4">
+        <span class="font-medium text-slate-700">Selecciona candidatos:</span>
+<button id="clear-selection" class="text-sm bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700 transition-colors hidden">
+             ✕ Limpiar selección
+        </button>
+      </div>
+        <div id="candidate-selector" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+          {candidatesWithNames.map((candidate) => (
+          <button
+            data-candidate-id={candidate.candidate_id}
+              data-candidate-name={candidate.displayName}
+            data-party-name={candidate.party_name}
+              class="candidate-btn flex flex-col items-start text-left px-4 py-3 rounded-lg border-2 border-slate-200 hover:border-civic-500 transition-colors bg-white"
+          >
+              <span class="font-semibold text-slate-900 text-sm line-clamp-1">{candidate.displayName}</span>
+              <span class="text-xs text-slate-500">{candidate.party_name}</span>
+          </button>
+        ))}
+      </div>
+      <p id="selection-hint" class="mt-3 text-sm text-slate-500">
+        Haz clic en los candidatos que deseas comparar (mínimo 2, máximo 4)
+      </p>
+    </div>
+
+    <!-- Comparison Table (populated by JS) -->
+    <div id="comparison-container" class="hidden">
+        <!-- Resumen Comparativo Expandido -->
+        <div id="comparative-summary" class="mb-6">
+          <!-- Filled by JS -->
+        </div>
+
+        <!-- Comparación de Penalizaciones -->
+        <div id="penalties-comparison" class="mb-6 card p-5">
+          <h3 class="font-bold text-slate-900 mb-4">⚖️ Penalizaciones Aplicadas</h3>
+          <div id="penalties-content">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+
+        <!-- Comparación de Bonos -->
+        <div id="bonuses-comparison" class="mb-6 card p-5">
+          <h3 class="font-bold text-slate-900 mb-4">🎁 Bonos Aplicados</h3>
+          <div id="bonuses-content">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+
+        <!-- Comparación de Flags Informativos -->
+        <div id="flags-comparison" class="mb-6 card p-5">
+          <h3 class="font-bold text-slate-900 mb-4">ℹ️ Información Adicional</h3>
+          <div id="flags-content">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+
+        <!-- Comparación de Cobertura de Urgencias -->
+        <div id="urgency-comparison" class="mb-6 card p-5">
+          <h3 class="font-bold text-slate-900 mb-4">🚨 Cobertura de Urgencias Nacionales</h3>
+          <div id="urgency-content">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+
+        <!-- Comparación de Pilares -->
+        <div class="mb-6">
+          <h3 class="font-bold text-slate-900 mb-4">📊 Comparación por Pilares</h3>
+          
+          <!-- Leyenda de porcentajes -->
+          <div class="bg-gradient-to-r from-slate-50 to-white border border-slate-200 rounded-xl p-4 mb-4">
+            <h4 class="font-semibold text-slate-800 mb-2 text-sm">📊 ¿Qué significa cada porcentaje?</h4>
+            <p class="text-sm text-slate-600 mb-3">El porcentaje indica el <strong>nivel de cobertura</strong> de las propuestas del candidato para cada pilar de evaluación.</p>
+            <div class="flex flex-wrap gap-3 text-xs">
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-100 text-emerald-700 rounded-full font-medium">
+                <span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                75%+ Alto
+              </span>
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-100 text-amber-700 rounded-full font-medium">
+                <span class="w-2 h-2 bg-amber-500 rounded-full"></span>
+                50-74% Medio
+              </span>
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-red-100 text-red-700 rounded-full font-medium">
+                <span class="w-2 h-2 bg-red-500 rounded-full"></span>
+                &lt;50% Bajo
+              </span>
+            </div>
+          </div>
+          
+          <!-- Scroll hint for mobile -->
+          <p class="text-sm text-slate-500 mb-3 text-center md:hidden">
+            📄 <strong>Haga clic en el porcentaje</strong> para ver el plan. <span class="text-cyan-600">⟷ Deslice para ver más columnas.</span>
+          </p>
+        
+      <!-- Sticky Header -->
+        <div id="comparison-header" class="bg-white border-b border-slate-200 py-3 rounded-t-lg">
+        <div class="flex items-center">
+            <div class="w-48 flex-shrink-0 font-medium text-slate-500 pl-2">Pilar</div>
+            <div id="header-candidates" class="flex-1 flex gap-4">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Comparison Body -->
+      <div id="comparison-body" class="divide-y divide-slate-100">
+        {pillars.map((pillar) => {
+          const icon = PILLAR_ICONS[pillar.pillar_id as PillarId];
+          return (
+            <div class="pillar-row py-4" data-pillar-id={pillar.pillar_id}>
+              <div class="flex items-start">
+                <div class="w-48 flex-shrink-0">
+                  <div class="flex items-center gap-2">
+                    <span>{icon}</span>
+                    <span class="font-medium text-slate-900">{pillar.pillar_id}</span>
+                  </div>
+                  <div class="text-sm text-slate-500 mt-1">{pillar.pillar_name}</div>
+                </div>
+                <div class="flex-1 flex gap-4 candidate-scores">
+                  <!-- Filled by JS -->
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <!-- Overall Comparison -->
+      <div id="overall-comparison" class="mt-6 card p-5 bg-civic-50">
+        <h3 class="font-bold text-slate-900 mb-4">Resumen General</h3>
+        <div id="overall-scores" class="grid gap-4">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty state -->
+    <div id="empty-state" class="card p-12 text-center">
+      <div class="text-4xl mb-4">🔍</div>
+      <h3 class="text-xl font-semibold text-slate-900 mb-2">Selecciona candidatos</h3>
+      <p class="text-slate-600">
+        Elige al menos 2 candidatos de la lista superior para comenzar la comparación.
+      </p>
+    </div>
+
+  </div>
+  </div>
+
+  <!-- ============================================
+       EXPRESS MODE 🚀 - Modo Visual Rápido
+       ============================================ -->
+  <div class="mode-express-content">
+    <div class="express-compare-container">
+      
+      <!-- Header -->
+      <header class="express-compare-header">
+        <h1 class="express-compare-title">⚖️ Comparar Candidatos</h1>
+        <p class="express-compare-subtitle">
+          Selecciona 2-4 candidatos para comparar
+        </p>
+      </header>
+
+      <!-- Selector -->
+      <div class="express-selector-box">
+        <div class="express-selector-header">
+          <span>Selecciona candidatos:</span>
+          <button id="express-clear-selection" class="express-clear-btn hidden">
+            ✕ Limpiar
+          </button>
+        </div>
+        <div id="express-candidate-selector" class="express-candidates-grid">
+          {candidatesWithNames.map((candidate) => (
+            <button
+              data-candidate-id={candidate.candidate_id}
+              data-candidate-name={candidate.displayName}
+              data-party-name={candidate.party_name}
+              class="express-candidate-btn"
+            >
+              <span class="express-btn-name">{candidate.displayName}</span>
+              <span class="express-btn-party">{candidate.party_name}</span>
+            </button>
+          ))}
+        </div>
+        <p id="express-selection-hint" class="express-hint">
+          Mínimo 2, máximo 4 candidatos
+        </p>
+      </div>
+
+      <!-- Comparison (populated by JS) -->
+      <div id="express-comparison-container" class="express-comparison hidden">
+        <div id="express-comparison-content">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+
+      <!-- Empty state -->
+      <div id="express-empty-state" class="express-empty">
+        <span class="express-empty-icon">🔍</span>
+        <span>Selecciona al menos 2 candidatos</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================
+       READING MODE 📖 - Modo Lectura (Adultos Mayores)
+       ============================================ -->
+  <div class="mode-reading-content">
+    <div class="reading-compare-container">
+      
+      <!-- Header -->
+      <header class="reading-compare-header">
+        <h1 class="reading-compare-title">⚖️ Comparar Candidatos</h1>
+        <p class="reading-compare-intro">
+          Esta herramienta le permite comparar las propuestas de varios candidatos lado a lado.
+        </p>
+      </header>
+
+      <!-- Tabs Navigation -->
+      <nav class="reading-tabs-nav">
+        <button class="reading-tab active" data-reading-tab="paso1" id="reading-tab-paso1">
+          <span class="reading-tab-number">1</span>
+          <span class="reading-tab-text">Seleccionar Candidatos</span>
+          <span class="reading-tab-count" id="reading-tab-count">(0)</span>
+        </button>
+        <button class="reading-tab" data-reading-tab="paso2" id="reading-tab-paso2" disabled>
+          <span class="reading-tab-number">2</span>
+          <span class="reading-tab-text">Ver Comparación</span>
+        </button>
+      </nav>
+
+      <!-- Tab Content: Paso 1 - Selección -->
+      <section class="reading-tab-content active" id="reading-content-paso1">
+        <div class="reading-paso-header">
+          <h2 class="reading-section-title">👆 Seleccione los candidatos a comparar</h2>
+          <p class="reading-paso-instructions">
+            Haga clic en los candidatos que desea comparar. Puede seleccionar de 2 a 4 candidatos.
+          </p>
+        </div>
+        
+        <div class="reading-selector-header">
+          <span class="reading-selected-count" id="reading-selected-count">0 candidatos seleccionados</span>
+          <button id="reading-clear-selection" class="reading-clear-btn hidden">
+            ✕ Limpiar selección
+          </button>
+        </div>
+        
+        <div id="reading-candidate-selector" class="reading-candidates-list">
+          {candidatesWithNames.map((candidate) => (
+            <button
+              data-candidate-id={candidate.candidate_id}
+              data-candidate-name={candidate.displayName}
+              data-party-name={candidate.party_name}
+              class="reading-candidate-btn"
+            >
+              <span class="reading-btn-name">{candidate.displayName}</span>
+              <span class="reading-btn-party">{candidate.party_name}</span>
+            </button>
+          ))}
+        </div>
+        
+        <div class="reading-paso-footer">
+          <p id="reading-selection-hint" class="reading-hint">
+            💡 Seleccione al menos 2 candidatos para poder comparar.
+          </p>
+          <button id="reading-go-to-paso2" class="reading-next-btn" disabled>
+            Ver Comparación →
+          </button>
+        </div>
+      </section>
+
+      <!-- Tab Content: Paso 2 - Comparación -->
+      <section class="reading-tab-content" id="reading-content-paso2">
+        <div class="reading-paso-header">
+          <h2 class="reading-section-title">📊 Resultados de la Comparación</h2>
+          <p class="reading-paso-instructions">
+            Aquí puede ver los puntajes de los candidatos seleccionados lado a lado.
+          </p>
+        </div>
+        
+        <div class="reading-back-navigation">
+          <button id="reading-go-back-paso1" class="reading-back-btn">
+            ← Volver a seleccionar candidatos
+          </button>
+        </div>
+        
+        <div id="reading-comparison-content">
+          <!-- Filled by JS -->
+        </div>
+        
+        <div class="reading-comparison-legend">
+          <h3>📖 ¿Cómo leer los resultados?</h3>
+          <ul>
+            <li><strong style="color: #059669;">75% o más:</strong> Propuestas muy completas y detalladas</li>
+            <li><strong style="color: #d97706;">50% - 74%:</strong> Propuestas parcialmente desarrolladas</li>
+            <li><strong style="color: #dc2626;">Menos de 50%:</strong> Propuestas incompletas o ausentes</li>
+          </ul>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+</BaseLayout>
+
+<style>
+  /* Mode visibility */
+  .mode-express-content,
+  .mode-reading-content {
+    display: none;
+  }
+  
+  .mode-dashboard-content {
+    display: block;
+  }
+  
+  html[data-mode="express"] .mode-express-content {
+    display: block;
+  }
+  
+  html[data-mode="express"] .mode-dashboard-content,
+  html[data-mode="express"] .mode-reading-content {
+    display: none;
+  }
+  
+  html[data-mode="reading"] .mode-reading-content {
+    display: block;
+  }
+  
+  html[data-mode="reading"] .mode-dashboard-content,
+  html[data-mode="reading"] .mode-express-content {
+    display: none;
+  }
+
+  /* Utility class for hidden elements */
+  .hidden {
+    display: none !important;
+  }
+
+  /* ===========================================
+     DASHBOARD MODE STYLES
+     =========================================== */
+  
+  /* Candidate button selected state */
+  .mode-dashboard-content .candidate-btn.selected {
+    background: #ecfeff !important;
+    border-color: #0891b2 !important;
+    box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.2);
+  }
+  
+  .mode-dashboard-content .candidate-btn.selected span:first-child {
+    color: #0e7490;
+  }
+  
+  /* Comparison table scroll container - scroll solo en mobile */
+  #comparison-container {
+    overflow-x: visible; /* No scroll en desktop */
+  }
+  
+  @media (max-width: 768px) {
+    #comparison-container {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    #comparison-container::-webkit-scrollbar {
+      height: 8px;
+    }
+    
+    #comparison-container::-webkit-scrollbar-track {
+      background: #e2e8f0;
+      border-radius: 4px;
+    }
+    
+    #comparison-container::-webkit-scrollbar-thumb {
+      background: #0891b2;
+      border-radius: 4px;
+    }
+  }
+  
+  /* Comparison header and body - Desktop */
+  #comparison-header,
+  .pillar-row {
+    min-width: auto;
+  }
+  
+  /* Fixed column widths - Desktop */
+  .pillar-row .w-48 {
+    min-width: 10rem;
+  }
+  
+  .candidate-scores > div {
+    min-width: 100px;
+  }
+  
+  /* Mobile: force min-width for horizontal scroll */
+  @media (max-width: 768px) {
+    #comparison-header,
+    .pillar-row {
+      min-width: max-content;
+    }
+    
+    #comparison-header > .flex,
+    .pillar-row > .flex {
+      min-width: max-content;
+    }
+    
+    .candidate-scores {
+      min-width: max-content;
+    }
+  }
+  
+  /* ===========================================
+     DASHBOARD MODE RESPONSIVE - Fluid Typography
+     =========================================== */
+  .mode-dashboard-content h1 {
+    font-size: clamp(1.5rem, 3vw + 0.5rem, 2rem);
+  }
+  
+  .mode-dashboard-content p {
+    font-size: clamp(0.9rem, 1vw + 0.5rem, 1.125rem);
+  }
+  
+  .mode-dashboard-content .candidate-btn span:first-child {
+    font-size: clamp(0.85rem, 0.8vw + 0.5rem, 1rem);
+  }
+  
+  .mode-dashboard-content .candidate-btn span:last-child {
+    font-size: clamp(0.7rem, 0.6vw + 0.4rem, 0.85rem);
+  }
+  
+  .mode-dashboard-content table th,
+  .mode-dashboard-content table td {
+    font-size: clamp(0.8rem, 0.7vw + 0.5rem, 0.95rem);
+  }
+  
+  @media (max-width: 768px) {
+    .mode-dashboard-content .max-w-7xl {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+    
+    .mode-dashboard-content .candidate-btn {
+      padding: 0.625rem 0.75rem;
+    }
+    
+    #comparison-header {
+      position: relative;
+      top: 0;
+    }
+    
+    .pillar-row .w-48 {
+      min-width: 8rem;
+      font-size: 0.85rem;
+    }
+    
+    .candidate-scores > div {
+      min-width: 80px;
+    }
+  }
+  
+  @media (max-width: 640px) {
+    #comparison-container {
+      margin-left: -0.5rem;
+      margin-right: -0.5rem;
+      padding: 0 0.5rem;
+    }
+    
+    .pillar-row .w-48 {
+      min-width: 7rem;
+      font-size: 0.8rem;
+    }
+    
+    .candidate-scores > div {
+      min-width: 70px;
+      font-size: 0.85rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .mode-dashboard-content .max-w-7xl {
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+    }
+    
+    .mode-dashboard-content .candidate-btn {
+      padding: 0.625rem;
+    }
+    
+    .pillar-row .w-48 {
+      min-width: 6rem;
+      font-size: 0.75rem;
+    }
+    
+    .candidate-scores > div {
+      min-width: 60px;
+      font-size: 0.8rem;
+    }
+  }
+
+  /* ===========================================
+     EXPRESS MODE STYLES
+     =========================================== */
+  .express-compare-container {
+    max-width: 50rem;
+    margin: 0 auto;
+    padding: 1.5rem;
+  }
+  
+  /* Express table scroll container */
+  .express-table-scroll {
+    background: #f8fafc;
+    border-radius: 0.5rem;
+  }
+  
+  .express-table-scroll::-webkit-scrollbar {
+    height: 8px;
+  }
+  
+  .express-table-scroll::-webkit-scrollbar-track {
+    background: #e2e8f0;
+    border-radius: 4px;
+  }
+  
+  .express-table-scroll::-webkit-scrollbar-thumb {
+    background: #0891b2;
+    border-radius: 4px;
+  }
+  
+  .express-table-scroll::-webkit-scrollbar-thumb:hover {
+    background: #0e7490;
+  }
+  
+  @media (max-width: 640px) {
+    .express-compare-container {
+      padding: 1rem;
+    }
+    
+    .express-table-scroll {
+      margin-left: -0.5rem;
+      margin-right: -0.5rem;
+      border-radius: 0;
+      border-left: none;
+      border-right: none;
+    }
+  }
+  
+  .express-compare-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .express-compare-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin: 0 0 0.5rem 0;
+  }
+  
+  .express-compare-subtitle {
+    font-size: 1rem;
+    color: #64748b;
+    margin: 0;
+  }
+  
+  .express-selector-box {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .express-selector-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+    color: #334155;
+  }
+  
+  .express-clear-btn {
+    font-size: 0.85rem;
+    color: white !important;
+    background: #dc2626;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  
+  .express-clear-btn:hover {
+    background: #b91c1c;
+  }
+  
+  .express-candidates-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0.5rem;
+  }
+  
+  .express-candidate-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0.75rem;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+  }
+  
+  .express-candidate-btn:hover {
+    border-color: #0891b2;
+  }
+  
+  .express-candidate-btn.selected {
+    background: #ecfeff;
+    border-color: #0891b2;
+  }
+  
+  .express-btn-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #0f172a;
+    line-height: 1.2;
+  }
+  
+  .express-btn-party {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-top: 0.125rem;
+  }
+  
+  .express-hint {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-top: 0.75rem;
+  }
+  
+  .express-comparison {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 1.25rem;
+  }
+  
+  .express-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 3rem;
+    background: #f8fafc;
+    border: 2px dashed #e2e8f0;
+    border-radius: 1rem;
+    color: #64748b;
+  }
+  
+  .express-empty-icon {
+    font-size: 2.5rem;
+  }
+
+  /* ===========================================
+     READING MODE STYLES
+     =========================================== */
+  .reading-compare-container {
+    max-width: 56rem;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    font-family: Georgia, 'Times New Roman', serif !important;
+  }
+  
+  .reading-compare-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 2rem;
+    background: #f8fafc;
+    border: 3px solid #1e3a5f;
+    border-radius: 1rem;
+  }
+  
+  .reading-compare-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1e3a5f;
+    margin: 0 0 1rem 0;
+  }
+  
+  .reading-compare-intro {
+    font-size: 1.25rem;
+    color: #475569;
+    line-height: 1.7;
+    margin: 0;
+  }
+  
+  .reading-selector-section {
+    margin-bottom: 2rem;
+  }
+  
+  .reading-section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e3a5f;
+    margin: 0 0 1rem 0;
+  }
+  
+  .reading-selector-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .reading-selected-count {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #0891b2;
+  }
+  
+  .reading-clear-btn {
+    font-size: 1.1rem;
+    color: white !important;
+    background: #dc2626;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  
+  .reading-clear-btn:hover {
+    background: #b91c1c;
+  }
+  
+  .reading-candidates-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .reading-candidate-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.25rem;
+    background: white;
+    border: 3px solid #e2e8f0;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    width: 100%;
+  }
+  
+  .reading-candidate-btn:hover {
+    border-color: #1e3a5f;
+  }
+  
+  .reading-candidate-btn.selected {
+    background: #ecfeff;
+    border-color: #0891b2;
+    border-width: 4px;
+  }
+  
+  .reading-btn-name {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.2;
+  }
+  
+  .reading-btn-party {
+    font-size: 1.1rem;
+    color: #64748b;
+    margin-top: 0.25rem;
+  }
+  
+  .reading-hint {
+    font-size: 1.1rem;
+    color: #475569;
+    margin-top: 1rem;
+    padding: 1rem;
+    background: #fef3c7;
+    border-radius: 0.5rem;
+  }
+  
+  .reading-comparison {
+    margin-bottom: 2rem;
+  }
+  
+  .reading-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 3rem;
+    background: #f8fafc;
+    border: 3px dashed #cbd5e1;
+    border-radius: 1rem;
+    text-align: center;
+  }
+  
+  .reading-empty-icon {
+    font-size: 3rem;
+  }
+  
+  .reading-empty h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e3a5f;
+    margin: 0;
+  }
+  
+  .reading-empty p {
+    font-size: 1.15rem;
+    color: #64748b;
+    margin: 0;
+  }
+
+  /* Reading Mode Tabs */
+  .reading-tabs-nav {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    background: #f1f5f9;
+    padding: 0.5rem;
+    border-radius: 1rem;
+  }
+  
+  .reading-tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 1.25rem 1.5rem;
+    background: transparent;
+    border: none;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  
+  .reading-tab:not(:disabled):hover {
+    background: white;
+  }
+  
+  .reading-tab.active {
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .reading-tab:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .reading-tab-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: #e2e8f0;
+    color: #475569;
+    border-radius: 50%;
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+  
+  .reading-tab.active .reading-tab-number {
+    background: #0891b2;
+    color: white;
+  }
+  
+  .reading-tab-text {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #334155;
+  }
+  
+  .reading-tab.active .reading-tab-text {
+    color: #0f172a;
+  }
+  
+  .reading-tab-count {
+    font-size: 1rem;
+    color: #64748b;
+  }
+  
+  /* Tab Content */
+  .reading-tab-content {
+    display: none;
+  }
+  
+  .reading-tab-content.active {
+    display: block;
+  }
+  
+  .reading-paso-header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e2e8f0;
+  }
+  
+  .reading-paso-instructions {
+    font-size: 1.15rem;
+    color: #475569;
+    line-height: 1.6;
+    margin: 0.5rem 0 0 0;
+  }
+  
+  .reading-paso-footer {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .reading-next-btn {
+    width: 100%;
+    padding: 1.25rem 2rem;
+    background: #0891b2;
+    color: white !important;
+    border: none;
+    border-radius: 0.75rem;
+    font-size: 1.35rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  
+  .reading-next-btn:disabled {
+    background: #cbd5e1;
+    cursor: not-allowed;
+  }
+  
+  .reading-next-btn:not(:disabled):hover {
+    background: #0e7490;
+  }
+  
+  .reading-back-navigation {
+    margin-bottom: 1.5rem;
+  }
+  
+  .reading-back-btn {
+    padding: 1rem 1.5rem;
+    background: white;
+    color: #0891b2 !important;
+    border: 3px solid #0891b2;
+    border-radius: 0.75rem;
+    font-size: 1.15rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  
+  .reading-back-btn:hover {
+    background: #ecfeff;
+  }
+  
+  .reading-comparison-legend {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 1rem;
+  }
+  
+  .reading-comparison-legend h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1e3a5f;
+    margin: 0 0 1rem 0;
+  }
+  
+  .reading-comparison-legend ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .reading-comparison-legend li {
+    font-size: 1.1rem;
+    color: #475569;
+    line-height: 1.5;
+  }
+  
+  @media (max-width: 768px) {
+    .express-candidates-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .reading-compare-title {
+      font-size: 1.75rem;
+    }
+    
+    .reading-tabs-nav {
+      flex-direction: column;
+    }
+    
+    .reading-tab {
+      justify-content: flex-start;
+      padding: 1rem;
+    }
+    
+    .reading-tab-text {
+      font-size: 1.1rem;
+    }
+    
+    /* Reading Mode Responsive Comparison */
+    .reading-comparison-header {
+      grid-template-columns: 1fr !important;
+      gap: 0.75rem !important;
+    }
+    
+    .reading-comparison-header .header-pilar-label {
+      display: none !important;
+    }
+    
+    .reading-comparison-header .header-candidate {
+      display: flex !important;
+      flex-direction: row !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+      padding: 0.75rem !important;
+      background: rgba(255,255,255,0.1) !important;
+      border-radius: 0.5rem !important;
+    }
+    
+    .reading-comparison-header .header-candidate-name {
+      font-size: 1.25rem !important;
+    }
+    
+    .reading-comparison-header .header-candidate-score {
+      font-size: 1.5rem !important;
+    }
+    
+    .reading-comparison-row {
+      grid-template-columns: 1fr !important;
+      gap: 0.5rem !important;
+      padding: 1rem !important;
+    }
+    
+    .reading-comparison-row .row-pilar-info {
+      margin-bottom: 0.75rem !important;
+      padding-bottom: 0.75rem !important;
+      border-bottom: 2px solid #e2e8f0 !important;
+    }
+    
+    .reading-comparison-row .row-pilar-id {
+      font-size: 1rem !important;
+    }
+    
+    .reading-comparison-row .row-pilar-name {
+      font-size: 0.9rem !important;
+    }
+    
+    .reading-comparison-row .row-scores-container {
+      display: grid !important;
+      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)) !important;
+      gap: 0.5rem !important;
+    }
+    
+    .reading-comparison-row .row-score-cell {
+      padding: 0.5rem !important;
+    }
+    
+    .reading-comparison-row .row-score-candidate {
+      display: block !important;
+      font-size: 0.75rem !important;
+      color: #475569 !important;
+      margin-bottom: 0.25rem !important;
+      font-weight: 600 !important;
+    }
+    
+    .reading-comparison-row .row-score-percent {
+      font-size: 1.35rem !important;
+    }
+    
+    .reading-comparison-row .row-scores-container {
+      display: grid !important;
+      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)) !important;
+      gap: 0.5rem !important;
+    }
+    
+    .reading-clear-bottom-btn {
+      padding: 0.85rem 1.5rem !important;
+      font-size: 1rem !important;
+    }
+    
+    .reading-legend-hint {
+      font-size: 0.9rem !important;
+      padding: 0.65rem !important;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .reading-compare-title {
+      font-size: 1.5rem;
+    }
+    
+    .reading-compare-container {
+      padding: 1rem 0.75rem;
+    }
+    
+    .reading-compare-header {
+      padding: 1.25rem;
+    }
+    
+    .reading-compare-intro {
+      font-size: 1.1rem;
+    }
+    
+    .reading-comparison-header .header-candidate-name {
+      font-size: 1.1rem !important;
+    }
+    
+    .reading-comparison-header .header-candidate-score {
+      font-size: 1.25rem !important;
+    }
+    
+    .reading-comparison-row .row-scores-container {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+    
+    .reading-comparison-row .row-score-percent {
+      font-size: 1.2rem !important;
+    }
+    
+    .reading-next-btn {
+      font-size: 1.15rem;
+      padding: 1rem 1.5rem;
+    }
+    
+    .reading-back-btn {
+      font-size: 1rem;
+      padding: 0.85rem 1.25rem;
+    }
+    
+    .reading-btn-name {
+      font-size: 1.15rem;
+    }
+    
+    .reading-btn-party {
+      font-size: 0.95rem;
+    }
+    
+    .reading-candidate-btn {
+      padding: 1rem;
+    }
+    
+    .reading-section-title {
+      font-size: 1.25rem;
+    }
+    
+    .reading-selected-count {
+      font-size: 1rem;
+    }
+    
+    .reading-clear-btn {
+      font-size: 0.95rem;
+      padding: 0.6rem 1rem;
+    }
+    
+    .reading-selector-header {
+      flex-direction: column;
+      gap: 0.75rem;
+      align-items: flex-start;
+    }
+  }
+
+  /* ===========================================
+     VIEW PLAN LINK STYLES (All Modes)
+     =========================================== */
+  .score-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  
+  /* Dashboard Mode - "Ver >>" link */
+  .view-plan-anchor {
+    display: inline-block;
+    color: #0891b2 !important;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-decoration: none !important;
+    transition: all 0.2s;
+  }
+  
+  .view-plan-anchor:hover {
+    color: #0e7490 !important;
+    text-decoration: underline !important;
+  }
+  
+  .view-plan-anchor.no-proposal {
+    color: #94a3b8 !important;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  
+  /* Express & Reading Mode - Percentage as link */
+  .percent-link {
+    color: inherit !important;
+    text-decoration: none !important;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  
+  .percent-link:hover {
+    text-decoration: underline !important;
+    opacity: 0.8;
+  }
+  
+  .percent-no-link {
+    opacity: 0.5;
+  }
+  
+  /* Reading mode adjustments */
+  html[data-mode="reading"] .percent-link {
+    font-size: 1.75rem;
+    font-weight: 800;
+  }
+  
+  /* Reading mode horizontal scroll container */
+  .reading-table-scroll-container {
+    border: 2px solid #e2e8f0;
+    border-radius: 0.75rem;
+    padding: 0.5rem;
+    background: #f8fafc;
+  }
+  
+  .reading-table-scroll-container::-webkit-scrollbar {
+    height: 10px;
+  }
+  
+  .reading-table-scroll-container::-webkit-scrollbar-track {
+    background: #e2e8f0;
+    border-radius: 5px;
+  }
+  
+  .reading-table-scroll-container::-webkit-scrollbar-thumb {
+    background: #0891b2;
+    border-radius: 5px;
+  }
+  
+  .reading-table-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: #0e7490;
+  }
+  
+  @media (max-width: 768px) {
+    .reading-table-scroll-container {
+      margin-left: -0.5rem;
+      margin-right: -0.5rem;
+      border-radius: 0;
+      border-left: none;
+      border-right: none;
+    }
+    
+    .reading-table-inner {
+      padding: 0 0.5rem;
+    }
+  }
+</style>
+
+<script define:vars={{ candidates: candidatesWithNames, scoresByCandidate, pillars, proposalIndex, analysisByCandidate, proposals }}>
+  // Helper to get candidate display name
+  function getDisplayName(candidate) {
+    if (candidate.displayName) return candidate.displayName;
+    const name = candidate.candidate_name;
+    if (name && name !== 'Por determinar' && name !== 'no_especificado') {
+      return name;
+    }
+    return candidate.party_name || 'N/A';
+  }
+
+  // Dashboard Mode Logic
+  const selectedCandidates = new Set();
+  const maxSelection = 4;
+  const minSelection = 2;
+
+  const candidateBtns = document.querySelectorAll('.mode-dashboard-content .candidate-btn');
+  const clearBtn = document.getElementById('clear-selection');
+  const selectionHint = document.getElementById('selection-hint');
+  const comparisonContainer = document.getElementById('comparison-container');
+  const emptyState = document.getElementById('empty-state');
+  const headerCandidates = document.getElementById('header-candidates');
+  const overallScores = document.getElementById('overall-scores');
+  const comparativeSummary = document.getElementById('comparative-summary');
+  const penaltiesComparison = document.getElementById('penalties-comparison');
+  const penaltiesContent = document.getElementById('penalties-content');
+  const bonusesComparison = document.getElementById('bonuses-comparison');
+  const bonusesContent = document.getElementById('bonuses-content');
+  const flagsComparison = document.getElementById('flags-comparison');
+  const flagsContent = document.getElementById('flags-content');
+  const urgencyComparison = document.getElementById('urgency-comparison');
+  const urgencyContent = document.getElementById('urgency-content');
+
+  // Check URL params
+  const urlParams = new URLSearchParams(window.location.search);
+  const preselected = urlParams.get('c');
+  if (preselected) {
+    selectedCandidates.add(preselected);
+    document.querySelector(`.mode-dashboard-content [data-candidate-id="${preselected}"]`)?.classList.add('selected');
+  }
+
+  candidateBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.candidateId;
+      
+      if (selectedCandidates.has(id)) {
+        selectedCandidates.delete(id);
+        btn.classList.remove('selected');
+      } else if (selectedCandidates.size < maxSelection) {
+        selectedCandidates.add(id);
+        btn.classList.add('selected');
+      }
+      
+      updateUI();
+    });
+  });
+
+  clearBtn?.addEventListener('click', () => {
+    selectedCandidates.clear();
+    candidateBtns.forEach(btn => {
+      btn.classList.remove('selected');
+    });
+    updateUI();
+  });
+
+  function updateUI() {
+    const count = selectedCandidates.size;
+    
+    // Update hint
+    if (selectionHint) {
+      if (count === 0) {
+        selectionHint.textContent = 'Haz clic en los candidatos que deseas comparar (mínimo 2, máximo 4)';
+      } else if (count < minSelection) {
+        selectionHint.textContent = `${count} seleccionado. Selecciona al menos ${minSelection - count} más.`;
+      } else {
+        selectionHint.textContent = `${count} candidatos seleccionados.`;
+      }
+    }
+    
+    // Show/hide clear button
+    clearBtn?.classList.toggle('hidden', count === 0);
+    
+    // Show comparison or empty state
+    if (count >= minSelection) {
+      comparisonContainer?.classList.remove('hidden');
+      emptyState?.classList.add('hidden');
+      renderComparison();
+    } else {
+      comparisonContainer?.classList.add('hidden');
+      emptyState?.classList.remove('hidden');
+    }
+  }
+
+  // Helper to get PDF link for Dashboard Mode ("Ver >>")
+  function getDashboardPdfLink(candidateId, pillarId) {
+    const proposal = proposalIndex[candidateId]?.[pillarId];
+    if (proposal && proposal.pdfId) {
+      const pdfUrl = `/planes/${proposal.pdfId}.pdf#page=${proposal.page}`;
+      return `<a href="${pdfUrl}" target="_blank" rel="noopener noreferrer" class="view-plan-anchor" title="Ver página ${proposal.page}">Ver »</a>`;
+    }
+    return `<span class="view-plan-anchor no-proposal">—</span>`;
+  }
+
+  // Helper to get percentage as PDF link for Express/Reading Mode
+  function getPercentPdfLink(candidateId, pillarId, percent, textColor) {
+    const proposal = proposalIndex[candidateId]?.[pillarId];
+    if (proposal && proposal.pdfId) {
+      const pdfUrl = `/planes/${proposal.pdfId}.pdf#page=${proposal.page}`;
+      return `<a href="${pdfUrl}" target="_blank" rel="noopener noreferrer" class="percent-link" style="color: ${textColor};" title="Ver plan - página ${proposal.page}">${percent}%</a>`;
+    }
+    return `<span class="percent-no-link" style="color: ${textColor};">${percent}%</span>`;
+  }
+
+  // ============================================
+  // HELPER FUNCTIONS (Global scope for all modes)
+  // ============================================
+  
+  function getRiskLevel(candidateId) {
+    if (!analysisByCandidate) return 'BAJO';
+    const analysis = analysisByCandidate[candidateId];
+    return analysis?.risk_level || 'BAJO';
+  }
+
+  function getRiskColor(risk) {
+    const colors = { ALTO: 'text-red-600 bg-red-50', MEDIO: 'text-amber-600 bg-amber-50', BAJO: 'text-green-600 bg-green-50' };
+    return colors[risk] || colors.BAJO;
+  }
+
+  function getRiskEmoji(risk) {
+    const emojis = { ALTO: '🔴', MEDIO: '🟠', BAJO: '🟢' };
+    return emojis[risk] || emojis.BAJO;
+  }
+
+  function getTotalPenalties(score) {
+    return Math.abs(score.overall.total_penalties_applied || 0);
+  }
+
+  function getFiscalPenalty(score) {
+    return Math.abs(score.fiscal_analysis.total_penalty || 0);
+  }
+
+  function getOmissionPenalty(score) {
+    const oa = score.omission_analysis;
+    if (!oa) return 0;
+    return Math.abs((oa.urgency_penalty || 0) + (oa.pillar_penalty || 0));
+  }
+
+  function getViabilityPenalty(score) {
+    return (score.pillar_scores || []).reduce((sum, ps) => {
+      return sum + Math.abs(ps.viability_penalty || 0);
+    }, 0);
+  }
+
+  function getTotalBonuses(score) {
+    return (score.pillar_scores || []).reduce((sum, ps) => {
+      return sum + (ps.bonus_multiple || 0) + (ps.bonus_quality || 0) + (ps.bonus_funding || 0);
+    }, 0);
+  }
+
+  function getBonusesByType(score) {
+    return (score.pillar_scores || []).reduce((acc, ps) => {
+      acc.multiple += ps.bonus_multiple || 0;
+      acc.quality += ps.bonus_quality || 0;
+      acc.funding += ps.bonus_funding || 0;
+      return acc;
+    }, { multiple: 0, quality: 0, funding: 0 });
+  }
+
+  function getUrgencyCoverage(score) {
+    const oa = score.omission_analysis;
+    if (!oa?.urgency_coverage) return { security: false, ccss: false, employment: false, crime: false };
+    return {
+      security: oa.urgency_coverage.security_operations?.covered || false,
+      ccss: oa.urgency_coverage.ccss_crisis?.covered || false,
+      employment: oa.urgency_coverage.formal_employment?.covered || false,
+      crime: oa.urgency_coverage.organized_crime?.covered || false,
+    };
+  }
+
+  // Mapeo completo de labels para flags informativos
+  function getFlagLabel(key, category, flagData) {
+    const labelMaps = {
+      current_proposals: {
+        violates_separation_powers: 'Viola Separación de Poderes',
+        violates_fundamental_rights: 'Viola Derechos Fundamentales',
+        violates_constitutional_guarantees: 'Viola Garantías Constitucionales',
+        violates_constitutional_procedures: 'Viola Procedimientos Constitucionales',
+      },
+      dictatorial_patterns: {
+        cuba_similarity: 'Similitudes con Modelo Cubano',
+        venezuela_similarity: 'Similitudes con Modelo Venezolano',
+      },
+      power_negotiation_requirements: {
+        requires_assembly_approval: 'Requiere Aprobación de la Asamblea',
+        requires_constitutional_reform: 'Requiere Reforma Constitucional',
+        requires_judicial_review: 'Requiere Revisión Judicial',
+        requires_regulatory_changes: 'Requiere Cambios Regulatorios',
+      },
+      historical: {
+        anti_democratic_behavior: 'Comportamiento Anti-Democrático',
+        human_rights_violations: 'Violaciones de Derechos Humanos',
+        corruption_convictions: 'Corrupción Verificada',
+      },
+      contradictions: {
+        historical_current_contradiction: 'Contradicción Histórico-Actual',
+        corruption_transparency_concern: 'Preocupación Corrupción-Transparencia',
+      },
+    };
+    
+    // Si hay un description en el flag, usarlo
+    if (flagData?.description) {
+      return flagData.description;
+    }
+    
+    // Si hay un mapeo específico, usarlo
+    if (labelMaps[category] && labelMaps[category][key]) {
+      return labelMaps[category][key];
+    }
+    
+    // Fallback: convertir snake_case a título legible
+    return key
+      .split('_')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  }
+
+  function getActiveFlags(score) {
+    const flags = score.informative_flags;
+    if (!flags) return [];
+    
+    const active = [];
+    if (flags.current_proposals) {
+      Object.entries(flags.current_proposals).forEach(([key, val]) => {
+        if (val?.active) {
+          active.push({ 
+            category: 'Propuestas Actuales', 
+            label: getFlagLabel(key, 'current_proposals', val),
+            key: key
+          });
+        }
+      });
+    }
+    if (flags.dictatorial_patterns) {
+      Object.entries(flags.dictatorial_patterns).forEach(([key, val]) => {
+        if (val?.active) {
+          active.push({ 
+            category: 'Similitudes Históricas', 
+            label: getFlagLabel(key, 'dictatorial_patterns', val),
+            key: key
+          });
+        }
+      });
+    }
+    if (flags.power_negotiation_requirements) {
+      Object.entries(flags.power_negotiation_requirements).forEach(([key, val]) => {
+        if (val?.active) {
+          active.push({ 
+            category: 'Negociación de Poder', 
+            label: getFlagLabel(key, 'power_negotiation_requirements', val),
+            key: key
+          });
+        }
+      });
+    }
+    if (flags.historical) {
+      Object.entries(flags.historical).forEach(([key, val]) => {
+        if (val?.active) {
+          active.push({ 
+            category: 'Evidencia Histórica', 
+            label: getFlagLabel(key, 'historical', val),
+            key: key
+          });
+        }
+      });
+    }
+    if (flags.contradictions) {
+      Object.entries(flags.contradictions).forEach(([key, val]) => {
+        if (val?.active) {
+          active.push({ 
+            category: 'Contradicciones', 
+            label: getFlagLabel(key, 'contradictions', val),
+            key: key
+          });
+        }
+      });
+    }
+    return active;
+  }
+
+  function renderComparison() {
+    const selected = Array.from(selectedCandidates);
+    const candidateData = selected.map(id => {
+      const candidate = candidates.find(c => c.candidate_id === id);
+      const score = scoresByCandidate[id];
+      const analysis = analysisByCandidate[id];
+      return { candidate, score, analysis };
+    });
+
+    // Check if mobile (768px breakpoint)
+    const isMobile = window.innerWidth < 768;
+
+    // Render Comparative Summary
+    if (comparativeSummary) {
+      comparativeSummary.innerHTML = `
+        <div class="card p-5 bg-gradient-to-br from-slate-50 to-white border border-slate-200">
+          <h3 class="font-bold text-slate-900 mb-4 text-lg">📊 Resumen Comparativo</h3>
+          <div class="grid grid-cols-1 md:grid-cols-${candidateData.length} gap-4">
+            ${candidateData.map(({ candidate, score, analysis }) => {
+              const riskLevel = getRiskLevel(candidate.candidate_id);
+              const riskColor = getRiskColor(riskLevel);
+              const riskEmoji = getRiskEmoji(riskLevel);
+              const totalPenalties = getTotalPenalties(score);
+              const totalBonuses = getTotalBonuses(score);
+              const weightedPercent = Math.round(score.overall.weighted_sum * 100);
+              
+              return `
+                <div class="bg-white rounded-lg border-2 border-slate-200 p-4">
+                  <div class="font-bold text-slate-900 mb-2">${getDisplayName(candidate)}</div>
+                  <div class="text-sm text-slate-500 mb-3">${candidate.party_name}</div>
+                  
+                  <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                      <span class="text-sm text-slate-600">Puntaje General:</span>
+                      <span class="text-xl font-bold text-cyan-600">${weightedPercent}%</span>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                      <span class="text-sm text-slate-600">Riesgo Fiscal:</span>
+                      <span class="text-sm px-2 py-1 rounded ${riskColor} font-semibold">${riskEmoji} ${riskLevel}</span>
+                    </div>
+                    
+                    ${totalPenalties > 0 ? `
+                      <div class="flex items-center justify-between">
+                        <span class="text-sm text-slate-600">Penalizaciones:</span>
+                        <span class="text-sm font-bold text-red-600">-${Math.round(totalPenalties)}</span>
+                      </div>
+                    ` : ''}
+                    
+                    ${totalBonuses > 0 ? `
+                      <div class="flex items-center justify-between">
+                        <span class="text-sm text-slate-600">Bonos:</span>
+                        <span class="text-sm font-bold text-emerald-600">+${totalBonuses.toFixed(1)}</span>
+                      </div>
+                    ` : ''}
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    // Render Penalties Comparison
+    if (penaltiesContent) {
+      penaltiesContent.innerHTML = `
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-slate-200">
+                <th class="text-left py-2 px-3 font-semibold text-slate-700">Tipo</th>
+                ${candidateData.map(({ candidate }) => `
+                  <th class="text-center py-2 px-3 font-semibold text-slate-700">${getDisplayName(candidate)}</th>
+                `).join('')}
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-slate-100">
+                <td class="py-2 px-3 text-slate-600">💰 Penalización Fiscal</td>
+                ${candidateData.map(({ score }) => {
+                  const fiscal = getFiscalPenalty(score);
+                  return `<td class="text-center py-2 px-3">${fiscal > 0 ? `<span class="text-red-600 font-bold">-${Math.round(fiscal)}</span>` : '<span class="text-slate-400">0</span>'}</td>`;
+                }).join('')}
+              </tr>
+              <tr class="border-b border-slate-100">
+                <td class="py-2 px-3 text-slate-600">🚨 Penalización por Omisión</td>
+                ${candidateData.map(({ score }) => {
+                  const omission = getOmissionPenalty(score);
+                  return `<td class="text-center py-2 px-3">${omission > 0 ? `<span class="text-red-600 font-bold">-${Math.round(omission)}</span>` : '<span class="text-slate-400">0</span>'}</td>`;
+                }).join('')}
+              </tr>
+              <tr class="border-b border-slate-100">
+                <td class="py-2 px-3 text-slate-600">⚖️ Penalización por Viabilidad</td>
+                ${candidateData.map(({ score }) => {
+                  const viability = getViabilityPenalty(score);
+                  return `<td class="text-center py-2 px-3">${viability > 0 ? `<span class="text-red-600 font-bold">-${Math.round(viability)}</span>` : '<span class="text-slate-400">0</span>'}</td>`;
+                }).join('')}
+              </tr>
+              <tr class="bg-slate-50 font-semibold">
+                <td class="py-2 px-3 text-slate-900">Total Penalizaciones</td>
+                ${candidateData.map(({ score }) => {
+                  const total = getTotalPenalties(score);
+                  return `<td class="text-center py-2 px-3 text-red-600">${total > 0 ? `-${Math.round(total)}` : '0'}</td>`;
+                }).join('')}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    // Render Bonuses Comparison
+    if (bonusesContent) {
+      bonusesContent.innerHTML = `
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-slate-200">
+                <th class="text-left py-2 px-3 font-semibold text-slate-700">Tipo de Bono</th>
+                ${candidateData.map(({ candidate }) => `
+                  <th class="text-center py-2 px-3 font-semibold text-slate-700">${getDisplayName(candidate)}</th>
+                `).join('')}
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-slate-100">
+                <td class="py-2 px-3 text-slate-600">🎯 Múltiples Propuestas (3+)</td>
+                ${candidateData.map(({ score }) => {
+                  const bonuses = getBonusesByType(score);
+                  return `<td class="text-center py-2 px-3">${bonuses.multiple > 0 ? `<span class="text-emerald-600 font-bold">+${bonuses.multiple.toFixed(1)}</span>` : '<span class="text-slate-400">0</span>'}</td>`;
+                }).join('')}
+              </tr>
+              <tr class="border-b border-slate-100">
+                <td class="py-2 px-3 text-slate-600">⭐ Calidad (Propuestas Completas 4/4)</td>
+                ${candidateData.map(({ score }) => {
+                  const bonuses = getBonusesByType(score);
+                  return `<td class="text-center py-2 px-3">${bonuses.quality > 0 ? `<span class="text-emerald-600 font-bold">+${bonuses.quality.toFixed(1)}</span>` : '<span class="text-slate-400">0</span>'}</td>`;
+                }).join('')}
+              </tr>
+              <tr class="border-b border-slate-100">
+                <td class="py-2 px-3 text-slate-600">💰 Financiamiento</td>
+                ${candidateData.map(({ score }) => {
+                  const bonuses = getBonusesByType(score);
+                  return `<td class="text-center py-2 px-3">${bonuses.funding > 0 ? `<span class="text-emerald-600 font-bold">+${bonuses.funding.toFixed(1)}</span>` : '<span class="text-slate-400">0</span>'}</td>`;
+                }).join('')}
+              </tr>
+              <tr class="bg-slate-50 font-semibold">
+                <td class="py-2 px-3 text-slate-900">Total Bonos</td>
+                ${candidateData.map(({ score }) => {
+                  const total = getTotalBonuses(score);
+                  return `<td class="text-center py-2 px-3 text-emerald-600">${total > 0 ? `+${total.toFixed(1)}` : '0'}</td>`;
+                }).join('')}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    // Render Flags Comparison
+    if (flagsContent) {
+      // Recopilar todos los flags únicos con su categoría
+      const allFlagsMap = new Map();
+      candidateData.forEach(({ score }) => {
+        getActiveFlags(score).forEach(flag => {
+          // Usar key como identificador único, pero mostrar label traducido
+          if (!allFlagsMap.has(flag.key)) {
+            allFlagsMap.set(flag.key, { label: flag.label, category: flag.category });
+          }
+        });
+      });
+      
+      if (allFlagsMap.size > 0) {
+        // Agrupar por categoría para mejor organización
+        const flagsByCategory = {};
+        allFlagsMap.forEach((flag, key) => {
+          if (!flagsByCategory[flag.category]) {
+            flagsByCategory[flag.category] = [];
+          }
+          flagsByCategory[flag.category].push({ key, ...flag });
+        });
+        
+        flagsContent.innerHTML = `
+          <div class="space-y-4">
+            ${Object.entries(flagsByCategory).map(([category, flags]) => `
+              <div>
+                <h4 class="font-semibold text-slate-700 mb-2 text-sm">${category}</h4>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-sm">
+                    <thead>
+                      <tr class="border-b border-slate-200">
+                        <th class="text-left py-2 px-3 font-semibold text-slate-700">Flag</th>
+                        ${candidateData.map(({ candidate }) => `
+                          <th class="text-center py-2 px-3 font-semibold text-slate-700">${getDisplayName(candidate)}</th>
+                        `).join('')}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${flags.map(flag => `
+                        <tr class="border-b border-slate-100">
+                          <td class="py-2 px-3 text-slate-600">${flag.label}</td>
+                          ${candidateData.map(({ score }) => {
+                            const candidateFlags = getActiveFlags(score);
+                            const hasFlag = candidateFlags.some(f => f.key === flag.key);
+                            return `<td class="text-center py-2 px-3">${hasFlag ? '<span class="text-blue-600 font-bold">✓</span>' : '<span class="text-slate-300">—</span>'}</td>`;
+                          }).join('')}
+                        </tr>
+                      `).join('')}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      } else {
+        flagsContent.innerHTML = '<p class="text-slate-500 text-sm">Ninguno de los candidatos seleccionados tiene flags informativos activos.</p>';
+      }
+    }
+
+    // Render Urgency Coverage Comparison
+    if (urgencyContent) {
+      urgencyContent.innerHTML = `
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-slate-200">
+                <th class="text-left py-2 px-3 font-semibold text-slate-700">Urgencia Nacional</th>
+                ${candidateData.map(({ candidate }) => `
+                  <th class="text-center py-2 px-3 font-semibold text-slate-700">${getDisplayName(candidate)}</th>
+                `).join('')}
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-slate-100">
+                <td class="py-2 px-3 text-slate-600">🛡️ Operaciones de Seguridad</td>
+                ${candidateData.map(({ score }) => {
+                  const coverage = getUrgencyCoverage(score);
+                  return `<td class="text-center py-2 px-3">${coverage.security ? '<span class="text-green-600 font-bold">✓ Cubre</span>' : '<span class="text-red-600 font-bold">✗ No cubre</span>'}</td>`;
+                }).join('')}
+              </tr>
+              <tr class="border-b border-slate-100">
+                <td class="py-2 px-3 text-slate-600">🏥 Crisis CCSS</td>
+                ${candidateData.map(({ score }) => {
+                  const coverage = getUrgencyCoverage(score);
+                  return `<td class="text-center py-2 px-3">${coverage.ccss ? '<span class="text-green-600 font-bold">✓ Cubre</span>' : '<span class="text-red-600 font-bold">✗ No cubre</span>'}</td>`;
+                }).join('')}
+              </tr>
+              <tr class="border-b border-slate-100">
+                <td class="py-2 px-3 text-slate-600">💼 Empleo Formal</td>
+                ${candidateData.map(({ score }) => {
+                  const coverage = getUrgencyCoverage(score);
+                  return `<td class="text-center py-2 px-3">${coverage.employment ? '<span class="text-green-600 font-bold">✓ Cubre</span>' : '<span class="text-red-600 font-bold">✗ No cubre</span>'}</td>`;
+                }).join('')}
+              </tr>
+              <tr class="border-b border-slate-100">
+                <td class="py-2 px-3 text-slate-600">🚨 Crimen Organizado</td>
+                ${candidateData.map(({ score }) => {
+                  const coverage = getUrgencyCoverage(score);
+                  return `<td class="text-center py-2 px-3">${coverage.crime ? '<span class="text-green-600 font-bold">✓ Cubre</span>' : '<span class="text-red-600 font-bold">✗ No cubre</span>'}</td>`;
+                }).join('')}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    // Render header with candidate names (or party acronyms on mobile)
+    if (headerCandidates) {
+      headerCandidates.innerHTML = candidateData.map(({ candidate, score }) => {
+        if (isMobile) {
+          // Mobile: show only party acronym and score
+          return `
+            <div class="flex-1 text-center px-1" style="min-width: 60px;">
+              <div class="font-bold text-slate-900 text-base">${candidate.pdf_id}</div>
+              <div class="text-lg font-bold text-cyan-600">${Math.round(score.overall.weighted_sum * 100)}%</div>
+            </div>
+          `;
+        } else {
+          // Desktop: show full name, party and score
+          return `
+        <div class="flex-1 text-center px-2">
+              <div class="font-bold text-slate-900 text-sm line-clamp-1">${getDisplayName(candidate)}</div>
+              <div class="text-xs text-slate-500">${candidate.party_name}</div>
+              <div class="text-lg font-bold text-cyan-600">${Math.round(score.overall.weighted_sum * 100)}%</div>
+        </div>
+          `;
+        }
+      }).join('');
+    }
+
+    // Render pillar scores with "Ver >>" links (Dashboard)
+    document.querySelectorAll('.pillar-row').forEach(row => {
+      const pillarId = row.dataset.pillarId;
+      const scoresContainer = row.querySelector('.candidate-scores');
+      
+      if (scoresContainer) {
+        scoresContainer.innerHTML = candidateData.map(({ candidate, score }) => {
+          const pillarScore = score.pillar_scores.find(ps => ps.pillar_id === pillarId);
+          if (!pillarScore) return '<div class="flex-1">-</div>';
+          
+          const percent = Math.round((pillarScore.effective_score / 4) * 100);
+          
+          // v7: Obtener bonos y violaciones
+          const bonuses = score.pillar_scores.find(ps => ps.pillar_id === pillarId);
+          const hasBonuses = bonuses && ((bonuses.bonus_multiple || 0) + (bonuses.bonus_quality || 0) + (bonuses.bonus_funding || 0)) > 0;
+          const hasViability = bonuses && (bonuses.viability_penalty || 0) < 0;
+          const numProposals = bonuses?.num_proposals || 0;
+          
+          // Calcular dimensiones promedio (D1-D4)
+          const pillarProposals = proposals.filter(p => p.candidate_id === candidate.candidate_id && p.pillar_id === pillarId);
+          let avgDimensions = 0;
+          if (pillarProposals.length > 0) {
+            const totalDimensions = pillarProposals.reduce((sum, p) => {
+              const d = p.dimensions || {};
+              return sum + (d.existence || 0) + (d.when || 0) + (d.how || 0) + (d.funding || 0);
+            }, 0);
+            avgDimensions = totalDimensions / pillarProposals.length;
+          }
+          
+          return `
+            <div class="flex-1 px-2 score-cell">
+              <div class="flex items-center gap-2 w-full">
+                <div class="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div class="h-full bg-emerald-500 rounded-full" style="width: ${percent}%"></div>
+                </div>
+                <span class="font-bold text-sm">${percent}%</span>
+              </div>
+              <div class="text-xs text-slate-600 mt-1">
+                <span class="font-semibold">${pillarScore.effective_score.toFixed(1)}/4</span>
+                ${avgDimensions > 0 ? `<span class="text-slate-500 ml-1">(D: ${avgDimensions.toFixed(1)}/4)</span>` : ''}
+              </div>
+              ${numProposals > 0 ? `<div class="text-xs text-slate-500 mt-0.5">${numProposals} propuesta${numProposals !== 1 ? 's' : ''}</div>` : ''}
+              ${hasBonuses ? `
+                <div class="flex gap-1 mt-1 flex-wrap">
+                  ${bonuses.bonus_multiple > 0 ? `<span class="text-xs px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded" title="Bono por múltiples propuestas">🎯 +${bonuses.bonus_multiple}</span>` : ''}
+                  ${bonuses.bonus_quality > 0 ? `<span class="text-xs px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded" title="Bono por calidad">⭐ +${bonuses.bonus_quality}</span>` : ''}
+                  ${bonuses.bonus_funding > 0 ? `<span class="text-xs px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded" title="Bono por financiamiento">💰 +${bonuses.bonus_funding}</span>` : ''}
+                </div>
+              ` : ''}
+              ${hasViability ? `
+                <div class="text-xs text-red-600 mt-1" title="Violación constitucional">
+                  ⚖️ ${bonuses.viability_penalty}
+                </div>
+              ` : ''}
+              ${getDashboardPdfLink(candidate.candidate_id, pillarId)}
+            </div>
+          `;
+        }).join('');
+      }
+    });
+
+    // Render overall scores with candidate names (v7: con flags informativos y bonos)
+    if (overallScores) {
+      overallScores.innerHTML = candidateData.map(({ candidate, score, analysis }) => {
+        const totalBonuses = getTotalBonuses(score);
+        const totalPenalties = getTotalPenalties(score);
+        const riskLevel = getRiskLevel(candidate.candidate_id);
+        const riskColor = getRiskColor(riskLevel);
+        const riskEmoji = getRiskEmoji(riskLevel);
+        const hasFlags = getActiveFlags(score).length > 0;
+        const urgencyCoverage = getUrgencyCoverage(score);
+        const coverageCount = Object.values(urgencyCoverage).filter(Boolean).length;
+        
+        return `
+          <div class="p-4 bg-white rounded-lg border border-slate-200">
+            <div class="flex items-start justify-between mb-3">
+              <div class="flex-1">
+                <div class="font-bold text-slate-900 text-lg">${getDisplayName(candidate)}</div>
+                <div class="text-sm text-slate-500">${candidate.party_name}</div>
+              </div>
+              <div class="text-right">
+                <div class="text-3xl font-bold text-cyan-600">${Math.round(score.overall.weighted_sum * 100)}%</div>
+                <div class="text-xs text-slate-500">Ponderado General</div>
+              </div>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-3 text-sm">
+              <div>
+                <span class="text-slate-600">Riesgo Fiscal:</span>
+                <span class="ml-2 px-2 py-1 rounded text-xs font-semibold ${riskColor}">${riskEmoji} ${riskLevel}</span>
+              </div>
+              
+              ${totalPenalties > 0 ? `
+                <div>
+                  <span class="text-slate-600">Penalizaciones:</span>
+                  <span class="ml-2 text-red-600 font-bold">-${Math.round(totalPenalties)}</span>
+                </div>
+              ` : '<div><span class="text-slate-400">Sin penalizaciones</span></div>'}
+              
+              ${totalBonuses > 0 ? `
+                <div>
+                  <span class="text-slate-600">Bonos:</span>
+                  <span class="ml-2 text-emerald-600 font-bold">+${totalBonuses.toFixed(1)}</span>
+                </div>
+              ` : '<div><span class="text-slate-400">Sin bonos</span></div>'}
+              
+              <div>
+                <span class="text-slate-600">Urgencias Cubiertas:</span>
+                <span class="ml-2 font-semibold ${coverageCount === 4 ? 'text-green-600' : coverageCount >= 2 ? 'text-amber-600' : 'text-red-600'}">${coverageCount}/4</span>
+              </div>
+            </div>
+            
+            ${hasFlags ? `
+              <div class="mt-3 pt-3 border-t border-slate-200">
+                <span class="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded-full">
+                  ℹ️ Tiene información adicional (${getActiveFlags(score).length} flag${getActiveFlags(score).length !== 1 ? 's' : ''})
+                </span>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+  }
+
+  // Express Mode Logic
+  const expressSelectedCandidates = new Set();
+  let expressCandidateBtns = document.querySelectorAll('.mode-express-content .express-candidate-btn');
+  const expressClearBtn = document.getElementById('express-clear-selection');
+  const expressSelectionHint = document.getElementById('express-selection-hint');
+  const expressComparisonContainer = document.getElementById('express-comparison-container');
+  const expressEmptyState = document.getElementById('express-empty-state');
+  const expressComparisonContent = document.getElementById('express-comparison-content');
+
+  // Use event delegation for Express mode buttons (works even when hidden)
+  const expressContainer = document.querySelector('.mode-express-content');
+  if (expressContainer) {
+    expressContainer.addEventListener('click', (e) => {
+      const btn = e.target.closest('.express-candidate-btn');
+      if (!btn) return;
+      
+      const id = btn.dataset.candidateId;
+      console.log('Express: Button clicked, candidate ID:', id);
+      
+      if (expressSelectedCandidates.has(id)) {
+        expressSelectedCandidates.delete(id);
+        btn.classList.remove('selected');
+        console.log('Express: Candidate deselected:', id);
+      } else if (expressSelectedCandidates.size < maxSelection) {
+        expressSelectedCandidates.add(id);
+        btn.classList.add('selected');
+        console.log('Express: Candidate selected:', id, 'Total:', expressSelectedCandidates.size);
+      }
+      
+      updateExpressUI();
+    });
+  }
+
+  if (preselected) {
+    expressSelectedCandidates.add(preselected);
+    document.querySelector(`.mode-express-content [data-candidate-id="${preselected}"]`)?.classList.add('selected');
+  }
+
+  expressClearBtn?.addEventListener('click', () => {
+    expressSelectedCandidates.clear();
+    document.querySelectorAll('.mode-express-content .express-candidate-btn').forEach(btn => btn.classList.remove('selected'));
+    console.log('Express: Selection cleared');
+    updateExpressUI();
+  });
+
+  function updateExpressUI() {
+    const count = expressSelectedCandidates.size;
+    console.log('Express: updateExpressUI called, count:', count, 'minSelection:', minSelection);
+    
+    expressClearBtn?.classList.toggle('hidden', count === 0);
+    
+    if (count >= minSelection) {
+      console.log('Express: Showing comparison container');
+      if (expressComparisonContainer) {
+        expressComparisonContainer.classList.remove('hidden');
+        expressComparisonContainer.style.display = 'block';
+      }
+      if (expressEmptyState) {
+        expressEmptyState.classList.add('hidden');
+        expressEmptyState.style.display = 'none';
+      }
+      renderExpressComparison();
+    } else {
+      console.log('Express: Hiding comparison container');
+      if (expressComparisonContainer) {
+        expressComparisonContainer.classList.add('hidden');
+        expressComparisonContainer.style.display = 'none';
+      }
+      if (expressEmptyState) {
+        expressEmptyState.classList.remove('hidden');
+        expressEmptyState.style.display = 'flex';
+      }
+    }
+  }
+
+  function renderExpressComparison() {
+    console.log('Express: renderExpressComparison called');
+    const selected = Array.from(expressSelectedCandidates);
+    console.log('Express: Selected candidates:', selected);
+    
+    if (selected.length < minSelection) {
+      console.log('Express: Not enough candidates selected:', selected.length, 'min:', minSelection);
+      return;
+    }
+    
+    const candidateData = selected.map(id => {
+      const candidate = candidates.find(c => c.candidate_id === id);
+      const score = scoresByCandidate[id];
+      const analysis = analysisByCandidate ? analysisByCandidate[id] : null;
+      if (!candidate || !score) {
+        console.error('Express: Missing data for candidate:', id, { candidate: !!candidate, score: !!score });
+        return null;
+      }
+      return { candidate, score, analysis };
+    }).filter(Boolean);
+
+    if (candidateData.length === 0) {
+      console.error('Express: No valid candidate data after filtering');
+      return;
+    }
+
+    console.log('Express: Valid candidate data:', candidateData.length);
+
+    // Calculate column width based on number of candidates
+    const colWidth = candidateData.length <= 2 ? '4.5rem' : '4rem';
+    const pilarColWidth = '120px';
+
+    if (!expressComparisonContent) {
+      console.error('Express: expressComparisonContent element not found');
+      return;
+    }
+    
+    console.log('Express: About to render content to element:', expressComparisonContent);
+    
+    try {
+      expressComparisonContent.innerHTML = `
+        <!-- Resumen Comparativo Compacto -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.75rem; margin-bottom: 1rem;">
+          ${candidateData.map(({ candidate, score, analysis }) => {
+            const riskLevel = getRiskLevel(candidate.candidate_id);
+            const riskEmoji = getRiskEmoji(riskLevel);
+            const totalPenalties = getTotalPenalties(score);
+            const totalBonuses = getTotalBonuses(score);
+            return `
+              <div style="background: #f0f9ff; border: 2px solid #0891b2; border-radius: 0.75rem; padding: 0.875rem; text-align: center;">
+                <div style="font-weight: 700; color: #0f172a; margin-bottom: 0.25rem; font-size: 0.9rem; line-height: 1.2;">${getDisplayName(candidate)}</div>
+                <div style="font-size: 0.7rem; color: #64748b; margin-bottom: 0.5rem;">${candidate.party_name}</div>
+                <div style="font-size: 1.5rem; font-weight: 800; color: #0891b2; margin-bottom: 0.5rem;">${Math.round(score.overall.weighted_sum * 100)}%</div>
+                <div style="font-size: 0.7rem; color: #475569; margin-bottom: 0.25rem;">${riskEmoji} ${riskLevel}</div>
+                ${totalPenalties > 0 ? `<div style="font-size: 0.7rem; color: #dc2626; font-weight: 600;">-${Math.round(totalPenalties)}</div>` : ''}
+                ${totalBonuses > 0 ? `<div style="font-size: 0.7rem; color: #059669; font-weight: 600;">+${totalBonuses.toFixed(1)}</div>` : ''}
+              </div>
+            `;
+          }).join('')}
+        </div>
+        <!-- Leyenda de porcentajes -->
+        <div style="background: linear-gradient(to right, #f8fafc, white); border: 1px solid #e2e8f0; border-radius: 0.75rem; padding: 1rem; margin-bottom: 1rem;">
+          <h4 style="font-weight: 600; color: #1e293b; margin-bottom: 0.5rem; font-size: 0.875rem;">📊 ¿Qué significa cada porcentaje?</h4>
+          <p style="font-size: 0.8rem; color: #475569; margin-bottom: 0.75rem;">El porcentaje indica el <strong>nivel de cobertura</strong> de las propuestas del candidato para cada pilar.</p>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; font-size: 0.75rem;">
+            <span style="display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.25rem 0.625rem; background: #d1fae5; color: #047857; border-radius: 9999px; font-weight: 500;">
+              <span style="width: 0.5rem; height: 0.5rem; background: #10b981; border-radius: 50%;"></span>
+              75%+ Alto
+            </span>
+            <span style="display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.25rem 0.625rem; background: #fef3c7; color: #b45309; border-radius: 9999px; font-weight: 500;">
+              <span style="width: 0.5rem; height: 0.5rem; background: #f59e0b; border-radius: 50%;"></span>
+              50-74% Medio
+            </span>
+            <span style="display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.25rem 0.625rem; background: #fee2e2; color: #b91c1c; border-radius: 9999px; font-weight: 500;">
+              <span style="width: 0.5rem; height: 0.5rem; background: #ef4444; border-radius: 50%;"></span>
+              &lt;50% Bajo
+            </span>
+          </div>
+        </div>
+        
+        <p style="font-size: 0.8rem; color: #64748b; margin-bottom: 0.5rem; text-align: center;">📄 <strong>Haga clic en el porcentaje</strong> para abrir el plan de gobierno. <span style="color: #0891b2;">⟷ Deslice si es necesario.</span></p>
+        
+        <!-- Contenedor con scroll horizontal -->
+        <div class="express-table-scroll" style="overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid #e2e8f0; border-radius: 0.5rem;">
+          <div style="min-width: max-content;">
+            <!-- Header con siglas -->
+            <div style="display: flex; align-items: center; padding: 0.625rem; background: #1e3a5f;">
+              <div style="width: ${pilarColWidth}; min-width: ${pilarColWidth}; font-size: 0.8rem; font-weight: 600; color: white;">Pilar</div>
+              ${candidateData.map(({ candidate }) => `
+                <div style="width: ${colWidth}; min-width: ${colWidth}; text-align: center; font-weight: 700; font-size: 0.8rem; color: white;">
+                  ${candidate.pdf_id}
+                </div>
+              `).join('')}
+            </div>
+            
+            <!-- Filas de pilares -->
+            ${pillars.map((pillar, idx) => {
+              // Truncate pillar name to max 25 chars for mobile
+              const shortName = pillar.pillar_name.length > 25 
+                ? pillar.pillar_name.substring(0, 22) + '...' 
+                : pillar.pillar_name;
+              const bgColor = idx % 2 === 0 ? 'white' : '#f8fafc';
+              return `
+                <div style="display: flex; align-items: center; padding: 0.5rem 0.625rem; background: ${bgColor}; border-bottom: 1px solid #f1f5f9;">
+                  <div style="width: ${pilarColWidth}; min-width: ${pilarColWidth}; font-size: 0.75rem; color: #475569; line-height: 1.3; padding-right: 0.5rem;" title="${pillar.pillar_name}">${shortName}</div>
+                  ${candidateData.map(({ candidate, score }) => {
+                    const ps = score.pillar_scores.find(p => p.pillar_id === pillar.pillar_id);
+                    const percent = ps ? Math.round((ps.effective_score / 4) * 100) : 0;
+                    const textColor = percent >= 50 ? '#059669' : '#dc2626';
+                    
+                    // v7: Bonos y violaciones
+                    const bonuses = ps ? ((ps.bonus_multiple || 0) + (ps.bonus_quality || 0) + (ps.bonus_funding || 0)) : 0;
+                    const hasViability = ps && (ps.viability_penalty || 0) < 0;
+                    const numProposals = ps?.num_proposals || 0;
+                    
+                    return `
+                      <div style="width: ${colWidth}; min-width: ${colWidth}; text-align: center;">
+                        <div style="font-weight: 700; font-size: 0.9rem;">
+                          ${getPercentPdfLink(candidate.candidate_id, pillar.pillar_id, percent, textColor)}
+                        </div>
+                        ${numProposals > 0 ? `<div style="font-size: 0.65rem; color: #64748b; margin-top: 0.125rem;">${numProposals}p</div>` : ''}
+                        ${bonuses > 0 ? `<div style="font-size: 0.65rem; color: #059669; margin-top: 0.125rem; font-weight: 600;">🎁+${bonuses.toFixed(1)}</div>` : ''}
+                        ${hasViability ? `<div style="font-size: 0.65rem; color: #dc2626; margin-top: 0.125rem;">⚖️${ps.viability_penalty}</div>` : ''}
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+        
+        <!-- Botón limpiar al final -->
+        <div style="display: flex; justify-content: center; margin-top: 1.5rem;">
+          <button onclick="document.getElementById('express-clear-selection').click();" style="background: #dc2626; color: white; border: none; border-radius: 0.5rem; padding: 0.75rem 1.5rem; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
+            ✕ Limpiar selección y comparar otros
+          </button>
+        </div>
+      `;
+      console.log('Express: Content rendered successfully, innerHTML length:', expressComparisonContent.innerHTML.length);
+      // Force visibility
+      if (expressComparisonContainer) {
+        expressComparisonContainer.classList.remove('hidden');
+        expressComparisonContainer.style.display = 'block';
+        console.log('Express: Container made visible');
+      }
+    } catch (error) {
+      console.error('Express: Error rendering comparison:', error);
+      console.error('Express: Error stack:', error.stack);
+    }
+  }
+
+  // Reading Mode Logic with Tabs
+  const readingSelectedCandidates = new Set();
+  let readingCandidateBtns = document.querySelectorAll('.mode-reading-content .reading-candidate-btn');
+  const readingClearBtn = document.getElementById('reading-clear-selection');
+  const readingSelectedCount = document.getElementById('reading-selected-count');
+  const readingComparisonContent = document.getElementById('reading-comparison-content');
+  const readingTabCount = document.getElementById('reading-tab-count');
+  
+  // Tab elements
+  const readingTabPaso1 = document.getElementById('reading-tab-paso1');
+  const readingTabPaso2 = document.getElementById('reading-tab-paso2');
+  const readingContentPaso1 = document.getElementById('reading-content-paso1');
+  const readingContentPaso2 = document.getElementById('reading-content-paso2');
+  const readingGoToPaso2 = document.getElementById('reading-go-to-paso2');
+  const readingGoBackPaso1 = document.getElementById('reading-go-back-paso1');
+  const readingSelectionHint = document.getElementById('reading-selection-hint');
+
+  // Use event delegation for Reading mode buttons (works even when hidden)
+  const readingContainer = document.querySelector('.mode-reading-content');
+  if (readingContainer) {
+    readingContainer.addEventListener('click', (e) => {
+      const btn = e.target.closest('.reading-candidate-btn');
+      if (!btn) return;
+      
+      const id = btn.dataset.candidateId;
+      console.log('Reading: Button clicked, candidate ID:', id);
+      
+      if (readingSelectedCandidates.has(id)) {
+        readingSelectedCandidates.delete(id);
+        btn.classList.remove('selected');
+        console.log('Reading: Candidate deselected:', id);
+      } else if (readingSelectedCandidates.size < maxSelection) {
+        readingSelectedCandidates.add(id);
+        btn.classList.add('selected');
+        console.log('Reading: Candidate selected:', id, 'Total:', readingSelectedCandidates.size);
+      }
+      
+      updateReadingUI();
+    });
+  }
+
+  if (preselected) {
+    readingSelectedCandidates.add(preselected);
+    document.querySelector(`.mode-reading-content [data-candidate-id="${preselected}"]`)?.classList.add('selected');
+  }
+
+  // Tab navigation functions
+  function switchToReadingTab(tab) {
+    if (tab === 'paso1') {
+      readingTabPaso1?.classList.add('active');
+      readingTabPaso2?.classList.remove('active');
+      readingContentPaso1?.classList.add('active');
+      readingContentPaso2?.classList.remove('active');
+    } else if (tab === 'paso2') {
+      if (readingSelectedCandidates.size >= minSelection) {
+        readingTabPaso1?.classList.remove('active');
+        readingTabPaso2?.classList.add('active');
+        readingContentPaso1?.classList.remove('active');
+        readingContentPaso2?.classList.add('active');
+        renderReadingComparison();
+      }
+    }
+  }
+
+  // Tab click handlers
+  readingTabPaso1?.addEventListener('click', () => switchToReadingTab('paso1'));
+  readingTabPaso2?.addEventListener('click', () => switchToReadingTab('paso2'));
+  readingGoToPaso2?.addEventListener('click', () => switchToReadingTab('paso2'));
+  readingGoBackPaso1?.addEventListener('click', () => switchToReadingTab('paso1'));
+
+  // Event listeners moved to event delegation above
+
+  readingClearBtn?.addEventListener('click', () => {
+    readingSelectedCandidates.clear();
+    document.querySelectorAll('.mode-reading-content .reading-candidate-btn').forEach(btn => btn.classList.remove('selected'));
+    console.log('Reading: Selection cleared');
+    updateReadingUI();
+  });
+
+  function updateReadingUI() {
+    const count = readingSelectedCandidates.size;
+    
+    // Update count displays
+    if (readingSelectedCount) {
+      readingSelectedCount.textContent = `${count} candidato${count !== 1 ? 's' : ''} seleccionado${count !== 1 ? 's' : ''}`;
+    }
+    
+    if (readingTabCount) {
+      readingTabCount.textContent = `(${count})`;
+    }
+    
+    // Update clear button visibility
+    readingClearBtn?.classList.toggle('hidden', count === 0);
+    
+    // Update hint text
+    if (readingSelectionHint) {
+      if (count === 0) {
+        readingSelectionHint.textContent = '💡 Seleccione al menos 2 candidatos para poder comparar.';
+      } else if (count === 1) {
+        readingSelectionHint.textContent = '💡 Seleccione 1 candidato más para ver la comparación.';
+      } else if (count < maxSelection) {
+        readingSelectionHint.textContent = `✅ ¡${count} candidatos seleccionados! Puede agregar ${maxSelection - count} más o ver la comparación.`;
+      } else {
+        readingSelectionHint.textContent = `✅ ¡${count} candidatos seleccionados! Máximo alcanzado.`;
+      }
+    }
+    
+    // Enable/disable tab 2 and next button
+    const canCompare = count >= minSelection;
+    
+    if (readingTabPaso2) {
+      readingTabPaso2.disabled = !canCompare;
+    }
+    
+    if (readingGoToPaso2) {
+      readingGoToPaso2.disabled = !canCompare;
+      readingGoToPaso2.textContent = canCompare ? 'Ver Comparación →' : `Seleccione ${minSelection - count} más`;
+    }
+  }
+
+  function renderReadingComparison() {
+    console.log('Reading: renderReadingComparison called');
+    const selected = Array.from(readingSelectedCandidates);
+    console.log('Reading: Selected candidates:', selected);
+    
+    if (selected.length < minSelection) {
+      console.log('Reading: Not enough candidates selected:', selected.length, 'min:', minSelection);
+      return;
+    }
+    
+    const candidateData = selected.map(id => {
+      const candidate = candidates.find(c => c.candidate_id === id);
+      const score = scoresByCandidate[id];
+      const analysis = analysisByCandidate ? analysisByCandidate[id] : null;
+      if (!candidate || !score) {
+        console.error('Reading: Missing data for candidate:', id, { candidate: !!candidate, score: !!score });
+        return null;
+      }
+      return { candidate, score, analysis };
+    }).filter(Boolean);
+
+    if (candidateData.length === 0) {
+      console.error('Reading: No valid candidate data after filtering');
+      return;
+    }
+
+    console.log('Reading: Valid candidate data:', candidateData.length);
+
+    console.log('Reading: Rendering comparison for', candidateData.length, 'candidates');
+
+    // Calculate minimum column width based on number of candidates
+    const minColWidth = candidateData.length <= 2 ? '100px' : candidateData.length === 3 ? '85px' : '75px';
+    
+    if (!readingComparisonContent) {
+      console.error('Reading: readingComparisonContent element not found');
+      return;
+    }
+    
+    console.log('Reading: About to render content to element:', readingComparisonContent);
+    
+    try {
+      readingComparisonContent.innerHTML = `
+        <!-- Resumen Comparativo - Modo Lectura -->
+        <div style="background: #f8fafc; border: 3px solid #1e3a5f; border-radius: 1rem; padding: 1.5rem; margin-bottom: 1.5rem;">
+          <h3 style="font-weight: 700; color: #1e3a5f; margin-bottom: 1rem; font-size: 1.5rem;">📊 Resumen Comparativo</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem;">
+            ${candidateData.map(({ candidate, score, analysis }) => {
+              const riskLevel = getRiskLevel(candidate.candidate_id);
+              const riskEmoji = getRiskEmoji(riskLevel);
+              const totalPenalties = getTotalPenalties(score);
+              const totalBonuses = getTotalBonuses(score);
+              const urgencyCoverage = getUrgencyCoverage(score);
+              const coverageCount = Object.values(urgencyCoverage).filter(Boolean).length;
+              return `
+                <div style="background: white; border: 2px solid #e2e8f0; border-radius: 0.75rem; padding: 1.25rem;">
+                  <div style="font-weight: 700; color: #0f172a; margin-bottom: 0.5rem; font-size: 1.25rem;">${getDisplayName(candidate)}</div>
+                  <div style="font-size: 1rem; color: #64748b; margin-bottom: 0.75rem;">${candidate.party_name}</div>
+                  <div style="font-size: 2rem; font-weight: 800; color: #0891b2; margin-bottom: 0.75rem;">${Math.round(score.overall.weighted_sum * 100)}%</div>
+                  <div style="font-size: 1rem; color: #475569; margin-bottom: 0.5rem;">${riskEmoji} Riesgo Fiscal: <strong>${riskLevel}</strong></div>
+                  ${totalPenalties > 0 ? `<div style="font-size: 1rem; color: #dc2626; margin-bottom: 0.5rem; font-weight: 600;">Penalizaciones: -${Math.round(totalPenalties)}</div>` : ''}
+                  ${totalBonuses > 0 ? `<div style="font-size: 1rem; color: #059669; margin-bottom: 0.5rem; font-weight: 600;">Bonos: +${totalBonuses.toFixed(1)}</div>` : ''}
+                  <div style="font-size: 1rem; color: #475569;">Urgencias Cubiertas: <strong>${coverageCount}/4</strong></div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+        
+        <!-- Leyenda de porcentajes - Modo Lectura -->
+        <div style="background: linear-gradient(to right, #f0fdf4, white); border: 2px solid #86efac; border-radius: 1rem; padding: 1.25rem; margin-bottom: 1.5rem;">
+          <h4 style="font-weight: 700; color: #166534; margin-bottom: 0.75rem; font-size: 1.25rem;">📊 ¿Qué significa cada porcentaje?</h4>
+          <p style="font-size: 1.1rem; color: #374151; margin-bottom: 1rem; line-height: 1.6;">El porcentaje indica el <strong>nivel de cobertura</strong> de las propuestas del candidato para cada pilar de evaluación.</p>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; font-size: 1rem;">
+            <span style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: #d1fae5; color: #047857; border-radius: 9999px; font-weight: 600; border: 1px solid #6ee7b7;">
+              <span style="width: 0.75rem; height: 0.75rem; background: #10b981; border-radius: 50%;"></span>
+              75% o más = Alto
+            </span>
+            <span style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: #fef3c7; color: #92400e; border-radius: 9999px; font-weight: 600; border: 1px solid #fcd34d;">
+              <span style="width: 0.75rem; height: 0.75rem; background: #f59e0b; border-radius: 50%;"></span>
+              50% a 74% = Medio
+            </span>
+            <span style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: #fee2e2; color: #991b1b; border-radius: 9999px; font-weight: 600; border: 1px solid #fca5a5;">
+              <span style="width: 0.75rem; height: 0.75rem; background: #ef4444; border-radius: 50%;"></span>
+              Menos de 50% = Bajo
+            </span>
+          </div>
+        </div>
+        
+        <p class="reading-legend-hint" style="font-size: 1.1rem; color: #475569; margin-bottom: 1rem; text-align: center; background: #fef3c7; padding: 0.75rem; border-radius: 0.5rem;">
+          📄 <strong>Haga clic en el porcentaje</strong> para abrir el plan de gobierno. <span style="color: #0891b2;">⟷ Deslice horizontalmente si es necesario.</span>
+        </p>
+        
+        <!-- Contenedor con scroll horizontal -->
+        <div class="reading-table-scroll-container" style="overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 1rem;">
+          <div class="reading-table-inner" style="min-width: max-content;">
+            <!-- Header con candidatos -->
+            <div class="reading-comparison-header" style="display: grid; grid-template-columns: 140px repeat(${candidateData.length}, minmax(${minColWidth}, 1fr)); gap: 0.5rem; margin-bottom: 0.5rem; padding: 1rem; background: #0891b2; border-radius: 0.75rem;">
+              <div class="header-pilar-label" style="font-size: 1.1rem; font-weight: 600; color: white; display: flex; align-items: center;">Pilar</div>
+              ${candidateData.map(({ candidate, score }) => `
+                <div class="header-candidate" style="text-align: center; min-width: ${minColWidth};">
+                  <div class="header-candidate-name" style="font-size: 1.25rem; font-weight: 800; color: white;">${candidate.pdf_id}</div>
+                  <div class="header-candidate-score" style="font-size: 1.5rem; font-weight: 800; color: #fef3c7;">${Math.round(score.overall.weighted_sum * 100)}%</div>
+                </div>
+              `).join('')}
+            </div>
+            
+            <!-- Filas de pilares -->
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+              ${pillars.map(pillar => `
+                <div class="reading-comparison-row" style="display: grid; grid-template-columns: 140px repeat(${candidateData.length}, minmax(${minColWidth}, 1fr)); gap: 0.5rem; padding: 1rem; background: white; border: 2px solid #e2e8f0; border-radius: 0.5rem; align-items: center;">
+                  <div class="row-pilar-info" style="min-width: 120px;">
+                    <div class="row-pilar-id" style="font-size: 1rem; font-weight: 700; color: #1e3a5f;">${pillar.pillar_id}</div>
+                    <div class="row-pilar-name" style="font-size: 0.8rem; color: #64748b; line-height: 1.3;">${pillar.pillar_name}</div>
+                  </div>
+                  ${candidateData.map(({ candidate, score }) => {
+                    const ps = score.pillar_scores.find(p => p.pillar_id === pillar.pillar_id);
+                    const percent = ps ? Math.round((ps.effective_score / 4) * 100) : 0;
+                    const bgColor = percent >= 75 ? '#d1fae5' : percent >= 50 ? '#fef3c7' : '#fee2e2';
+                    const textColor = percent >= 75 ? '#059669' : percent >= 50 ? '#d97706' : '#dc2626';
+                    
+                    // v7: Bonos y violaciones
+                    const bonuses = ps ? ((ps.bonus_multiple || 0) + (ps.bonus_quality || 0) + (ps.bonus_funding || 0)) : 0;
+                    const hasViability = ps && (ps.viability_penalty || 0) < 0;
+                    const numProposals = ps?.num_proposals || 0;
+                    
+                    return `
+                      <div class="row-score-cell" style="text-align: center; padding: 0.75rem; background: ${bgColor}; border-radius: 0.5rem; min-width: ${minColWidth};">
+                        <div class="row-score-candidate" style="font-size: 0.7rem; color: #475569; margin-bottom: 0.25rem; display: none;">${candidate.pdf_id}</div>
+                        <div class="row-score-percent" style="font-size: 1.5rem; font-weight: 800;">
+                          ${getPercentPdfLink(candidate.candidate_id, pillar.pillar_id, percent, textColor)}
+                        </div>
+                        ${numProposals > 0 ? `<div style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem;">${numProposals} prop.</div>` : ''}
+                        ${bonuses > 0 ? `<div style="font-size: 0.7rem; color: #059669; margin-top: 0.25rem; font-weight: 600;">🎁 +${bonuses.toFixed(2)}</div>` : ''}
+                        ${hasViability ? `<div style="font-size: 0.7rem; color: #dc2626; margin-top: 0.25rem;">⚖️ ${ps.viability_penalty}</div>` : ''}
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+        
+        <!-- Botón limpiar al final -->
+        <div style="display: flex; justify-content: center; margin-top: 1.5rem;">
+          <button class="reading-clear-bottom-btn" onclick="document.getElementById('reading-clear-selection').click(); document.getElementById('reading-tab-paso1').click();" style="background: #dc2626; color: white; border: none; border-radius: 0.5rem; padding: 1rem 2rem; font-size: 1.1rem; font-weight: 600; cursor: pointer;">
+            ✕ Limpiar y comparar otros
+          </button>
+        </div>
+      `;
+      console.log('Reading: Content rendered successfully, innerHTML length:', readingComparisonContent.innerHTML.length);
+    } catch (error) {
+      console.error('Reading: Error rendering comparison:', error);
+      console.error('Reading: Error stack:', error.stack);
+    }
+  }
+
+  // Initial render for all modes (wait for DOM to be ready)
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      updateUI();
+      updateExpressUI();
+      updateReadingUI();
+    });
+  } else {
+    // DOM already loaded
+    updateUI();
+    updateExpressUI();
+    updateReadingUI();
+  }
+  
+  // Re-render dashboard comparison on resize (to update mobile/desktop view)
+  let resizeTimeout;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      if (selectedCandidates.size >= minSelection) {
+        renderComparison();
+      }
+    }, 250);
+  });
+</script>

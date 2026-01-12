@@ -1,12 +1,16 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ScoreBar from '../components/ui/ScoreBar.astro';
-import { candidates, scoresByCandidate, pillars, pillarIndex, analysisByCandidate, proposals, getPdfUrl, getInformativeFlags, hasActiveInformativeFlags, getTotalBonuses, getPillarBonuses } from '../lib/data';
-import { PILLAR_ICONS } from '../lib/types';
-import type { PillarId } from '../lib/types';
+import { SpotlightCard } from '../components/ui/aceternity/SpotlightCard';
+import { 
+  candidates, 
+  scoresByCandidate, 
+  pillars, 
+  analysisByCandidate, 
+  proposals
+} from '../lib/data';
 
 // Helper para obtener nombre del candidato
-function getCandidateName(candidate: any): string {
+function getCandidateName(candidate) {
   const name = candidate?.candidate_name;
   if (name && name !== 'Por determinar' && name !== 'no_especificado') {
     return name;
@@ -26,303 +30,271 @@ const candidatesWithNames = sortedCandidates.map(c => ({
   ...c,
   displayName: getCandidateName(c)
 }));
-
-// Index proposals by candidate and pillar with PDF info
-type ProposalIndex = Record<string, Record<string, { pdfId: string; page: number }>>;
-const proposalIndex: ProposalIndex = {};
-proposals.forEach(p => {
-  if (!proposalIndex[p.candidate_id]) {
-    proposalIndex[p.candidate_id] = {};
-  }
-  // Guardar solo la primera propuesta por pilar (la más relevante)
-  if (!proposalIndex[p.candidate_id][p.pillar_id]) {
-    proposalIndex[p.candidate_id][p.pillar_id] = {
-      pdfId: p.evidence?.pdf_id || '',
-      page: p.evidence?.page || 1
-    };
-  }
-});
-
-// Helper para generar URL del PDF (para pasar al JS)
-function buildPdfUrl(pdfId: string, page: number): string {
-  return `/planes/${pdfId}.pdf#page=${page}`;
-}
 ---
 
 <BaseLayout title="Comparar Candidatos">
 
   <!-- ============================================
-       DASHBOARD MODE (Default) - Modo Visual Detallado
+       DASHBOARD MODE - Modo Visual Detallado
        ============================================ -->
   <div class="mode-dashboard-content">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    
-    <!-- Header -->
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold text-slate-900 mb-2">⚖️ Comparar Candidatos</h1>
-      <p class="text-slate-600">
-        Selecciona de 2 a 4 candidatos para comparar sus propuestas lado a lado.
-      </p>
-    </div>
+    <div class="dashboard-compare-wrapper">
+      
+      <!-- Header -->
+      <header class="dashboard-compare-header">
+        <h1 class="dashboard-compare-title">⚖️ Comparar Candidatos</h1>
+        <p class="dashboard-compare-subtitle">
+          Selecciona de 2 a 4 candidatos para comparar sus propuestas lado a lado.
+        </p>
+      </header>
 
-    <!-- Selector -->
-    <div class="card p-5 mb-8">
-      <div class="flex flex-wrap items-center gap-3 mb-4">
-        <span class="font-medium text-slate-700">Selecciona candidatos:</span>
-<button id="clear-selection" class="text-sm bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700 transition-colors hidden">
-             ✕ Limpiar selección
-        </button>
-      </div>
-        <div id="candidate-selector" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-          {candidatesWithNames.map((candidate) => (
-          <button
-            data-candidate-id={candidate.candidate_id}
-              data-candidate-name={candidate.displayName}
-            data-party-name={candidate.party_name}
-              class="candidate-btn flex flex-col items-start text-left px-4 py-3 rounded-lg border-2 border-slate-200 hover:border-civic-500 transition-colors bg-white"
-          >
-              <span class="font-semibold text-slate-900 text-sm line-clamp-1">{candidate.displayName}</span>
-              <span class="text-xs text-slate-500">{candidate.party_name}</span>
+      <!-- Candidate Selector -->
+      <div class="dashboard-compare-selector">
+        <div class="dashboard-compare-selector-header">
+          <span class="dashboard-compare-selector-label">Selecciona candidatos:</span>
+          <button id="dashboard-clear-btn" class="dashboard-compare-clear-btn hidden">
+            ✕ Limpiar
           </button>
-        ))}
+        </div>
+        <div id="dashboard-candidate-grid" class="dashboard-compare-candidate-grid">
+          {candidatesWithNames.map((candidate) => (
+            <button
+              data-candidate-id={candidate.candidate_id}
+              data-candidate-name={candidate.displayName}
+              data-party-name={candidate.party_name}
+              class="dashboard-compare-candidate-btn"
+            >
+              <span class="dashboard-compare-candidate-name">{candidate.displayName}</span>
+              <span class="dashboard-compare-candidate-party">{candidate.party_name}</span>
+            </button>
+          ))}
+        </div>
+        <p id="dashboard-selection-hint" class="dashboard-compare-hint">
+          Haz clic en los candidatos que deseas comparar (mínimo 2, máximo 4)
+        </p>
       </div>
-      <p id="selection-hint" class="mt-3 text-sm text-slate-500">
-        Haz clic en los candidatos que deseas comparar (mínimo 2, máximo 4)
-      </p>
-    </div>
 
-    <!-- Comparison Table (populated by JS) -->
-    <div id="comparison-container" class="hidden">
-        <!-- Leyenda de porcentajes -->
-        <div class="bg-gradient-to-r from-slate-50 to-white border border-slate-200 rounded-xl p-4 mb-4">
-          <h4 class="font-semibold text-slate-800 mb-2 text-sm">📊 ¿Qué significa cada porcentaje?</h4>
-          <p class="text-sm text-slate-600 mb-3">El porcentaje indica el <strong>nivel de cobertura</strong> de las propuestas del candidato para cada pilar de evaluación.</p>
-          <div class="flex flex-wrap gap-3 text-xs">
-            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-100 text-emerald-700 rounded-full font-medium">
-              <span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
-              75%+ Alto
-            </span>
-            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-100 text-amber-700 rounded-full font-medium">
-              <span class="w-2 h-2 bg-amber-500 rounded-full"></span>
-              50-74% Medio
-            </span>
-            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-red-100 text-red-700 rounded-full font-medium">
-              <span class="w-2 h-2 bg-red-500 rounded-full"></span>
-              &lt;50% Bajo
-            </span>
+      <!-- Comparison Container -->
+      <div id="dashboard-comparison-container" class="dashboard-compare-container hidden">
+        <!-- Resumen Comparativo -->
+        <div id="dashboard-comparative-summary" class="dashboard-compare-section">
+          <!-- Filled by JS -->
+        </div>
+        
+        <!-- Penalizaciones -->
+        <div id="dashboard-penalties-comparison" class="dashboard-compare-section">
+          <h3 class="dashboard-compare-section-title">⚖️ Penalizaciones Aplicadas</h3>
+          <div id="dashboard-penalties-content">
+            <!-- Filled by JS -->
           </div>
         </div>
         
-        <!-- Scroll hint for mobile -->
-        <p class="text-sm text-slate-500 mb-3 text-center md:hidden">
-          📄 <strong>Haga clic en el porcentaje</strong> para ver el plan. <span class="text-cyan-600">⟷ Deslice para ver más columnas.</span>
-        </p>
+        <!-- Bonos -->
+        <div id="dashboard-bonuses-comparison" class="dashboard-compare-section">
+          <h3 class="dashboard-compare-section-title">🎁 Bonos Aplicados</h3>
+          <div id="dashboard-bonuses-content">
+            <!-- Filled by JS -->
+          </div>
+        </div>
         
-      <!-- Sticky Header -->
-        <div id="comparison-header" class="bg-white border-b border-slate-200 py-3 rounded-t-lg">
-        <div class="flex items-center">
-            <div class="w-48 flex-shrink-0 font-medium text-slate-500 pl-2">Pilar</div>
-            <div id="header-candidates" class="flex-1 flex gap-4">
+        <!-- Información Adicional -->
+        <div id="dashboard-flags-comparison" class="dashboard-compare-section">
+          <h3 class="dashboard-compare-section-title">ℹ️ Información Adicional</h3>
+          <div id="dashboard-flags-content">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+        
+        <!-- Cobertura de Urgencias -->
+        <div id="dashboard-urgency-comparison" class="dashboard-compare-section">
+          <h3 class="dashboard-compare-section-title">🚨 Cobertura de Urgencias Nacionales</h3>
+          <div id="dashboard-urgency-content">
             <!-- Filled by JS -->
           </div>
         </div>
       </div>
 
-      <!-- Comparison Body -->
-      <div id="comparison-body" class="divide-y divide-slate-100">
-        {pillars.map((pillar) => {
-          const icon = PILLAR_ICONS[pillar.pillar_id as PillarId];
-          return (
-            <div class="pillar-row py-4" data-pillar-id={pillar.pillar_id}>
-              <div class="flex items-start">
-                <div class="w-48 flex-shrink-0">
-                  <div class="flex items-center gap-2">
-                    <span>{icon}</span>
-                    <span class="font-medium text-slate-900">{pillar.pillar_id}</span>
-                  </div>
-                  <div class="text-sm text-slate-500 mt-1">{pillar.pillar_name}</div>
-                </div>
-                <div class="flex-1 flex gap-4 candidate-scores">
-                  <!-- Filled by JS -->
-                </div>
-              </div>
-            </div>
-          );
-        })}
+      <!-- Empty State -->
+      <div id="dashboard-empty-state" class="dashboard-compare-empty">
+        <span class="dashboard-compare-empty-icon">🔍</span>
+        <span class="dashboard-compare-empty-text">Selecciona al menos 2 candidatos</span>
       </div>
 
-      <!-- Overall Comparison -->
-      <div id="overall-comparison" class="mt-6 card p-5 bg-civic-50">
-        <h3 class="font-bold text-slate-900 mb-4">Resumen General</h3>
-        <div id="overall-scores" class="grid gap-4">
-          <!-- Filled by JS -->
-        </div>
-      </div>
     </div>
-
-    <!-- Empty state -->
-    <div id="empty-state" class="card p-12 text-center">
-      <div class="text-4xl mb-4">🔍</div>
-      <h3 class="text-xl font-semibold text-slate-900 mb-2">Selecciona candidatos</h3>
-      <p class="text-slate-600">
-        Elige al menos 2 candidatos de la lista superior para comenzar la comparación.
-      </p>
-    </div>
-
-  </div>
   </div>
 
   <!-- ============================================
-       EXPRESS MODE 🚀 - Modo Visual Rápido
+       EXPRESS MODE - Modo Visual Rápido
        ============================================ -->
   <div class="mode-express-content">
-    <div class="express-compare-container">
+    <div class="express-compare-wrapper">
       
       <!-- Header -->
       <header class="express-compare-header">
-        <h1 class="express-compare-title">⚖️ Comparar Candidatos</h1>
-        <p class="express-compare-subtitle">
-          Selecciona 2-4 candidatos para comparar
-        </p>
+        <h1 class="express-compare-title">⚖️ Comparar</h1>
+        <p class="express-compare-subtitle">Selecciona 2-4 candidatos</p>
       </header>
 
-      <!-- Selector -->
-      <div class="express-selector-box">
-        <div class="express-selector-header">
-          <span>Selecciona candidatos:</span>
-          <button id="express-clear-selection" class="express-clear-btn hidden">
-            ✕ Limpiar
+      <!-- Candidate Selector -->
+      <div class="express-compare-selector">
+        <div class="express-compare-selector-header">
+          <span class="express-compare-selector-label">Candidatos:</span>
+          <button id="express-clear-btn" class="express-compare-clear-btn hidden">
+            ✕
           </button>
         </div>
-        <div id="express-candidate-selector" class="express-candidates-grid">
+        <div id="express-candidate-grid" class="express-compare-candidate-grid">
           {candidatesWithNames.map((candidate) => (
             <button
               data-candidate-id={candidate.candidate_id}
               data-candidate-name={candidate.displayName}
               data-party-name={candidate.party_name}
-              class="express-candidate-btn"
+              class="express-compare-candidate-btn"
             >
-              <span class="express-btn-name">{candidate.displayName}</span>
-              <span class="express-btn-party">{candidate.party_name}</span>
+              <span class="express-compare-candidate-name">{candidate.displayName}</span>
+              <span class="express-compare-candidate-party">{candidate.party_name}</span>
             </button>
           ))}
         </div>
-        <p id="express-selection-hint" class="express-hint">
+        <p id="express-selection-hint" class="express-compare-hint">
           Mínimo 2, máximo 4 candidatos
         </p>
       </div>
 
-      <!-- Comparison (populated by JS) -->
-      <div id="express-comparison-container" class="express-comparison hidden">
-        <div id="express-comparison-content">
+      <!-- Comparison Container -->
+      <div id="express-comparison-container" class="express-compare-container hidden">
+        <!-- Resumen Comparativo -->
+        <div id="express-comparative-summary" class="express-compare-section">
           <!-- Filled by JS -->
+        </div>
+        
+        <!-- Penalizaciones -->
+        <div id="express-penalties-comparison" class="express-compare-section">
+          <h3 class="express-compare-section-title">⚖️ Penalizaciones</h3>
+          <div id="express-penalties-content">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+        
+        <!-- Bonos -->
+        <div id="express-bonuses-comparison" class="express-compare-section">
+          <h3 class="express-compare-section-title">🎁 Bonos</h3>
+          <div id="express-bonuses-content">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+        
+        <!-- Información Adicional -->
+        <div id="express-flags-comparison" class="express-compare-section">
+          <h3 class="express-compare-section-title">ℹ️ Información Adicional</h3>
+          <div id="express-flags-content">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+        
+        <!-- Cobertura de Urgencias -->
+        <div id="express-urgency-comparison" class="express-compare-section">
+          <h3 class="express-compare-section-title">🚨 Urgencias</h3>
+          <div id="express-urgency-content">
+            <!-- Filled by JS -->
+          </div>
         </div>
       </div>
 
-      <!-- Empty state -->
-      <div id="express-empty-state" class="express-empty">
-        <span class="express-empty-icon">🔍</span>
-        <span>Selecciona al menos 2 candidatos</span>
+      <!-- Empty State -->
+      <div id="express-empty-state" class="express-compare-empty">
+        <span class="express-compare-empty-icon">🔍</span>
+        <span class="express-compare-empty-text">Selecciona 2+ candidatos</span>
       </div>
 
     </div>
   </div>
 
   <!-- ============================================
-       READING MODE 📖 - Modo Lectura (Adultos Mayores)
+       READING MODE - Modo Lectura
        ============================================ -->
   <div class="mode-reading-content">
-    <div class="reading-compare-container">
+    <div class="reading-compare-wrapper">
       
       <!-- Header -->
       <header class="reading-compare-header">
         <h1 class="reading-compare-title">⚖️ Comparar Candidatos</h1>
-        <p class="reading-compare-intro">
+        <p class="reading-compare-subtitle">
           Esta herramienta le permite comparar las propuestas de varios candidatos lado a lado.
         </p>
       </header>
 
-      <!-- Tabs Navigation -->
-      <nav class="reading-tabs-nav">
-        <button class="reading-tab active" data-reading-tab="paso1" id="reading-tab-paso1">
-          <span class="reading-tab-number">1</span>
-          <span class="reading-tab-text">Seleccionar Candidatos</span>
-          <span class="reading-tab-count" id="reading-tab-count">(0)</span>
-        </button>
-        <button class="reading-tab" data-reading-tab="paso2" id="reading-tab-paso2" disabled>
-          <span class="reading-tab-number">2</span>
-          <span class="reading-tab-text">Ver Comparación</span>
-        </button>
-      </nav>
-
-      <!-- Tab Content: Paso 1 - Selección -->
-      <section class="reading-tab-content active" id="reading-content-paso1">
-        <div class="reading-paso-header">
-          <h2 class="reading-section-title">👆 Seleccione los candidatos a comparar</h2>
-          <p class="reading-paso-instructions">
-            Haga clic en los candidatos que desea comparar. Puede seleccionar de 2 a 4 candidatos.
-          </p>
-        </div>
-        
-        <div class="reading-selector-header">
-          <span class="reading-selected-count" id="reading-selected-count">0 candidatos seleccionados</span>
-          <button id="reading-clear-selection" class="reading-clear-btn hidden">
+      <!-- Candidate Selector -->
+      <div class="reading-compare-selector">
+        <div class="reading-compare-selector-header">
+          <span class="reading-compare-selector-label">Seleccione los candidatos a comparar:</span>
+          <button id="reading-clear-btn" class="reading-compare-clear-btn hidden">
             ✕ Limpiar selección
           </button>
         </div>
-        
-        <div id="reading-candidate-selector" class="reading-candidates-list">
+        <div id="reading-candidate-list" class="reading-compare-candidate-list">
           {candidatesWithNames.map((candidate) => (
             <button
               data-candidate-id={candidate.candidate_id}
               data-candidate-name={candidate.displayName}
               data-party-name={candidate.party_name}
-              class="reading-candidate-btn"
+              class="reading-compare-candidate-btn"
             >
-              <span class="reading-btn-name">{candidate.displayName}</span>
-              <span class="reading-btn-party">{candidate.party_name}</span>
+              <span class="reading-compare-candidate-name">{candidate.displayName}</span>
+              <span class="reading-compare-candidate-party">{candidate.party_name}</span>
             </button>
           ))}
         </div>
-        
-        <div class="reading-paso-footer">
-          <p id="reading-selection-hint" class="reading-hint">
-            💡 Seleccione al menos 2 candidatos para poder comparar.
-          </p>
-          <button id="reading-go-to-paso2" class="reading-next-btn" disabled>
-            Ver Comparación →
-          </button>
-        </div>
-      </section>
+        <p id="reading-selection-hint" class="reading-compare-hint">
+          💡 Seleccione al menos 2 candidatos para poder comparar.
+        </p>
+      </div>
 
-      <!-- Tab Content: Paso 2 - Comparación -->
-      <section class="reading-tab-content" id="reading-content-paso2">
-        <div class="reading-paso-header">
-          <h2 class="reading-section-title">📊 Resultados de la Comparación</h2>
-          <p class="reading-paso-instructions">
-            Aquí puede ver los puntajes de los candidatos seleccionados lado a lado.
-          </p>
-        </div>
-        
-        <div class="reading-back-navigation">
-          <button id="reading-go-back-paso1" class="reading-back-btn">
-            ← Volver a seleccionar candidatos
-          </button>
-        </div>
-        
-        <div id="reading-comparison-content">
+      <!-- Comparison Container -->
+      <div id="reading-comparison-container" class="reading-compare-container hidden">
+        <!-- Resumen Comparativo -->
+        <div id="reading-comparative-summary" class="reading-compare-section">
           <!-- Filled by JS -->
         </div>
         
-        <div class="reading-comparison-legend">
-          <h3>📖 ¿Cómo leer los resultados?</h3>
-          <ul>
-            <li><strong style="color: #059669;">75% o más:</strong> Propuestas muy completas y detalladas</li>
-            <li><strong style="color: #d97706;">50% - 74%:</strong> Propuestas parcialmente desarrolladas</li>
-            <li><strong style="color: #dc2626;">Menos de 50%:</strong> Propuestas incompletas o ausentes</li>
-          </ul>
+        <!-- Penalizaciones -->
+        <div id="reading-penalties-comparison" class="reading-compare-section">
+          <h3 class="reading-compare-section-title">⚖️ Penalizaciones Aplicadas</h3>
+          <div id="reading-penalties-content">
+            <!-- Filled by JS -->
+          </div>
         </div>
-      </section>
+        
+        <!-- Bonos -->
+        <div id="reading-bonuses-comparison" class="reading-compare-section">
+          <h3 class="reading-compare-section-title">🎁 Bonos Aplicados</h3>
+          <div id="reading-bonuses-content">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+        
+        <!-- Información Adicional -->
+        <div id="reading-flags-comparison" class="reading-compare-section">
+          <h3 class="reading-compare-section-title">ℹ️ Información Adicional</h3>
+          <div id="reading-flags-content">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+        
+        <!-- Cobertura de Urgencias -->
+        <div id="reading-urgency-comparison" class="reading-compare-section">
+          <h3 class="reading-compare-section-title">🚨 Cobertura de Urgencias Nacionales</h3>
+          <div id="reading-urgency-content">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div id="reading-empty-state" class="reading-compare-empty">
+        <span class="reading-compare-empty-icon">🔍</span>
+        <span class="reading-compare-empty-text">Seleccione al menos 2 candidatos</span>
+      </div>
 
     </div>
   </div>
@@ -330,300 +302,267 @@ function buildPdfUrl(pdfId: string, page: number): string {
 </BaseLayout>
 
 <style>
-  /* Mode visibility */
-  .mode-express-content,
-  .mode-reading-content {
-    display: none;
-  }
+  /* ===========================================
+     MODE VISIBILITY - Base Rules
+     =========================================== */
   
   .mode-dashboard-content {
     display: block;
   }
   
+  .mode-express-content,
+  .mode-reading-content {
+    display: none;
+  }
+  
+  html[data-mode="dashboard"] .mode-dashboard-content {
+    display: block !important;
+  }
+  
+  html[data-mode="dashboard"] .mode-express-content,
+  html[data-mode="dashboard"] .mode-reading-content {
+    display: none !important;
+  }
+  
   html[data-mode="express"] .mode-express-content {
-    display: block;
+    display: block !important;
   }
   
   html[data-mode="express"] .mode-dashboard-content,
   html[data-mode="express"] .mode-reading-content {
-    display: none;
+    display: none !important;
   }
   
   html[data-mode="reading"] .mode-reading-content {
-    display: block;
+    display: block !important;
   }
   
   html[data-mode="reading"] .mode-dashboard-content,
   html[data-mode="reading"] .mode-express-content {
-    display: none;
+    display: none !important;
+  }
+  
+  /* Utility class */
+  .hidden {
+    display: none !important;
   }
 
   /* ===========================================
      DASHBOARD MODE STYLES
      =========================================== */
   
-  /* Candidate button selected state */
-  .mode-dashboard-content .candidate-btn.selected {
-    background: #ecfeff !important;
-    border-color: #0891b2 !important;
+  .dashboard-compare-wrapper {
+    max-width: 7xl;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+  
+  .dashboard-compare-header {
+    margin-bottom: 2rem;
+  }
+  
+  .dashboard-compare-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 0.5rem;
+  }
+  
+  .dashboard-compare-subtitle {
+    font-size: 1.125rem;
+    color: #64748b;
+  }
+  
+  .dashboard-compare-selector {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .dashboard-compare-selector-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .dashboard-compare-selector-label {
+    font-weight: 600;
+    color: #475569;
+  }
+  
+  .dashboard-compare-clear-btn {
+    background: #dc2626;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .dashboard-compare-clear-btn:hover {
+    background: #b91c1c;
+  }
+  
+  .dashboard-compare-candidate-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+  }
+  
+  .dashboard-compare-candidate-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+  }
+  
+  .dashboard-compare-candidate-btn:hover {
+    border-color: #0891b2;
+  }
+  
+  .dashboard-compare-candidate-btn.selected {
+    background: #ecfeff;
+    border-color: #0891b2;
     box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.2);
   }
   
-  .mode-dashboard-content .candidate-btn.selected span:first-child {
-    color: #0e7490;
+  .dashboard-compare-candidate-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #0f172a;
+    line-height: 1.2;
   }
   
-  /* Comparison table scroll container - scroll solo en mobile */
-  #comparison-container {
-    overflow-x: visible; /* No scroll en desktop */
+  .dashboard-compare-candidate-party {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-top: 0.25rem;
   }
   
-  @media (max-width: 768px) {
-    #comparison-container {
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-    
-    #comparison-container::-webkit-scrollbar {
-      height: 8px;
-    }
-    
-    #comparison-container::-webkit-scrollbar-track {
-      background: #e2e8f0;
-      border-radius: 4px;
-    }
-    
-    #comparison-container::-webkit-scrollbar-thumb {
-      background: #0891b2;
-      border-radius: 4px;
-    }
+  .dashboard-compare-hint {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: #64748b;
   }
   
-  /* Comparison header and body - Desktop */
-  #comparison-header,
-  .pillar-row {
-    min-width: auto;
+  .dashboard-compare-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
   }
   
-  /* Fixed column widths - Desktop */
-  .pillar-row .w-48 {
-    min-width: 10rem;
+  .dashboard-compare-section {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 1.5rem;
   }
   
-  .candidate-scores > div {
-    min-width: 100px;
+  .dashboard-compare-section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 1rem;
   }
   
-  /* Mobile: force min-width for horizontal scroll */
-  @media (max-width: 768px) {
-    #comparison-header,
-    .pillar-row {
-      min-width: max-content;
-    }
-    
-    #comparison-header > .flex,
-    .pillar-row > .flex {
-      min-width: max-content;
-    }
-    
-    .candidate-scores {
-      min-width: max-content;
-    }
+  .dashboard-compare-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    background: #f8fafc;
+    border: 2px dashed #cbd5e1;
+    border-radius: 1rem;
+    color: #64748b;
   }
   
-  /* ===========================================
-     DASHBOARD MODE RESPONSIVE - Fluid Typography
-     =========================================== */
-  .mode-dashboard-content h1 {
-    font-size: clamp(1.5rem, 3vw + 0.5rem, 2rem);
+  .dashboard-compare-empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
   }
   
-  .mode-dashboard-content p {
-    font-size: clamp(0.9rem, 1vw + 0.5rem, 1.125rem);
+  .dashboard-compare-empty-text {
+    font-size: 1.125rem;
   }
   
-  .mode-dashboard-content .candidate-btn span:first-child {
-    font-size: clamp(0.85rem, 0.8vw + 0.5rem, 1rem);
-  }
-  
-  .mode-dashboard-content .candidate-btn span:last-child {
-    font-size: clamp(0.7rem, 0.6vw + 0.4rem, 0.85rem);
-  }
-  
-  .mode-dashboard-content table th,
-  .mode-dashboard-content table td {
-    font-size: clamp(0.8rem, 0.7vw + 0.5rem, 0.95rem);
-  }
-  
-  @media (max-width: 768px) {
-    .mode-dashboard-content .max-w-7xl {
-      padding-left: 1rem;
-      padding-right: 1rem;
-    }
-    
-    .mode-dashboard-content .candidate-btn {
-      padding: 0.625rem 0.75rem;
-    }
-    
-    #comparison-header {
-      position: relative;
-      top: 0;
-    }
-    
-    .pillar-row .w-48 {
-      min-width: 8rem;
-      font-size: 0.85rem;
-    }
-    
-    .candidate-scores > div {
-      min-width: 80px;
-    }
-  }
-  
-  @media (max-width: 640px) {
-    #comparison-container {
-      margin-left: -0.5rem;
-      margin-right: -0.5rem;
-      padding: 0 0.5rem;
-    }
-    
-    .pillar-row .w-48 {
-      min-width: 7rem;
-      font-size: 0.8rem;
-    }
-    
-    .candidate-scores > div {
-      min-width: 70px;
-      font-size: 0.85rem;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    .mode-dashboard-content .max-w-7xl {
-      padding-left: 0.75rem;
-      padding-right: 0.75rem;
-    }
-    
-    .mode-dashboard-content .candidate-btn {
-      padding: 0.625rem;
-    }
-    
-    .pillar-row .w-48 {
-      min-width: 6rem;
-      font-size: 0.75rem;
-    }
-    
-    .candidate-scores > div {
-      min-width: 60px;
-      font-size: 0.8rem;
-    }
-  }
 
   /* ===========================================
      EXPRESS MODE STYLES
      =========================================== */
-  .express-compare-container {
-    max-width: 50rem;
+  
+  .express-compare-wrapper {
+    max-width: 6xl;
     margin: 0 auto;
-    padding: 1.5rem;
-  }
-  
-  /* Express table scroll container */
-  .express-table-scroll {
-    background: #f8fafc;
-    border-radius: 0.5rem;
-  }
-  
-  .express-table-scroll::-webkit-scrollbar {
-    height: 8px;
-  }
-  
-  .express-table-scroll::-webkit-scrollbar-track {
-    background: #e2e8f0;
-    border-radius: 4px;
-  }
-  
-  .express-table-scroll::-webkit-scrollbar-thumb {
-    background: #0891b2;
-    border-radius: 4px;
-  }
-  
-  .express-table-scroll::-webkit-scrollbar-thumb:hover {
-    background: #0e7490;
-  }
-  
-  @media (max-width: 640px) {
-    .express-compare-container {
-      padding: 1rem;
-    }
-    
-    .express-table-scroll {
-      margin-left: -0.5rem;
-      margin-right: -0.5rem;
-      border-radius: 0;
-      border-left: none;
-      border-right: none;
-    }
+    padding: 1.5rem 1rem;
   }
   
   .express-compare-header {
-    text-align: center;
     margin-bottom: 1.5rem;
   }
   
   .express-compare-title {
-    font-size: 2rem;
-    font-weight: 800;
-    color: #1e293b;
-    margin: 0 0 0.5rem 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 0.25rem;
   }
   
   .express-compare-subtitle {
-    font-size: 1rem;
+    font-size: 0.9rem;
     color: #64748b;
-    margin: 0;
   }
   
-  .express-selector-box {
+  .express-compare-selector {
     background: white;
     border: 2px solid #e2e8f0;
-    border-radius: 1rem;
-    padding: 1.25rem;
+    border-radius: 0.75rem;
+    padding: 1rem;
     margin-bottom: 1.5rem;
   }
   
-  .express-selector-header {
+  .express-compare-selector-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 0.75rem;
-    font-weight: 600;
-    color: #334155;
   }
   
-  .express-clear-btn {
-    font-size: 0.85rem;
-    color: white !important;
+  .express-compare-selector-label {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: #475569;
+  }
+  
+  .express-compare-clear-btn {
     background: #dc2626;
+    color: white;
     border: none;
-    border-radius: 0.5rem;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
+    border-radius: 0.375rem;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
     font-weight: 600;
-    transition: all 0.2s;
+    cursor: pointer;
   }
   
-  .express-clear-btn:hover {
-    background: #b91c1c;
-  }
-  
-  .express-candidates-grid {
+  .express-compare-candidate-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 0.5rem;
   }
   
-  .express-candidate-btn {
+  .express-compare-candidate-btn {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -636,141 +575,173 @@ function buildPdfUrl(pdfId: string, page: number): string {
     text-align: left;
   }
   
-  .express-candidate-btn:hover {
+  .express-compare-candidate-btn:hover {
     border-color: #0891b2;
   }
   
-  .express-candidate-btn.selected {
+  .express-compare-candidate-btn.selected {
     background: #ecfeff;
     border-color: #0891b2;
   }
   
-  .express-btn-name {
-    font-size: 0.9rem;
+  .express-compare-candidate-name {
+    font-size: 0.85rem;
     font-weight: 600;
     color: #0f172a;
     line-height: 1.2;
   }
   
-  .express-btn-party {
+  .express-compare-candidate-party {
     font-size: 0.75rem;
     color: #64748b;
     margin-top: 0.125rem;
   }
   
-  .express-hint {
+  .express-compare-hint {
+    margin-top: 0.75rem;
     font-size: 0.8rem;
     color: #64748b;
-    margin-top: 0.75rem;
   }
   
-  .express-comparison {
+  .express-compare-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .express-compare-section {
     background: white;
     border: 2px solid #e2e8f0;
-    border-radius: 1rem;
-    padding: 1.25rem;
+    border-radius: 0.75rem;
+    padding: 1rem;
   }
   
-  .express-empty {
+  .express-compare-section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 0.75rem;
+  }
+  
+  .express-compare-empty {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.5rem;
-    padding: 3rem;
+    justify-content: center;
+    padding: 2rem;
     background: #f8fafc;
-    border: 2px dashed #e2e8f0;
-    border-radius: 1rem;
+    border: 2px dashed #cbd5e1;
+    border-radius: 0.75rem;
     color: #64748b;
   }
   
-  .express-empty-icon {
-    font-size: 2.5rem;
+  .express-compare-empty-icon {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
   }
+  
+  .express-compare-empty-text {
+    font-size: 0.9rem;
+  }
+  
+  .express-compare-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: #f8fafc;
+    border-radius: 0.5rem;
+  }
+  
+  .express-compare-summary-item {
+    text-align: center;
+  }
+  
+  .express-compare-summary-name {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #0f172a;
+    margin-bottom: 0.25rem;
+  }
+  
+  .express-compare-summary-score {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0891b2;
+  }
+  
 
   /* ===========================================
      READING MODE STYLES
      =========================================== */
-  .reading-compare-container {
-    max-width: 56rem;
+  
+  .reading-compare-wrapper {
+    max-width: 5xl;
     margin: 0 auto;
-    padding: 2rem 1.5rem;
-    font-family: Georgia, 'Times New Roman', serif !important;
+    padding: 2rem 1rem;
   }
   
   .reading-compare-header {
-    text-align: center;
     margin-bottom: 2rem;
-    padding: 2rem;
-    background: #f8fafc;
-    border: 3px solid #1e3a5f;
-    border-radius: 1rem;
   }
   
   .reading-compare-title {
-    font-size: 2.5rem;
-    font-weight: 700;
+    font-size: 2.25rem;
+    font-weight: 800;
     color: #1e3a5f;
-    margin: 0 0 1rem 0;
+    margin-bottom: 0.75rem;
   }
   
-  .reading-compare-intro {
+  .reading-compare-subtitle {
     font-size: 1.25rem;
     color: #475569;
-    line-height: 1.7;
-    margin: 0;
+    line-height: 1.6;
   }
   
-  .reading-selector-section {
+  .reading-compare-selector {
+    background: white;
+    border: 3px solid #1e3a5f;
+    border-radius: 1rem;
+    padding: 1.75rem;
     margin-bottom: 2rem;
   }
   
-  .reading-section-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #1e3a5f;
-    margin: 0 0 1rem 0;
-  }
-  
-  .reading-selector-header {
+  .reading-compare-selector-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
   }
   
-  .reading-selected-count {
-    font-size: 1.15rem;
-    font-weight: 600;
-    color: #0891b2;
+  .reading-compare-selector-label {
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: #1e3a5f;
   }
   
-  .reading-clear-btn {
-    font-size: 1.1rem;
-    color: white !important;
+  .reading-compare-clear-btn {
     background: #dc2626;
+    color: white;
     border: none;
-    padding: 0.75rem 1.5rem;
     border-radius: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    font-size: 1rem;
+    font-weight: 700;
     cursor: pointer;
-    font-weight: 600;
-    transition: all 0.2s;
   }
   
-  .reading-clear-btn:hover {
-    background: #b91c1c;
-  }
-  
-  .reading-candidates-list {
+  .reading-compare-candidate-list {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 1rem;
   }
   
-  .reading-candidate-btn {
+  .reading-compare-candidate-btn {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 1.25rem;
+    padding: 1.5rem;
     background: white;
     border: 3px solid #e2e8f0;
     border-radius: 0.75rem;
@@ -780,1128 +751,1274 @@ function buildPdfUrl(pdfId: string, page: number): string {
     width: 100%;
   }
   
-  .reading-candidate-btn:hover {
+  .reading-compare-candidate-btn:hover {
     border-color: #1e3a5f;
   }
   
-  .reading-candidate-btn.selected {
+  .reading-compare-candidate-btn.selected {
     background: #ecfeff;
     border-color: #0891b2;
     border-width: 4px;
   }
   
-  .reading-btn-name {
+  .reading-compare-candidate-name {
     font-size: 1.35rem;
     font-weight: 700;
     color: #0f172a;
     line-height: 1.2;
   }
   
-  .reading-btn-party {
-    font-size: 1.1rem;
-    color: #64748b;
-    margin-top: 0.25rem;
-  }
-  
-  .reading-hint {
-    font-size: 1.1rem;
-    color: #475569;
-    margin-top: 1rem;
-    padding: 1rem;
-    background: #fef3c7;
-    border-radius: 0.5rem;
-  }
-  
-  .reading-comparison {
-    margin-bottom: 2rem;
-  }
-  
-  .reading-empty {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    padding: 3rem;
-    background: #f8fafc;
-    border: 3px dashed #cbd5e1;
-    border-radius: 1rem;
-    text-align: center;
-  }
-  
-  .reading-empty-icon {
-    font-size: 3rem;
-  }
-  
-  .reading-empty h3 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #1e3a5f;
-    margin: 0;
-  }
-  
-  .reading-empty p {
-    font-size: 1.15rem;
-    color: #64748b;
-    margin: 0;
-  }
-
-  /* Reading Mode Tabs */
-  .reading-tabs-nav {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 2rem;
-    background: #f1f5f9;
-    padding: 0.5rem;
-    border-radius: 1rem;
-  }
-  
-  .reading-tab {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    padding: 1.25rem 1.5rem;
-    background: transparent;
-    border: none;
-    border-radius: 0.75rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-family: Georgia, 'Times New Roman', serif;
-  }
-  
-  .reading-tab:not(:disabled):hover {
-    background: white;
-  }
-  
-  .reading-tab.active {
-    background: white;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .reading-tab:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-  
-  .reading-tab-number {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 2.5rem;
-    height: 2.5rem;
-    background: #e2e8f0;
-    color: #475569;
-    border-radius: 50%;
-    font-size: 1.25rem;
-    font-weight: 700;
-  }
-  
-  .reading-tab.active .reading-tab-number {
-    background: #0891b2;
-    color: white;
-  }
-  
-  .reading-tab-text {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: #334155;
-  }
-  
-  .reading-tab.active .reading-tab-text {
-    color: #0f172a;
-  }
-  
-  .reading-tab-count {
+  .reading-compare-candidate-party {
     font-size: 1rem;
     color: #64748b;
+    margin-top: 0.5rem;
   }
   
-  /* Tab Content */
-  .reading-tab-content {
-    display: none;
-  }
-  
-  .reading-tab-content.active {
-    display: block;
-  }
-  
-  .reading-paso-header {
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
-    border-bottom: 2px solid #e2e8f0;
-  }
-  
-  .reading-paso-instructions {
-    font-size: 1.15rem;
-    color: #475569;
-    line-height: 1.6;
-    margin: 0.5rem 0 0 0;
-  }
-  
-  .reading-paso-footer {
-    margin-top: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-  
-  .reading-next-btn {
-    width: 100%;
-    padding: 1.25rem 2rem;
-    background: #0891b2;
-    color: white !important;
-    border: none;
-    border-radius: 0.75rem;
-    font-size: 1.35rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-family: Georgia, 'Times New Roman', serif;
-  }
-  
-  .reading-next-btn:disabled {
-    background: #cbd5e1;
-    cursor: not-allowed;
-  }
-  
-  .reading-next-btn:not(:disabled):hover {
-    background: #0e7490;
-  }
-  
-  .reading-back-navigation {
-    margin-bottom: 1.5rem;
-  }
-  
-  .reading-back-btn {
-    padding: 1rem 1.5rem;
-    background: white;
-    color: #0891b2 !important;
-    border: 3px solid #0891b2;
-    border-radius: 0.75rem;
-    font-size: 1.15rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-family: Georgia, 'Times New Roman', serif;
-  }
-  
-  .reading-back-btn:hover {
-    background: #ecfeff;
-  }
-  
-  .reading-comparison-legend {
-    margin-top: 2rem;
-    padding: 1.5rem;
-    background: #f8fafc;
-    border: 2px solid #e2e8f0;
-    border-radius: 1rem;
-  }
-  
-  .reading-comparison-legend h3 {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #1e3a5f;
-    margin: 0 0 1rem 0;
-  }
-  
-  .reading-comparison-legend ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-  
-  .reading-comparison-legend li {
-    font-size: 1.1rem;
+  .reading-compare-hint {
+    margin-top: 1.25rem;
+    font-size: 1.125rem;
     color: #475569;
     line-height: 1.5;
   }
   
-  @media (max-width: 768px) {
-    .express-candidates-grid {
-      grid-template-columns: 1fr;
-    }
-    
-    .reading-compare-title {
-      font-size: 1.75rem;
-    }
-    
-    .reading-tabs-nav {
-      flex-direction: column;
-    }
-    
-    .reading-tab {
-      justify-content: flex-start;
-      padding: 1rem;
-    }
-    
-    .reading-tab-text {
-      font-size: 1.1rem;
-    }
-    
-    /* Reading Mode Responsive Comparison */
-    .reading-comparison-header {
-      grid-template-columns: 1fr !important;
-      gap: 0.75rem !important;
-    }
-    
-    .reading-comparison-header .header-pilar-label {
-      display: none !important;
-    }
-    
-    .reading-comparison-header .header-candidate {
-      display: flex !important;
-      flex-direction: row !important;
-      justify-content: space-between !important;
-      align-items: center !important;
-      padding: 0.75rem !important;
-      background: rgba(255,255,255,0.1) !important;
-      border-radius: 0.5rem !important;
-    }
-    
-    .reading-comparison-header .header-candidate-name {
-      font-size: 1.25rem !important;
-    }
-    
-    .reading-comparison-header .header-candidate-score {
-      font-size: 1.5rem !important;
-    }
-    
-    .reading-comparison-row {
-      grid-template-columns: 1fr !important;
-      gap: 0.5rem !important;
-      padding: 1rem !important;
-    }
-    
-    .reading-comparison-row .row-pilar-info {
-      margin-bottom: 0.75rem !important;
-      padding-bottom: 0.75rem !important;
-      border-bottom: 2px solid #e2e8f0 !important;
-    }
-    
-    .reading-comparison-row .row-pilar-id {
-      font-size: 1rem !important;
-    }
-    
-    .reading-comparison-row .row-pilar-name {
-      font-size: 0.9rem !important;
-    }
-    
-    .reading-comparison-row .row-scores-container {
-      display: grid !important;
-      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)) !important;
-      gap: 0.5rem !important;
-    }
-    
-    .reading-comparison-row .row-score-cell {
-      padding: 0.5rem !important;
-    }
-    
-    .reading-comparison-row .row-score-candidate {
-      display: block !important;
-      font-size: 0.75rem !important;
-      color: #475569 !important;
-      margin-bottom: 0.25rem !important;
-      font-weight: 600 !important;
-    }
-    
-    .reading-comparison-row .row-score-percent {
-      font-size: 1.35rem !important;
-    }
-    
-    .reading-comparison-row .row-scores-container {
-      display: grid !important;
-      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)) !important;
-      gap: 0.5rem !important;
-    }
-    
-    .reading-clear-bottom-btn {
-      padding: 0.85rem 1.5rem !important;
-      font-size: 1rem !important;
-    }
-    
-    .reading-legend-hint {
-      font-size: 0.9rem !important;
-      padding: 0.65rem !important;
-    }
+  .reading-compare-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
   }
   
-  @media (max-width: 480px) {
-    .reading-compare-title {
-      font-size: 1.5rem;
-    }
-    
-    .reading-compare-container {
-      padding: 1rem 0.75rem;
-    }
-    
-    .reading-compare-header {
-      padding: 1.25rem;
-    }
-    
-    .reading-compare-intro {
-      font-size: 1.1rem;
-    }
-    
-    .reading-comparison-header .header-candidate-name {
-      font-size: 1.1rem !important;
-    }
-    
-    .reading-comparison-header .header-candidate-score {
-      font-size: 1.25rem !important;
-    }
-    
-    .reading-comparison-row .row-scores-container {
-      grid-template-columns: repeat(2, 1fr) !important;
-    }
-    
-    .reading-comparison-row .row-score-percent {
-      font-size: 1.2rem !important;
-    }
-    
-    .reading-next-btn {
-      font-size: 1.15rem;
-      padding: 1rem 1.5rem;
-    }
-    
-    .reading-back-btn {
-      font-size: 1rem;
-      padding: 0.85rem 1.25rem;
-    }
-    
-    .reading-btn-name {
-      font-size: 1.15rem;
-    }
-    
-    .reading-btn-party {
-      font-size: 0.95rem;
-    }
-    
-    .reading-candidate-btn {
-      padding: 1rem;
-    }
-    
-    .reading-section-title {
-      font-size: 1.25rem;
-    }
-    
-    .reading-selected-count {
-      font-size: 1rem;
-    }
-    
-    .reading-clear-btn {
-      font-size: 0.95rem;
-      padding: 0.6rem 1rem;
-    }
-    
-    .reading-selector-header {
-      flex-direction: column;
-      gap: 0.75rem;
-      align-items: flex-start;
-    }
+  .reading-compare-section {
+    background: white;
+    border: 3px solid #1e3a5f;
+    border-radius: 1rem;
+    padding: 1.5rem;
   }
-
-  /* ===========================================
-     VIEW PLAN LINK STYLES (All Modes)
-     =========================================== */
-  .score-cell {
+  
+  .reading-compare-section-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #1e3a5f;
+    margin-bottom: 1rem;
+  }
+  
+  .reading-compare-empty {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.35rem;
+    justify-content: center;
+    padding: 3rem;
+    background: #f8fafc;
+    border: 3px dashed #cbd5e1;
+    border-radius: 1rem;
+    color: #64748b;
   }
   
-  /* Dashboard Mode - "Ver >>" link */
-  .view-plan-anchor {
-    display: inline-block;
-    color: #0891b2 !important;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-decoration: none !important;
-    transition: all 0.2s;
+  .reading-compare-empty-icon {
+    font-size: 3.5rem;
+    margin-bottom: 1.25rem;
   }
   
-  .view-plan-anchor:hover {
-    color: #0e7490 !important;
-    text-decoration: underline !important;
+  .reading-compare-empty-text {
+    font-size: 1.25rem;
   }
   
-  .view-plan-anchor.no-proposal {
-    color: #94a3b8 !important;
-    cursor: not-allowed;
-    pointer-events: none;
+  .reading-compare-summary {
+    background: #f8fafc;
+    border: 3px solid #1e3a5f;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
   }
   
-  /* Express & Reading Mode - Percentage as link */
-  .percent-link {
-    color: inherit !important;
-    text-decoration: none !important;
-    transition: all 0.2s;
-    cursor: pointer;
+  .reading-compare-summary-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #1e3a5f;
+    margin-bottom: 1.25rem;
   }
   
-  .percent-link:hover {
-    text-decoration: underline !important;
-    opacity: 0.8;
+  .reading-compare-summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.5rem;
+    margin-bottom: 0.75rem;
   }
   
-  .percent-no-link {
-    opacity: 0.5;
+  .reading-compare-summary-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
   }
   
-  /* Reading mode adjustments */
-  html[data-mode="reading"] .percent-link {
+  .reading-compare-summary-score {
     font-size: 1.75rem;
     font-weight: 800;
+    color: #0891b2;
   }
   
-  /* Reading mode horizontal scroll container */
-  .reading-table-scroll-container {
-    border: 2px solid #e2e8f0;
-    border-radius: 0.75rem;
-    padding: 0.5rem;
-    background: #f8fafc;
-  }
-  
-  .reading-table-scroll-container::-webkit-scrollbar {
-    height: 10px;
-  }
-  
-  .reading-table-scroll-container::-webkit-scrollbar-track {
-    background: #e2e8f0;
-    border-radius: 5px;
-  }
-  
-  .reading-table-scroll-container::-webkit-scrollbar-thumb {
-    background: #0891b2;
-    border-radius: 5px;
-  }
-  
-  .reading-table-scroll-container::-webkit-scrollbar-thumb:hover {
-    background: #0e7490;
-  }
-  
+
+  /* Responsive */
   @media (max-width: 768px) {
-    .reading-table-scroll-container {
-      margin-left: -0.5rem;
-      margin-right: -0.5rem;
-      border-radius: 0;
-      border-left: none;
-      border-right: none;
+    .dashboard-compare-candidate-grid {
+      grid-template-columns: 1fr;
     }
     
-    .reading-table-inner {
-      padding: 0 0.5rem;
+    .express-compare-candidate-grid {
+      grid-template-columns: 1fr;
     }
   }
 </style>
 
-<script define:vars={{ candidates: candidatesWithNames, scoresByCandidate, pillars, proposalIndex }}>
-  // Helper to get candidate display name
-  function getDisplayName(candidate) {
-    if (candidate.displayName) return candidate.displayName;
-    const name = candidate.candidate_name;
+<script define:vars={{ candidates, scoresByCandidate, pillars, analysisByCandidate, proposals }}>
+  const minSelection = 2;
+  const maxSelection = 4;
+  
+  // Helper functions
+  function getCandidateName(candidate) {
+    const name = candidate?.candidate_name;
     if (name && name !== 'Por determinar' && name !== 'no_especificado') {
       return name;
     }
-    return candidate.party_name || 'N/A';
+    return candidate?.party_name || 'N/A';
   }
-
+  
+  function getRiskLevel(candidateId) {
+    if (!analysisByCandidate) return 'BAJO';
+    const analysis = analysisByCandidate[candidateId];
+    return analysis?.risk_level || 'BAJO';
+  }
+  
+  function getRiskColor(risk) {
+    if (risk === 'BAJO') return 'green';
+    if (risk === 'MEDIO') return 'amber';
+    return 'red';
+  }
+  
+  function getRiskEmoji(risk) {
+    if (risk === 'BAJO') return '🟢';
+    if (risk === 'MEDIO') return '🟠';
+    return '🔴';
+  }
+  
+  // Helper functions for penalties, bonuses, flags, etc.
+  function getTotalPenalties(score) {
+    return Math.abs(score.overall.total_penalties_applied || 0);
+  }
+  
+  function getFiscalPenalty(score) {
+    return Math.abs(score.fiscal_analysis.total_penalty || 0);
+  }
+  
+  function getOmissionPenalty(score) {
+    const oa = score.omission_analysis;
+    if (!oa) return 0;
+    return Math.abs((oa.urgency_penalty || 0) + (oa.pillar_penalty || 0));
+  }
+  
+  function getViabilityPenalty(score) {
+    return (score.pillar_scores || []).reduce((sum, ps) => {
+      return sum + Math.abs(ps.viability_penalty || 0);
+    }, 0);
+  }
+  
+  function getTotalBonuses(score) {
+    return (score.pillar_scores || []).reduce((sum, ps) => {
+      return sum + (ps.bonus_multiple || 0) + (ps.bonus_quality || 0) + (ps.bonus_funding || 0);
+    }, 0);
+  }
+  
+  function getBonusesByType(score) {
+    return (score.pillar_scores || []).reduce((acc, ps) => {
+      acc.multiple += ps.bonus_multiple || 0;
+      acc.quality += ps.bonus_quality || 0;
+      acc.funding += ps.bonus_funding || 0;
+      return acc;
+    }, { multiple: 0, quality: 0, funding: 0 });
+  }
+  
+  function getUrgencyCoverage(score) {
+    const oa = score.omission_analysis;
+    if (!oa?.urgency_coverage) return { security: false, ccss: false, employment: false, crime: false };
+    return {
+      security: oa.urgency_coverage.security_operations?.covered || false,
+      ccss: oa.urgency_coverage.ccss_crisis?.covered || false,
+      employment: oa.urgency_coverage.formal_employment?.covered || false,
+      crime: oa.urgency_coverage.organized_crime?.covered || false,
+    };
+  }
+  
+  function getFlagLabel(key, category, flagData) {
+    const labelMaps = {
+      current_proposals: {
+        violates_separation_powers: 'Viola Separación de Poderes',
+        violates_fundamental_rights: 'Viola Derechos Fundamentales',
+        violates_constitutional_guarantees: 'Viola Garantías Constitucionales',
+        violates_constitutional_procedures: 'Viola Procedimientos Constitucionales',
+      },
+      dictatorial_patterns: {
+        cuba_similarity: 'Similitudes con Modelo Cubano',
+        venezuela_similarity: 'Similitudes con Modelo Venezolano',
+      },
+      power_negotiation_requirements: {
+        requires_assembly_approval: 'Requiere Aprobación de la Asamblea',
+        requires_constitutional_reform: 'Requiere Reforma Constitucional',
+        requires_judicial_review: 'Requiere Revisión Judicial',
+        requires_regulatory_changes: 'Requiere Cambios Regulatorios',
+      },
+      historical: {
+        anti_democratic_behavior: 'Comportamiento Anti-Democrático',
+        human_rights_violations: 'Violaciones de Derechos Humanos',
+        corruption_convictions: 'Corrupción Verificada',
+      },
+      contradictions: {
+        historical_current_contradiction: 'Contradicción Histórico-Actual',
+        corruption_transparency_concern: 'Preocupación Corrupción-Transparencia',
+      },
+    };
+    
+    if (flagData?.description) {
+      return flagData.description;
+    }
+    
+    if (labelMaps[category] && labelMaps[category][key]) {
+      return labelMaps[category][key];
+    }
+    
+    return key
+      .split('_')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  }
+  
+  function getActiveFlags(score) {
+    const flags = score.informative_flags;
+    if (!flags) return [];
+    
+    const active = [];
+    if (flags.current_proposals) {
+      Object.entries(flags.current_proposals).forEach(([key, val]) => {
+        if (val?.active) {
+          active.push({ 
+            category: 'Propuestas Actuales', 
+            label: getFlagLabel(key, 'current_proposals', val),
+            key: key
+          });
+        }
+      });
+    }
+    if (flags.dictatorial_patterns) {
+      Object.entries(flags.dictatorial_patterns).forEach(([key, val]) => {
+        if (val?.active) {
+          active.push({ 
+            category: 'Similitudes Históricas', 
+            label: getFlagLabel(key, 'dictatorial_patterns', val),
+            key: key
+          });
+        }
+      });
+    }
+    if (flags.power_negotiation_requirements) {
+      Object.entries(flags.power_negotiation_requirements).forEach(([key, val]) => {
+        if (val?.active) {
+          active.push({ 
+            category: 'Negociación de Poder', 
+            label: getFlagLabel(key, 'power_negotiation_requirements', val),
+            key: key
+          });
+        }
+      });
+    }
+    if (flags.historical) {
+      Object.entries(flags.historical).forEach(([key, val]) => {
+        if (val?.active) {
+          active.push({ 
+            category: 'Evidencia Histórica', 
+            label: getFlagLabel(key, 'historical', val),
+            key: key
+          });
+        }
+      });
+    }
+    if (flags.contradictions) {
+      Object.entries(flags.contradictions).forEach(([key, val]) => {
+        if (val?.active) {
+          active.push({ 
+            category: 'Contradicciones', 
+            label: getFlagLabel(key, 'contradictions', val),
+            key: key
+          });
+        }
+      });
+    }
+    return active;
+  }
+  
   // Dashboard Mode Logic
-  const selectedCandidates = new Set();
-  const maxSelection = 4;
-  const minSelection = 2;
-
-  const candidateBtns = document.querySelectorAll('.mode-dashboard-content .candidate-btn');
-  const clearBtn = document.getElementById('clear-selection');
-  const selectionHint = document.getElementById('selection-hint');
-  const comparisonContainer = document.getElementById('comparison-container');
-  const emptyState = document.getElementById('empty-state');
-  const headerCandidates = document.getElementById('header-candidates');
-  const overallScores = document.getElementById('overall-scores');
-
-  // Check URL params
-  const urlParams = new URLSearchParams(window.location.search);
-  const preselected = urlParams.get('c');
-  if (preselected) {
-    selectedCandidates.add(preselected);
-    document.querySelector(`.mode-dashboard-content [data-candidate-id="${preselected}"]`)?.classList.add('selected');
-  }
-
-  candidateBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const id = btn.dataset.candidateId;
-      
-      if (selectedCandidates.has(id)) {
-        selectedCandidates.delete(id);
-        btn.classList.remove('selected');
-      } else if (selectedCandidates.size < maxSelection) {
-        selectedCandidates.add(id);
-        btn.classList.add('selected');
-      }
-      
-      updateUI();
-    });
-  });
-
-  clearBtn?.addEventListener('click', () => {
-    selectedCandidates.clear();
-    candidateBtns.forEach(btn => {
+  const dashboardSelected = new Set();
+  const dashboardClearBtn = document.getElementById('dashboard-clear-btn');
+  const dashboardHint = document.getElementById('dashboard-selection-hint');
+  const dashboardContainer = document.getElementById('dashboard-comparison-container');
+  const dashboardEmpty = document.getElementById('dashboard-empty-state');
+  const dashboardSummary = document.getElementById('dashboard-comparative-summary');
+  const dashboardPenalties = document.getElementById('dashboard-penalties-content');
+  const dashboardBonuses = document.getElementById('dashboard-bonuses-content');
+  const dashboardFlags = document.getElementById('dashboard-flags-content');
+  const dashboardUrgency = document.getElementById('dashboard-urgency-content');
+  
+  // Event delegation for dashboard buttons
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.dashboard-compare-candidate-btn');
+    if (!btn) return;
+    
+    const id = btn.getAttribute('data-candidate-id');
+    if (!id) return;
+    
+    if (dashboardSelected.has(id)) {
+      dashboardSelected.delete(id);
       btn.classList.remove('selected');
-    });
-    updateUI();
+    } else if (dashboardSelected.size < maxSelection) {
+      dashboardSelected.add(id);
+      btn.classList.add('selected');
+    }
+    
+    updateDashboardUI();
   });
-
-  function updateUI() {
-    const count = selectedCandidates.size;
+  
+  dashboardClearBtn?.addEventListener('click', () => {
+    dashboardSelected.clear();
+    document.querySelectorAll('.dashboard-compare-candidate-btn').forEach(btn => btn.classList.remove('selected'));
+    updateDashboardUI();
+  });
+  
+  function updateDashboardUI() {
+    const count = dashboardSelected.size;
+    dashboardClearBtn?.classList.toggle('hidden', count === 0);
     
-    // Update hint
-    if (selectionHint) {
-      if (count === 0) {
-        selectionHint.textContent = 'Haz clic en los candidatos que deseas comparar (mínimo 2, máximo 4)';
-      } else if (count < minSelection) {
-        selectionHint.textContent = `${count} seleccionado. Selecciona al menos ${minSelection - count} más.`;
-      } else {
-        selectionHint.textContent = `${count} candidatos seleccionados.`;
-      }
-    }
-    
-    // Show/hide clear button
-    clearBtn?.classList.toggle('hidden', count === 0);
-    
-    // Show comparison or empty state
     if (count >= minSelection) {
-      comparisonContainer?.classList.remove('hidden');
-      emptyState?.classList.add('hidden');
-      renderComparison();
+      dashboardContainer?.classList.remove('hidden');
+      dashboardEmpty?.classList.add('hidden');
+      renderDashboardComparison();
     } else {
-      comparisonContainer?.classList.add('hidden');
-      emptyState?.classList.remove('hidden');
+      dashboardContainer?.classList.add('hidden');
+      dashboardEmpty?.classList.remove('hidden');
     }
   }
-
-  // Helper to get PDF link for Dashboard Mode ("Ver >>")
-  function getDashboardPdfLink(candidateId, pillarId) {
-    const proposal = proposalIndex[candidateId]?.[pillarId];
-    if (proposal && proposal.pdfId) {
-      const pdfUrl = `/planes/${proposal.pdfId}.pdf#page=${proposal.page}`;
-      return `<a href="${pdfUrl}" target="_blank" rel="noopener noreferrer" class="view-plan-anchor" title="Ver página ${proposal.page}">Ver »</a>`;
+  
+  function renderDashboardComparison() {
+    
+    const selected = Array.from(dashboardSelected);
+    console.log('Dashboard: Rendering comparison for', selected.length, 'candidates:', selected);
+    
+    if (!candidates || !scoresByCandidate || !pillars) {
+      console.error('Dashboard: Missing data', { 
+        candidates: !!candidates, 
+        scoresByCandidate: !!scoresByCandidate, 
+        pillars: !!pillars 
+      });
+      return;
     }
-    return `<span class="view-plan-anchor no-proposal">—</span>`;
-  }
-
-  // Helper to get percentage as PDF link for Express/Reading Mode
-  function getPercentPdfLink(candidateId, pillarId, percent, textColor) {
-    const proposal = proposalIndex[candidateId]?.[pillarId];
-    if (proposal && proposal.pdfId) {
-      const pdfUrl = `/planes/${proposal.pdfId}.pdf#page=${proposal.page}`;
-      return `<a href="${pdfUrl}" target="_blank" rel="noopener noreferrer" class="percent-link" style="color: ${textColor};" title="Ver plan - página ${proposal.page}">${percent}%</a>`;
-    }
-    return `<span class="percent-no-link" style="color: ${textColor};">${percent}%</span>`;
-  }
-
-  function renderComparison() {
-    const selected = Array.from(selectedCandidates);
+    
     const candidateData = selected.map(id => {
       const candidate = candidates.find(c => c.candidate_id === id);
       const score = scoresByCandidate[id];
-      return { candidate, score };
-    });
-
-    // Check if mobile (768px breakpoint)
-    const isMobile = window.innerWidth < 768;
-
-    // Render header with candidate names (or party acronyms on mobile)
-    if (headerCandidates) {
-      headerCandidates.innerHTML = candidateData.map(({ candidate, score }) => {
-        if (isMobile) {
-          // Mobile: show only party acronym and score
-          return `
-            <div class="flex-1 text-center px-1" style="min-width: 60px;">
-              <div class="font-bold text-slate-900 text-base">${candidate.pdf_id}</div>
-              <div class="text-lg font-bold text-cyan-600">${Math.round(score.overall.weighted_sum * 100)}%</div>
-            </div>
-          `;
-        } else {
-          // Desktop: show full name, party and score
-          return `
-        <div class="flex-1 text-center px-2">
-              <div class="font-bold text-slate-900 text-sm line-clamp-1">${getDisplayName(candidate)}</div>
-              <div class="text-xs text-slate-500">${candidate.party_name}</div>
-              <div class="text-lg font-bold text-cyan-600">${Math.round(score.overall.weighted_sum * 100)}%</div>
-        </div>
-          `;
-        }
-      }).join('');
-    }
-
-    // Render pillar scores with "Ver >>" links (Dashboard)
-    document.querySelectorAll('.pillar-row').forEach(row => {
-      const pillarId = row.dataset.pillarId;
-      const scoresContainer = row.querySelector('.candidate-scores');
-      
-      if (scoresContainer) {
-        scoresContainer.innerHTML = candidateData.map(({ candidate, score }) => {
-          const pillarScore = score.pillar_scores.find(ps => ps.pillar_id === pillarId);
-          if (!pillarScore) return '<div class="flex-1">-</div>';
-          
-          const percent = Math.round((pillarScore.effective_score / 4) * 100);
-          
-          // v7: Obtener bonos y violaciones
-          const bonuses = score.pillar_scores.find(ps => ps.pillar_id === pillarId);
-          const hasBonuses = bonuses && ((bonuses.bonus_multiple || 0) + (bonuses.bonus_quality || 0) + (bonuses.bonus_funding || 0)) > 0;
-          const hasViability = bonuses && (bonuses.viability_penalty || 0) < 0;
-          const numProposals = bonuses?.num_proposals || 0;
-          
-          return `
-            <div class="flex-1 px-2 score-cell">
-              <div class="flex items-center gap-2 w-full">
-                <div class="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
-                  <div class="h-full bg-emerald-500 rounded-full" style="width: ${percent}%"></div>
-                </div>
-                <span class="font-bold text-sm">${percent}%</span>
-              </div>
-              ${numProposals > 0 ? `<div class="text-xs text-slate-500 mt-1">${numProposals} propuesta${numProposals !== 1 ? 's' : ''}</div>` : ''}
-              ${hasBonuses ? `
-                <div class="flex gap-1 mt-1 flex-wrap">
-                  ${bonuses.bonus_multiple > 0 ? `<span class="text-xs px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded" title="Bono por múltiples propuestas">🎯 +${bonuses.bonus_multiple}</span>` : ''}
-                  ${bonuses.bonus_quality > 0 ? `<span class="text-xs px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded" title="Bono por calidad">⭐ +${bonuses.bonus_quality}</span>` : ''}
-                  ${bonuses.bonus_funding > 0 ? `<span class="text-xs px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded" title="Bono por financiamiento">💰 +${bonuses.bonus_funding}</span>` : ''}
-                </div>
-              ` : ''}
-              ${hasViability ? `
-                <div class="text-xs text-red-600 mt-1" title="Violación constitucional">
-                  ⚖️ ${bonuses.viability_penalty}
-                </div>
-              ` : ''}
-              ${getDashboardPdfLink(candidate.candidate_id, pillarId)}
-            </div>
-          `;
-        }).join('');
+      const analysis = analysisByCandidate[id];
+      if (!candidate || !score) {
+        console.warn('Dashboard: Missing data for candidate', id, { candidate: !!candidate, score: !!score });
+        return null;
       }
-    });
-
-    // Render overall scores with candidate names (v7: con flags informativos y bonos)
-    if (overallScores) {
-      overallScores.innerHTML = candidateData.map(({ candidate, score }) => {
-        const totalBonuses = (score.pillar_scores || []).reduce((sum, ps) => {
-          return sum + (ps.bonus_multiple || 0) + (ps.bonus_quality || 0) + (ps.bonus_funding || 0);
-        }, 0);
-        const hasFlags = score.informative_flags && (
-          Object.values(score.informative_flags.current_proposals || {}).some(f => f.active) ||
-          Object.values(score.informative_flags.dictatorial_patterns || {}).some(f => f?.active) ||
-          Object.values(score.informative_flags.power_negotiation_requirements || {}).some(f => f?.active) ||
-          Object.values(score.informative_flags.historical || {}).some(f => f?.active) ||
-          Object.values(score.informative_flags.contradictions || {}).some(f => f?.active)
-        );
+      return { candidate, score, analysis };
+    }).filter(Boolean);
+    
+    if (candidateData.length === 0) {
+      console.warn('Dashboard: No valid candidate data after filtering');
+      return;
+    }
+    
+    console.log('Dashboard: Rendering', candidateData.length, 'candidates');
+    
+    // Render Comparative Summary
+    if (dashboardSummary) {
+      dashboardSummary.innerHTML = `
+        <h3 class="dashboard-compare-section-title">📊 Resumen Comparativo</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+          ${candidateData.map(({ candidate, score, analysis }) => {
+            const riskLevel = getRiskLevel(candidate.candidate_id);
+            const riskColor = getRiskColor(riskLevel);
+            const riskEmoji = getRiskEmoji(riskLevel);
+            const totalPenalties = getTotalPenalties(score);
+            const totalBonuses = getTotalBonuses(score);
+            const weightedPercent = Math.round(score.overall.weighted_sum * 100);
+            const urgencyCoverage = getUrgencyCoverage(score);
+            const coverageCount = Object.values(urgencyCoverage).filter(Boolean).length;
+            
+            return `
+              <div style="background: white; border: 2px solid #e2e8f0; border-radius: 0.75rem; padding: 1rem;">
+                <div style="font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">${getCandidateName(candidate)}</div>
+                <div style="font-size: 0.875rem; color: #64748b; margin-bottom: 0.75rem;">${candidate.party_name}</div>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 0.875rem; color: #64748b;">Puntaje:</span>
+                    <span style="font-size: 1.5rem; font-weight: 700; color: #0891b2;">${weightedPercent}%</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 0.875rem; color: #64748b;">Riesgo:</span>
+                    <span style="font-size: 0.875rem; padding: 0.25rem 0.5rem; border-radius: 0.375rem; font-weight: 600; background: ${riskColor === 'green' ? '#dcfce7' : riskColor === 'amber' ? '#fef3c7' : '#fee2e2'}; color: ${riskColor === 'green' ? '#166534' : riskColor === 'amber' ? '#92400e' : '#991b1b'};">${riskEmoji} ${riskLevel}</span>
+                  </div>
+                  ${totalPenalties > 0 ? `
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                      <span style="font-size: 0.875rem; color: #64748b;">Penalizaciones:</span>
+                      <span style="font-size: 0.875rem; font-weight: 700; color: #dc2626;">-${Math.round(totalPenalties)}</span>
+                    </div>
+                  ` : ''}
+                  ${totalBonuses > 0 ? `
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                      <span style="font-size: 0.875rem; color: #64748b;">Bonos:</span>
+                      <span style="font-size: 0.875rem; font-weight: 700; color: #059669;">+${totalBonuses.toFixed(1)}</span>
+                    </div>
+                  ` : ''}
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 0.875rem; color: #64748b;">Urgencias:</span>
+                    <span style="font-size: 0.875rem; font-weight: 600; color: ${coverageCount === 4 ? '#059669' : coverageCount >= 2 ? '#d97706' : '#dc2626'};">${coverageCount}/4</span>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+    
+    // Render Penalties Comparison
+    if (dashboardPenalties) {
+      dashboardPenalties.innerHTML = `
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; font-size: 0.875rem; border-collapse: collapse;">
+            <thead>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <th style="text-align: left; padding: 0.5rem 0.75rem; font-weight: 600; color: #475569;">Tipo</th>
+                ${candidateData.map(({ candidate }) => `
+                  <th style="text-align: center; padding: 0.5rem 0.75rem; font-weight: 600; color: #475569;">${getCandidateName(candidate)}</th>
+                `).join('')}
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td style="padding: 0.5rem 0.75rem; color: #64748b;">💰 Penalización Fiscal</td>
+                ${candidateData.map(({ score }) => {
+                  const fiscal = getFiscalPenalty(score);
+                  return `<td style="text-align: center; padding: 0.5rem 0.75rem;">${fiscal > 0 ? `<span style="color: #dc2626; font-weight: 700;">-${Math.round(fiscal)}</span>` : '<span style="color: #94a3b8;">0</span>'}</td>`;
+                }).join('')}
+              </tr>
+              <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td style="padding: 0.5rem 0.75rem; color: #64748b;">🚨 Penalización por Omisión</td>
+                ${candidateData.map(({ score }) => {
+                  const omission = getOmissionPenalty(score);
+                  return `<td style="text-align: center; padding: 0.5rem 0.75rem;">${omission > 0 ? `<span style="color: #dc2626; font-weight: 700;">-${Math.round(omission)}</span>` : '<span style="color: #94a3b8;">0</span>'}</td>`;
+                }).join('')}
+              </tr>
+              <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td style="padding: 0.5rem 0.75rem; color: #64748b;">⚖️ Penalización por Viabilidad</td>
+                ${candidateData.map(({ score }) => {
+                  const viability = getViabilityPenalty(score);
+                  return `<td style="text-align: center; padding: 0.5rem 0.75rem;">${viability > 0 ? `<span style="color: #dc2626; font-weight: 700;">-${Math.round(viability)}</span>` : '<span style="color: #94a3b8;">0</span>'}</td>`;
+                }).join('')}
+              </tr>
+              <tr style="background: #f8fafc; font-weight: 600;">
+                <td style="padding: 0.5rem 0.75rem; color: #0f172a;">Total Penalizaciones</td>
+                ${candidateData.map(({ score }) => {
+                  const total = getTotalPenalties(score);
+                  return `<td style="text-align: center; padding: 0.5rem 0.75rem; color: #dc2626;">${total > 0 ? `-${Math.round(total)}` : '0'}</td>`;
+                }).join('')}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+    
+    // Render Bonuses Comparison
+    if (dashboardBonuses) {
+      dashboardBonuses.innerHTML = `
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; font-size: 0.875rem; border-collapse: collapse;">
+            <thead>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <th style="text-align: left; padding: 0.5rem 0.75rem; font-weight: 600; color: #475569;">Tipo de Bono</th>
+                ${candidateData.map(({ candidate }) => `
+                  <th style="text-align: center; padding: 0.5rem 0.75rem; font-weight: 600; color: #475569;">${getCandidateName(candidate)}</th>
+                `).join('')}
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td style="padding: 0.5rem 0.75rem; color: #64748b;">🎯 Múltiples Propuestas (3+)</td>
+                ${candidateData.map(({ score }) => {
+                  const bonuses = getBonusesByType(score);
+                  return `<td style="text-align: center; padding: 0.5rem 0.75rem;">${bonuses.multiple > 0 ? `<span style="color: #059669; font-weight: 700;">+${bonuses.multiple.toFixed(1)}</span>` : '<span style="color: #94a3b8;">0</span>'}</td>`;
+                }).join('')}
+              </tr>
+              <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td style="padding: 0.5rem 0.75rem; color: #64748b;">⭐ Calidad (Propuestas Completas 4/4)</td>
+                ${candidateData.map(({ score }) => {
+                  const bonuses = getBonusesByType(score);
+                  return `<td style="text-align: center; padding: 0.5rem 0.75rem;">${bonuses.quality > 0 ? `<span style="color: #059669; font-weight: 700;">+${bonuses.quality.toFixed(1)}</span>` : '<span style="color: #94a3b8;">0</span>'}</td>`;
+                }).join('')}
+              </tr>
+              <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td style="padding: 0.5rem 0.75rem; color: #64748b;">💰 Financiamiento</td>
+                ${candidateData.map(({ score }) => {
+                  const bonuses = getBonusesByType(score);
+                  return `<td style="text-align: center; padding: 0.5rem 0.75rem;">${bonuses.funding > 0 ? `<span style="color: #059669; font-weight: 700;">+${bonuses.funding.toFixed(1)}</span>` : '<span style="color: #94a3b8;">0</span>'}</td>`;
+                }).join('')}
+              </tr>
+              <tr style="background: #f8fafc; font-weight: 600;">
+                <td style="padding: 0.5rem 0.75rem; color: #0f172a;">Total Bonos</td>
+                ${candidateData.map(({ score }) => {
+                  const total = getTotalBonuses(score);
+                  return `<td style="text-align: center; padding: 0.5rem 0.75rem; color: #059669;">${total > 0 ? `+${total.toFixed(1)}` : '0'}</td>`;
+                }).join('')}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+    
+    // Render Flags Comparison
+    if (dashboardFlags) {
+      const allFlagsMap = new Map();
+      candidateData.forEach(({ score }) => {
+        getActiveFlags(score).forEach(flag => {
+          if (!allFlagsMap.has(flag.key)) {
+            allFlagsMap.set(flag.key, { label: flag.label, category: flag.category });
+          }
+        });
+      });
+      
+      if (allFlagsMap.size > 0) {
+        const flagsByCategory = {};
+        allFlagsMap.forEach((flag, key) => {
+          if (!flagsByCategory[flag.category]) {
+            flagsByCategory[flag.category] = [];
+          }
+          flagsByCategory[flag.category].push({ key, ...flag });
+        });
         
-        return `
-          <div class="flex items-center justify-between p-3 bg-white rounded-lg border border-slate-200">
-            <div class="flex-1">
-              <div class="font-bold text-slate-900">${getDisplayName(candidate)}</div>
-              <div class="text-sm text-slate-500">${candidate.party_name}</div>
-              ${totalBonuses > 0 ? `
-                <div class="flex gap-1 mt-1 flex-wrap">
-                  <span class="text-xs text-emerald-600">🎁 Bonos totales: +${totalBonuses.toFixed(2)}</span>
+        dashboardFlags.innerHTML = `
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            ${Object.entries(flagsByCategory).map(([category, flags]) => `
+              <div>
+                <h4 style="font-weight: 600; color: #475569; margin-bottom: 0.5rem; font-size: 0.875rem;">${category}</h4>
+                <div style="overflow-x: auto;">
+                  <table style="width: 100%; font-size: 0.875rem; border-collapse: collapse;">
+                    <thead>
+                      <tr style="border-bottom: 1px solid #e2e8f0;">
+                        <th style="text-align: left; padding: 0.5rem 0.75rem; font-weight: 600; color: #475569;">Flag</th>
+                        ${candidateData.map(({ candidate }) => `
+                          <th style="text-align: center; padding: 0.5rem 0.75rem; font-weight: 600; color: #475569;">${getCandidateName(candidate)}</th>
+                        `).join('')}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${flags.map(flag => `
+                        <tr style="border-bottom: 1px solid #f1f5f9;">
+                          <td style="padding: 0.5rem 0.75rem; color: #64748b;">${flag.label}</td>
+                          ${candidateData.map(({ score }) => {
+                            const candidateFlags = getActiveFlags(score);
+                            const hasFlag = candidateFlags.some(f => f.key === flag.key);
+                            return `<td style="text-align: center; padding: 0.5rem 0.75rem;">${hasFlag ? '<span style="color: #2563eb; font-weight: 700;">✓</span>' : '<span style="color: #cbd5e1;">—</span>'}</td>`;
+                          }).join('')}
+                        </tr>
+                      `).join('')}
+                    </tbody>
+                  </table>
                 </div>
-              ` : ''}
-              ${hasFlags ? `
-                <div class="mt-1">
-                  <span class="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full" title="Tiene información adicional">
-                    ℹ️ Información adicional
-                  </span>
-                </div>
-              ` : ''}
-            </div>
-            <div class="text-right">
-              <div class="text-2xl font-bold text-civic-600">${Math.round(score.overall.weighted_sum * 100)}%</div>
-              <div class="text-sm text-slate-500">General</div>
-            </div>
+              </div>
+            `).join('')}
           </div>
         `;
-      }).join('');
+      } else {
+        dashboardFlags.innerHTML = '<p style="color: #64748b; font-size: 0.875rem;">Ninguno de los candidatos seleccionados tiene información adicional activa.</p>';
+      }
+    }
+    
+    // Render Urgency Coverage Comparison
+    if (dashboardUrgency) {
+      dashboardUrgency.innerHTML = `
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; font-size: 0.875rem; border-collapse: collapse;">
+            <thead>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <th style="text-align: left; padding: 0.5rem 0.75rem; font-weight: 600; color: #475569;">Urgencia Nacional</th>
+                ${candidateData.map(({ candidate }) => `
+                  <th style="text-align: center; padding: 0.5rem 0.75rem; font-weight: 600; color: #475569;">${getCandidateName(candidate)}</th>
+                `).join('')}
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td style="padding: 0.5rem 0.75rem; color: #64748b;">🛡️ Operaciones de Seguridad</td>
+                ${candidateData.map(({ score }) => {
+                  const coverage = getUrgencyCoverage(score);
+                  return `<td style="text-align: center; padding: 0.5rem 0.75rem;">${coverage.security ? '<span style="color: #059669; font-weight: 700;">✓ Cubre</span>' : '<span style="color: #dc2626; font-weight: 700;">✗ No cubre</span>'}</td>`;
+                }).join('')}
+              </tr>
+              <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td style="padding: 0.5rem 0.75rem; color: #64748b;">🏥 Crisis CCSS</td>
+                ${candidateData.map(({ score }) => {
+                  const coverage = getUrgencyCoverage(score);
+                  return `<td style="text-align: center; padding: 0.5rem 0.75rem;">${coverage.ccss ? '<span style="color: #059669; font-weight: 700;">✓ Cubre</span>' : '<span style="color: #dc2626; font-weight: 700;">✗ No cubre</span>'}</td>`;
+                }).join('')}
+              </tr>
+              <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td style="padding: 0.5rem 0.75rem; color: #64748b;">💼 Empleo Formal</td>
+                ${candidateData.map(({ score }) => {
+                  const coverage = getUrgencyCoverage(score);
+                  return `<td style="text-align: center; padding: 0.5rem 0.75rem;">${coverage.employment ? '<span style="color: #059669; font-weight: 700;">✓ Cubre</span>' : '<span style="color: #dc2626; font-weight: 700;">✗ No cubre</span>'}</td>`;
+                }).join('')}
+              </tr>
+              <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td style="padding: 0.5rem 0.75rem; color: #64748b;">🚨 Crimen Organizado</td>
+                ${candidateData.map(({ score }) => {
+                  const coverage = getUrgencyCoverage(score);
+                  return `<td style="text-align: center; padding: 0.5rem 0.75rem;">${coverage.crime ? '<span style="color: #059669; font-weight: 700;">✓ Cubre</span>' : '<span style="color: #dc2626; font-weight: 700;">✗ No cubre</span>'}</td>`;
+                }).join('')}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      `;
     }
   }
-
+  
   // Express Mode Logic
-  const expressSelectedCandidates = new Set();
-  const expressCandidateBtns = document.querySelectorAll('.mode-express-content .express-candidate-btn');
-  const expressClearBtn = document.getElementById('express-clear-selection');
-  const expressSelectionHint = document.getElementById('express-selection-hint');
-  const expressComparisonContainer = document.getElementById('express-comparison-container');
-  const expressEmptyState = document.getElementById('express-empty-state');
-  const expressComparisonContent = document.getElementById('express-comparison-content');
-
-  if (preselected) {
-    expressSelectedCandidates.add(preselected);
-    document.querySelector(`.mode-express-content [data-candidate-id="${preselected}"]`)?.classList.add('selected');
-  }
-
-  expressCandidateBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const id = btn.dataset.candidateId;
-      
-      if (expressSelectedCandidates.has(id)) {
-        expressSelectedCandidates.delete(id);
-        btn.classList.remove('selected');
-      } else if (expressSelectedCandidates.size < maxSelection) {
-        expressSelectedCandidates.add(id);
-        btn.classList.add('selected');
-      }
-      
-      updateExpressUI();
-    });
-  });
-
-  expressClearBtn?.addEventListener('click', () => {
-    expressSelectedCandidates.clear();
-    expressCandidateBtns.forEach(btn => btn.classList.remove('selected'));
+  const expressSelected = new Set();
+  const expressClearBtn = document.getElementById('express-clear-btn');
+  const expressHint = document.getElementById('express-selection-hint');
+  const expressContainer = document.getElementById('express-comparison-container');
+  const expressEmpty = document.getElementById('express-empty-state');
+  const expressSummary = document.getElementById('express-comparative-summary');
+  const expressPenalties = document.getElementById('express-penalties-content');
+  const expressBonuses = document.getElementById('express-bonuses-content');
+  const expressFlags = document.getElementById('express-flags-content');
+  const expressUrgency = document.getElementById('express-urgency-content');
+  
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.express-compare-candidate-btn');
+    if (!btn) return;
+    
+    const id = btn.getAttribute('data-candidate-id');
+    if (!id) return;
+    
+    if (expressSelected.has(id)) {
+      expressSelected.delete(id);
+      btn.classList.remove('selected');
+    } else if (expressSelected.size < maxSelection) {
+      expressSelected.add(id);
+      btn.classList.add('selected');
+    }
+    
     updateExpressUI();
   });
-
+  
+  expressClearBtn?.addEventListener('click', () => {
+    expressSelected.clear();
+    document.querySelectorAll('.express-compare-candidate-btn').forEach(btn => btn.classList.remove('selected'));
+    updateExpressUI();
+  });
+  
   function updateExpressUI() {
-    const count = expressSelectedCandidates.size;
-    
+    const count = expressSelected.size;
     expressClearBtn?.classList.toggle('hidden', count === 0);
     
     if (count >= minSelection) {
-      expressComparisonContainer?.classList.remove('hidden');
-      expressEmptyState?.classList.add('hidden');
+      expressContainer?.classList.remove('hidden');
+      expressEmpty?.classList.add('hidden');
       renderExpressComparison();
     } else {
-      expressComparisonContainer?.classList.add('hidden');
-      expressEmptyState?.classList.remove('hidden');
+      expressContainer?.classList.add('hidden');
+      expressEmpty?.classList.remove('hidden');
     }
   }
-
+  
   function renderExpressComparison() {
-    const selected = Array.from(expressSelectedCandidates);
+    
+    const selected = Array.from(expressSelected);
+    console.log('Express: Rendering comparison for', selected.length, 'candidates:', selected);
+    
+    if (!candidates || !scoresByCandidate || !pillars) {
+      console.error('Express: Missing data');
+      return;
+    }
+    
     const candidateData = selected.map(id => {
       const candidate = candidates.find(c => c.candidate_id === id);
       const score = scoresByCandidate[id];
+      if (!candidate || !score) return null;
       return { candidate, score };
-    });
-
-    // Calculate column width based on number of candidates
-    const colWidth = candidateData.length <= 2 ? '4.5rem' : '4rem';
-    const pilarColWidth = '120px';
-
-    if (expressComparisonContent) {
-      expressComparisonContent.innerHTML = `
-        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1rem;">
-          ${candidateData.map(({ candidate, score }) => `
-            <div style="flex: 1; min-width: 120px; text-align: center; padding: 0.875rem; background: #f0f9ff; border-radius: 0.75rem; border: 2px solid #0891b2;">
-              <div style="font-weight: 700; color: #0f172a; margin-bottom: 0.25rem; font-size: 0.95rem;">${getDisplayName(candidate)}</div>
-              <div style="font-size: 0.75rem; color: #64748b; margin-bottom: 0.5rem;">${candidate.party_name}</div>
-              <div style="font-size: 1.5rem; font-weight: 800; color: #0891b2;">${Math.round(score.overall.weighted_sum * 100)}%</div>
-            </div>
-          `).join('')}
-        </div>
-        <!-- Leyenda de porcentajes -->
-        <div style="background: linear-gradient(to right, #f8fafc, white); border: 1px solid #e2e8f0; border-radius: 0.75rem; padding: 1rem; margin-bottom: 1rem;">
-          <h4 style="font-weight: 600; color: #1e293b; margin-bottom: 0.5rem; font-size: 0.875rem;">📊 ¿Qué significa cada porcentaje?</h4>
-          <p style="font-size: 0.8rem; color: #475569; margin-bottom: 0.75rem;">El porcentaje indica el <strong>nivel de cobertura</strong> de las propuestas del candidato para cada pilar.</p>
-          <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; font-size: 0.75rem;">
-            <span style="display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.25rem 0.625rem; background: #d1fae5; color: #047857; border-radius: 9999px; font-weight: 500;">
-              <span style="width: 0.5rem; height: 0.5rem; background: #10b981; border-radius: 50%;"></span>
-              75%+ Alto
-            </span>
-            <span style="display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.25rem 0.625rem; background: #fef3c7; color: #b45309; border-radius: 9999px; font-weight: 500;">
-              <span style="width: 0.5rem; height: 0.5rem; background: #f59e0b; border-radius: 50%;"></span>
-              50-74% Medio
-            </span>
-            <span style="display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.25rem 0.625rem; background: #fee2e2; color: #b91c1c; border-radius: 9999px; font-weight: 500;">
-              <span style="width: 0.5rem; height: 0.5rem; background: #ef4444; border-radius: 50%;"></span>
-              &lt;50% Bajo
-            </span>
-          </div>
-        </div>
-        
-        <p style="font-size: 0.8rem; color: #64748b; margin-bottom: 0.5rem; text-align: center;">📄 <strong>Haga clic en el porcentaje</strong> para abrir el plan de gobierno. <span style="color: #0891b2;">⟷ Deslice si es necesario.</span></p>
-        
-        <!-- Contenedor con scroll horizontal -->
-        <div class="express-table-scroll" style="overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid #e2e8f0; border-radius: 0.5rem;">
-          <div style="min-width: max-content;">
-            <!-- Header con siglas -->
-            <div style="display: flex; align-items: center; padding: 0.625rem; background: #1e3a5f;">
-              <div style="width: ${pilarColWidth}; min-width: ${pilarColWidth}; font-size: 0.8rem; font-weight: 600; color: white;">Pilar</div>
-              ${candidateData.map(({ candidate }) => `
-                <div style="width: ${colWidth}; min-width: ${colWidth}; text-align: center; font-weight: 700; font-size: 0.8rem; color: white;">
-                  ${candidate.pdf_id}
+    }).filter(Boolean);
+    
+    if (candidateData.length === 0) {
+      console.warn('Express: No valid candidate data');
+      return;
+    }
+    
+    // Render Comparative Summary
+    if (expressSummary) {
+      expressSummary.innerHTML = `
+        <h3 class="express-compare-section-title">📊 Resumen</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.75rem;">
+          ${candidateData.map(({ candidate, score }) => {
+            const riskLevel = getRiskLevel(candidate.candidate_id);
+            const riskEmoji = getRiskEmoji(riskLevel);
+            const totalPenalties = getTotalPenalties(score);
+            const totalBonuses = getTotalBonuses(score);
+            const weightedPercent = Math.round(score.overall.weighted_sum * 100);
+            return `
+              <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 0.75rem; text-align: center;">
+                <div style="font-weight: 700; font-size: 0.85rem; color: #0f172a; margin-bottom: 0.25rem;">${getCandidateName(candidate)}</div>
+                <div style="font-size: 1.25rem; font-weight: 700; color: #0891b2; margin-bottom: 0.5rem;">${weightedPercent}%</div>
+                <div style="display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.75rem;">
+                  <div>${riskEmoji} ${riskLevel}</div>
+                  ${totalPenalties > 0 ? `<div style="color: #dc2626;">-${Math.round(totalPenalties)}</div>` : ''}
+                  ${totalBonuses > 0 ? `<div style="color: #059669;">+${totalBonuses.toFixed(1)}</div>` : ''}
                 </div>
-              `).join('')}
-            </div>
-            
-            <!-- Filas de pilares -->
-            ${pillars.map((pillar, idx) => {
-              // Truncate pillar name to max 25 chars for mobile
-              const shortName = pillar.pillar_name.length > 25 
-                ? pillar.pillar_name.substring(0, 22) + '...' 
-                : pillar.pillar_name;
-              const bgColor = idx % 2 === 0 ? 'white' : '#f8fafc';
-              return `
-                <div style="display: flex; align-items: center; padding: 0.5rem 0.625rem; background: ${bgColor}; border-bottom: 1px solid #f1f5f9;">
-                  <div style="width: ${pilarColWidth}; min-width: ${pilarColWidth}; font-size: 0.75rem; color: #475569; line-height: 1.3; padding-right: 0.5rem;" title="${pillar.pillar_name}">${shortName}</div>
-                  ${candidateData.map(({ candidate, score }) => {
-                    const ps = score.pillar_scores.find(p => p.pillar_id === pillar.pillar_id);
-                    const percent = ps ? Math.round((ps.effective_score / 4) * 100) : 0;
-                    const textColor = percent >= 50 ? '#059669' : '#dc2626';
-                    
-                    // v7: Bonos y violaciones
-                    const bonuses = ps ? ((ps.bonus_multiple || 0) + (ps.bonus_quality || 0) + (ps.bonus_funding || 0)) : 0;
-                    const hasViability = ps && (ps.viability_penalty || 0) < 0;
-                    const numProposals = ps?.num_proposals || 0;
-                    
-                    return `
-                      <div style="width: ${colWidth}; min-width: ${colWidth}; text-align: center;">
-                        <div style="font-weight: 700; font-size: 0.9rem;">
-                          ${getPercentPdfLink(candidate.candidate_id, pillar.pillar_id, percent, textColor)}
-                        </div>
-                        ${numProposals > 0 ? `<div style="font-size: 0.65rem; color: #64748b; margin-top: 0.125rem;">${numProposals}p</div>` : ''}
-                        ${bonuses > 0 ? `<div style="font-size: 0.65rem; color: #059669; margin-top: 0.125rem; font-weight: 600;">🎁+${bonuses.toFixed(1)}</div>` : ''}
-                        ${hasViability ? `<div style="font-size: 0.65rem; color: #dc2626; margin-top: 0.125rem;">⚖️${ps.viability_penalty}</div>` : ''}
-                      </div>
-                    `;
-                  }).join('')}
-                </div>
-              `;
-            }).join('')}
-          </div>
+              </div>
+            `;
+          }).join('')}
         </div>
+      `;
+    }
+    
+    // Render Penalties Comparison
+    if (expressPenalties) {
+      expressPenalties.innerHTML = `
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; font-size: 0.8rem; border-collapse: collapse;">
+            <thead>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <th style="text-align: left; padding: 0.5rem; font-weight: 600; color: #475569;">Tipo</th>
+                ${candidateData.map(({ candidate }) => `
+                  <th style="text-align: center; padding: 0.5rem; font-weight: 600; color: #475569; font-size: 0.75rem;">${getCandidateName(candidate)}</th>
+                `).join('')}
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td style="padding: 0.5rem; color: #64748b; font-size: 0.75rem;">💰 Fiscal</td>
+                ${candidateData.map(({ score }) => {
+                  const fiscal = getFiscalPenalty(score);
+                  return `<td style="text-align: center; padding: 0.5rem; font-size: 0.75rem;">${fiscal > 0 ? `<span style="color: #dc2626; font-weight: 700;">-${Math.round(fiscal)}</span>` : '<span style="color: #94a3b8;">0</span>'}</td>`;
+                }).join('')}
+              </tr>
+              <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td style="padding: 0.5rem; color: #64748b; font-size: 0.75rem;">🚨 Omisión</td>
+                ${candidateData.map(({ score }) => {
+                  const omission = getOmissionPenalty(score);
+                  return `<td style="text-align: center; padding: 0.5rem; font-size: 0.75rem;">${omission > 0 ? `<span style="color: #dc2626; font-weight: 700;">-${Math.round(omission)}</span>` : '<span style="color: #94a3b8;">0</span>'}</td>`;
+                }).join('')}
+              </tr>
+              <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td style="padding: 0.5rem; color: #64748b; font-size: 0.75rem;">⚖️ Viabilidad</td>
+                ${candidateData.map(({ score }) => {
+                  const viability = getViabilityPenalty(score);
+                  return `<td style="text-align: center; padding: 0.5rem; font-size: 0.75rem;">${viability > 0 ? `<span style="color: #dc2626; font-weight: 700;">-${Math.round(viability)}</span>` : '<span style="color: #94a3b8;">0</span>'}</td>`;
+                }).join('')}
+              </tr>
+              <tr style="background: #f8fafc; font-weight: 600;">
+                <td style="padding: 0.5rem; color: #0f172a; font-size: 0.75rem;">Total</td>
+                ${candidateData.map(({ score }) => {
+                  const total = getTotalPenalties(score);
+                  return `<td style="text-align: center; padding: 0.5rem; color: #dc2626; font-size: 0.75rem;">${total > 0 ? `-${Math.round(total)}` : '0'}</td>`;
+                }).join('')}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+    
+    // Render Bonuses Comparison
+    if (expressBonuses) {
+      expressBonuses.innerHTML = `
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; font-size: 0.8rem; border-collapse: collapse;">
+            <thead>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <th style="text-align: left; padding: 0.5rem; font-weight: 600; color: #475569;">Tipo</th>
+                ${candidateData.map(({ candidate }) => `
+                  <th style="text-align: center; padding: 0.5rem; font-weight: 600; color: #475569; font-size: 0.75rem;">${getCandidateName(candidate)}</th>
+                `).join('')}
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td style="padding: 0.5rem; color: #64748b; font-size: 0.75rem;">🎯 Múltiples</td>
+                ${candidateData.map(({ score }) => {
+                  const bonuses = getBonusesByType(score);
+                  return `<td style="text-align: center; padding: 0.5rem; font-size: 0.75rem;">${bonuses.multiple > 0 ? `<span style="color: #059669; font-weight: 700;">+${bonuses.multiple.toFixed(1)}</span>` : '<span style="color: #94a3b8;">0</span>'}</td>`;
+                }).join('')}
+              </tr>
+              <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td style="padding: 0.5rem; color: #64748b; font-size: 0.75rem;">⭐ Calidad</td>
+                ${candidateData.map(({ score }) => {
+                  const bonuses = getBonusesByType(score);
+                  return `<td style="text-align: center; padding: 0.5rem; font-size: 0.75rem;">${bonuses.quality > 0 ? `<span style="color: #059669; font-weight: 700;">+${bonuses.quality.toFixed(1)}</span>` : '<span style="color: #94a3b8;">0</span>'}</td>`;
+                }).join('')}
+              </tr>
+              <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td style="padding: 0.5rem; color: #64748b; font-size: 0.75rem;">💰 Financiamiento</td>
+                ${candidateData.map(({ score }) => {
+                  const bonuses = getBonusesByType(score);
+                  return `<td style="text-align: center; padding: 0.5rem; font-size: 0.75rem;">${bonuses.funding > 0 ? `<span style="color: #059669; font-weight: 700;">+${bonuses.funding.toFixed(1)}</span>` : '<span style="color: #94a3b8;">0</span>'}</td>`;
+                }).join('')}
+              </tr>
+              <tr style="background: #f8fafc; font-weight: 600;">
+                <td style="padding: 0.5rem; color: #0f172a; font-size: 0.75rem;">Total</td>
+                ${candidateData.map(({ score }) => {
+                  const total = getTotalBonuses(score);
+                  return `<td style="text-align: center; padding: 0.5rem; color: #059669; font-size: 0.75rem;">${total > 0 ? `+${total.toFixed(1)}` : '0'}</td>`;
+                }).join('')}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+    
+    // Render Flags Comparison
+    if (expressFlags) {
+      const allFlagsMap = new Map();
+      candidateData.forEach(({ score }) => {
+        getActiveFlags(score).forEach(flag => {
+          if (!allFlagsMap.has(flag.key)) {
+            allFlagsMap.set(flag.key, { label: flag.label, category: flag.category });
+          }
+        });
+      });
+      
+      if (allFlagsMap.size > 0) {
+        const flagsByCategory = {};
+        allFlagsMap.forEach((flag, key) => {
+          if (!flagsByCategory[flag.category]) {
+            flagsByCategory[flag.category] = [];
+          }
+          flagsByCategory[flag.category].push({ key, ...flag });
+        });
         
-        <!-- Botón limpiar al final -->
-        <div style="display: flex; justify-content: center; margin-top: 1.5rem;">
-          <button onclick="document.getElementById('express-clear-selection').click();" style="background: #dc2626; color: white; border: none; border-radius: 0.5rem; padding: 0.75rem 1.5rem; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
-            ✕ Limpiar selección y comparar otros
-          </button>
+        expressFlags.innerHTML = `
+          <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            ${Object.entries(flagsByCategory).map(([category, flags]) => `
+              <div>
+                <h4 style="font-weight: 600; color: #475569; margin-bottom: 0.5rem; font-size: 0.75rem;">${category}</h4>
+                <div style="overflow-x: auto;">
+                  <table style="width: 100%; font-size: 0.75rem; border-collapse: collapse;">
+                    <thead>
+                      <tr style="border-bottom: 1px solid #e2e8f0;">
+                        <th style="text-align: left; padding: 0.5rem; font-weight: 600; color: #475569;">Flag</th>
+                        ${candidateData.map(({ candidate }) => `
+                          <th style="text-align: center; padding: 0.5rem; font-weight: 600; color: #475569;">${getCandidateName(candidate)}</th>
+                        `).join('')}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${flags.map(flag => `
+                        <tr style="border-bottom: 1px solid #f1f5f9;">
+                          <td style="padding: 0.5rem; color: #64748b; font-size: 0.7rem;">${flag.label}</td>
+                          ${candidateData.map(({ score }) => {
+                            const candidateFlags = getActiveFlags(score);
+                            const hasFlag = candidateFlags.some(f => f.key === flag.key);
+                            return `<td style="text-align: center; padding: 0.5rem;">${hasFlag ? '<span style="color: #2563eb; font-weight: 700;">✓</span>' : '<span style="color: #cbd5e1;">—</span>'}</td>`;
+                          }).join('')}
+                        </tr>
+                      `).join('')}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      } else {
+        expressFlags.innerHTML = '<p style="color: #64748b; font-size: 0.75rem;">Sin información adicional.</p>';
+      }
+    }
+    
+    // Render Urgency Coverage Comparison
+    if (expressUrgency) {
+      expressUrgency.innerHTML = `
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; font-size: 0.8rem; border-collapse: collapse;">
+            <thead>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <th style="text-align: left; padding: 0.5rem; font-weight: 600; color: #475569;">Urgencia</th>
+                ${candidateData.map(({ candidate }) => `
+                  <th style="text-align: center; padding: 0.5rem; font-weight: 600; color: #475569; font-size: 0.75rem;">${getCandidateName(candidate)}</th>
+                `).join('')}
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td style="padding: 0.5rem; color: #64748b; font-size: 0.75rem;">🛡️ Seguridad</td>
+                ${candidateData.map(({ score }) => {
+                  const coverage = getUrgencyCoverage(score);
+                  return `<td style="text-align: center; padding: 0.5rem; font-size: 0.75rem;">${coverage.security ? '<span style="color: #059669; font-weight: 700;">✓</span>' : '<span style="color: #dc2626; font-weight: 700;">✗</span>'}</td>`;
+                }).join('')}
+              </tr>
+              <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td style="padding: 0.5rem; color: #64748b; font-size: 0.75rem;">🏥 CCSS</td>
+                ${candidateData.map(({ score }) => {
+                  const coverage = getUrgencyCoverage(score);
+                  return `<td style="text-align: center; padding: 0.5rem; font-size: 0.75rem;">${coverage.ccss ? '<span style="color: #059669; font-weight: 700;">✓</span>' : '<span style="color: #dc2626; font-weight: 700;">✗</span>'}</td>`;
+                }).join('')}
+              </tr>
+              <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td style="padding: 0.5rem; color: #64748b; font-size: 0.75rem;">💼 Empleo</td>
+                ${candidateData.map(({ score }) => {
+                  const coverage = getUrgencyCoverage(score);
+                  return `<td style="text-align: center; padding: 0.5rem; font-size: 0.75rem;">${coverage.employment ? '<span style="color: #059669; font-weight: 700;">✓</span>' : '<span style="color: #dc2626; font-weight: 700;">✗</span>'}</td>`;
+                }).join('')}
+              </tr>
+              <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td style="padding: 0.5rem; color: #64748b; font-size: 0.75rem;">🚨 Crimen</td>
+                ${candidateData.map(({ score }) => {
+                  const coverage = getUrgencyCoverage(score);
+                  return `<td style="text-align: center; padding: 0.5rem; font-size: 0.75rem;">${coverage.crime ? '<span style="color: #059669; font-weight: 700;">✓</span>' : '<span style="color: #dc2626; font-weight: 700;">✗</span>'}</td>`;
+                }).join('')}
+              </tr>
+            </tbody>
+          </table>
         </div>
       `;
     }
   }
-
-  // Reading Mode Logic with Tabs
-  const readingSelectedCandidates = new Set();
-  const readingCandidateBtns = document.querySelectorAll('.mode-reading-content .reading-candidate-btn');
-  const readingClearBtn = document.getElementById('reading-clear-selection');
-  const readingSelectedCount = document.getElementById('reading-selected-count');
-  const readingComparisonContent = document.getElementById('reading-comparison-content');
-  const readingTabCount = document.getElementById('reading-tab-count');
   
-  // Tab elements
-  const readingTabPaso1 = document.getElementById('reading-tab-paso1');
-  const readingTabPaso2 = document.getElementById('reading-tab-paso2');
-  const readingContentPaso1 = document.getElementById('reading-content-paso1');
-  const readingContentPaso2 = document.getElementById('reading-content-paso2');
-  const readingGoToPaso2 = document.getElementById('reading-go-to-paso2');
-  const readingGoBackPaso1 = document.getElementById('reading-go-back-paso1');
-  const readingSelectionHint = document.getElementById('reading-selection-hint');
-
-  if (preselected) {
-    readingSelectedCandidates.add(preselected);
-    document.querySelector(`.mode-reading-content [data-candidate-id="${preselected}"]`)?.classList.add('selected');
-  }
-
-  // Tab navigation functions
-  function switchToReadingTab(tab) {
-    if (tab === 'paso1') {
-      readingTabPaso1?.classList.add('active');
-      readingTabPaso2?.classList.remove('active');
-      readingContentPaso1?.classList.add('active');
-      readingContentPaso2?.classList.remove('active');
-    } else if (tab === 'paso2') {
-      if (readingSelectedCandidates.size >= minSelection) {
-        readingTabPaso1?.classList.remove('active');
-        readingTabPaso2?.classList.add('active');
-        readingContentPaso1?.classList.remove('active');
-        readingContentPaso2?.classList.add('active');
-        renderReadingComparison();
-      }
+  // Reading Mode Logic
+  const readingSelected = new Set();
+  const readingClearBtn = document.getElementById('reading-clear-btn');
+  const readingHint = document.getElementById('reading-selection-hint');
+  const readingContainer = document.getElementById('reading-comparison-container');
+  const readingEmpty = document.getElementById('reading-empty-state');
+  const readingSummary = document.getElementById('reading-comparative-summary');
+  const readingPenalties = document.getElementById('reading-penalties-content');
+  const readingBonuses = document.getElementById('reading-bonuses-content');
+  const readingFlags = document.getElementById('reading-flags-content');
+  const readingUrgency = document.getElementById('reading-urgency-content');
+  
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.reading-compare-candidate-btn');
+    if (!btn) return;
+    
+    const id = btn.getAttribute('data-candidate-id');
+    if (!id) return;
+    
+    if (readingSelected.has(id)) {
+      readingSelected.delete(id);
+      btn.classList.remove('selected');
+    } else if (readingSelected.size < maxSelection) {
+      readingSelected.add(id);
+      btn.classList.add('selected');
     }
-  }
-
-  // Tab click handlers
-  readingTabPaso1?.addEventListener('click', () => switchToReadingTab('paso1'));
-  readingTabPaso2?.addEventListener('click', () => switchToReadingTab('paso2'));
-  readingGoToPaso2?.addEventListener('click', () => switchToReadingTab('paso2'));
-  readingGoBackPaso1?.addEventListener('click', () => switchToReadingTab('paso1'));
-
-  readingCandidateBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const id = btn.dataset.candidateId;
-      
-      if (readingSelectedCandidates.has(id)) {
-        readingSelectedCandidates.delete(id);
-        btn.classList.remove('selected');
-      } else if (readingSelectedCandidates.size < maxSelection) {
-        readingSelectedCandidates.add(id);
-        btn.classList.add('selected');
-      }
-      
-      updateReadingUI();
-    });
-  });
-
-  readingClearBtn?.addEventListener('click', () => {
-    readingSelectedCandidates.clear();
-    readingCandidateBtns.forEach(btn => btn.classList.remove('selected'));
+    
     updateReadingUI();
   });
-
+  
+  readingClearBtn?.addEventListener('click', () => {
+    readingSelected.clear();
+    document.querySelectorAll('.reading-compare-candidate-btn').forEach(btn => btn.classList.remove('selected'));
+    updateReadingUI();
+  });
+  
   function updateReadingUI() {
-    const count = readingSelectedCandidates.size;
-    
-    // Update count displays
-    if (readingSelectedCount) {
-      readingSelectedCount.textContent = `${count} candidato${count !== 1 ? 's' : ''} seleccionado${count !== 1 ? 's' : ''}`;
-    }
-    
-    if (readingTabCount) {
-      readingTabCount.textContent = `(${count})`;
-    }
-    
-    // Update clear button visibility
+    const count = readingSelected.size;
     readingClearBtn?.classList.toggle('hidden', count === 0);
     
-    // Update hint text
-    if (readingSelectionHint) {
-      if (count === 0) {
-        readingSelectionHint.textContent = '💡 Seleccione al menos 2 candidatos para poder comparar.';
-      } else if (count === 1) {
-        readingSelectionHint.textContent = '💡 Seleccione 1 candidato más para ver la comparación.';
-      } else if (count < maxSelection) {
-        readingSelectionHint.textContent = `✅ ¡${count} candidatos seleccionados! Puede agregar ${maxSelection - count} más o ver la comparación.`;
-      } else {
-        readingSelectionHint.textContent = `✅ ¡${count} candidatos seleccionados! Máximo alcanzado.`;
-      }
-    }
-    
-    // Enable/disable tab 2 and next button
-    const canCompare = count >= minSelection;
-    
-    if (readingTabPaso2) {
-      readingTabPaso2.disabled = !canCompare;
-    }
-    
-    if (readingGoToPaso2) {
-      readingGoToPaso2.disabled = !canCompare;
-      readingGoToPaso2.textContent = canCompare ? 'Ver Comparación →' : `Seleccione ${minSelection - count} más`;
+    if (count >= minSelection) {
+      readingContainer?.classList.remove('hidden');
+      readingEmpty?.classList.add('hidden');
+      renderReadingComparison();
+    } else {
+      readingContainer?.classList.add('hidden');
+      readingEmpty?.classList.remove('hidden');
     }
   }
-
+  
   function renderReadingComparison() {
-    const selected = Array.from(readingSelectedCandidates);
+    
+    const selected = Array.from(readingSelected);
+    console.log('Reading: Rendering comparison for', selected.length, 'candidates:', selected);
+    
+    if (!candidates || !scoresByCandidate || !pillars) {
+      console.error('Reading: Missing data');
+      return;
+    }
+    
     const candidateData = selected.map(id => {
       const candidate = candidates.find(c => c.candidate_id === id);
       const score = scoresByCandidate[id];
+      if (!candidate || !score) return null;
       return { candidate, score };
-    });
-
-    // Calculate minimum column width based on number of candidates
-    const minColWidth = candidateData.length <= 2 ? '100px' : candidateData.length === 3 ? '85px' : '75px';
+    }).filter(Boolean);
     
-    if (readingComparisonContent) {
-      readingComparisonContent.innerHTML = `
-        <!-- Leyenda de porcentajes - Modo Lectura -->
-        <div style="background: linear-gradient(to right, #f0fdf4, white); border: 2px solid #86efac; border-radius: 1rem; padding: 1.25rem; margin-bottom: 1.5rem;">
-          <h4 style="font-weight: 700; color: #166534; margin-bottom: 0.75rem; font-size: 1.25rem;">📊 ¿Qué significa cada porcentaje?</h4>
-          <p style="font-size: 1.1rem; color: #374151; margin-bottom: 1rem; line-height: 1.6;">El porcentaje indica el <strong>nivel de cobertura</strong> de las propuestas del candidato para cada pilar de evaluación.</p>
-          <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; font-size: 1rem;">
-            <span style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: #d1fae5; color: #047857; border-radius: 9999px; font-weight: 600; border: 1px solid #6ee7b7;">
-              <span style="width: 0.75rem; height: 0.75rem; background: #10b981; border-radius: 50%;"></span>
-              75% o más = Alto
-            </span>
-            <span style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: #fef3c7; color: #92400e; border-radius: 9999px; font-weight: 600; border: 1px solid #fcd34d;">
-              <span style="width: 0.75rem; height: 0.75rem; background: #f59e0b; border-radius: 50%;"></span>
-              50% a 74% = Medio
-            </span>
-            <span style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: #fee2e2; color: #991b1b; border-radius: 9999px; font-weight: 600; border: 1px solid #fca5a5;">
-              <span style="width: 0.75rem; height: 0.75rem; background: #ef4444; border-radius: 50%;"></span>
-              Menos de 50% = Bajo
-            </span>
-          </div>
-        </div>
-        
-        <p class="reading-legend-hint" style="font-size: 1.1rem; color: #475569; margin-bottom: 1rem; text-align: center; background: #fef3c7; padding: 0.75rem; border-radius: 0.5rem;">
-          📄 <strong>Haga clic en el porcentaje</strong> para abrir el plan de gobierno. <span style="color: #0891b2;">⟷ Deslice horizontalmente si es necesario.</span>
-        </p>
-        
-        <!-- Contenedor con scroll horizontal -->
-        <div class="reading-table-scroll-container" style="overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 1rem;">
-          <div class="reading-table-inner" style="min-width: max-content;">
-            <!-- Header con candidatos -->
-            <div class="reading-comparison-header" style="display: grid; grid-template-columns: 140px repeat(${candidateData.length}, minmax(${minColWidth}, 1fr)); gap: 0.5rem; margin-bottom: 0.5rem; padding: 1rem; background: #0891b2; border-radius: 0.75rem;">
-              <div class="header-pilar-label" style="font-size: 1.1rem; font-weight: 600; color: white; display: flex; align-items: center;">Pilar</div>
-              ${candidateData.map(({ candidate, score }) => `
-                <div class="header-candidate" style="text-align: center; min-width: ${minColWidth};">
-                  <div class="header-candidate-name" style="font-size: 1.25rem; font-weight: 800; color: white;">${candidate.pdf_id}</div>
-                  <div class="header-candidate-score" style="font-size: 1.5rem; font-weight: 800; color: #fef3c7;">${Math.round(score.overall.weighted_sum * 100)}%</div>
+    if (candidateData.length === 0) {
+      console.warn('Reading: No valid candidate data');
+      return;
+    }
+    
+    // Render Comparative Summary
+    if (readingSummary) {
+      readingSummary.innerHTML = `
+        <h3 class="reading-compare-section-title">📊 Resumen Comparativo</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.25rem;">
+          ${candidateData.map(({ candidate, score }) => {
+            const riskLevel = getRiskLevel(candidate.candidate_id);
+            const riskEmoji = getRiskEmoji(riskLevel);
+            const totalPenalties = getTotalPenalties(score);
+            const totalBonuses = getTotalBonuses(score);
+            const weightedPercent = Math.round(score.overall.weighted_sum * 100);
+            const urgencyCoverage = getUrgencyCoverage(score);
+            const coverageCount = Object.values(urgencyCoverage).filter(Boolean).length;
+            return `
+              <div style="background: white; border: 3px solid #e2e8f0; border-radius: 0.75rem; padding: 1.25rem;">
+                <div style="font-weight: 700; font-size: 1.25rem; color: #0f172a; margin-bottom: 0.5rem;">${getCandidateName(candidate)}</div>
+                <div style="font-size: 1rem; color: #64748b; margin-bottom: 1rem;">${candidate.party_name}</div>
+                <div style="text-align: center; margin-bottom: 1rem;">
+                  <div style="font-size: 2rem; font-weight: 800; color: #0891b2;">${weightedPercent}%</div>
+                  <div style="font-size: 0.875rem; color: #64748b;">Puntaje General</div>
                 </div>
-              `).join('')}
-            </div>
-            
-            <!-- Filas de pilares -->
-            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-              ${pillars.map(pillar => `
-                <div class="reading-comparison-row" style="display: grid; grid-template-columns: 140px repeat(${candidateData.length}, minmax(${minColWidth}, 1fr)); gap: 0.5rem; padding: 1rem; background: white; border: 2px solid #e2e8f0; border-radius: 0.5rem; align-items: center;">
-                  <div class="row-pilar-info" style="min-width: 120px;">
-                    <div class="row-pilar-id" style="font-size: 1rem; font-weight: 700; color: #1e3a5f;">${pillar.pillar_id}</div>
-                    <div class="row-pilar-name" style="font-size: 0.8rem; color: #64748b; line-height: 1.3;">${pillar.pillar_name}</div>
+                <div style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 1rem;">
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="color: #475569;">Riesgo Fiscal:</span>
+                    <span style="font-weight: 700; font-size: 1.125rem;">${riskEmoji} ${riskLevel}</span>
                   </div>
-                  ${candidateData.map(({ candidate, score }) => {
-                    const ps = score.pillar_scores.find(p => p.pillar_id === pillar.pillar_id);
-                    const percent = ps ? Math.round((ps.effective_score / 4) * 100) : 0;
-                    const bgColor = percent >= 75 ? '#d1fae5' : percent >= 50 ? '#fef3c7' : '#fee2e2';
-                    const textColor = percent >= 75 ? '#059669' : percent >= 50 ? '#d97706' : '#dc2626';
-                    
-                    // v7: Bonos y violaciones
-                    const bonuses = ps ? ((ps.bonus_multiple || 0) + (ps.bonus_quality || 0) + (ps.bonus_funding || 0)) : 0;
-                    const hasViability = ps && (ps.viability_penalty || 0) < 0;
-                    const numProposals = ps?.num_proposals || 0;
-                    
-                    return `
-                      <div class="row-score-cell" style="text-align: center; padding: 0.75rem; background: ${bgColor}; border-radius: 0.5rem; min-width: ${minColWidth};">
-                        <div class="row-score-candidate" style="font-size: 0.7rem; color: #475569; margin-bottom: 0.25rem; display: none;">${candidate.pdf_id}</div>
-                        <div class="row-score-percent" style="font-size: 1.5rem; font-weight: 800;">
-                          ${getPercentPdfLink(candidate.candidate_id, pillar.pillar_id, percent, textColor)}
-                        </div>
-                        ${numProposals > 0 ? `<div style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem;">${numProposals} prop.</div>` : ''}
-                        ${bonuses > 0 ? `<div style="font-size: 0.7rem; color: #059669; margin-top: 0.25rem; font-weight: 600;">🎁 +${bonuses.toFixed(2)}</div>` : ''}
-                        ${hasViability ? `<div style="font-size: 0.7rem; color: #dc2626; margin-top: 0.25rem;">⚖️ ${ps.viability_penalty}</div>` : ''}
-                      </div>
-                    `;
-                  }).join('')}
+                  ${totalPenalties > 0 ? `
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                      <span style="color: #475569;">Penalizaciones:</span>
+                      <span style="font-weight: 700; color: #dc2626; font-size: 1.125rem;">-${Math.round(totalPenalties)}</span>
+                    </div>
+                  ` : ''}
+                  ${totalBonuses > 0 ? `
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                      <span style="color: #475569;">Bonos:</span>
+                      <span style="font-weight: 700; color: #059669; font-size: 1.125rem;">+${totalBonuses.toFixed(1)}</span>
+                    </div>
+                  ` : ''}
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="color: #475569;">Urgencias Cubiertas:</span>
+                    <span style="font-weight: 700; color: ${coverageCount === 4 ? '#059669' : coverageCount >= 2 ? '#d97706' : '#dc2626'}; font-size: 1.125rem;">${coverageCount}/4</span>
+                  </div>
                 </div>
-              `).join('')}
-            </div>
-          </div>
+              </div>
+            `;
+          }).join('')}
         </div>
+      `;
+    }
+    
+    // Render Penalties Comparison
+    if (readingPenalties) {
+      readingPenalties.innerHTML = `
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; font-size: 1rem; border-collapse: collapse;">
+            <thead>
+              <tr style="border-bottom: 2px solid #1e3a5f;">
+                <th style="text-align: left; padding: 0.75rem; font-weight: 700; color: #1e3a5f; font-size: 1.125rem;">Tipo</th>
+                ${candidateData.map(({ candidate }) => `
+                  <th style="text-align: center; padding: 0.75rem; font-weight: 700; color: #1e3a5f; font-size: 1.125rem;">${getCandidateName(candidate)}</th>
+                `).join('')}
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 0.75rem; color: #475569; font-size: 1rem;">💰 Penalización Fiscal</td>
+                ${candidateData.map(({ score }) => {
+                  const fiscal = getFiscalPenalty(score);
+                  return `<td style="text-align: center; padding: 0.75rem; font-size: 1rem;">${fiscal > 0 ? `<span style="color: #dc2626; font-weight: 700;">-${Math.round(fiscal)}</span>` : '<span style="color: #94a3b8;">0</span>'}</td>`;
+                }).join('')}
+              </tr>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 0.75rem; color: #475569; font-size: 1rem;">🚨 Penalización por Omisión</td>
+                ${candidateData.map(({ score }) => {
+                  const omission = getOmissionPenalty(score);
+                  return `<td style="text-align: center; padding: 0.75rem; font-size: 1rem;">${omission > 0 ? `<span style="color: #dc2626; font-weight: 700;">-${Math.round(omission)}</span>` : '<span style="color: #94a3b8;">0</span>'}</td>`;
+                }).join('')}
+              </tr>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 0.75rem; color: #475569; font-size: 1rem;">⚖️ Penalización por Viabilidad</td>
+                ${candidateData.map(({ score }) => {
+                  const viability = getViabilityPenalty(score);
+                  return `<td style="text-align: center; padding: 0.75rem; font-size: 1rem;">${viability > 0 ? `<span style="color: #dc2626; font-weight: 700;">-${Math.round(viability)}</span>` : '<span style="color: #94a3b8;">0</span>'}</td>`;
+                }).join('')}
+              </tr>
+              <tr style="background: #f8fafc; font-weight: 700;">
+                <td style="padding: 0.75rem; color: #1e3a5f; font-size: 1.125rem;">Total Penalizaciones</td>
+                ${candidateData.map(({ score }) => {
+                  const total = getTotalPenalties(score);
+                  return `<td style="text-align: center; padding: 0.75rem; color: #dc2626; font-size: 1.125rem;">${total > 0 ? `-${Math.round(total)}` : '0'}</td>`;
+                }).join('')}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+    
+    // Render Bonuses Comparison
+    if (readingBonuses) {
+      readingBonuses.innerHTML = `
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; font-size: 1rem; border-collapse: collapse;">
+            <thead>
+              <tr style="border-bottom: 2px solid #1e3a5f;">
+                <th style="text-align: left; padding: 0.75rem; font-weight: 700; color: #1e3a5f; font-size: 1.125rem;">Tipo de Bono</th>
+                ${candidateData.map(({ candidate }) => `
+                  <th style="text-align: center; padding: 0.75rem; font-weight: 700; color: #1e3a5f; font-size: 1.125rem;">${getCandidateName(candidate)}</th>
+                `).join('')}
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 0.75rem; color: #475569; font-size: 1rem;">🎯 Múltiples Propuestas (3+)</td>
+                ${candidateData.map(({ score }) => {
+                  const bonuses = getBonusesByType(score);
+                  return `<td style="text-align: center; padding: 0.75rem; font-size: 1rem;">${bonuses.multiple > 0 ? `<span style="color: #059669; font-weight: 700;">+${bonuses.multiple.toFixed(1)}</span>` : '<span style="color: #94a3b8;">0</span>'}</td>`;
+                }).join('')}
+              </tr>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 0.75rem; color: #475569; font-size: 1rem;">⭐ Calidad (Propuestas Completas 4/4)</td>
+                ${candidateData.map(({ score }) => {
+                  const bonuses = getBonusesByType(score);
+                  return `<td style="text-align: center; padding: 0.75rem; font-size: 1rem;">${bonuses.quality > 0 ? `<span style="color: #059669; font-weight: 700;">+${bonuses.quality.toFixed(1)}</span>` : '<span style="color: #94a3b8;">0</span>'}</td>`;
+                }).join('')}
+              </tr>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 0.75rem; color: #475569; font-size: 1rem;">💰 Financiamiento</td>
+                ${candidateData.map(({ score }) => {
+                  const bonuses = getBonusesByType(score);
+                  return `<td style="text-align: center; padding: 0.75rem; font-size: 1rem;">${bonuses.funding > 0 ? `<span style="color: #059669; font-weight: 700;">+${bonuses.funding.toFixed(1)}</span>` : '<span style="color: #94a3b8;">0</span>'}</td>`;
+                }).join('')}
+              </tr>
+              <tr style="background: #f8fafc; font-weight: 700;">
+                <td style="padding: 0.75rem; color: #1e3a5f; font-size: 1.125rem;">Total Bonos</td>
+                ${candidateData.map(({ score }) => {
+                  const total = getTotalBonuses(score);
+                  return `<td style="text-align: center; padding: 0.75rem; color: #059669; font-size: 1.125rem;">${total > 0 ? `+${total.toFixed(1)}` : '0'}</td>`;
+                }).join('')}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+    
+    // Render Flags Comparison
+    if (readingFlags) {
+      const allFlagsMap = new Map();
+      candidateData.forEach(({ score }) => {
+        getActiveFlags(score).forEach(flag => {
+          if (!allFlagsMap.has(flag.key)) {
+            allFlagsMap.set(flag.key, { label: flag.label, category: flag.category });
+          }
+        });
+      });
+      
+      if (allFlagsMap.size > 0) {
+        const flagsByCategory = {};
+        allFlagsMap.forEach((flag, key) => {
+          if (!flagsByCategory[flag.category]) {
+            flagsByCategory[flag.category] = [];
+          }
+          flagsByCategory[flag.category].push({ key, ...flag });
+        });
         
-        <!-- Botón limpiar al final -->
-        <div style="display: flex; justify-content: center; margin-top: 1.5rem;">
-          <button class="reading-clear-bottom-btn" onclick="document.getElementById('reading-clear-selection').click(); document.getElementById('reading-tab-paso1').click();" style="background: #dc2626; color: white; border: none; border-radius: 0.5rem; padding: 1rem 2rem; font-size: 1.1rem; font-weight: 600; cursor: pointer;">
-            ✕ Limpiar y comparar otros
-          </button>
+        readingFlags.innerHTML = `
+          <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            ${Object.entries(flagsByCategory).map(([category, flags]) => `
+              <div>
+                <h4 style="font-weight: 700; color: #1e3a5f; margin-bottom: 0.75rem; font-size: 1.125rem;">${category}</h4>
+                <div style="overflow-x: auto;">
+                  <table style="width: 100%; font-size: 1rem; border-collapse: collapse;">
+                    <thead>
+                      <tr style="border-bottom: 2px solid #1e3a5f;">
+                        <th style="text-align: left; padding: 0.75rem; font-weight: 700; color: #1e3a5f; font-size: 1.125rem;">Flag</th>
+                        ${candidateData.map(({ candidate }) => `
+                          <th style="text-align: center; padding: 0.75rem; font-weight: 700; color: #1e3a5f; font-size: 1.125rem;">${getCandidateName(candidate)}</th>
+                        `).join('')}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${flags.map(flag => `
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                          <td style="padding: 0.75rem; color: #475569; font-size: 1rem;">${flag.label}</td>
+                          ${candidateData.map(({ score }) => {
+                            const candidateFlags = getActiveFlags(score);
+                            const hasFlag = candidateFlags.some(f => f.key === flag.key);
+                            return `<td style="text-align: center; padding: 0.75rem; font-size: 1.125rem;">${hasFlag ? '<span style="color: #2563eb; font-weight: 700;">✓</span>' : '<span style="color: #cbd5e1;">—</span>'}</td>`;
+                          }).join('')}
+                        </tr>
+                      `).join('')}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      } else {
+        readingFlags.innerHTML = '<p style="color: #64748b; font-size: 1rem;">Ninguno de los candidatos seleccionados tiene información adicional activa.</p>';
+      }
+    }
+    
+    // Render Urgency Coverage Comparison
+    if (readingUrgency) {
+      readingUrgency.innerHTML = `
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; font-size: 1rem; border-collapse: collapse;">
+            <thead>
+              <tr style="border-bottom: 2px solid #1e3a5f;">
+                <th style="text-align: left; padding: 0.75rem; font-weight: 700; color: #1e3a5f; font-size: 1.125rem;">Urgencia Nacional</th>
+                ${candidateData.map(({ candidate }) => `
+                  <th style="text-align: center; padding: 0.75rem; font-weight: 700; color: #1e3a5f; font-size: 1.125rem;">${getCandidateName(candidate)}</th>
+                `).join('')}
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 0.75rem; color: #475569; font-size: 1rem;">🛡️ Operaciones de Seguridad</td>
+                ${candidateData.map(({ score }) => {
+                  const coverage = getUrgencyCoverage(score);
+                  return `<td style="text-align: center; padding: 0.75rem; font-size: 1rem;">${coverage.security ? '<span style="color: #059669; font-weight: 700;">✓ Cubre</span>' : '<span style="color: #dc2626; font-weight: 700;">✗ No cubre</span>'}</td>`;
+                }).join('')}
+              </tr>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 0.75rem; color: #475569; font-size: 1rem;">🏥 Crisis CCSS</td>
+                ${candidateData.map(({ score }) => {
+                  const coverage = getUrgencyCoverage(score);
+                  return `<td style="text-align: center; padding: 0.75rem; font-size: 1rem;">${coverage.ccss ? '<span style="color: #059669; font-weight: 700;">✓ Cubre</span>' : '<span style="color: #dc2626; font-weight: 700;">✗ No cubre</span>'}</td>`;
+                }).join('')}
+              </tr>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 0.75rem; color: #475569; font-size: 1rem;">💼 Empleo Formal</td>
+                ${candidateData.map(({ score }) => {
+                  const coverage = getUrgencyCoverage(score);
+                  return `<td style="text-align: center; padding: 0.75rem; font-size: 1rem;">${coverage.employment ? '<span style="color: #059669; font-weight: 700;">✓ Cubre</span>' : '<span style="color: #dc2626; font-weight: 700;">✗ No cubre</span>'}</td>`;
+                }).join('')}
+              </tr>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 0.75rem; color: #475569; font-size: 1rem;">🚨 Crimen Organizado</td>
+                ${candidateData.map(({ score }) => {
+                  const coverage = getUrgencyCoverage(score);
+                  return `<td style="text-align: center; padding: 0.75rem; font-size: 1rem;">${coverage.crime ? '<span style="color: #059669; font-weight: 700;">✓ Cubre</span>' : '<span style="color: #dc2626; font-weight: 700;">✗ No cubre</span>'}</td>`;
+                }).join('')}
+              </tr>
+            </tbody>
+          </table>
         </div>
       `;
     }
   }
-
-  // Initial render for all modes
-  updateUI();
-  updateExpressUI();
-  updateReadingUI();
-  
-  // Re-render dashboard comparison on resize (to update mobile/desktop view)
-  let resizeTimeout;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(() => {
-      if (selectedCandidates.size >= minSelection) {
-        renderComparison();
-      }
-    }, 250);
-  });
 </script>
