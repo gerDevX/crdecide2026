@@ -22,7 +22,8 @@ precision_docs/
 │   ├── ocr_extractor.py                   # Extractor OCR original (Tesseract)
 │   ├── ocr_extractor_v2.py                # Extractor OCR mejorado (múltiples motores)
 │   ├── test_easyocr_integration.py        # Prueba de integración EasyOCR
-│   └── test_ppso_easyocr.py               # Prueba completa con plan PPSO
+│   ├── test_ppso_easyocr.py               # Prueba completa con plan PPSO
+│   └── simulate_multiple_proposals.py      # Simulación sistema de bonos múltiples propuestas
 │
 └── 📈 Resultados de Comparación
     ├── pdf_library_comparison.json        # Resultados de comparación de librerías PDF
@@ -57,6 +58,25 @@ precision_docs/
 ### Scripts de Prueba
 - **test_easyocr_integration.py**: Prueba de integración EasyOCR
 - **test_ppso_easyocr.py**: Prueba completa con plan PPSO
+- **simulate_multiple_proposals.py**: Simula sistema de bonos por múltiples propuestas
+
+### Análisis de Múltiples Propuestas
+- **ANALISIS_MULTIPLES_PROPUESTAS.md**: Análisis del sistema actual
+- **PROPUESTA_SISTEMA_BONOS.md**: Propuesta detallada de sistema de bonos (versión original)
+- **PROPUESTA_SISTEMA_BONOS_SIMPLIFICADO.md**: Sistema simplificado (solo 3 propuestas) ⭐
+- **RESUMEN_SISTEMA_SIMPLIFICADO.md**: Resumen ejecutivo del sistema simplificado ⭐
+- **RECOMENDACIONES_MULTIPLES_PROPUESTAS.md**: Recomendaciones estratégicas
+
+### Análisis de Viabilidad Legal y Realista
+- **ANALISIS_DIMENSIONES_VIABILIDAD.md**: Análisis detallado de dimensiones y viabilidad
+- **PROPUESTA_DIMENSIONES_MEJORADAS.md**: Propuesta técnica de dimensiones mejoradas ⭐
+- **RESUMEN_VIABILIDAD_LEGAL.md**: Resumen ejecutivo con ejemplos de Costa Rica ⭐
+- **ANALISIS_REFORMA_CONSTITUCIONAL.md**: Análisis de detección de reforma constitucional
+- **MEJORA_DETECCION_REFORMA_CONSTITUCIONAL.md**: Mejora en precisión de detección ⭐
+- **REVISION_PENALIZACION_REFORMA_CONSTITUCIONAL.md**: Revisión y eliminación de penalización ⭐
+- **RESUMEN_REVISION_VIABILIDAD.md**: Resumen de revisión del sistema ⭐
+- **ANALISIS_INCONSTITUCIONALIDAD.md**: Análisis de detección ampliada de inconstitucionalidad ⭐
+- **IMPLEMENTACION_VIABILIDAD_AMPLIADA.md**: Implementación de detección ampliada ⭐
 
 ## Uso de los Scripts
 
@@ -107,6 +127,28 @@ python3 test_ppso_easyocr.py
 - **Velocidad**: 20-50x más rápido que alternativas
 - **Calidad**: 0% corruptos, 100% legible
 - **Fidelidad**: Texto fiel al original
+
+---
+
+## Implementaciones Recientes
+
+### Sistema de Bonos por Múltiples Propuestas (v7)
+- **Estado**: ✅ Implementado
+- **Documentación**: `PROPUESTA_SISTEMA_BONOS_SIMPLIFICADO.md`, `RESUMEN_SISTEMA_SIMPLIFICADO.md`
+- **Script**: `simulate_multiple_proposals.py`
+
+### Verificación de Viabilidad Legal (v7)
+- **Fase 1 Inicial**: ✅ Implementado (reforma constitucional + separación de poderes)
+- **Fase 1 Revisada**: ✅ Implementado (solo separación de poderes, eliminada reforma constitucional)
+- **Fase 1 Ampliada**: ✅ Implementado (separación de poderes + derechos fundamentales + garantías + procedimientos)
+- **Documentación**: 
+  - `ANALISIS_DIMENSIONES_VIABILIDAD.md`
+  - `IMPLEMENTACION_VIABILIDAD_FASE1.md`
+  - `RESULTADOS_PRUEBA_VIABILIDAD_FASE1.md`
+  - `REVISION_PENALIZACION_REFORMA_CONSTITUCIONAL.md`
+  - `RESUMEN_REVISION_VIABILIDAD.md`
+  - `ANALISIS_INCONSTITUCIONALIDAD.md`
+  - `IMPLEMENTACION_VIABILIDAD_AMPLIADA.md`
 
 ---
 

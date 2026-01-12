@@ -1,0 +1,149 @@
+[
+  {
+    "candidate_id": "ejemplo-candidato",
+    "evidence": [
+      {
+        "type": "judicial_sentence",
+        "date": "2020-01-15",
+        "source": "Poder Judicial de Costa Rica",
+        "description": "Sentencia por intento de eliminar independencia del Poder Judicial",
+        "verification_url": "https://www.poder-judicial.go.cr/...",
+        "category": "anti_democratic_behavior",
+        "severity": "high"
+      }
+    ],
+    "last_updated": "2026-01-11",
+    "notes": "Este es un ejemplo. Reemplazar con evidencia real verificable."
+  },
+  {
+    "candidate_id": "fabricio-alvarado-munoz",
+    "evidence": [],
+    "last_updated": "2026-01-11",
+    "notes": "NOTA: Existen investigaciones en curso (2025) por presuntos delitos de abuso sexual, pero NO hay sentencia judicial concluida aún. Según criterios de objetividad, solo se incluyen evidencias CONCLUSAS (sentencias, no investigaciones pendientes)."
+  },
+  {
+    "candidate_id": "alvaro-ramos",
+    "evidence": [
+      {
+        "type": "contraloria_report",
+        "date": "2024-01-01",
+        "source": "Contraloría General de la República",
+        "description": "Orden de Contraloría que determinó que su salario como presidente ejecutivo de la CCSS excedía el límite legal establecido",
+        "verification_url": "https://www.cgr.go.cr/",
+        "category": "corruption_convictions",
+        "severity": "medium",
+        "note": "Ramos solicitó a la CCSS indicarle el mecanismo para devolver los montos recibidos en exceso. Requiere verificación de URL específica del informe."
+      }
+    ],
+    "last_updated": "2026-01-11",
+    "notes": "NOTA: Evidencia basada en reportes de medios sobre orden de Contraloría. Requiere verificación de URL específica del informe oficial para confirmar."
+  },
+  {
+    "candidate_id": "claudia-dobles",
+    "evidence": [],
+    "last_updated": "2026-01-11",
+    "notes": "NOTA: Ex primera dama. Si existen sentencias judiciales, resoluciones de CIDH o informes de Contraloría verificables, agregar aquí."
+  },
+  {
+    "candidate_id": "frente-amplio-ariel-robles-barrantes",
+    "evidence": [],
+    "last_updated": "2026-01-11",
+    "notes": "NOTA: Diputado del Frente Amplio. Si existen sentencias judiciales, resoluciones de CIDH o informes de Contraloría verificables, agregar aquí."
+  },
+  {
+    "candidate_id": "luz-mary",
+    "evidence": [],
+    "last_updated": "2026-01-11",
+    "notes": "NOTA: Candidata del Partido Progreso Social Democrático (PSD). Si existen sentencias judiciales, resoluciones de CIDH o informes de Contraloría verificables, agregar aquí."
+  },
+  {
+    "candidate_id": "juan-carlos-hidalgo",
+    "evidence": [],
+    "last_updated": "2026-01-11",
+    "notes": "NOTA: Candidato del PUSC. Si existen sentencias judiciales, resoluciones de CIDH o informes de Contraloría verificables, agregar aquí."
+  },
+  {
+    "candidate_id": "natalia-diaz",
+    "evidence": [],
+    "last_updated": "2026-01-11",
+    "notes": "NOTA: Exministra de la Presidencia. Si existen sentencias judiciales, resoluciones de CIDH o informes de Contraloría verificables, agregar aquí."
+  },
+  {
+    "candidate_id": "laura-fernandez-delgado",
+    "evidence": [],
+    "last_updated": "2026-01-11",
+    "notes": "NOTA: Exministra de la Presidencia y de Planificación. Si existen sentencias judiciales, resoluciones de CIDH o informes de Contraloría verificables, agregar aquí."
+  },
+  {
+    "candidate_id": "elicer-feinzaig-mintz",
+    "evidence": [],
+    "last_updated": "2026-01-11",
+    "notes": "NOTA: Candidato del Partido Liberal Progresista. Si existen sentencias judiciales, resoluciones de CIDH o informes de Contraloría verificables, agregar aquí."
+  },
+  {
+    "candidate_id": "fernando-zamora-castellanos",
+    "evidence": [],
+    "last_updated": "2026-01-11",
+    "notes": "NOTA: Candidato del Partido Nueva Generación. Si existen sentencias judiciales, resoluciones de CIDH o informes de Contraloría verificables, agregar aquí."
+  },
+  {
+    "candidate_id": "luis-amadorjimenez",
+    "evidence": [],
+    "last_updated": "2026-01-11",
+    "notes": "NOTA: Candidato del Partido Integración Nacional. Si existen sentencias judiciales, resoluciones de CIDH o informes de Contraloría verificables, agregar aquí."
+  },
+  {
+    "candidate_id": "ronny-castillo-gonzalez",
+    "evidence": [],
+    "last_updated": "2026-01-11",
+    "notes": "NOTA: Candidato del Partido Aquí Costa Rica Manda. Si existen sentencias judiciales, resoluciones de CIDH o informes de Contraloría verificables, agregar aquí."
+  },
+  {
+    "candidate_id": "ana-virginia-calzada",
+    "evidence": [],
+    "last_updated": "2026-01-11",
+    "notes": "NOTA: Candidata del Partido Centro Democrático y Social. Si existen sentencias judiciales, resoluciones de CIDH o informes de Contraloría verificables, agregar aquí."
+  },
+  {
+    "candidate_id": "walter-hernandez",
+    "evidence": [],
+    "last_updated": "2026-01-11",
+    "notes": "NOTA: Candidato del Partido Justicia Social Costarricense. Si existen sentencias judiciales, resoluciones de CIDH o informes de Contraloría verificables, agregar aquí."
+  },
+  {
+    "candidate_id": "boris-molina",
+    "evidence": [],
+    "last_updated": "2026-01-11",
+    "notes": "NOTA: Candidato del Partido Unión Costarricense Democrática. Si existen sentencias judiciales, resoluciones de CIDH o informes de Contraloría verificables, agregar aquí."
+  },
+  {
+    "candidate_id": "marco-rodriguez",
+    "evidence": [],
+    "last_updated": "2026-01-11",
+    "notes": "NOTA: Candidato del Partido Esperanza y Libertad. Si existen sentencias judiciales, resoluciones de CIDH o informes de Contraloría verificables, agregar aquí."
+  },
+  {
+    "candidate_id": "jose-aguilar-ussegl",
+    "evidence": [],
+    "last_updated": "2026-01-11",
+    "notes": "NOTA: Candidato del Partido Avanza. Si existen sentencias judiciales, resoluciones de CIDH o informes de Contraloría verificables, agregar aquí."
+  },
+  {
+    "candidate_id": "claudio-alpizar",
+    "evidence": [],
+    "last_updated": "2026-01-11",
+    "notes": "NOTA: Candidato del Partido Esperanza Nacional. Si existen sentencias judiciales, resoluciones de CIDH o informes de Contraloría verificables, agregar aquí."
+  },
+  {
+    "candidate_id": "david-hernandez-brenes",
+    "evidence": [],
+    "last_updated": "2026-01-11",
+    "notes": "NOTA: Candidato del Partido de La Clase Trabajadora. Si existen sentencias judiciales, resoluciones de CIDH o informes de Contraloría verificables, agregar aquí."
+  },
+  {
+    "candidate_id": "douglas-caamano-q",
+    "evidence": [],
+    "last_updated": "2026-01-11",
+    "notes": "NOTA: Candidato de Alianza Costa Rica Primero. Si existen sentencias judiciales, resoluciones de CIDH o informes de Contraloría verificables, agregar aquí."
+  }
+]

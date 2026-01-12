@@ -2,7 +2,7 @@
   {
     "pdf_id": "ACRM",
     "total_pages": 66,
-    "version": "v6_neutral_strict",
+    "version": "v7_neutral_strict_bonus_viability_informative_flags",
     "fiscal_flags": {
       "attacks_fiscal_rule": false,
       "proposes_debt_increase": true,
@@ -66,7 +66,7 @@
   {
     "pdf_id": "CAC",
     "total_pages": 202,
-    "version": "v6_neutral_strict",
+    "version": "v7_neutral_strict_bonus_viability_informative_flags",
     "fiscal_flags": {
       "attacks_fiscal_rule": true,
       "proposes_debt_increase": true,
@@ -140,7 +140,7 @@
   {
     "pdf_id": "CDS",
     "total_pages": 155,
-    "version": "v6_neutral_strict",
+    "version": "v7_neutral_strict_bonus_viability_informative_flags",
     "fiscal_flags": {
       "attacks_fiscal_rule": true,
       "proposes_debt_increase": false,
@@ -209,7 +209,7 @@
   {
     "pdf_id": "CR1",
     "total_pages": 66,
-    "version": "v6_neutral_strict",
+    "version": "v7_neutral_strict_bonus_viability_informative_flags",
     "fiscal_flags": {
       "attacks_fiscal_rule": false,
       "proposes_debt_increase": false,
@@ -272,7 +272,7 @@
   {
     "pdf_id": "FA",
     "total_pages": 192,
-    "version": "v6_neutral_strict",
+    "version": "v7_neutral_strict_bonus_viability_informative_flags",
     "fiscal_flags": {
       "attacks_fiscal_rule": true,
       "proposes_debt_increase": true,
@@ -345,7 +345,7 @@
   {
     "pdf_id": "PA",
     "total_pages": 42,
-    "version": "v6_neutral_strict",
+    "version": "v7_neutral_strict_bonus_viability_informative_flags",
     "fiscal_flags": {
       "attacks_fiscal_rule": true,
       "proposes_debt_increase": false,
@@ -413,7 +413,7 @@
   {
     "pdf_id": "PDLCT",
     "total_pages": 39,
-    "version": "v6_neutral_strict",
+    "version": "v7_neutral_strict_bonus_viability_informative_flags",
     "fiscal_flags": {
       "attacks_fiscal_rule": true,
       "proposes_debt_increase": false,
@@ -460,6 +460,7 @@
     },
     "missing_priority_pillars": [
       "P4",
+      "P3",
       "P7"
     ],
     "strengths": [
@@ -472,15 +473,16 @@
     "weaknesses": [
       "🔴 ATACA REGLA FISCAL - Riesgo alto para finanzas públicas",
       "❌ Sin propuesta en pilar prioritario P4",
+      "❌ Sin propuesta en pilar prioritario P3",
       "❌ Sin propuesta en pilar prioritario P7"
     ],
-    "risk_level": "MEDIO",
+    "risk_level": "ALTO",
     "candidate_id": "david-hernandez-brenes"
   },
   {
     "pdf_id": "PEL",
     "total_pages": 64,
-    "version": "v6_neutral_strict",
+    "version": "v7_neutral_strict_bonus_viability_informative_flags",
     "fiscal_flags": {
       "attacks_fiscal_rule": true,
       "proposes_debt_increase": true,
@@ -551,7 +553,7 @@
   {
     "pdf_id": "PEN",
     "total_pages": 102,
-    "version": "v6_neutral_strict",
+    "version": "v7_neutral_strict_bonus_viability_informative_flags",
     "fiscal_flags": {
       "attacks_fiscal_rule": true,
       "proposes_debt_increase": false,
@@ -602,8 +604,8 @@
       }
     },
     "missing_priority_pillars": [
-      "P1",
-      "P4"
+      "P4",
+      "P1"
     ],
     "strengths": [
       "✅ Aborda: Seguridad operativa",
@@ -614,8 +616,8 @@
     ],
     "weaknesses": [
       "🔴 ATACA REGLA FISCAL - Riesgo alto para finanzas públicas",
-      "❌ Sin propuesta en pilar prioritario P1",
-      "❌ Sin propuesta en pilar prioritario P4"
+      "❌ Sin propuesta en pilar prioritario P4",
+      "❌ Sin propuesta en pilar prioritario P1"
     ],
     "risk_level": "MEDIO",
     "candidate_id": "claudio-alpizar"
@@ -623,7 +625,7 @@
   {
     "pdf_id": "PIN",
     "total_pages": 56,
-    "version": "v6_neutral_strict",
+    "version": "v7_neutral_strict_bonus_viability_informative_flags",
     "fiscal_flags": {
       "attacks_fiscal_rule": true,
       "proposes_debt_increase": true,
@@ -692,7 +694,7 @@
   {
     "pdf_id": "PJSC",
     "total_pages": 54,
-    "version": "v6_neutral_strict",
+    "version": "v7_neutral_strict_bonus_viability_informative_flags",
     "fiscal_flags": {
       "attacks_fiscal_rule": false,
       "proposes_debt_increase": true,
@@ -761,7 +763,7 @@
   {
     "pdf_id": "PLN",
     "total_pages": 58,
-    "version": "v6_neutral_strict",
+    "version": "v7_neutral_strict_bonus_viability_informative_flags",
     "fiscal_flags": {
       "attacks_fiscal_rule": true,
       "proposes_debt_increase": false,
@@ -831,7 +833,7 @@
   {
     "pdf_id": "PLP",
     "total_pages": 175,
-    "version": "v6_neutral_strict",
+    "version": "v7_neutral_strict_bonus_viability_informative_flags",
     "fiscal_flags": {
       "attacks_fiscal_rule": true,
       "proposes_debt_increase": false,
@@ -904,7 +906,7 @@
   {
     "pdf_id": "PNG",
     "total_pages": 210,
-    "version": "v6_neutral_strict",
+    "version": "v7_neutral_strict_bonus_viability_informative_flags",
     "fiscal_flags": {
       "attacks_fiscal_rule": false,
       "proposes_debt_increase": true,
@@ -974,7 +976,7 @@
   {
     "pdf_id": "PNR",
     "total_pages": 213,
-    "version": "v6_neutral_strict",
+    "version": "v7_neutral_strict_bonus_viability_informative_flags",
     "fiscal_flags": {
       "attacks_fiscal_rule": true,
       "proposes_debt_increase": true,
@@ -1046,7 +1048,7 @@
   {
     "pdf_id": "PPSO",
     "total_pages": 85,
-    "version": "v6_neutral_strict",
+    "version": "v7_neutral_strict_bonus_viability_informative_flags",
     "fiscal_flags": {
       "attacks_fiscal_rule": false,
       "proposes_debt_increase": false,
@@ -1106,7 +1108,7 @@
   {
     "pdf_id": "PSD",
     "total_pages": 125,
-    "version": "v6_neutral_strict",
+    "version": "v7_neutral_strict_bonus_viability_informative_flags",
     "fiscal_flags": {
       "attacks_fiscal_rule": true,
       "proposes_debt_increase": false,
@@ -1171,7 +1173,7 @@
   {
     "pdf_id": "PUCD",
     "total_pages": 20,
-    "version": "v6_neutral_strict",
+    "version": "v7_neutral_strict_bonus_viability_informative_flags",
     "fiscal_flags": {
       "attacks_fiscal_rule": false,
       "proposes_debt_increase": false,
@@ -1236,7 +1238,7 @@
   {
     "pdf_id": "PUSC",
     "total_pages": 123,
-    "version": "v6_neutral_strict",
+    "version": "v7_neutral_strict_bonus_viability_informative_flags",
     "fiscal_flags": {
       "attacks_fiscal_rule": true,
       "proposes_debt_increase": false,
@@ -1307,7 +1309,7 @@
   {
     "pdf_id": "UP",
     "total_pages": 127,
-    "version": "v6_neutral_strict",
+    "version": "v7_neutral_strict_bonus_viability_informative_flags",
     "fiscal_flags": {
       "attacks_fiscal_rule": false,
       "proposes_debt_increase": true,
