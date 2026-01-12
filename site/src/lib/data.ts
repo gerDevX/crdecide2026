@@ -201,11 +201,16 @@ export function getPillarCardData(pillarId: PillarId): PillarCardData {
     return {
       candidate: candidateIndex[cs.candidate_id],
       score: pillarScore!,
+      overallWeighted: cs.overall.weighted_sum || 0, // Ponderado general para ordenamiento secundario
     };
   }).filter(x => x.score && x.candidate);
 
-  // Ordenar por score
-  candidateScoresForPillar.sort((a, b) => b.score.effective_score - a.score.effective_score);
+  // Ordenar primero por effective_score del pilar, luego por weighted_sum general (descendente)
+  candidateScoresForPillar.sort((a, b) => {
+    const scoreDiff = b.score.effective_score - a.score.effective_score;
+    if (Math.abs(scoreDiff) > 0.01) return scoreDiff; // Si hay diferencia significativa en el score del pilar
+    return b.overallWeighted - a.overallWeighted; // Si son iguales, ordenar por ponderado general
+  });
 
   // Calcular promedio
   const avgScore = candidateScoresForPillar.length > 0 

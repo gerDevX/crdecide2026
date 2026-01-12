@@ -89,11 +89,11 @@ function getScoreLevel(scorePercent: number) {
         
       <!-- Tabs Navigation -->
       <div class="dashboard-tabs" id="dashboardTabs">
-        <button class="dashboard-tab active" data-tab="critical">
-          ⭐ Pilares Críticos
-        </button>
-        <button class="dashboard-tab" data-tab="overall">
+        <button class="dashboard-tab active" data-tab="overall">
           📊 General Ponderado
+        </button>
+        <button class="dashboard-tab" data-tab="critical">
+          ⭐ Pilares Críticos
         </button>
         <button class="dashboard-tab" data-tab="priority">
           🎯 Prioritarios
@@ -103,8 +103,113 @@ function getScoreLevel(scorePercent: number) {
         </button>
               </div>
 
+      <!-- Tab Content: Overall Ranking -->
+      <div class="dashboard-tab-content active" id="dashboard-tab-overall">
+        <div class="dashboard-tab-header">
+          <h2 class="dashboard-tab-title">📊 Ranking General Ponderado</h2>
+          <p class="dashboard-tab-description">
+            Ordenado por <strong>responsabilidad fiscal (riesgo BAJO primero)</strong> y puntaje ponderado de los 10 pilares.
+          </p>
+              </div>
+        
+        <!-- Legend -->
+        <div class="dashboard-legend fiscal">
+          <span class="dashboard-legend-title">⚖️ Riesgo y Responsabilidad:</span>
+          <div class="dashboard-legend-items">
+            <span class="dashboard-legend-item"><span class="dot green"></span><strong>BAJO</strong> = Fiscalmente responsable</span>
+            <span class="dashboard-legend-item"><span class="dot orange"></span><strong>MEDIO</strong> = Algunas propuestas riesgosas</span>
+            <span class="dashboard-legend-item"><span class="dot red"></span><strong>ALTO</strong> = Amenaza estabilidad fiscal</span>
+            </div>
+          </div>
+        
+        <div class="dashboard-ranking-table-container">
+          <table class="dashboard-ranking-table">
+            <thead>
+              <tr>
+                <th class="col-rank">#</th>
+                <th class="col-candidate">Candidato</th>
+                <th class="col-risk">Riesgo</th>
+                <th class="col-penalty">Penalización</th>
+                <th class="col-score">Puntaje</th>
+              </tr>
+            </thead>
+            <tbody>
+              {overallRanking.map((entry, index) => {
+                const score = entry.weighted_sum || 0;
+                const scorePercent = Math.round(score * 100);
+                const candidateName = getCandidateName(entry.candidate);
+                const riskLevel = entry.analysis?.risk_level || 'BAJO';
+                // total_penalties viene del ranking.json y es negativo (ej: -3, -2, 0)
+                const totalPenalty = Math.abs((entry as any).total_penalties || 0);
+                const medals = ['🥇', '🥈', '🥉'];
+                const hasMedal = index < 3;
+                
+                const riskColor = riskLevel === 'BAJO' ? 'green' : riskLevel === 'MEDIO' ? 'amber' : 'red';
+                const riskEmoji = riskLevel === 'BAJO' ? '🟢' : riskLevel === 'MEDIO' ? '🟠' : '🔴';
+                
+                // v7: Flags informativos y bonos
+                const candidateScore = entry.candidate ? (entry as any).score : null;
+                const totalBonuses = candidateScore ? getTotalBonuses(entry.candidate_id) : 0;
+                const hasFlags = hasActiveInformativeFlags(entry.candidate_id);
+                
+                return (
+                  <tr class={hasMedal ? 'top-three' : ''}>
+                    <td class="col-rank">
+                      {hasMedal ? (
+                        <span class="medal">{medals[index]}</span>
+                      ) : (
+                        <span class="rank-number">{entry.rank}</span>
+                      )}
+                    </td>
+                    <td class="col-candidate">
+                      <a href={`/candidatos/${entry.candidate_id}`} class="candidate-link">
+                        <div class="candidate-main-info">
+                          <span class="candidate-name">{candidateName}</span>
+                          <span class="candidate-party">{entry.candidate?.party_name}</span>
+                        </div>
+                        {(totalBonuses > 0 || hasFlags) && (
+                          <div class="candidate-badges-row">
+                            {totalBonuses > 0 && (
+                              <span class="ranking-bonus-badge" title="Bonos totales recibidos - Ver detalles en perfil">
+                                <span class="bonus-icon">🎁</span>
+                                <span class="bonus-text">+{totalBonuses.toFixed(2)}</span>
+                              </span>
+                            )}
+                            {hasFlags && (
+                              <span class="ranking-flags-badge" title="Tiene información adicional - Ver detalles en perfil del candidato">
+                                <span class="flags-icon">ℹ️</span>
+                                <span class="flags-text">Info adicional</span>
+                              </span>
+                            )}
+                          </div>
+                        )}
+                      </a>
+                    </td>
+                    <td class="col-risk">
+                      <span class={`risk-badge ${riskColor}`}>
+                        {riskEmoji} {riskLevel}
+                      </span>
+                    </td>
+                    <td class="col-penalty">
+                      {totalPenalty > 0 ? (
+                        <span class="penalty-badge-red">-{Math.round(totalPenalty)}</span>
+                      ) : (
+                        <span class="penalty-value zero">0</span>
+                      )}
+                    </td>
+                    <td class="col-score">
+                      <span class={`score-value ${riskColor}`}>{scorePercent}%</span>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <!-- Tab Content: Critical Ranking -->
-      <div class="dashboard-tab-content active" id="dashboard-tab-critical">
+      <div class="dashboard-tab-content" id="dashboard-tab-critical">
         <div class="dashboard-tab-header">
           <h2 class="dashboard-tab-title">⭐ Ranking Pilares Críticos</h2>
           <p class="dashboard-tab-description">
@@ -112,6 +217,19 @@ function getScoreLevel(scorePercent: number) {
             economía, empleo, seguridad, salud, educación, reforma del Estado e infraestructura.
           </p>
             </div>
+        
+        <!-- Explicación sobre puntaje menor -->
+        <div class="dashboard-explanation-box">
+          <div class="dashboard-explanation-icon">💡</div>
+          <div class="dashboard-explanation-content">
+            <strong>¿Por qué el puntaje es menor que en General Ponderado?</strong>
+            <p>
+              Este ranking evalúa <strong>solo 7 pilares</strong> (P1-P5, P7 y P10) en lugar de los 10 completos. 
+              Aunque estos pilares representan el 81% del peso total, al excluir 3 pilares (P6, P8, P9), 
+              el puntaje máximo posible es menor. Esto permite enfocarse en las áreas más críticas del país.
+            </p>
+          </div>
+        </div>
         
         <!-- Legend -->
         <div class="dashboard-legend">
@@ -196,110 +314,6 @@ function getScoreLevel(scorePercent: number) {
               </div>
             </div>
 
-      <!-- Tab Content: Overall Ranking -->
-      <div class="dashboard-tab-content" id="dashboard-tab-overall">
-        <div class="dashboard-tab-header">
-          <h2 class="dashboard-tab-title">📊 Ranking General Ponderado</h2>
-          <p class="dashboard-tab-description">
-            Ordenado por <strong>responsabilidad fiscal (riesgo BAJO primero)</strong> y puntaje ponderado de los 10 pilares.
-          </p>
-              </div>
-        
-        <!-- Legend -->
-        <div class="dashboard-legend fiscal">
-          <span class="dashboard-legend-title">⚖️ Riesgo y Responsabilidad:</span>
-          <div class="dashboard-legend-items">
-            <span class="dashboard-legend-item"><span class="dot green"></span><strong>BAJO</strong> = Fiscalmente responsable</span>
-            <span class="dashboard-legend-item"><span class="dot orange"></span><strong>MEDIO</strong> = Algunas propuestas riesgosas</span>
-            <span class="dashboard-legend-item"><span class="dot red"></span><strong>ALTO</strong> = Amenaza estabilidad fiscal</span>
-            </div>
-          </div>
-        
-        <div class="dashboard-ranking-table-container">
-          <table class="dashboard-ranking-table">
-            <thead>
-              <tr>
-                <th class="col-rank">#</th>
-                <th class="col-candidate">Candidato</th>
-                <th class="col-risk">Riesgo</th>
-                <th class="col-penalty">Penalización</th>
-                <th class="col-score">Puntaje</th>
-              </tr>
-            </thead>
-            <tbody>
-              {overallRanking.map((entry, index) => {
-                const score = entry.weighted_sum || 0;
-                const scorePercent = Math.round(score * 100);
-                const candidateName = getCandidateName(entry.candidate);
-                const riskLevel = entry.analysis?.risk_level || 'BAJO';
-                const fiscalPenalty = (entry as any).total_penalties || 0;
-                const medals = ['🥇', '🥈', '🥉'];
-                const hasMedal = index < 3;
-                
-                const riskColor = riskLevel === 'BAJO' ? 'green' : riskLevel === 'MEDIO' ? 'amber' : 'red';
-                const riskEmoji = riskLevel === 'BAJO' ? '🟢' : riskLevel === 'MEDIO' ? '🟠' : '🔴';
-                
-                // v7: Flags informativos y bonos
-                const candidateScore = entry.candidate ? (entry as any).score : null;
-                const totalBonuses = candidateScore ? getTotalBonuses(entry.candidate_id) : 0;
-                const hasFlags = hasActiveInformativeFlags(entry.candidate_id);
-                
-                return (
-                  <tr class={hasMedal ? 'top-three' : ''}>
-                    <td class="col-rank">
-                      {hasMedal ? (
-                        <span class="medal">{medals[index]}</span>
-                      ) : (
-                        <span class="rank-number">{entry.rank}</span>
-                      )}
-                    </td>
-                    <td class="col-candidate">
-                      <a href={`/candidatos/${entry.candidate_id}`} class="candidate-link">
-                        <div class="candidate-main-info">
-                          <span class="candidate-name">{candidateName}</span>
-                          <span class="candidate-party">{entry.candidate?.party_name}</span>
-                        </div>
-                        {(totalBonuses > 0 || hasFlags) && (
-                          <div class="candidate-badges-row">
-                            {totalBonuses > 0 && (
-                              <span class="ranking-bonus-badge" title="Bonos totales recibidos - Ver detalles en perfil">
-                                <span class="bonus-icon">🎁</span>
-                                <span class="bonus-text">+{totalBonuses.toFixed(2)}</span>
-                              </span>
-                            )}
-                            {hasFlags && (
-                              <span class="ranking-flags-badge" title="Tiene información adicional - Ver detalles en perfil del candidato">
-                                <span class="flags-icon">ℹ️</span>
-                                <span class="flags-text">Info adicional</span>
-                              </span>
-                            )}
-                          </div>
-                        )}
-                      </a>
-                    </td>
-                    <td class="col-risk">
-                      <span class={`risk-badge ${riskColor}`}>
-                        {riskEmoji} {riskLevel}
-                      </span>
-                    </td>
-                    <td class="col-penalty">
-                      {fiscalPenalty < 0 ? (
-                        <span class="penalty-badge negative">{fiscalPenalty}</span>
-                      ) : (
-                        <span class="penalty-badge positive">0</span>
-                      )}
-                    </td>
-                    <td class="col-score">
-                      <span class={`score-value ${riskColor}`}>{scorePercent}%</span>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
       <!-- Tab Content: Priority Ranking -->
       <div class="dashboard-tab-content" id="dashboard-tab-priority">
         <div class="dashboard-tab-header">
@@ -307,7 +321,20 @@ function getScoreLevel(scorePercent: number) {
           <p class="dashboard-tab-description">
             P3 (Seguridad 18%), P4 (Salud 16%), P1 (Finanzas 14%), P7 (Reforma 12%) - <strong>60% del peso total</strong>.
           </p>
-    </div>
+              </div>
+        
+        <!-- Explicación sobre puntaje menor -->
+        <div class="dashboard-explanation-box">
+          <div class="dashboard-explanation-icon">💡</div>
+          <div class="dashboard-explanation-content">
+            <strong>¿Por qué el puntaje es menor que en General Ponderado?</strong>
+            <p>
+              Este ranking evalúa <strong>solo 4 pilares</strong> (P3, P4, P1 y P7) en lugar de los 10 completos. 
+              Aunque estos pilares representan el 60% del peso total, al excluir 6 pilares (P2, P5, P6, P8, P9, P10), 
+              el puntaje máximo posible es menor. Esto permite enfocarse en las áreas más prioritarias y urgentes del país.
+            </p>
+          </div>
+        </div>
 
         <!-- Legend -->
         <div class="dashboard-legend">
@@ -779,7 +806,8 @@ function getScoreLevel(scorePercent: number) {
             const scorePercent = Math.round(score * 100);
             const candidateName = getCandidateName(entry.candidate);
             const riskLevel = entry.analysis?.risk_level || 'BAJO';
-            const fiscalPenalty = (entry as any).total_penalties || 0;
+            // total_penalties viene del ranking.json y es negativo (ej: -3, -2, 0)
+            const totalPenalty = Math.abs((entry as any).total_penalties || 0);
             const medals = ['🥇', '🥈', '🥉'];
             const hasMedal = index < 3;
             
@@ -824,8 +852,8 @@ function getScoreLevel(scorePercent: number) {
                     {riskEmoji} {riskLevel}
                   </div>
                   <div class="express-score-value-standalone">{scorePercent}%</div>
-                  {fiscalPenalty < 0 && (
-                    <div class="express-penalty-badge">{fiscalPenalty}</div>
+                  {totalPenalty > 0 && (
+                    <div class="express-penalty-badge">-{totalPenalty.toFixed(2)}</div>
                   )}
                 </div>
               </a>
@@ -1136,7 +1164,8 @@ function getScoreLevel(scorePercent: number) {
             const scorePercent = Math.round(score * 100);
             const candidateName = getCandidateName(entry.candidate);
             const riskLevel = entry.analysis?.risk_level || 'BAJO';
-            const fiscalPenalty = (entry as any).total_penalties || 0;
+            // total_penalties viene del ranking.json y es negativo (ej: -3, -2, 0)
+            const totalPenalty = Math.abs((entry as any).total_penalties || 0);
             const medals = ['🥇', '🥈', '🥉'];
             const hasMedal = index < 3;
             
@@ -1185,8 +1214,8 @@ function getScoreLevel(scorePercent: number) {
                     {riskEmoji} Riesgo {riskLevel}
                   </div>
                   <div class="reading-score-value">{scorePercent}%</div>
-                  {fiscalPenalty < 0 && (
-                    <div class="reading-penalty">Penalización: {fiscalPenalty}</div>
+                  {totalPenalty > 0 && (
+                    <div class="reading-penalty-badge">Penalización: -{Math.round(totalPenalty)}</div>
                   )}
                 </div>
                 
@@ -1624,6 +1653,57 @@ function getScoreLevel(scorePercent: number) {
     
     .dashboard-simple-info-item {
       min-width: 100%;
+    }
+  }
+  
+  /* Explanation Box */
+  .dashboard-explanation-box {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 1.25rem;
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border: 1px solid #fbbf24;
+    border-radius: 0.75rem;
+    border-left: 4px solid #f59e0b;
+  }
+  
+  .dashboard-explanation-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+  }
+  
+  .dashboard-explanation-content {
+    flex: 1;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: #78350f;
+  }
+  
+  .dashboard-explanation-content strong {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #92400e;
+    font-weight: 600;
+    font-size: 1rem;
+  }
+  
+  .dashboard-explanation-content p {
+    margin: 0;
+    color: #78350f;
+  }
+  
+  .dashboard-explanation-content p strong {
+    display: inline;
+    font-weight: 600;
+    color: #92400e;
+  }
+  
+  @media (max-width: 768px) {
+    .dashboard-explanation-box {
+      flex-direction: column;
+      gap: 0.75rem;
     }
   }
   
@@ -2097,6 +2177,23 @@ function getScoreLevel(scorePercent: number) {
   .penalty-badge.positive {
     background: #dcfce7;
     color: #15803d;
+  }
+  
+  /* Dashboard Mode - Penalty Badge Red */
+  .penalty-badge-red {
+    display: inline-block;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    background: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+  }
+  
+  .penalty-value.zero {
+    color: #94a3b8;
+    font-weight: 500;
   }
   
   .score-value {
@@ -2795,6 +2892,18 @@ function getScoreLevel(scorePercent: number) {
     font-size: 0.95rem;
     color: #dc2626;
     font-weight: 600;
+  }
+  
+  .reading-penalty-badge {
+    display: inline-block;
+    padding: 0.5rem 0.875rem;
+    border-radius: 0.5rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    background: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+    margin-top: 0.5rem;
   }
   
   .reading-profile-link {

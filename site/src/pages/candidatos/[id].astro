@@ -161,7 +161,13 @@ const riskEmoji = riskLevel === 'BAJO' ? '🟢' : riskLevel === 'MEDIO' ? '🟠'
         </div>
           <div class={`stat-card ${totalPenalties < 0 ? 'highlight-red' : 'highlight-green'}`}>
             <div class="stat-icon">⚖️</div>
-            <div class="stat-value">{totalPenalties}</div>
+            <div class="stat-value">
+              {totalPenalties < 0 ? (
+                <span class="penalty-badge-red">{Math.round(Math.abs(totalPenalties))}</span>
+              ) : (
+                <span>0</span>
+              )}
+            </div>
             <div class="stat-label">Penalización total</div>
         </div>
       </div>
@@ -415,7 +421,7 @@ const riskEmoji = riskLevel === 'BAJO' ? '🟢' : riskLevel === 'MEDIO' ? '🟠'
                             {viabilityFlags.violates_constitutional_guarantees && <span>Garantías constitucionales</span>}
                             {viabilityFlags.violates_constitutional_procedures && <span>Procedimientos constitucionales</span>}
                           </div>
-                          <span class="penalty-amount">Penalización: {ps.viability_penalty}</span>
+                          <span class="penalty-badge-red-small">Penalización: -{Math.round(Math.abs(ps.viability_penalty))}</span>
                         </div>
                       </div>
                     )}
@@ -512,7 +518,13 @@ const riskEmoji = riskLevel === 'BAJO' ? '🟢' : riskLevel === 'MEDIO' ? '🟠'
         </div>
         <div class="express-stat">
           <span class="express-stat-label">⚖️ Penalización</span>
-          <span class={`express-stat-value ${totalPenalties < 0 ? 'negative' : 'positive'}`}>{totalPenalties}</span>
+          <span class={`express-stat-value ${totalPenalties < 0 ? 'negative' : 'positive'}`}>
+            {totalPenalties < 0 ? (
+              <span class="penalty-badge-red-small">-{Math.round(Math.abs(totalPenalties))}</span>
+            ) : (
+              <span>0</span>
+            )}
+          </span>
         </div>
       </div>
 
@@ -680,7 +692,13 @@ const riskEmoji = riskLevel === 'BAJO' ? '🟢' : riskLevel === 'MEDIO' ? '🟠'
           </div>
           <div class={`reading-stat-card ${totalPenalties < 0 ? 'negative' : 'positive'}`}>
             <span class="reading-stat-icon">⚖️</span>
-            <span class="reading-stat-value">{totalPenalties}</span>
+            <span class="reading-stat-value">
+              {totalPenalties < 0 ? (
+                <span class="penalty-badge-red-small">-{Math.round(Math.abs(totalPenalties))}</span>
+              ) : (
+                <span>0</span>
+              )}
+            </span>
             <span class="reading-stat-label">Penalización Fiscal</span>
           </div>
         </div>
@@ -812,7 +830,7 @@ const riskEmoji = riskLevel === 'BAJO' ? '🟢' : riskLevel === 'MEDIO' ? '🟠'
                 {hasViabilityPenalty && (
                   <div class="reading-viability-alert">
                     <strong>⚠️ Violación Constitucional Detectada</strong>
-                    <p>Penalización: {ps.viability_penalty} puntos</p>
+                    <p>Penalización: <span class="penalty-badge-red-small">-{Math.round(Math.abs(ps.viability_penalty))}</span> puntos</p>
                     {ps.viability_flags && (
                       <ul>
                         {ps.viability_flags.violates_separation_powers && <li>Viola separación de poderes</li>}
@@ -1653,6 +1671,29 @@ const riskEmoji = riskLevel === 'BAJO' ? '🟢' : riskLevel === 'MEDIO' ? '🟠'
     font-size: 0.75rem;
     color: #dc2626;
     font-weight: 600;
+  }
+  
+  /* Penalty Badge Red */
+  .penalty-badge-red {
+    display: inline-block;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+    background: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+  }
+  
+  .penalty-badge-red-small {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    background: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
   }
 
   .proposals-header {

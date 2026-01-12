@@ -7,7 +7,8 @@ import {
   pillars, 
   getPillarCardData, 
   getProposalsByPillar,
-  getPdfUrl
+  getPdfUrl,
+  getPillarBonuses
 } from '../../lib/data';
 import { PILLAR_ICONS, CRITICAL_PILLARS } from '../../lib/types';
 import type { PillarId } from '../../lib/types';
@@ -209,7 +210,7 @@ const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
           <div>
             <h2 class="dashboard-section-title">Ranking de Candidatos y Propuestas</h2>
             <p class="dashboard-section-subtitle">
-              Candidatos ordenados por calidad de propuesta en este pilar
+              Candidatos ordenados por calidad de propuesta en este pilar. En caso de empate, se considera el puntaje ponderado general.
             </p>
           </div>
         </div>
@@ -257,14 +258,69 @@ const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
                       <span class="dashboard-score-number">{scorePercent}</span>
                       <span class="dashboard-score-symbol">%</span>
                     </div>
-                    {item.score.penalties && item.score.penalties.length > 0 && (
-                      <div class="dashboard-score-detail">
-                        <span class="dashboard-raw-score">Base: {item.score.raw_score}/4</span>
-                        <span class="dashboard-penalty-count">-{item.score.raw_score - item.score.effective_score} penalización</span>
-                      </div>
-                    )}
                   </div>
                 </div>
+                
+                <!-- Formula Info Alert -->
+                {(() => {
+                  // Calcular penalización neta: suma de valores de penalizaciones
+                  const totalPenalty = item.score.penalties?.reduce((sum: number, p: any) => sum + Math.abs(p.value || 0), 0) || 0;
+                  const dimensionsCount = item.score.raw_score;
+                  const finalScore = item.score.effective_score;
+                  const bonuses = (item.score.bonus_multiple || 0) + (item.score.bonus_quality || 0) + (item.score.bonus_funding || 0);
+                  
+                  return (
+                    <div class="dashboard-formula-alert">
+                      <span class="dashboard-formula-icon">ℹ️</span>
+                      <div class="dashboard-formula-content">
+                        <span class="dashboard-formula-text">
+                          <a href="/metodologia#dimensiones" class="dashboard-formula-link">{dimensionsCount} dimensiones</a>
+                          {' - '}
+                          {totalPenalty > 0.01 ? (
+                            <span class="pillar-penalty-badge-red">{Math.round(totalPenalty)}</span>
+                          ) : (
+                            <span class="pillar-penalty-badge-blue">0</span>
+                          )}
+                          {bonuses > 0.01 && (
+                            <> + <span class="pillar-bonus-badge-green">+{bonuses.toFixed(1)}</span></>
+                          )}
+                          {' = '}
+                          <strong>{finalScore.toFixed(1)}/4 ({scorePercent}%)</strong>
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })()}
+                
+                <!-- Bonus Alert -->
+                {(() => {
+                  const bonuses = getPillarBonuses(item.candidate.candidate_id, pillarId as PillarId);
+                  return bonuses.total > 0.01 && (
+                    <div class="dashboard-bonus-alert">
+                      <span class="dashboard-bonus-icon">🎁</span>
+                      <div class="dashboard-bonus-content">
+                        <span class="dashboard-bonus-title">Bonos aplicados:</span>
+                        <div class="dashboard-bonus-list">
+                          {bonuses.multiple > 0.01 && (
+                            <p class="dashboard-bonus-item">
+                              <strong>+{bonuses.multiple.toFixed(1)}</strong> por múltiples propuestas (3+ válidas)
+                            </p>
+                          )}
+                          {bonuses.quality > 0.01 && (
+                            <p class="dashboard-bonus-item">
+                              <strong>+{bonuses.quality.toFixed(2)}</strong> por propuestas completas (4/4 dimensiones)
+                            </p>
+                          )}
+                          {bonuses.funding > 0.01 && (
+                            <p class="dashboard-bonus-item">
+                              <strong>+{bonuses.funding.toFixed(1)}</strong> por propuestas con financiamiento claro
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
                 
                 <!-- Penalty Alert -->
                 {item.score.penalties && item.score.penalties.length > 0 && (
@@ -414,7 +470,7 @@ const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
         <div class="express-section-header">
           <h2 class="express-section-title">🏆 Candidatos y sus Propuestas</h2>
           <p class="express-section-description">
-            Ordenados por calidad de propuesta en este pilar. El porcentaje indica qué tan completa es la propuesta.
+            Ordenados por calidad de propuesta en este pilar. En caso de empate, se considera el puntaje ponderado general. El porcentaje indica qué tan completa es la propuesta.
           </p>
         </div>
 
@@ -454,9 +510,13 @@ const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
                       <span class="express-score-number">{scorePercent}</span>
                       <span class="express-score-symbol">%</span>
                     </div>
-                    {item.score.penalties && item.score.penalties.length > 0 && (
-                      <span class="express-penalty-indicator">⚠️ -{item.score.raw_score - item.score.effective_score}</span>
-                    )}
+                    {(() => {
+                      // Calcular penalización neta: suma de valores de penalizaciones
+                      const totalPenalty = item.score.penalties?.reduce((sum: number, p: any) => sum + Math.abs(p.value || 0), 0) || 0;
+                      return item.score.penalties && item.score.penalties.length > 0 && totalPenalty > 0.01 && (
+                        <span class="pillar-penalty-badge-red-small">-{Math.round(totalPenalty)}</span>
+                      );
+                    })()}
                   </div>
                 </div>
                 
@@ -651,7 +711,7 @@ const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
       <section class="reading-candidates-section">
         <h2 class="reading-section-title">🏆 Ranking de Candidatos en este Pilar</h2>
         <p class="reading-section-intro">
-          A continuación se muestran los candidatos ordenados por la calidad de sus propuestas en esta área.
+          A continuación se muestran los candidatos ordenados por la calidad de sus propuestas en esta área. En caso de empate, se considera el puntaje ponderado general.
         </p>
 
         <ol class="reading-candidates-list">
@@ -707,11 +767,19 @@ const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
                         <strong>Razón:</strong> {penalty.reason}
                       </p>
                     ))}
-                    <p class="reading-penalty-detail">
-                      Puntaje base: <strong>{item.score.raw_score}/4</strong> → 
-                      Penalización: <strong>-{item.score.raw_score - item.score.effective_score}</strong> → 
-                      Puntaje final: <strong>{item.score.effective_score}/4 ({scorePercent}%)</strong>
-                    </p>
+                    {(() => {
+                      // Calcular penalización neta: suma de valores de penalizaciones
+                      const totalPenalty = item.score.penalties?.reduce((sum: number, p: any) => sum + Math.abs(p.value || 0), 0) || 0;
+                      return (
+                        <p class="reading-penalty-detail">
+                          Puntaje base: <strong>{item.score.raw_score}/4</strong>
+                          {totalPenalty > 0.01 && (
+                            <> → Penalización: <span class="pillar-penalty-badge-red-small">-{Math.round(totalPenalty)}</span></>
+                          )}
+                          → Puntaje final: <strong>{item.score.effective_score}/4 ({scorePercent}%)</strong>
+                        </p>
+                      );
+                    })()}
                   </div>
                 )}
                 
@@ -1861,6 +1929,100 @@ const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
     font-weight: 600;
   }
   
+  /* Pillar Penalty Badge Red */
+  .pillar-penalty-badge-red {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    background: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+  }
+  
+  .pillar-penalty-badge-red-small {
+    display: inline-block;
+    padding: 0.2rem 0.45rem;
+    border-radius: 0.25rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    background: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+  }
+  
+  .pillar-penalty-badge-blue {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    background: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #93c5fd;
+  }
+  
+  /* Formula Info Alert */
+  .dashboard-formula-alert {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(135deg, #eff6ff, #f0f9ff);
+    border: 1px solid #bfdbfe;
+    border-radius: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  
+  .dashboard-formula-icon {
+    font-size: 1.25rem;
+    flex-shrink: 0;
+    color: #3b82f6;
+  }
+  
+  .dashboard-formula-content {
+    flex: 1;
+  }
+  
+  .dashboard-formula-text {
+    font-size: 0.875rem;
+    color: #1e40af;
+    line-height: 1.6;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  
+  .dashboard-formula-link {
+    color: #2563eb;
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: #93c5fd;
+    transition: all 0.2s;
+  }
+  
+  .dashboard-formula-link:hover {
+    color: #1d4ed8;
+    text-decoration-color: #60a5fa;
+  }
+  
+  .dashboard-formula-text strong {
+    color: #1e293b;
+    font-weight: 700;
+  }
+  
+  .pillar-bonus-badge-green {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    background: #dcfce7;
+    color: #15803d;
+    border: 1px solid #86efac;
+  }
+  
   .dashboard-penalty-alert {
     display: flex;
     gap: 0.75rem;
@@ -1891,6 +2053,52 @@ const PILLAR_CITIZEN_IMPACT: Record<string, string> = {
     font-size: 0.85rem;
     color: #7f1d1d;
     margin: 0;
+  }
+  
+  /* Bonus Alert */
+  .dashboard-bonus-alert {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 2px solid #86efac;
+    border-radius: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  
+  .dashboard-bonus-icon {
+    font-size: 1.25rem;
+    flex-shrink: 0;
+  }
+  
+  .dashboard-bonus-content {
+    flex: 1;
+  }
+  
+  .dashboard-bonus-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #15803d;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+  
+  .dashboard-bonus-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+  
+  .dashboard-bonus-item {
+    font-size: 0.85rem;
+    color: #166534;
+    margin: 0;
+    line-height: 1.5;
+  }
+  
+  .dashboard-bonus-item strong {
+    color: #15803d;
+    font-weight: 700;
     line-height: 1.5;
   }
   

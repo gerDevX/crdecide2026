@@ -23,8 +23,24 @@ const mainTabs = [
   { id: "pilares", label: "10 Pilares de Evaluación", icon: "🏛️" },
 ];
 
+// Función para obtener prioridad de riesgo (mismo que en ranking.astro)
+function getRiskPriority(riskLevel: string): number {
+  if (riskLevel === 'BAJO') return 0;
+  if (riskLevel === 'MEDIO') return 1;
+  return 2;
+}
+
+// Obtener ranking ordenado igual que en ranking.astro (por riesgo primero, luego por weighted_sum)
+const rawRanking = getRankingWithCandidates();
+const sortedRanking = [...rawRanking].sort((a, b) => {
+  const riskA = getRiskPriority(a.analysis?.risk_level || 'BAJO');
+  const riskB = getRiskPriority(b.analysis?.risk_level || 'BAJO');
+  if (riskA !== riskB) return riskA - riskB;
+  return (b.weighted_sum || 0) - (a.weighted_sum || 0);
+});
+
 // Prepare ranking data for all modes
-const rankingData = getRankingWithCandidates().map((entry, index) => ({
+const rankingData = sortedRanking.map((entry, index) => ({
   candidate: entry.candidate,
   score: scoresByCandidate[entry.candidate_id],
   analysis: analysisByCandidate[entry.candidate_id],
@@ -33,8 +49,8 @@ const rankingData = getRankingWithCandidates().map((entry, index) => ({
 
 const fiscalStats = getFiscalStats();
 
-// Prepare data for Aceternity components
-const rankingEntries = getRankingWithCandidates().slice(0, 10).map((entry, idx) => {
+// Prepare data for Aceternity components (Top 10 del ranking ordenado)
+const rankingEntries = sortedRanking.slice(0, 10).map((entry, idx) => {
   const candidateName = entry.candidate?.candidate_name;
   const hasValidName = candidateName && candidateName !== 'Por determinar' && candidateName !== 'no_especificado';
   
