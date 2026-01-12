@@ -11,7 +11,8 @@
     "build:netlify": "npm run build",
     "build:cloudflare": "npm run build",
     "build:render": "npm run build",
-    "clean": "rm -rf dist node_modules/.vite"
+    "clean": "rm -rf dist node_modules/.vite",
+    "pages:deploy": "wrangler pages deploy"
   },
   "engines": {
     "node": ">=20.0.0"
@@ -26,5 +27,8 @@
     "react-dom": "^19.2.3",
     "tailwind-merge": "^3.4.0",
     "tailwindcss": "^4.1.18"
+  },
+  "devDependencies": {
+    "wrangler": "^4.58.0"
   }
 }
