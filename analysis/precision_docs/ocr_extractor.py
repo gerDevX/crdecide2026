@@ -5,8 +5,10 @@ OCR Extractor para PDFs con texto corrupto
 Usa Tesseract OCR para extraer texto de PDFs que tienen problemas de encoding de fuentes.
 
 Uso:
-    python ocr_extractor.py planes/PPSO.pdf
-    python ocr_extractor.py --check planes/  # Detecta PDFs con texto corrupto
+    python ocr_extractor.py ../planes/PPSO.pdf
+    python ocr_extractor.py --check ../planes/  # Detecta PDFs con texto corrupto
+    
+Nota: Desde precision_docs, usar rutas relativas ../planes/
 """
 
 import fitz  # PyMuPDF

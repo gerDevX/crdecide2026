@@ -12,7 +12,7 @@
     "build:cloudflare": "npm run build",
     "build:render": "npm run build",
     "clean": "rm -rf dist node_modules/.vite",
-    "pages:deploy": "wrangler pages deploy"
+    "pages:deploy": "wrangler pages deploy dist"
   },
   "engines": {
     "node": ">=20.0.0"

@@ -40,25 +40,56 @@ except ImportError:
     PDF_AVAILABLE = False
     print("⚠️ PyMuPDF no disponible. Instalar: pip install PyMuPDF")
 
+# Verificar disponibilidad de pdfplumber (mejor para PDFs corruptos)
+PDFPLUMBER_AVAILABLE = False
+try:
+    import pdfplumber
+    PDFPLUMBER_AVAILABLE = True
+except ImportError:
+    pass  # pdfplumber es opcional pero recomendado
+
+# Verificar disponibilidad de motores OCR
+OCR_AVAILABLE = False
+EASYOCR_AVAILABLE = False
+TESSERACT_AVAILABLE = False
+
 try:
     from PIL import Image
-    import pytesseract
+    import numpy as np
     OCR_AVAILABLE = True
 except ImportError:
-    OCR_AVAILABLE = False
-    print("⚠️ OCR no disponible. Instalar: pip install Pillow pytesseract")
+    print("⚠️ PIL/Pillow no disponible. Instalar: pip install Pillow")
+
+try:
+    import easyocr
+    EASYOCR_AVAILABLE = True
+    OCR_AVAILABLE = True
+except ImportError:
+    print("⚠️ EasyOCR no disponible. Instalar: pip install easyocr")
+
+try:
+    import pytesseract
+    TESSERACT_AVAILABLE = True
+    if not OCR_AVAILABLE:
+        OCR_AVAILABLE = True
+except ImportError:
+    print("⚠️ Tesseract no disponible. Instalar: pip install pytesseract")
 
 # Configuración OCR
-RENDER_DPI = 200
-TESSERACT_CONFIG = '--psm 1 -l spa'
+RENDER_DPI = 300  # Aumentado para mejor calidad
+TESSERACT_CONFIG = '--oem 3 --psm 6 -l spa'  # Configuración optimizada
 
-# Caracteres de fuentes corruptas
+# Caracteres de fuentes corruptas (ampliado para detectar más casos)
 CORRUPT_CHARS = set([
+    # Unicode privado (fuentes corruptas comunes)
     '\uf0b7', '\uf0a7', '\uf0d8', '\uf020', '\uf06c', '\uf06f', '\uf073',
     '\uf061', '\uf065', '\uf06e', '\uf072', '\uf074', '\uf075', '\uf069',
     '\uf064', '\uf063', '\uf06d', '\uf070', '\uf067', '\uf0fc', '\uf0e0',
+    # Caracteres cirílicos/extraños que aparecen en PDFs corruptos
+    'ӌ', 'Ǣ', 'ņ', 'Ğ', 'ļ', 'š', 'Ź', 'ĵ', 'ū', 'Ô', 'Ť', 'Ņ', 'ƕ', 'ý', 'ð', 'ų', 'ö', 'Ē', 'Ľ', 'Ě',
+    'Ņ', 'Ť', 'Ź', 'Ľ', 'Ť', 'Ņ', 'ƕ', 'ý', 'ð', 'ų', 'ö', 'Ē', 'Ľ', 'Ě',
 ])
-CORRUPT_THRESHOLD = 0.02
+CORRUPT_THRESHOLD = 0.02  # 2% de caracteres corruptos
 
 # Rutas
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -268,8 +299,24 @@ MISSING_PRIORITY_PILLAR_PENALTY = -0.5
 # ====================================================================
 
 def normalize_text(text: str) -> str:
+    """Normaliza el texto extraído, incluyendo correcciones para EasyOCR."""
+    if not text:
+        return ""
+    
+    # Eliminar caracteres de control
     text = re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f-\x9f]', '', text)
+    
+    # Correcciones específicas para EasyOCR
+    # "Ia" → "la" (error común de EasyOCR en español)
+    text = re.sub(r'\bIa\b', 'la', text)
+    text = re.sub(r'\bIa\n', 'la\n', text)
+    
+    # Normalizar espacios múltiples
     text = re.sub(r'\s+', ' ', text)
+    
+    # Normalizar saltos de línea múltiples
+    text = re.sub(r'\n\s*\n+', '\n\n', text)
+    
     return text.strip()
 
 def generate_proposal_id(pdf_id: str, text: str) -> str:
@@ -299,27 +346,99 @@ def detect_corrupt_text(text: str) -> Tuple[bool, float]:
     return corrupt_ratio > CORRUPT_THRESHOLD, corrupt_ratio
 
 
+# Variable global para el lector EasyOCR (inicializado una sola vez)
+_easyocr_reader = None
+
+def get_easyocr_reader():
+    """Obtiene o inicializa el lector EasyOCR (singleton)."""
+    global _easyocr_reader
+    if _easyocr_reader is None and EASYOCR_AVAILABLE:
+        try:
+            import easyocr
+            _easyocr_reader = easyocr.Reader(['es', 'en'], gpu=False)
+        except Exception as e:
+            print(f"    ⚠️  Error inicializando EasyOCR: {e}")
+            return None
+    return _easyocr_reader
+
+
 def extract_page_with_ocr(page, dpi: int = RENDER_DPI) -> str:
-    """Extrae texto de una página usando OCR."""
+    """
+    Extrae texto de una página usando OCR.
+    Prioriza EasyOCR, con fallback a Tesseract si EasyOCR no está disponible.
+    """
     if not OCR_AVAILABLE:
         return ""
+    
     try:
+        # Renderizar página como imagen
         mat = fitz.Matrix(dpi / 72, dpi / 72)
         pix = page.get_pixmap(matrix=mat)
         img_data = pix.tobytes("png")
         img = Image.open(io.BytesIO(img_data))
-        text = pytesseract.image_to_string(img, config=TESSERACT_CONFIG)
-        return text
+        
+        # Intentar EasyOCR primero (mejor calidad)
+        if EASYOCR_AVAILABLE:
+            try:
+                reader = get_easyocr_reader()
+                if reader:
+                    import numpy as np
+                    img_array = np.array(img)
+                    results = reader.readtext(img_array)
+                    # Combinar todos los textos detectados
+                    text = "\n".join([result[1] for result in results])
+                    return text
+            except Exception as e:
+                print(f"    ⚠️  Error EasyOCR, usando Tesseract: {e}")
+        
+        # Fallback a Tesseract
+        if TESSERACT_AVAILABLE:
+            text = pytesseract.image_to_string(img, config=TESSERACT_CONFIG)
+            return text
+        
+        return ""
+        
     except Exception as e:
         print(f"    ⚠️  Error OCR en página: {e}")
         return ""
 
 
+def extract_text_with_pdfplumber(pdf_path: str) -> Tuple[List[Tuple[int, str]], str]:
+    """
+    Extrae texto usando pdfplumber (mejor para PDFs con texto corrupto).
+    Retorna páginas y texto completo.
+    """
+    pages = []
+    full_text = ""
+    
+    try:
+        with pdfplumber.open(pdf_path) as pdf:
+            num_pages = len(pdf.pages)
+            
+            for page_num in range(num_pages):
+                page = pdf.pages[page_num]
+                text = page.extract_text()
+                
+                if text:
+                    normalized = normalize_text(text)
+                    if normalized:
+                        pages.append((page_num + 1, normalized))
+                        full_text += " " + normalized
+            
+            return pages, full_text
+    except Exception as e:
+        print(f"  ⚠️  Error con pdfplumber: {e}")
+        return [], ""
+
+
 def extract_text_from_pdf(pdf_path: str) -> Tuple[List[Tuple[int, str]], str]:
     """
-    Extrae texto de un PDF, retorna páginas y texto completo.
-    Detecta automáticamente texto corrupto y usa OCR cuando es necesario.
-    También busca archivos de texto OCR pre-extraídos.
+    Extrae texto de un PDF usando estrategia híbrida:
+    1. PyMuPDF para detección rápida de corrupción
+    2. pdfplumber si hay texto corrupto (mejor calidad, sin OCR)
+    3. EasyOCR/Tesseract como último recurso
+    
+    Retorna páginas y texto completo.
     """
     pages = []
     full_text = ""
@@ -352,7 +471,9 @@ def extract_text_from_pdf(pdf_path: str) -> Tuple[List[Tuple[int, str]], str]:
         except Exception as e:
             print(f"  ⚠️  Error leyendo archivo OCR: {e}, intentando extraer del PDF...")
     
+    doc = None
     try:
+        # ESTRATEGIA HÍBRIDA: Detección rápida con PyMuPDF
         doc = fitz.open(pdf_path)
         num_pages = len(doc)
         
@@ -362,15 +483,33 @@ def extract_text_from_pdf(pdf_path: str) -> Tuple[List[Tuple[int, str]], str]:
             sample_text += doc[page_num].get_text()
         
         is_corrupt, ratio = detect_corrupt_text(sample_text)
+        doc.close()
+        doc = None  # Marcar como cerrado
+        
+        # ESTRATEGIA: Si hay corrupción significativa, usar pdfplumber
+        if is_corrupt and ratio > 0.05 and PDFPLUMBER_AVAILABLE:
+            print(f"  ⚠️  {pdf_name}: Texto corrupto ({ratio*100:.1f}%), usando pdfplumber...")
+            pages, full_text = extract_text_with_pdfplumber(pdf_path)
+            if pages:
+                print(f"  ✅ pdfplumber completado: {len(pages)} páginas procesadas")
+                return pages, full_text
+            else:
+                print(f"  ⚠️  pdfplumber falló, intentando con PyMuPDF + OCR...")
+                # Reabrir documento si pdfplumber falló
+                doc = fitz.open(pdf_path)
+        else:
+            # Si no hay corrupción o pdfplumber no disponible, usar PyMuPDF
+            doc = fitz.open(pdf_path)
         use_ocr = is_corrupt and OCR_AVAILABLE
         
-        if is_corrupt:
+        if is_corrupt and not PDFPLUMBER_AVAILABLE:
             if OCR_AVAILABLE:
-                print(f"  ⚠️  {pdf_name}: Texto corrupto ({ratio*100:.1f}%), extrayendo con OCR...")
+                engine = "EasyOCR" if EASYOCR_AVAILABLE else ("Tesseract" if TESSERACT_AVAILABLE else "N/A")
+                print(f"  ⚠️  {pdf_name}: Texto corrupto ({ratio*100:.1f}%), extrayendo con {engine}...")
             else:
                 print(f"  ⚠️  {pdf_name}: Texto corrupto ({ratio*100:.1f}%) pero OCR no disponible")
         
-        # Segunda pasada: extraer texto
+        # Segunda pasada: extraer texto con PyMuPDF
         for page_num in range(num_pages):
             page = doc[page_num]
             
@@ -393,7 +532,8 @@ def extract_text_from_pdf(pdf_path: str) -> Tuple[List[Tuple[int, str]], str]:
                 full_text += " " + normalized
         
         if ocr_pages > 0:
-            print(f"  ✅ OCR completado: {ocr_pages}/{num_pages} páginas procesadas")
+            engine_used = "EasyOCR" if EASYOCR_AVAILABLE else "Tesseract"
+            print(f"  ✅ OCR completado ({engine_used}): {ocr_pages}/{num_pages} páginas procesadas")
             
     except Exception as e:
         print(f"Error leyendo {pdf_path}: {e}")
@@ -1036,6 +1176,14 @@ def process_all_pdfs():
     print(f"Procesando {len(pdf_files)} planes de gobierno...")
     print("=" * 80)
     print("Modelo: v6 NEUTRAL + ESTRICTO")
+    print("Estrategia de extracción:")
+    if PDFPLUMBER_AVAILABLE:
+        print("  • pdfplumber: PDFs con texto corrupto (calidad)")
+    print("  • PyMuPDF: PDFs limpios (velocidad)")
+    if EASYOCR_AVAILABLE:
+        print("  • EasyOCR: Último recurso (OCR)")
+    elif TESSERACT_AVAILABLE:
+        print("  • Tesseract: Último recurso (OCR)")
     print("=" * 80)
     print("PENALIZACIONES FISCALES (objetivas - basadas en ley):")
     print("  • Atacar regla fiscal (Ley 9635): -2 puntos")

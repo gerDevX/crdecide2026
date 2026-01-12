@@ -1,0 +1,22 @@
+{
+  "pdf": "PPSO.pdf",
+  "max_pages": 5,
+  "tesseract": {
+    "pages": 4,
+    "characters": 4388,
+    "time_seconds": 5.15,
+    "time_per_page": 1.29
+  },
+  "easyocr": {
+    "pages": 4,
+    "characters": 4322,
+    "time_seconds": 73.37,
+    "time_per_page": 18.34
+  },
+  "paddleocr": {
+    "pages": 0,
+    "characters": 0,
+    "time_seconds": 0.0,
+    "time_per_page": 0
+  }
+}

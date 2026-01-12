@@ -1,0 +1,50 @@
+{
+  "pdf": "PA.pdf",
+  "max_pages": 5,
+  "libraries": {
+    "pymupdf": {
+      "available": true,
+      "pages": 42,
+      "time_seconds": 0.09,
+      "time_per_page": 0.0,
+      "characters": 103644,
+      "words": 14749,
+      "corrupt_chars": 0,
+      "corrupt_ratio": 0.0,
+      "readable_ratio": 1.0
+    },
+    "pdfplumber": {
+      "available": true,
+      "pages": 42,
+      "time_seconds": 4.68,
+      "time_per_page": 0.11,
+      "characters": 101813,
+      "words": 14762,
+      "corrupt_chars": 0,
+      "corrupt_ratio": 0.0,
+      "readable_ratio": 1.0
+    },
+    "pypdf": {
+      "available": true,
+      "pages": 42,
+      "time_seconds": 1.82,
+      "time_per_page": 0.04,
+      "characters": 126178,
+      "words": 14793,
+      "corrupt_chars": 0,
+      "corrupt_ratio": 0.0,
+      "readable_ratio": 1.0
+    },
+    "pdfminer": {
+      "available": true,
+      "pages": 42,
+      "time_seconds": 3.73,
+      "time_per_page": 0.09,
+      "characters": 109854,
+      "words": 14762,
+      "corrupt_chars": 0,
+      "corrupt_ratio": 0.0,
+      "readable_ratio": 1.0
+    }
+  }
+}
