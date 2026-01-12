@@ -6,7 +6,10 @@ import {
   getRankingWithCandidates, 
   getCriticalRankingWithCandidates,
   getPriorityRankingWithCandidates,
-  candidateIndex
+  candidateIndex,
+  getInformativeFlags,
+  hasActiveInformativeFlags,
+  getTotalBonuses
 } from '../lib/data';
 
 const fiscalStats = getFiscalStats();
@@ -62,106 +65,27 @@ function getScoreLevel(scorePercent: number) {
           <h1 class="dashboard-ranking-title">🏆 Rankings de Candidatos</h1>
           <p class="dashboard-ranking-subtitle">
             Clasificación basada en el análisis estructural de planes de gobierno,
-        <strong>incluyendo penalizaciones por irresponsabilidad fiscal</strong>.
+        <strong>incluyendo penalizaciones por irresponsabilidad fiscal, omisiones de urgencias y violaciones de viabilidad legal</strong>.
         Estos rankings no son recomendaciones de voto.
       </p>
     </div>
       </header>
-
-      <!-- Fiscal Risk Stats Cards -->
-      <div class="dashboard-stats-grid">
-        <div class="dashboard-stat-card green">
-          <div class="dashboard-stat-icon">🟢</div>
-          <div class="dashboard-stat-content">
-            <div class="dashboard-stat-value">{fiscalStats.lowRisk}</div>
-            <div class="dashboard-stat-label">Riesgo Bajo</div>
-          </div>
-          <p class="dashboard-stat-desc">Sin banderas rojas fiscales</p>
-        </div>
-        
-        <div class="dashboard-stat-card amber">
-          <div class="dashboard-stat-icon">🟠</div>
-          <div class="dashboard-stat-content">
-            <div class="dashboard-stat-value">{fiscalStats.mediumRisk}</div>
-            <div class="dashboard-stat-label">Riesgo Medio</div>
-          </div>
-          <p class="dashboard-stat-desc">1-2 banderas fiscales</p>
-      </div>
       
-        <div class="dashboard-stat-card red">
-          <div class="dashboard-stat-icon">🔴</div>
-          <div class="dashboard-stat-content">
-            <div class="dashboard-stat-value">{fiscalStats.highRisk}</div>
-            <div class="dashboard-stat-label">Riesgo Alto</div>
+      <!-- Info Simple: Bonos e Información Adicional -->
+      <div class="dashboard-simple-info">
+        <div class="dashboard-simple-info-item">
+          <span class="dashboard-simple-icon">🎁</span>
+          <div>
+            <strong>Bonos:</strong> Premiamos múltiples propuestas (3+), completas (4/4) y con financiamiento. <strong>Suman puntos</strong> al score.
           </div>
-          <p class="dashboard-stat-desc">Múltiples banderas fiscales</p>
+        </div>
+        <div class="dashboard-simple-info-item">
+          <span class="dashboard-simple-icon">ℹ️</span>
+          <div>
+            <strong>Info adicional:</strong> Información objetiva basada en evidencia. <strong>NO penalizan</strong> el score.
+          </div>
         </div>
       </div>
-      
-      <!-- Penalties Info Panel -->
-      <div class="dashboard-penalties-panel">
-        <div class="dashboard-penalties-grid">
-          <div class="dashboard-penalty-section fiscal">
-            <h3 class="dashboard-penalty-title">🔴 Penalizaciones por Irresponsabilidad</h3>
-            <div class="dashboard-penalty-items">
-              <div class="dashboard-penalty-item">
-                <span class="dashboard-penalty-icon">⚠️</span>
-                <div class="dashboard-penalty-info">
-                  <span class="dashboard-penalty-name">Ataca regla fiscal:</span>
-                  <span class="dashboard-penalty-value">-2 puntos</span>
-          </div>
-                <span class="dashboard-penalty-affected">{fiscalStats.attackFiscalRule} afectados</span>
-        </div>
-              <div class="dashboard-penalty-item">
-                <span class="dashboard-penalty-icon">💰</span>
-                <div class="dashboard-penalty-info">
-                  <span class="dashboard-penalty-name">Propone más deuda:</span>
-                  <span class="dashboard-penalty-value">-1 punto</span>
-                </div>
-                <span class="dashboard-penalty-affected">{fiscalStats.proposeDebt} afectados</span>
-              </div>
-      </div>
-    </div>
-
-          <div class="dashboard-penalty-section omission">
-            <h3 class="dashboard-penalty-title">🟠 Penalizaciones por Omisión</h3>
-            <div class="dashboard-penalty-items">
-              <div class="dashboard-penalty-item">
-                <span class="dashboard-penalty-icon">🚨</span>
-                <div class="dashboard-penalty-info">
-                  <span class="dashboard-penalty-name">Ignora seguridad:</span>
-                  <span class="dashboard-penalty-value">-1 punto</span>
-          </div>
-                <span class="dashboard-penalty-affected">{fiscalStats.ignoreSecurity} afectados</span>
-        </div>
-              <div class="dashboard-penalty-item">
-                <span class="dashboard-penalty-icon">🏥</span>
-                <div class="dashboard-penalty-info">
-                  <span class="dashboard-penalty-name">Ignora CCSS:</span>
-                  <span class="dashboard-penalty-value">-1 punto</span>
-          </div>
-                <span class="dashboard-penalty-affected">{fiscalStats.ignoreCCSS} afectados</span>
-        </div>
-              <div class="dashboard-penalty-item">
-                <span class="dashboard-penalty-icon">💼</span>
-                <div class="dashboard-penalty-info">
-                  <span class="dashboard-penalty-name">Ignora empleo:</span>
-                  <span class="dashboard-penalty-value">-0.5 pts</span>
-                </div>
-                <span class="dashboard-penalty-affected">{fiscalStats.ignoreEmployment} afectados</span>
-              </div>
-              <div class="dashboard-penalty-item">
-                <span class="dashboard-penalty-icon">🔫</span>
-                <div class="dashboard-penalty-info">
-                  <span class="dashboard-penalty-name">Ignora crimen:</span>
-                  <span class="dashboard-penalty-value">-0.5 pts</span>
-                </div>
-                <span class="dashboard-penalty-affected">{fiscalStats.ignoreOrganizedCrime} afectados</span>
-              </div>
-            </div>
-          </div>
-          </div>
-        </div>
         
       <!-- Tabs Navigation -->
       <div class="dashboard-tabs" id="dashboardTabs">
@@ -219,6 +143,10 @@ function getScoreLevel(scorePercent: number) {
                 const medals = ['🥇', '🥈', '🥉'];
                 const hasMedal = index < 3;
                 
+                // v7: Flags informativos y bonos
+                const totalBonuses = getTotalBonuses(entry.candidate_id);
+                const hasFlags = hasActiveInformativeFlags(entry.candidate_id);
+                
                 return (
                   <tr class={hasMedal ? 'top-three' : ''}>
                     <td class="col-rank">
@@ -230,8 +158,26 @@ function getScoreLevel(scorePercent: number) {
                     </td>
                     <td class="col-candidate">
                       <a href={`/candidatos/${entry.candidate_id}`} class="candidate-link">
-                        <span class="candidate-name">{candidateName}</span>
-                        <span class="candidate-party">{entry.candidate?.party_name}</span>
+                        <div class="candidate-main-info">
+                          <span class="candidate-name">{candidateName}</span>
+                          <span class="candidate-party">{entry.candidate?.party_name}</span>
+                        </div>
+                        {(totalBonuses > 0 || hasFlags) && (
+                          <div class="candidate-badges-row">
+                            {totalBonuses > 0 && (
+                              <span class="ranking-bonus-badge" title="Bonos totales recibidos - Ver detalles en perfil">
+                                <span class="bonus-icon">🎁</span>
+                                <span class="bonus-text">+{totalBonuses.toFixed(2)}</span>
+                              </span>
+                            )}
+                            {hasFlags && (
+                              <span class="ranking-flags-badge" title="Tiene información adicional - Ver detalles en perfil del candidato">
+                                <span class="flags-icon">ℹ️</span>
+                                <span class="flags-text">Info adicional</span>
+                              </span>
+                            )}
+                          </div>
+                        )}
                       </a>
                     </td>
                     <td class="col-level">
@@ -293,6 +239,11 @@ function getScoreLevel(scorePercent: number) {
                 const riskColor = riskLevel === 'BAJO' ? 'green' : riskLevel === 'MEDIO' ? 'amber' : 'red';
                 const riskEmoji = riskLevel === 'BAJO' ? '🟢' : riskLevel === 'MEDIO' ? '🟠' : '🔴';
                 
+                // v7: Flags informativos y bonos
+                const candidateScore = entry.candidate ? (entry as any).score : null;
+                const totalBonuses = candidateScore ? getTotalBonuses(entry.candidate_id) : 0;
+                const hasFlags = hasActiveInformativeFlags(entry.candidate_id);
+                
                 return (
                   <tr class={hasMedal ? 'top-three' : ''}>
                     <td class="col-rank">
@@ -304,8 +255,26 @@ function getScoreLevel(scorePercent: number) {
                     </td>
                     <td class="col-candidate">
                       <a href={`/candidatos/${entry.candidate_id}`} class="candidate-link">
-                        <span class="candidate-name">{candidateName}</span>
-                        <span class="candidate-party">{entry.candidate?.party_name}</span>
+                        <div class="candidate-main-info">
+                          <span class="candidate-name">{candidateName}</span>
+                          <span class="candidate-party">{entry.candidate?.party_name}</span>
+                        </div>
+                        {(totalBonuses > 0 || hasFlags) && (
+                          <div class="candidate-badges-row">
+                            {totalBonuses > 0 && (
+                              <span class="ranking-bonus-badge" title="Bonos totales recibidos - Ver detalles en perfil">
+                                <span class="bonus-icon">🎁</span>
+                                <span class="bonus-text">+{totalBonuses.toFixed(2)}</span>
+                              </span>
+                            )}
+                            {hasFlags && (
+                              <span class="ranking-flags-badge" title="Tiene información adicional - Ver detalles en perfil del candidato">
+                                <span class="flags-icon">ℹ️</span>
+                                <span class="flags-text">Info adicional</span>
+                              </span>
+                            )}
+                          </div>
+                        )}
                       </a>
                     </td>
                     <td class="col-risk">
@@ -370,6 +339,10 @@ function getScoreLevel(scorePercent: number) {
                 const medals = ['🥇', '🥈', '🥉'];
                 const hasMedal = index < 3;
                 
+                // v7: Flags informativos y bonos
+                const totalBonuses = getTotalBonuses(entry.candidate_id);
+                const hasFlags = hasActiveInformativeFlags(entry.candidate_id);
+                
                 return (
                   <tr class={hasMedal ? 'top-three' : ''}>
                     <td class="col-rank">
@@ -381,8 +354,26 @@ function getScoreLevel(scorePercent: number) {
                     </td>
                     <td class="col-candidate">
                       <a href={`/candidatos/${entry.candidate_id}`} class="candidate-link">
-                        <span class="candidate-name">{candidateName}</span>
-                        <span class="candidate-party">{entry.candidate?.party_name}</span>
+                        <div class="candidate-main-info">
+                          <span class="candidate-name">{candidateName}</span>
+                          <span class="candidate-party">{entry.candidate?.party_name}</span>
+                        </div>
+                        {(totalBonuses > 0 || hasFlags) && (
+                          <div class="candidate-badges-row">
+                            {totalBonuses > 0 && (
+                              <span class="ranking-bonus-badge" title="Bonos totales recibidos - Ver detalles en perfil">
+                                <span class="bonus-icon">🎁</span>
+                                <span class="bonus-text">+{totalBonuses.toFixed(2)}</span>
+                              </span>
+                            )}
+                            {hasFlags && (
+                              <span class="ranking-flags-badge" title="Tiene información adicional - Ver detalles en perfil del candidato">
+                                <span class="flags-icon">ℹ️</span>
+                                <span class="flags-text">Info adicional</span>
+                              </span>
+                            )}
+                          </div>
+                        )}
                       </a>
                     </td>
                     <td class="col-level">
@@ -404,7 +395,7 @@ function getScoreLevel(scorePercent: number) {
       <!-- Tab Content: Methodology -->
       <div class="dashboard-tab-content" id="dashboard-tab-methodology">
         <div class="dashboard-methodology-panel">
-          <h2 class="dashboard-methodology-title">📖 ¿Cómo se calcula?</h2>
+          <h2 class="dashboard-methodology-title">📖 ¿Cómo se calcula?</h2>        
           
           <div class="dashboard-methodology-sections">
             <div class="methodology-section">
@@ -434,7 +425,7 @@ function getScoreLevel(scorePercent: number) {
         </div>
         
           <div class="dashboard-weights-grid">
-            <h3>⚖️ Pesos por Pilar (v6)</h3>
+            <h3>⚖️ Pesos por Pilar</h3>
             <div class="weights-items">
               <div class="weight-item priority"><span class="weight-label">P3 Seguridad</span><span class="weight-value">18%</span></div>
               <div class="weight-item priority"><span class="weight-label">P4 Salud</span><span class="weight-value">16%</span></div>
@@ -452,7 +443,177 @@ function getScoreLevel(scorePercent: number) {
           <a href="/metodologia" class="dashboard-methodology-link">
             Ver metodología completa →
           </a>
-        </div>
+          <br /> <br />
+            <!-- Fiscal Risk Stats Cards -->
+            <div class="mb-6">
+              <h3 class="text-lg font-bold text-slate-800 mb-3">📊 Niveles de Riesgo</h3>
+              <p class="text-sm text-slate-600 mb-4">
+                El riesgo considera penalizaciones fiscales, omisiones de urgencias nacionales y violaciones de viabilidad legal.
+              </p>
+              <div class="dashboard-stats-grid">
+                <div class="dashboard-stat-card green">
+                  <div class="dashboard-stat-icon">🟢</div>
+                  <div class="dashboard-stat-content">
+                    <div class="dashboard-stat-value">{fiscalStats.lowRisk}</div>
+                    <div class="dashboard-stat-label">Riesgo Bajo</div>
+                  </div>
+                  <p class="dashboard-stat-desc">Sin penalizaciones significativas</p>
+                </div>
+                
+                <div class="dashboard-stat-card amber">
+                  <div class="dashboard-stat-icon">🟠</div>
+                  <div class="dashboard-stat-content">
+                    <div class="dashboard-stat-value">{fiscalStats.mediumRisk}</div>
+                    <div class="dashboard-stat-label">Riesgo Medio</div>
+                  </div>
+                  <p class="dashboard-stat-desc">1-2 penalizaciones</p>
+                </div>
+                
+                <div class="dashboard-stat-card red">
+                  <div class="dashboard-stat-icon">🔴</div>
+                  <div class="dashboard-stat-content">
+                    <div class="dashboard-stat-value">{fiscalStats.highRisk}</div>
+                    <div class="dashboard-stat-label">Riesgo Alto</div>
+                  </div>
+                  <p class="dashboard-stat-desc">Múltiples penalizaciones</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Penalties Info Panel -->
+            <div class="mb-6">
+              <h3 class="text-lg font-bold text-slate-800 mb-3">⚠️ Tipos de Penalizaciones</h3>
+              <p class="text-sm text-slate-600 mb-4">
+                El motor de análisis aplica tres tipos de penalizaciones: fiscales, omisiones y viabilidad legal.
+              </p>
+              
+              <div class="dashboard-penalties-grid">
+                <div class="dashboard-penalty-section fiscal">
+                  <h3 class="dashboard-penalty-title">🔴 Penalizaciones Fiscales</h3>
+                  <div class="dashboard-penalty-items">
+                    <div class="dashboard-penalty-item">
+                      <span class="dashboard-penalty-icon">⚠️</span>
+                      <div class="dashboard-penalty-info">
+                        <span class="dashboard-penalty-name">Ataca regla fiscal:</span>
+                        <span class="dashboard-penalty-value">-2 puntos</span>
+                      </div>
+                      <span class="dashboard-penalty-affected">{fiscalStats.attackFiscalRule} afectados</span>
+                    </div>
+                    <div class="dashboard-penalty-item">
+                      <span class="dashboard-penalty-icon">💰</span>
+                      <div class="dashboard-penalty-info">
+                        <span class="dashboard-penalty-name">Propone más deuda:</span>
+                        <span class="dashboard-penalty-value">-1 punto</span>
+                      </div>
+                      <span class="dashboard-penalty-affected">{fiscalStats.proposeDebt} afectados</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="dashboard-penalty-section omission">
+                  <h3 class="dashboard-penalty-title">🟠 Penalizaciones por Omisión</h3>
+                  <div class="dashboard-penalty-items">
+                    <div class="dashboard-penalty-item">
+                      <span class="dashboard-penalty-icon">🚨</span>
+                      <div class="dashboard-penalty-info">
+                        <span class="dashboard-penalty-name">Ignora seguridad:</span>
+                        <span class="dashboard-penalty-value">-1 punto</span>
+                      </div>
+                      <span class="dashboard-penalty-affected">{fiscalStats.ignoreSecurity} afectados</span>
+                    </div>
+                    <div class="dashboard-penalty-item">
+                      <span class="dashboard-penalty-icon">🏥</span>
+                      <div class="dashboard-penalty-info">
+                        <span class="dashboard-penalty-name">Ignora CCSS:</span>
+                        <span class="dashboard-penalty-value">-1 punto</span>
+                      </div>
+                      <span class="dashboard-penalty-affected">{fiscalStats.ignoreCCSS} afectados</span>
+                    </div>
+                    <div class="dashboard-penalty-item">
+                      <span class="dashboard-penalty-icon">💼</span>
+                      <div class="dashboard-penalty-info">
+                        <span class="dashboard-penalty-name">Ignora empleo:</span>
+                        <span class="dashboard-penalty-value">-0.5 pts</span>
+                      </div>
+                      <span class="dashboard-penalty-affected">{fiscalStats.ignoreEmployment} afectados</span>
+                    </div>
+                    <div class="dashboard-penalty-item">
+                      <span class="dashboard-penalty-icon">🔫</span>
+                      <div class="dashboard-penalty-info">
+                        <span class="dashboard-penalty-name">Ignora crimen:</span>
+                        <span class="dashboard-penalty-value">-0.5 pts</span>
+                      </div>
+                      <span class="dashboard-penalty-affected">{fiscalStats.ignoreOrganizedCrime} afectados</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="dashboard-penalty-section viability">
+                  <h3 class="dashboard-penalty-title">⚖️ Penalizaciones por Viabilidad Legal</h3>
+                  <div class="dashboard-penalty-items">
+                    <div class="dashboard-penalty-item">
+                      <span class="dashboard-penalty-icon">⚖️</span>
+                      <div class="dashboard-penalty-info">
+                        <span class="dashboard-penalty-name">Viola separación de poderes:</span>
+                        <span class="dashboard-penalty-value">-1.0 punto</span>
+                      </div>
+                      <span class="dashboard-penalty-affected">Aplicado automáticamente</span>
+                    </div>
+                    <div class="dashboard-penalty-item">
+                      <span class="dashboard-penalty-icon">🛡️</span>
+                      <div class="dashboard-penalty-info">
+                        <span class="dashboard-penalty-name">Viola derechos fundamentales:</span>
+                        <span class="dashboard-penalty-value">-1.0 punto</span>
+                      </div>
+                      <span class="dashboard-penalty-affected">Aplicado automáticamente</span>
+                    </div>
+                    <div class="dashboard-penalty-item">
+                      <span class="dashboard-penalty-icon">📜</span>
+                      <div class="dashboard-penalty-info">
+                        <span class="dashboard-penalty-name">Viola garantías constitucionales:</span>
+                        <span class="dashboard-penalty-value">-1.0 punto</span>
+                      </div>
+                      <span class="dashboard-penalty-affected">Aplicado automáticamente</span>
+                    </div>
+                    <div class="dashboard-penalty-item">
+                      <span class="dashboard-penalty-icon">📋</span>
+                      <div class="dashboard-penalty-info">
+                        <span class="dashboard-penalty-name">Viola procedimientos constitucionales:</span>
+                        <span class="dashboard-penalty-value">-0.5 puntos</span>
+                      </div>
+                      <span class="dashboard-penalty-affected">Aplicado automáticamente</span>
+                    </div>
+                  </div>
+                  <p class="text-xs text-slate-600 mt-3 pt-3 border-t border-blue-200">
+                    Estas penalizaciones se aplican automáticamente cuando el motor de análisis detecta violaciones constitucionales en las propuestas. 
+                    Ver detalles específicos en la página de cada candidato.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bonos y Información Adicional Info -->
+            <div class="mb-6 p-4 bg-gradient-to-br from-emerald-50 to-indigo-50 border border-slate-200 rounded-xl">
+              <h3 class="text-lg font-bold text-slate-800 mb-3">🎁 Bonos e Información Adicional</h3>
+              <div class="grid md:grid-cols-2 gap-4">
+                <div class="p-3 bg-emerald-100 border border-emerald-200 rounded-lg">
+                  <h4 class="font-semibold text-emerald-800 mb-2">🎁 Sistema de Bonos</h4>
+                  <ul class="text-sm text-slate-700 space-y-1">
+                    <li>• <strong>+1.0</strong> por 3+ propuestas válidas por pilar</li>
+                    <li>• <strong>+0.25</strong> por propuesta completa (4/4 dimensiones)</li>
+                    <li>• <strong>+0.1</strong> por propuesta con financiamiento claro</li>
+                  </ul>
+                </div>
+                <div class="p-3 bg-indigo-100 border border-indigo-200 rounded-lg">
+                  <h4 class="font-semibold text-indigo-800 mb-2">ℹ️ Información Adicional</h4>
+                  <p class="text-sm text-slate-700">
+                    Información objetiva basada en evidencia verificable. <strong>NO penalizan</strong> el score, solo informan sobre similitudes históricas, requisitos de negociación y contradicciones.
+                  </p>
+                </div>
+              </div>
+            </div>
+        
+        </div>        
       </div>
 
     </div>
@@ -468,7 +629,7 @@ function getScoreLevel(scorePercent: number) {
       <header class="express-ranking-header">
         <h1 class="express-ranking-title">🏆 Rankings de Candidatos</h1>
         <p class="express-ranking-subtitle">
-          Clasificación basada en la calidad de las propuestas y responsabilidad fiscal
+          Clasificación basada en la calidad de las propuestas, penalizaciones (fiscal, omisión, viabilidad legal), bonos e información adicional
         </p>
       </header>
 
@@ -490,6 +651,28 @@ function getScoreLevel(scorePercent: number) {
           <span class="express-stat-label">Riesgo Alto</span>
       </div>
     </div>
+
+      <!-- Bonos Legend -->
+      <div class="express-bonus-legend">
+        <div class="express-bonus-legend-content">
+          <span class="express-bonus-icon">🎁</span>
+          <div>
+            <strong>Sistema de Bonos:</strong> Premiamos múltiples propuestas (3+), propuestas completas (4/4) y con financiamiento claro. 
+            Los bonos <strong class="text-emerald-700">suman puntos</strong> al score final.
+          </div>
+        </div>
+      </div>
+
+      <!-- Información Adicional Legend -->
+      <div class="express-flags-legend">
+        <div class="express-flags-legend-content">
+          <span class="express-flags-icon">ℹ️</span>
+          <div>
+            <strong>Información Adicional:</strong> Información objetiva basada en evidencia verificable. 
+            <strong class="text-indigo-700">NO penalizan</strong> el score. Ver detalles en perfil del candidato.
+          </div>
+        </div>
+      </div>
 
       <!-- Tabs Navigation -->
       <div class="express-tabs">
@@ -522,6 +705,10 @@ function getScoreLevel(scorePercent: number) {
             const medals = ['🥇', '🥈', '🥉'];
             const hasMedal = index < 3;
             
+            // v7: Flags informativos y bonos
+            const totalBonuses = getTotalBonuses(entry.candidate_id);
+            const hasFlags = hasActiveInformativeFlags(entry.candidate_id);
+            
             return (
               <a href={`/candidatos/${entry.candidate_id}`} class={`express-ranking-card ${hasMedal ? 'top-three' : ''}`}>
                 <div class="express-rank-badge">
@@ -535,6 +722,20 @@ function getScoreLevel(scorePercent: number) {
                 <div class="express-candidate-info">
                   <h3 class="express-candidate-name">{candidateName}</h3>
                   <p class="express-candidate-party">{entry.candidate?.party_name}</p>
+                  <div class="express-badges-row">
+                    {totalBonuses > 0 && (
+                      <span class="express-bonus-badge" title="Bonos totales recibidos - Ver detalles en perfil">
+                        <span class="express-bonus-icon-small">🎁</span>
+                        <span class="express-bonus-label">+{totalBonuses.toFixed(1)}</span>
+                      </span>
+                    )}
+                    {hasFlags && (
+                      <span class="express-flags-badge" title="Tiene información adicional - Ver detalles en perfil">
+                        <span class="express-flags-icon-small">ℹ️</span>
+                        <span class="express-flags-label">Info adicional</span>
+                      </span>
+                    )}
+                  </div>
                 </div>
                 
                 <div class={`express-score-pill ${level.color}`}>
@@ -585,6 +786,10 @@ function getScoreLevel(scorePercent: number) {
             const riskColor = riskLevel === 'BAJO' ? 'green' : riskLevel === 'MEDIO' ? 'amber' : 'red';
             const riskEmoji = riskLevel === 'BAJO' ? '🟢' : riskLevel === 'MEDIO' ? '🟠' : '🔴';
             
+            // v7: Flags informativos y bonos
+            const totalBonuses = getTotalBonuses(entry.candidate_id);
+            const hasFlags = hasActiveInformativeFlags(entry.candidate_id);
+            
             return (
               <a href={`/candidatos/${entry.candidate_id}`} class={`express-ranking-card ${hasMedal ? 'top-three' : ''}`}>
                 <div class="express-rank-badge">
@@ -598,6 +803,20 @@ function getScoreLevel(scorePercent: number) {
                 <div class="express-candidate-info">
                   <h3 class="express-candidate-name">{candidateName}</h3>
                   <p class="express-candidate-party">{entry.candidate?.party_name}</p>
+                  <div class="express-badges-row">
+                    {totalBonuses > 0 && (
+                      <span class="express-bonus-badge" title="Bonos totales recibidos - Ver detalles en perfil">
+                        <span class="express-bonus-icon-small">🎁</span>
+                        <span class="express-bonus-label">+{totalBonuses.toFixed(1)}</span>
+                      </span>
+                    )}
+                    {hasFlags && (
+                      <span class="express-flags-badge" title="Tiene información adicional - Ver detalles en perfil">
+                        <span class="express-flags-icon-small">ℹ️</span>
+                        <span class="express-flags-label">Info adicional</span>
+                      </span>
+                    )}
+                  </div>
                 </div>
                 
                 <div class="express-score-group">
@@ -633,6 +852,10 @@ function getScoreLevel(scorePercent: number) {
             const medals = ['🥇', '🥈', '🥉'];
             const hasMedal = index < 3;
             
+            // v7: Flags informativos y bonos
+            const totalBonuses = getTotalBonuses(entry.candidate_id);
+            const hasFlags = hasActiveInformativeFlags(entry.candidate_id);
+            
             return (
               <a href={`/candidatos/${entry.candidate_id}`} class={`express-ranking-card ${hasMedal ? 'top-three' : ''}`}>
                 <div class="express-rank-badge">
@@ -646,6 +869,20 @@ function getScoreLevel(scorePercent: number) {
                 <div class="express-candidate-info">
                   <h3 class="express-candidate-name">{candidateName}</h3>
                   <p class="express-candidate-party">{entry.candidate?.party_name}</p>
+                  <div class="express-badges-row">
+                    {totalBonuses > 0 && (
+                      <span class="express-bonus-badge" title="Bonos totales recibidos - Ver detalles en perfil">
+                        <span class="express-bonus-icon-small">🎁</span>
+                        <span class="express-bonus-label">+{totalBonuses.toFixed(1)}</span>
+                      </span>
+                    )}
+                    {hasFlags && (
+                      <span class="express-flags-badge" title="Tiene información adicional - Ver detalles en perfil">
+                        <span class="express-flags-icon-small">ℹ️</span>
+                        <span class="express-flags-label">Info adicional</span>
+                      </span>
+                    )}
+                  </div>
                 </div>
                 
                 <div class={`express-score-pill ${level.color}`}>
@@ -691,7 +928,9 @@ function getScoreLevel(scorePercent: number) {
       <section class="reading-fiscal-summary">
         <h2 class="reading-section-title">📊 Resumen de Riesgo y Responsabilidad</h2>
         <p class="reading-section-intro">
-          El riesgo y responsabilidad evalúa si las propuestas amenazan la estabilidad económica del país o ignoran urgencias críticas.
+          El motor de análisis evalúa si las propuestas <strong>amenazan la estabilidad económica</strong> del país, 
+          <strong>ignoran urgencias críticas</strong> o <strong>violan principios constitucionales</strong>. 
+          También premia con bonos las propuestas de calidad y múltiples propuestas.
         </p>
         
         <div class="reading-fiscal-cards">
@@ -699,21 +938,21 @@ function getScoreLevel(scorePercent: number) {
             <div class="reading-fiscal-icon">🟢</div>
             <div class="reading-fiscal-number">{fiscalStats.lowRisk}</div>
             <div class="reading-fiscal-label">candidatos con<br/><strong>Riesgo BAJO</strong></div>
-            <p class="reading-fiscal-desc">Propuestas fiscalmente responsables</p>
+            <p class="reading-fiscal-desc">Sin penalizaciones significativas (fiscal, omisión o viabilidad legal)</p>
           </div>
           
           <div class="reading-fiscal-card amber">
             <div class="reading-fiscal-icon">🟠</div>
             <div class="reading-fiscal-number">{fiscalStats.mediumRisk}</div>
             <div class="reading-fiscal-label">candidatos con<br/><strong>Riesgo MEDIO</strong></div>
-            <p class="reading-fiscal-desc">Algunas propuestas preocupantes</p>
+            <p class="reading-fiscal-desc">1-2 penalizaciones detectadas</p>
           </div>
           
           <div class="reading-fiscal-card red">
             <div class="reading-fiscal-icon">🔴</div>
             <div class="reading-fiscal-number">{fiscalStats.highRisk}</div>
             <div class="reading-fiscal-label">candidatos con<br/><strong>Riesgo ALTO</strong></div>
-            <p class="reading-fiscal-desc">Amenaza a las finanzas públicas</p>
+            <p class="reading-fiscal-desc">Múltiples penalizaciones (fiscal, omisión o viabilidad legal)</p>
           </div>
         </div>
       </section>
@@ -765,6 +1004,39 @@ function getScoreLevel(scorePercent: number) {
           </div>
         </div>
 
+        <!-- Bonos Legend -->
+        <div class="reading-legend reading-bonus-legend">
+          <h3>🎁 ¿Qué son los Bonos?</h3>
+          <div class="reading-legend-items">
+            <div class="reading-legend-item">
+              <span class="reading-bonus-badge-demo">🎁 +X</span>
+              <span>
+                <strong>Sistema de Bonos:</strong> Premiamos la calidad y cantidad de propuestas. 
+                <strong class="text-emerald-700">+1.0</strong> por 3+ propuestas válidas por pilar, 
+                <strong class="text-emerald-700">+0.25</strong> por propuesta completa (4/4 dimensiones), 
+                <strong class="text-emerald-700">+0.1</strong> por propuesta con financiamiento claro. 
+                Los bonos <strong>suman puntos</strong> al score final.
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Información Adicional Legend -->
+        <div class="reading-legend reading-flags-legend">
+          <h3>ℹ️ ¿Qué es la Información Adicional?</h3>
+          <div class="reading-legend-items">
+            <div class="reading-legend-item">
+              <span class="reading-flags-badge-demo">ℹ️ Info adicional</span>
+              <span>
+                <strong>Información objetiva</strong> basada en evidencia verificable. 
+                <strong class="text-indigo-700">NO penalizan</strong> el score. 
+                Informan sobre similitudes históricas, requisitos de negociación y contradicciones. 
+                Ver detalles en el perfil de cada candidato.
+              </span>
+            </div>
+          </div>
+        </div>
+
         <!-- Lista de candidatos -->
         <div class="reading-candidates-list">
           {criticalRanking.map((entry, index) => {
@@ -774,6 +1046,10 @@ function getScoreLevel(scorePercent: number) {
             const level = getScoreLevel(scorePercent);
             const medals = ['🥇', '🥈', '🥉'];
             const hasMedal = index < 3;
+            
+            // v7: Flags informativos y bonos
+            const totalBonuses = getTotalBonuses(entry.candidate_id);
+            const hasFlags = hasActiveInformativeFlags(entry.candidate_id);
             
             return (
               <article class={`reading-candidate-card ${hasMedal ? 'top-three' : ''}`}>
@@ -788,6 +1064,24 @@ function getScoreLevel(scorePercent: number) {
                 <div class="reading-candidate-info">
                   <h3 class="reading-candidate-name">{candidateName}</h3>
                   <p class="reading-candidate-party">{entry.candidate?.party_name}</p>
+                  {totalBonuses > 0 && (
+                    <div class="reading-bonus-badge-large">
+                      <span class="reading-bonus-icon-large">🎁</span>
+                      <div>
+                        <strong>Bonos Recibidos</strong>
+                        <p class="reading-bonus-desc">+{totalBonuses.toFixed(2)} puntos adicionales por calidad y cantidad de propuestas</p>
+                      </div>
+                    </div>
+                  )}
+                  {hasFlags && (
+                    <div class="reading-flags-badge-large">
+                      <span class="reading-flags-icon-large">ℹ️</span>
+                      <div>
+                        <strong>Información Adicional Disponible</strong>
+                        <p class="reading-flags-desc">Información objetiva basada en evidencia. Ver detalles en perfil.</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
                 
                 <div class="reading-candidate-score">
@@ -849,6 +1143,10 @@ function getScoreLevel(scorePercent: number) {
             const riskColor = riskLevel === 'BAJO' ? 'green' : riskLevel === 'MEDIO' ? 'amber' : 'red';
             const riskEmoji = riskLevel === 'BAJO' ? '🟢' : riskLevel === 'MEDIO' ? '🟠' : '🔴';
             
+            // v7: Flags informativos y bonos
+            const totalBonuses = getTotalBonuses(entry.candidate_id);
+            const hasFlags = hasActiveInformativeFlags(entry.candidate_id);
+            
             return (
               <article class={`reading-candidate-card ${hasMedal ? 'top-three' : ''} ${riskColor}`}>
                 <div class="reading-candidate-rank">
@@ -862,6 +1160,24 @@ function getScoreLevel(scorePercent: number) {
                 <div class="reading-candidate-info">
                   <h3 class="reading-candidate-name">{candidateName}</h3>
                   <p class="reading-candidate-party">{entry.candidate?.party_name}</p>
+                  {totalBonuses > 0 && (
+                    <div class="reading-bonus-badge-large">
+                      <span class="reading-bonus-icon-large">🎁</span>
+                      <div>
+                        <strong>Bonos Recibidos</strong>
+                        <p class="reading-bonus-desc">+{totalBonuses.toFixed(2)} puntos adicionales por calidad y cantidad de propuestas</p>
+                      </div>
+                    </div>
+                  )}
+                  {hasFlags && (
+                    <div class="reading-flags-badge-large">
+                      <span class="reading-flags-icon-large">ℹ️</span>
+                      <div>
+                        <strong>Información Adicional Disponible</strong>
+                        <p class="reading-flags-desc">Información objetiva basada en evidencia. Ver detalles en perfil.</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
                 
                 <div class="reading-candidate-metrics">
@@ -917,6 +1233,39 @@ function getScoreLevel(scorePercent: number) {
           </div>
         </div>
 
+        <!-- Bonos Legend -->
+        <div class="reading-legend reading-bonus-legend">
+          <h3>🎁 ¿Qué son los Bonos?</h3>
+          <div class="reading-legend-items">
+            <div class="reading-legend-item">
+              <span class="reading-bonus-badge-demo">🎁 +X</span>
+              <span>
+                <strong>Sistema de Bonos:</strong> Premiamos la calidad y cantidad de propuestas. 
+                <strong class="text-emerald-700">+1.0</strong> por 3+ propuestas válidas por pilar, 
+                <strong class="text-emerald-700">+0.25</strong> por propuesta completa (4/4 dimensiones), 
+                <strong class="text-emerald-700">+0.1</strong> por propuesta con financiamiento claro. 
+                Los bonos <strong>suman puntos</strong> al score final.
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Información Adicional Legend -->
+        <div class="reading-legend reading-flags-legend">
+          <h3>ℹ️ ¿Qué es la Información Adicional?</h3>
+          <div class="reading-legend-items">
+            <div class="reading-legend-item">
+              <span class="reading-flags-badge-demo">ℹ️ Info adicional</span>
+              <span>
+                <strong>Información objetiva</strong> basada en evidencia verificable. 
+                <strong class="text-indigo-700">NO penalizan</strong> el score. 
+                Informan sobre similitudes históricas, requisitos de negociación y contradicciones. 
+                Ver detalles en el perfil de cada candidato.
+              </span>
+            </div>
+          </div>
+        </div>
+
         <!-- Lista de candidatos -->
         <div class="reading-candidates-list">
           {priorityRanking.map((entry, index) => {
@@ -926,6 +1275,10 @@ function getScoreLevel(scorePercent: number) {
             const level = getScoreLevel(scorePercent);
             const medals = ['🥇', '🥈', '🥉'];
             const hasMedal = index < 3;
+            
+            // v7: Flags informativos y bonos
+            const totalBonuses = getTotalBonuses(entry.candidate_id);
+            const hasFlags = hasActiveInformativeFlags(entry.candidate_id);
             
             return (
               <article class={`reading-candidate-card ${hasMedal ? 'top-three' : ''}`}>
@@ -940,6 +1293,24 @@ function getScoreLevel(scorePercent: number) {
                 <div class="reading-candidate-info">
                   <h3 class="reading-candidate-name">{candidateName}</h3>
                   <p class="reading-candidate-party">{entry.candidate?.party_name}</p>
+                  {totalBonuses > 0 && (
+                    <div class="reading-bonus-badge-large">
+                      <span class="reading-bonus-icon-large">🎁</span>
+                      <div>
+                        <strong>Bonos Recibidos</strong>
+                        <p class="reading-bonus-desc">+{totalBonuses.toFixed(2)} puntos adicionales por calidad y cantidad de propuestas</p>
+                      </div>
+                    </div>
+                  )}
+                  {hasFlags && (
+                    <div class="reading-flags-badge-large">
+                      <span class="reading-flags-icon-large">ℹ️</span>
+                      <div>
+                        <strong>Información Adicional Disponible</strong>
+                        <p class="reading-flags-desc">Información objetiva basada en evidencia. Ver detalles en perfil.</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
                 
                 <div class="reading-candidate-score">
@@ -1133,6 +1504,15 @@ function getScoreLevel(scorePercent: number) {
     border-radius: 0.75rem;
   }
   
+  .dashboard-penalty-section.viability {
+    background: #eff6ff;
+    border: 1px solid #93c5fd;
+  }
+  
+  .dashboard-penalty-section.viability .dashboard-penalty-title {
+    color: #1e40af;
+  }
+  
   .dashboard-penalty-section.fiscal {
     background: #fef2f2;
     border: 1px solid #fecaca;
@@ -1200,6 +1580,51 @@ function getScoreLevel(scorePercent: number) {
     background: rgba(0,0,0,0.05);
     padding: 0.125rem 0.5rem;
     border-radius: 9999px;
+  }
+  
+  /* Simple Info Section */
+  .dashboard-simple-info {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem 1.25rem;
+    background: linear-gradient(135deg, #f0fdf4 0%, #eff6ff 100%);
+    border: 1px solid #cbd5e1;
+    border-radius: 0.75rem;
+    flex-wrap: wrap;
+  }
+  
+  .dashboard-simple-info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    flex: 1;
+    min-width: 250px;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: #475569;
+  }
+  
+  .dashboard-simple-icon {
+    font-size: 1.25rem;
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+  }
+  
+  .dashboard-simple-info-item strong {
+    color: #1e293b;
+    font-weight: 600;
+  }
+  
+  @media (max-width: 768px) {
+    .dashboard-simple-info {
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    
+    .dashboard-simple-info-item {
+      min-width: 100%;
+    }
   }
   
   /* Tabs */
@@ -1313,6 +1738,44 @@ function getScoreLevel(scorePercent: number) {
   .dashboard-legend-item .dot.orange { background: #f59e0b; }
   .dashboard-legend-item .dot.red { background: #ef4444; }
   
+  .dashboard-legend.bonuses {
+    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+    border-color: #10b981;
+  }
+  
+  .bonus-badge-demo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.75rem;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-right: 0.5rem;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+  }
+  
+  .dashboard-legend.flags {
+    background: linear-gradient(135deg, #eff6ff 0%, #e0e7ff 100%);
+    border-color: #3b82f6;
+  }
+  
+  .flags-badge-demo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.75rem;
+    background: linear-gradient(135deg, #3b82f6, #6366f1);
+    color: white;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-right: 0.5rem;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+  }
+  
   /* Ranking Table */
   .dashboard-ranking-table-container {
     background: white;
@@ -1324,6 +1787,56 @@ function getScoreLevel(scorePercent: number) {
   .dashboard-ranking-table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: auto;
+  }
+  
+  @media (max-width: 1024px) {
+    .dashboard-ranking-table {
+      font-size: 0.9rem;
+    }
+    
+    .col-candidate {
+      min-width: 180px;
+      max-width: 280px;
+    }
+    
+    .candidate-badges-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.375rem;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .dashboard-ranking-table-container {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    .dashboard-ranking-table {
+      min-width: 600px;
+      font-size: 0.85rem;
+    }
+    
+    .col-candidate {
+      min-width: 160px;
+      max-width: 240px;
+    }
+    
+    .col-level, .col-risk {
+      min-width: 100px;
+    }
+    
+    .candidate-badges-row {
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+    
+    .ranking-bonus-badge,
+    .ranking-flags-badge {
+      font-size: 0.7rem;
+      padding: 0.25rem 0.5rem;
+    }
   }
   
   .dashboard-ranking-table thead {
@@ -1365,20 +1878,29 @@ function getScoreLevel(scorePercent: number) {
   
   .col-rank {
     width: 60px;
+    min-width: 60px;
     text-align: center;
+  }
+  
+  .col-candidate {
+    min-width: 200px;
+    max-width: 350px;
   }
   
   .col-level, .col-risk {
     width: 140px;
+    min-width: 120px;
   }
   
   .col-penalty {
     width: 100px;
+    min-width: 90px;
     text-align: center;
   }
   
   .col-score {
     width: 100px;
+    min-width: 90px;
     text-align: right;
   }
   
@@ -1403,12 +1925,21 @@ function getScoreLevel(scorePercent: number) {
   .candidate-link {
     display: flex;
     flex-direction: column;
+    gap: 0.5rem;
     text-decoration: none;
     transition: all 0.2s;
+    min-width: 0;
   }
   
   .candidate-link:hover .candidate-name {
     color: #0891b2;
+  }
+  
+  .candidate-main-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    min-width: 0;
   }
   
   .candidate-name {
@@ -1416,12 +1947,21 @@ function getScoreLevel(scorePercent: number) {
     font-weight: 700;
     color: #0f172a;
     transition: color 0.2s;
+    line-height: 1.3;
   }
   
   .candidate-party {
     font-size: 0.85rem;
     color: #64748b;
-    margin-top: 0.125rem;
+    line-height: 1.3;
+  }
+  
+  .candidate-badges-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    margin-top: 0.25rem;
   }
   
   .level-badge {
@@ -1452,6 +1992,68 @@ function getScoreLevel(scorePercent: number) {
   .level-badge.low {
     background: #fee2e2;
     color: #dc2626;
+  }
+  
+  .ranking-bonus-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.75rem;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    transition: all 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  
+  .ranking-bonus-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+  }
+  
+  .bonus-icon {
+    font-size: 0.875rem;
+    flex-shrink: 0;
+  }
+  
+  .bonus-text {
+    font-weight: 700;
+    letter-spacing: 0.025em;
+  }
+  
+  .ranking-flags-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.75rem;
+    background: linear-gradient(135deg, #3b82f6, #6366f1);
+    color: white;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+    transition: all 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  
+  .ranking-flags-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+  }
+  
+  .flags-icon {
+    font-size: 0.875rem;
+    flex-shrink: 0;
+  }
+  
+  .flags-text {
+    font-weight: 700;
+    letter-spacing: 0.025em;
   }
   
   .risk-badge {
@@ -1632,6 +2234,16 @@ function getScoreLevel(scorePercent: number) {
   
   .candidate-party {
     font-size: clamp(0.75rem, 0.6vw + 0.4rem, 0.875rem);
+  }
+  
+  .candidate-badges-row {
+    gap: 0.375rem;
+  }
+  
+  .ranking-bonus-badge,
+  .ranking-flags-badge {
+    font-size: clamp(0.7rem, 0.6vw + 0.4rem, 0.75rem);
+    padding: clamp(0.25rem, 0.3vw + 0.2rem, 0.375rem) clamp(0.5rem, 0.5vw + 0.3rem, 0.75rem);
   }
   
   .score-badge {
@@ -2004,6 +2616,105 @@ function getScoreLevel(scorePercent: number) {
     font-size: 1.15rem;
     color: #64748b;
     margin: 0;
+  }
+
+  /* v7: Info de bonos y flags en Reading Mode */
+  .reading-bonus-legend {
+    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+    border-color: #10b981;
+  }
+  
+  .reading-bonus-badge-demo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 0.875rem;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border-radius: 9999px;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-right: 0.75rem;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+  }
+  
+  .reading-bonus-badge-large {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+    border: 2px solid #10b981;
+    border-radius: 0.75rem;
+    margin-top: 0.75rem;
+  }
+  
+  .reading-bonus-icon-large {
+    font-size: 1.75rem;
+    flex-shrink: 0;
+  }
+  
+  .reading-bonus-desc {
+    font-size: 0.95rem;
+    color: #475569;
+    margin-top: 0.25rem;
+    line-height: 1.5;
+  }
+  
+  .reading-bonus-info {
+    font-size: 0.95rem;
+    color: #059669;
+    margin: 0.5rem 0 0 0;
+    font-weight: 600;
+  }
+
+  .reading-flags-legend {
+    background: linear-gradient(135deg, #eff6ff 0%, #e0e7ff 100%);
+    border-color: #3b82f6;
+  }
+  
+  .reading-flags-badge-demo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 0.875rem;
+    background: linear-gradient(135deg, #3b82f6, #6366f1);
+    color: white;
+    border-radius: 9999px;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-right: 0.75rem;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+  }
+  
+  .reading-flags-badge-large {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, #eff6ff 0%, #e0e7ff 100%);
+    border: 2px solid #3b82f6;
+    border-radius: 0.75rem;
+    margin-top: 0.75rem;
+  }
+  
+  .reading-flags-icon-large {
+    font-size: 1.75rem;
+    flex-shrink: 0;
+  }
+  
+  .reading-flags-desc {
+    font-size: 0.95rem;
+    color: #475569;
+    margin-top: 0.25rem;
+    line-height: 1.5;
+  }
+  
+  .reading-flags-info {
+    font-size: 0.95rem;
+    color: #1e40af;
+    margin: 0.5rem 0 0 0;
+    font-weight: 600;
   }
   
   .reading-candidate-score {
@@ -2504,6 +3215,134 @@ function getScoreLevel(scorePercent: number) {
     color: #64748b;
     margin: 0;
   }
+
+  /* v7: Badges en Express Mode */
+  .express-badges-row {
+    display: flex;
+    gap: 0.375rem;
+    margin-top: 0.25rem;
+    flex-wrap: wrap;
+  }
+
+  .express-bonus-legend {
+    max-width: 40rem;
+    margin: 1.5rem auto;
+    padding: 1rem 1.25rem;
+    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+    border: 2px solid #10b981;
+    border-radius: 1rem;
+  }
+  
+  .express-bonus-legend-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: #1e293b;
+  }
+  
+  .express-bonus-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+  
+  .express-bonus-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.625rem;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
+    transition: all 0.2s;
+  }
+  
+  .express-bonus-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.4);
+  }
+  
+  .express-bonus-icon-small {
+    font-size: 0.875rem;
+  }
+  
+  .express-bonus-label {
+    font-weight: 700;
+    letter-spacing: 0.025em;
+  }
+  
+  .express-bonus-mini {
+    font-size: 0.7rem;
+    padding: 0.125rem 0.375rem;
+    background: #dcfce7;
+    color: #15803d;
+    border-radius: 9999px;
+    font-weight: 600;
+  }
+
+  .express-flags-legend {
+    max-width: 40rem;
+    margin: 1.5rem auto;
+    padding: 1rem 1.25rem;
+    background: linear-gradient(135deg, #eff6ff 0%, #e0e7ff 100%);
+    border: 2px solid #3b82f6;
+    border-radius: 1rem;
+  }
+  
+  .express-flags-legend-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: #1e293b;
+  }
+  
+  .express-flags-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+  
+  .express-flags-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.625rem;
+    background: linear-gradient(135deg, #3b82f6, #6366f1);
+    color: white;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    box-shadow: 0 2px 6px rgba(59, 130, 246, 0.3);
+    transition: all 0.2s;
+  }
+  
+  .express-flags-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4);
+  }
+  
+  .express-flags-icon-small {
+    font-size: 0.875rem;
+  }
+  
+  .express-flags-label {
+    font-weight: 700;
+    letter-spacing: 0.025em;
+  }
+  
+  .express-flags-mini {
+    font-size: 0.7rem;
+    padding: 0.125rem 0.375rem;
+    background: #dbeafe;
+    color: #1e40af;
+    border-radius: 9999px;
+    font-weight: 600;
+  }
   
   /* Score Pills */
   .express-score-pill {
@@ -2590,6 +3429,41 @@ function getScoreLevel(scorePercent: number) {
   }
   
   /* Methodology Link */
+  .express-info-box {
+    max-width: 40rem;
+    margin: 2rem auto;
+    padding: 1.25rem;
+    background: linear-gradient(135deg, #f0fdf4 0%, #eff6ff 100%);
+    border: 2px solid #cbd5e1;
+    border-radius: 1rem;
+  }
+  
+  .express-info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: white;
+    border-radius: 0.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+  
+  .express-info-item:last-child {
+    margin-bottom: 0;
+  }
+  
+  .express-info-icon {
+    font-size: 1.25rem;
+    flex-shrink: 0;
+  }
+  
+  .express-info-item strong {
+    color: #1e293b;
+    font-weight: 600;
+  }
+  
   .express-methodology-link {
     margin-top: 1.5rem;
     text-align: center;

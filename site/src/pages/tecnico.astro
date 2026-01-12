@@ -346,8 +346,8 @@ python process_plans_v6.py
 
 # Salida esperada:
 # ================================================================================
-# PROCESADOR DE PLANES v6.0 - NEUTRAL + ESTRICTO
-# 10 pilares | OCR automático | Penalizaciones por omisión
+# PROCESADOR DE PLANES v7.0 - NEUTRAL + ESTRICTO + BONOS + VIABILIDAD + FLAGS
+# 10 pilares | OCR automático | Penalizaciones | Bonos | Viabilidad legal | Flags informativos
 # ================================================================================
 # 📄 ACRM...
 # 📄 CAC...
@@ -373,6 +373,21 @@ OMISSION_PENALTIES = {
     "ignores_employment": -0.5,       # No menciona empleo formal
     "ignores_organized_crime": -0.5,  # No menciona crimen organizado
     "missing_priority_pillar": -0.5,  # Por cada pilar prioritario faltante
+}
+
+# Penalizaciones por viabilidad legal (v7)
+VIABILITY_PENALTIES = {
+    "violates_separation_powers": -1.0,    # Viola separación de poderes
+    "violates_fundamental_rights": -1.0,    # Viola derechos fundamentales
+    "violates_constitutional_guarantees": -1.0,  # Viola garantías constitucionales
+    "violates_constitutional_procedures": -0.5,  # Viola procedimientos constitucionales
+}
+
+# Bonos (v7)
+BONUSES = {
+    "multiple_proposals": 1.0,      # 3+ propuestas válidas por pilar
+    "complete_proposal": 0.25,      # Propuesta completa (4/4 dimensiones)
+    "funding_clarity": 0.1,         # Propuesta con financiamiento claro (score >=3)
 }
 
 # Pilares prioritarios (P3=Seguridad, P4=Salud, P1=Fiscal, P7=Reforma)
@@ -405,7 +420,7 @@ PILLAR_WEIGHTS = {
     </div>
 
     <p class="text-sm text-slate-500 mt-12">
-      <em>Versión del análisis: v6 (Neutral + Estricto) · Enero 2026</em>
+      <em>Motor de análisis (Neutral + Estricto + Bonos + Viabilidad Legal + Flags Informativos) · Enero 2026</em>
     </p>
 
   </article>

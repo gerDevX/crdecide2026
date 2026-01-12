@@ -1,0 +1,703 @@
+---
+import type { InformativeFlags } from '../../lib/types';
+import { getInformativeFlags } from '../../lib/data';
+
+interface Props {
+  candidateId: string;
+}
+
+const { candidateId } = Astro.props;
+const flags = getInformativeFlags(candidateId);
+
+if (!flags) {
+  return null;
+}
+
+// Verificar si hay flags activos
+const hasActiveFlags = 
+  Object.values(flags.current_proposals || {}).some(f => f.active) ||
+  Object.values(flags.dictatorial_patterns || {}).some(f => f?.active) ||
+  Object.values(flags.power_negotiation_requirements || {}).some(f => f?.active) ||
+  Object.values(flags.historical || {}).some(f => f?.active) ||
+  Object.values(flags.contradictions || {}).some(f => f?.active);
+
+if (!hasActiveFlags) {
+  return null;
+}
+---
+
+<!-- ============================================
+     DASHBOARD MODE - Sección expandible
+     ============================================ -->
+<div class="mode-dashboard-content">
+  <section class="informative-flags-section">
+    <div class="flags-header">
+      <span class="flags-icon">ℹ️</span>
+      <h2>Información Adicional</h2>
+      <span class="flags-note">(No afecta el puntaje)</span>
+    </div>
+    <p class="flags-description">
+      Esta sección muestra información objetiva basada en evidencia verificable. 
+      Esta información <strong>NO penaliza</strong> el score, solo informa al ciudadano.
+    </p>
+
+    <!-- Propuestas Actuales Problemáticas -->
+    {Object.entries(flags.current_proposals || {}).some(([_, flag]) => flag.active) && (
+      <div class="flags-category">
+        <h3>⚠️ Propuestas Actuales Problemáticas</h3>
+        <div class="flags-grid">
+          {Object.entries(flags.current_proposals || {}).map(([key, flag]) => {
+            if (!flag.active) return null;
+            
+            const labels: any = {
+              violates_separation_powers: { emoji: '⚖️', title: 'Viola Separación de Poderes' },
+              violates_fundamental_rights: { emoji: '🛡️', title: 'Viola Derechos Fundamentales' },
+              violates_constitutional_guarantees: { emoji: '📜', title: 'Viola Garantías Constitucionales' },
+              violates_constitutional_procedures: { emoji: '📋', title: 'Viola Procedimientos Constitucionales' },
+            };
+            
+            const label = labels[key] || { emoji: '⚠️', title: key };
+            
+            return (
+              <div class="flag-card high-severity">
+                <div class="flag-header">
+                  <span class="flag-icon">{label.emoji}</span>
+                  <h4>{label.title}</h4>
+                </div>
+                {flag.evidence && flag.evidence.length > 0 && (
+                  <div class="flag-evidence">
+                    <strong>Evidencia:</strong>
+                    <ul>
+                      {flag.evidence.slice(0, 3).map((ev: any) => (
+                        <li>
+                          {ev.pillar_id && <span class="pillar-badge">{ev.pillar_id}</span>}
+                          {ev.evidence}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    )}
+
+    <!-- Similitudes Dictatoriales -->
+    {Object.values(flags.dictatorial_patterns || {}).some(f => f?.active) && (
+      <div class="flags-category">
+        <h3>📚 Similitudes con Modelos Históricos</h3>
+        <p class="category-note">
+          Basado en patrones objetivos verificables históricamente, NO en ideología política.
+        </p>
+        <div class="flags-grid">
+          {Object.entries(flags.dictatorial_patterns || {}).map(([key, flag]) => {
+            if (!flag?.active) return null;
+            
+            const labels: any = {
+              cuba_similarity: { emoji: '🇨🇺', title: 'Similitudes con Modelo Cubano' },
+              venezuela_similarity: { emoji: '🇻🇪', title: 'Similitudes con Modelo Venezolano' },
+            };
+            
+            const label = labels[key] || { emoji: '📚', title: key };
+            
+            return (
+              <div class="flag-card high-severity">
+                <div class="flag-header">
+                  <span class="flag-icon">{label.emoji}</span>
+                  <h4>{label.title}</h4>
+                </div>
+                {flag.evidence && flag.evidence.length > 0 && (
+                  <div class="flag-evidence">
+                    <strong>Evidencia:</strong>
+                    <ul>
+                      {flag.evidence.slice(0, 2).map((ev: any) => (
+                        <li>{ev.evidence}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {flag.historical_sources && flag.historical_sources.length > 0 && (
+                  <div class="flag-sources">
+                    <strong>Fuentes históricas:</strong> {flag.historical_sources.join(', ')}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    )}
+
+    <!-- Requisitos de Negociación -->
+    {Object.values(flags.power_negotiation_requirements || {}).some(f => f?.active) && (
+      <div class="flags-category">
+        <h3>🤝 Requisitos de Negociación entre Poderes</h3>
+        <p class="category-note">
+          Indica complejidad de implementación, NO es un problema.
+        </p>
+        <div class="flags-grid">
+          {Object.entries(flags.power_negotiation_requirements || {}).map(([key, flag]) => {
+            if (!flag?.active) return null;
+            
+            return (
+              <div class="flag-card medium-severity">
+                <div class="flag-header">
+                  <span class="flag-icon">ℹ️</span>
+                  <h4>{flag.description || key}</h4>
+                </div>
+                {flag.evidence && flag.evidence.length > 0 && (
+                  <div class="flag-evidence">
+                    <ul>
+                      {flag.evidence.slice(0, 2).map((ev: any) => (
+                        <li>{ev.evidence}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    )}
+
+    <!-- Evidencia Histórica -->
+    {Object.values(flags.historical || {}).some(f => f?.active) && (
+      <div class="flags-category">
+        <h3>📖 Evidencia Histórica Verificable</h3>
+        <div class="flags-grid">
+          {Object.entries(flags.historical || {}).map(([key, flag]) => {
+            if (!flag?.active) return null;
+            
+            const labels: any = {
+              anti_democratic_behavior: { emoji: '⚠️', title: 'Comportamiento Anti-Democrático' },
+              human_rights_violations: { emoji: '🛡️', title: 'Violaciones de Derechos Humanos' },
+              corruption_convictions: { emoji: '⚖️', title: 'Corrupción Verificada' },
+            };
+            
+            const label = labels[key] || { emoji: '📖', title: key };
+            
+            return (
+              <div class="flag-card high-severity">
+                <div class="flag-header">
+                  <span class="flag-icon">{label.emoji}</span>
+                  <h4>{label.title}</h4>
+                </div>
+                {flag.description && (
+                  <p class="flag-description">{flag.description}</p>
+                )}
+                {flag.evidence && flag.evidence.length > 0 && (
+                  <div class="flag-evidence">
+                    <strong>Evidencia verificable:</strong>
+                    <ul>
+                      {flag.evidence.map((ev: any) => (
+                        <li>{ev.evidence}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    )}
+
+    <!-- Contradicciones -->
+    {Object.values(flags.contradictions || {}).some(f => f?.active) && (
+      <div class="flags-category">
+        <h3>🔄 Contradicciones Histórico-Actual</h3>
+        <p class="category-note">
+          Patrones consistentes entre evidencia histórica y propuestas actuales.
+        </p>
+        <div class="flags-grid">
+          {Object.entries(flags.contradictions || {}).map(([key, flag]) => {
+            if (!flag?.active) return null;
+            
+            const labels: any = {
+              historical_current_contradiction: { emoji: '🔄', title: 'Contradicción Histórico-Actual' },
+              corruption_transparency_concern: { emoji: '💡', title: 'Preocupación Corrupción-Transparencia' },
+            };
+            
+            const label = labels[key] || { emoji: '🔄', title: key };
+            
+            return (
+              <div class="flag-card high-severity">
+                <div class="flag-header">
+                  <span class="flag-icon">{label.emoji}</span>
+                  <h4>{label.title}</h4>
+                </div>
+                {flag.evidence && typeof flag.evidence === 'object' && 'historical' in flag.evidence && (
+                  <div class="flag-evidence">
+                    {flag.evidence.historical && (
+                      <p><strong>Histórico:</strong> {flag.evidence.historical}</p>
+                    )}
+                    {flag.evidence.current && (
+                      <p><strong>Actual:</strong> {flag.evidence.current}</p>
+                    )}
+                    {flag.evidence.pattern && (
+                      <p><strong>Patrón:</strong> {flag.evidence.pattern}</p>
+                    )}
+                  </div>
+                )}
+                {flag.description && (
+                  <p class="flag-description">{flag.description}</p>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    )}
+  </section>
+</div>
+
+<!-- ============================================
+     EXPRESS MODE - Badge compacto + Modal
+     ============================================ -->
+<div class="mode-express-content">
+  {hasActiveFlags && (
+    <div class="express-flags-badge" id={`express-flags-${candidateId}`}>
+      <span class="express-flags-icon">ℹ️</span>
+      <span class="express-flags-text">Información adicional</span>
+      <span class="express-flags-count">
+        {[
+          ...Object.values(flags.current_proposals || {}).filter(f => f.active),
+          ...Object.values(flags.dictatorial_patterns || {}).filter(f => f?.active),
+          ...Object.values(flags.power_negotiation_requirements || {}).filter(f => f?.active),
+          ...Object.values(flags.historical || {}).filter(f => f?.active),
+          ...Object.values(flags.contradictions || {}).filter(f => f?.active),
+        ].length}
+      </span>
+    </div>
+  )}
+</div>
+
+<!-- ============================================
+     READING MODE - Texto completo
+     ============================================ -->
+<div class="mode-reading-content">
+  {hasActiveFlags && (
+    <section class="reading-flags-section">
+      <h2>ℹ️ Información Adicional</h2>
+      <p class="reading-flags-note">
+        Esta sección muestra información objetiva basada en evidencia verificable. 
+        Esta información <strong>NO penaliza</strong> el puntaje, solo informa al ciudadano.
+      </p>
+
+      <!-- Propuestas Actuales Problemáticas -->
+      {Object.entries(flags.current_proposals || {}).some(([_, flag]) => flag.active) && (
+        <div class="reading-flags-category">
+          <h3>⚠️ Propuestas Actuales Problemáticas</h3>
+          {Object.entries(flags.current_proposals || {}).map(([key, flag]) => {
+            if (!flag.active) return null;
+            
+            const labels: any = {
+              violates_separation_powers: 'Viola Separación de Poderes',
+              violates_fundamental_rights: 'Viola Derechos Fundamentales',
+              violates_constitutional_guarantees: 'Viola Garantías Constitucionales',
+              violates_constitutional_procedures: 'Viola Procedimientos Constitucionales',
+            };
+            
+            return (
+              <div class="reading-flag-item">
+                <h4>{labels[key] || key}</h4>
+                {flag.evidence && flag.evidence.length > 0 && (
+                  <ul>
+                    {flag.evidence.map((ev: any) => (
+                      <li>
+                        {ev.pillar_id && <strong>{ev.pillar_id}:</strong>} {ev.evidence}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      <!-- Similitudes Dictatoriales -->
+      {Object.values(flags.dictatorial_patterns || {}).some(f => f?.active) && (
+        <div class="reading-flags-category">
+          <h3>📚 Similitudes con Modelos Históricos</h3>
+          <p>Basado en patrones objetivos verificables históricamente, NO en ideología política.</p>
+          {Object.entries(flags.dictatorial_patterns || {}).map(([key, flag]) => {
+            if (!flag?.active) return null;
+            
+            const labels: any = {
+              cuba_similarity: 'Similitudes con Modelo Cubano',
+              venezuela_similarity: 'Similitudes con Modelo Venezolano',
+            };
+            
+            return (
+              <div class="reading-flag-item">
+                <h4>{labels[key] || key}</h4>
+                {flag.evidence && flag.evidence.length > 0 && (
+                  <ul>
+                    {flag.evidence.map((ev: any) => (
+                      <li>{ev.evidence}</li>
+                    ))}
+                  </ul>
+                )}
+                {flag.historical_sources && flag.historical_sources.length > 0 && (
+                  <p><strong>Fuentes históricas:</strong> {flag.historical_sources.join(', ')}</p>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      <!-- Requisitos de Negociación -->
+      {Object.values(flags.power_negotiation_requirements || {}).some(f => f?.active) && (
+        <div class="reading-flags-category">
+          <h3>🤝 Requisitos de Negociación entre Poderes</h3>
+          <p>Indica complejidad de implementación, NO es un problema.</p>
+          {Object.entries(flags.power_negotiation_requirements || {}).map(([key, flag]) => {
+            if (!flag?.active) return null;
+            
+            return (
+              <div class="reading-flag-item">
+                <h4>{flag.description || key}</h4>
+                {flag.evidence && flag.evidence.length > 0 && (
+                  <ul>
+                    {flag.evidence.map((ev) => (
+                      <li>{ev.evidence}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      <!-- Evidencia Histórica -->
+      {Object.values(flags.historical || {}).some(f => f?.active) && (
+        <div class="reading-flags-category">
+          <h3>📖 Evidencia Histórica Verificable</h3>
+          {Object.entries(flags.historical || {}).map(([key, flag]) => {
+            if (!flag?.active) return null;
+            
+            const labels: any = {
+              anti_democratic_behavior: 'Comportamiento Anti-Democrático',
+              human_rights_violations: 'Violaciones de Derechos Humanos',
+              corruption_convictions: 'Corrupción Verificada',
+            };
+            
+            return (
+              <div class="reading-flag-item">
+                <h4>{labels[key] || key}</h4>
+                {flag.description && <p>{flag.description}</p>}
+                {flag.evidence && flag.evidence.length > 0 && (
+                  <ul>
+                    {flag.evidence.map((ev) => (
+                      <li>{ev.evidence}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      <!-- Contradicciones -->
+      {Object.values(flags.contradictions || {}).some(f => f?.active) && (
+        <div class="reading-flags-category">
+          <h3>🔄 Contradicciones Histórico-Actual</h3>
+          <p>Patrones consistentes entre evidencia histórica y propuestas actuales.</p>
+          {Object.entries(flags.contradictions || {}).map(([key, flag]) => {
+            if (!flag?.active) return null;
+            
+            const labels: any = {
+              historical_current_contradiction: 'Contradicción Histórico-Actual',
+              corruption_transparency_concern: 'Preocupación Corrupción-Transparencia',
+            };
+            
+            return (
+              <div class="reading-flag-item">
+                <h4>{labels[key] || key}</h4>
+                {flag.evidence && typeof flag.evidence === 'object' && 'historical' in flag.evidence && (
+                  <div>
+                    {flag.evidence.historical && (
+                      <p><strong>Histórico:</strong> {flag.evidence.historical}</p>
+                    )}
+                    {flag.evidence.current && (
+                      <p><strong>Actual:</strong> {flag.evidence.current}</p>
+                    )}
+                    {flag.evidence.pattern && (
+                      <p><strong>Patrón:</strong> {flag.evidence.pattern}</p>
+                    )}
+                  </div>
+                )}
+                {flag.description && <p>{flag.description}</p>}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </section>
+  )}
+</div>
+
+<style>
+  /* ===========================================
+     DASHBOARD MODE STYLES
+     =========================================== */
+  .informative-flags-section {
+    background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+    border: 2px solid #bae6fd;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .flags-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .flags-icon {
+    font-size: 1.5rem;
+  }
+
+  .flags-header h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+  }
+
+  .flags-note {
+    font-size: 0.75rem;
+    color: #64748b;
+    font-style: italic;
+  }
+
+  .flags-description {
+    font-size: 0.875rem;
+    color: #475569;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+  }
+
+  .flags-category {
+    margin-bottom: 1.5rem;
+  }
+
+  .flags-category h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #0f172a;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .category-note {
+    font-size: 0.8rem;
+    color: #64748b;
+    font-style: italic;
+    margin-bottom: 0.75rem;
+  }
+
+  .flags-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .flag-card {
+    background: white;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    border-left: 4px solid;
+  }
+
+  .flag-card.high-severity {
+    border-left-color: #f59e0b;
+  }
+
+  .flag-card.medium-severity {
+    border-left-color: #3b82f6;
+  }
+
+  .flag-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .flag-icon {
+    font-size: 1.25rem;
+  }
+
+  .flag-header h4 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #0f172a;
+    margin: 0;
+  }
+
+  .flag-evidence {
+    font-size: 0.8rem;
+    color: #475569;
+    margin-top: 0.5rem;
+  }
+
+  .flag-evidence ul {
+    margin: 0.25rem 0 0 0;
+    padding-left: 1.25rem;
+  }
+
+  .flag-evidence li {
+    margin: 0.25rem 0;
+    line-height: 1.4;
+  }
+
+  .pillar-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    padding: 0.125rem 0.375rem;
+    background: #f1f5f9;
+    border-radius: 0.25rem;
+    margin-right: 0.5rem;
+    font-weight: 600;
+  }
+
+  .flag-sources {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-top: 0.5rem;
+    font-style: italic;
+  }
+
+  .flag-description {
+    font-size: 0.85rem;
+    color: #475569;
+    margin-top: 0.5rem;
+    line-height: 1.5;
+  }
+
+  /* ===========================================
+     EXPRESS MODE STYLES
+     =========================================== */
+  .express-flags-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: rgba(59, 130, 246, 0.1);
+    border: 2px solid #3b82f6;
+    border-radius: 0.75rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .express-flags-badge:hover {
+    background: rgba(59, 130, 246, 0.15);
+  }
+
+  .express-flags-icon {
+    font-size: 1.25rem;
+  }
+
+  .express-flags-text {
+    flex: 1;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1e40af;
+  }
+
+  .express-flags-count {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    background: #3b82f6;
+    color: white;
+    border-radius: 9999px;
+    font-weight: 700;
+  }
+
+  /* ===========================================
+     READING MODE STYLES
+     =========================================== */
+  .reading-flags-section {
+    background: #f8fafc;
+    border: 3px solid #1e3a5f;
+    border-radius: 1rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .reading-flags-section h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1e3a5f;
+    margin: 0 0 0.75rem 0;
+  }
+
+  .reading-flags-note {
+    font-size: 1.15rem;
+    color: #475569;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .reading-flags-category {
+    margin-bottom: 2rem;
+  }
+
+  .reading-flags-category h3 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #1e3a5f;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .reading-flags-category > p {
+    font-size: 1rem;
+    color: #64748b;
+    font-style: italic;
+    margin-bottom: 1rem;
+  }
+
+  .reading-flag-item {
+    background: white;
+    border-left: 4px solid #1e3a5f;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+    border-radius: 0.25rem;
+  }
+
+  .reading-flag-item h4 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #0f172a;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .reading-flag-item p {
+    font-size: 1rem;
+    color: #334155;
+    line-height: 1.6;
+    margin: 0.5rem 0;
+  }
+
+  .reading-flag-item ul {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+  }
+
+  .reading-flag-item li {
+    font-size: 1rem;
+    color: #334155;
+    line-height: 1.6;
+    margin: 0.5rem 0;
+  }
+</style>

@@ -128,6 +128,19 @@ export interface PillarScore {
   normalized: number;
   weighted: number;
   penalties: Penalty[];
+  // v7: Sistema de bonos
+  bonus_multiple?: number;  // Bono por 3+ propuestas válidas
+  bonus_quality?: number;    // Bono por propuesta completa (D1-D4=4/4)
+  bonus_funding?: number;    // Bono por propuesta con financiamiento (score >=3)
+  // v7: Verificación de viabilidad legal
+  viability_penalty?: number;  // Penalización por violaciones constitucionales
+  viability_flags?: {
+    violates_separation_powers: boolean;
+    violates_fundamental_rights: boolean;
+    violates_constitutional_guarantees: boolean;
+    violates_constitutional_procedures: boolean;
+  };
+  num_proposals?: number;  // Cantidad de propuestas válidas en este pilar
 }
 
 export interface CandidateScore {
@@ -144,6 +157,7 @@ export interface CandidateScore {
     total_penalties_applied: number;
     notes: string;
   };
+  informative_flags?: InformativeFlags; // v7: Flags informativos (NO penalizan)
 }
 
 // ============================================
@@ -363,3 +377,55 @@ export const PENALTY_LABELS: Record<PenaltyType, { emoji: string; label: string;
     description: 'No tiene propuesta concreta en un pilar prioritario (P1, P3, P4, P7)',
   },
 };
+
+// ============================================
+// FLAGS INFORMATIVOS (v7 - NO penalizan, solo informan)
+// ============================================
+
+export interface FlagInfo {
+  active: boolean;
+  severity: 'high' | 'medium' | 'low';
+  evidence: Array<{
+    pillar_id?: string;
+    evidence: string;
+    detected_by: string;
+  }>;
+  description?: string;
+  historical_sources?: string[];
+}
+
+export interface ContradictionFlag extends FlagInfo {
+  evidence: {
+    historical: string | null;
+    current: string | null;
+    pattern: string | null;
+  };
+  description: string;
+}
+
+export interface InformativeFlags {
+  current_proposals: {
+    violates_separation_powers: FlagInfo;
+    violates_fundamental_rights: FlagInfo;
+    violates_constitutional_guarantees: FlagInfo;
+    violates_constitutional_procedures: FlagInfo;
+  };
+  dictatorial_patterns?: {
+    cuba_similarity?: FlagInfo;
+    venezuela_similarity?: FlagInfo;
+  };
+  power_negotiation_requirements?: {
+    requires_assembly_approval?: FlagInfo;
+    requires_qualified_majority?: FlagInfo;
+    requires_inter_branch_coordination?: FlagInfo;
+  };
+  historical?: {
+    anti_democratic_behavior?: FlagInfo;
+    human_rights_violations?: FlagInfo;
+    corruption_convictions?: FlagInfo;
+  };
+  contradictions?: {
+    historical_current_contradiction?: ContradictionFlag;
+    corruption_transparency_concern?: ContradictionFlag;
+  };
+}

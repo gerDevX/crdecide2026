@@ -18,9 +18,9 @@ import { TabsController } from '../components/ui/aceternity/TabsController';
 
 // Define tabs for the main content sections
 const mainTabs = [
-  { id: "como-evaluamos", label: "¿Cómo evaluamos?", icon: "🔍" },
-  { id: "pilares", label: "10 Pilares de Evaluación", icon: "🏛️" },
+  { id: "como-evaluamos", label: "¿Cómo evaluamos?", icon: "🔍" }, 
   { id: "top-candidatos", label: "Top 10 Candidatos", icon: "🏆" },
+  { id: "pilares", label: "10 Pilares de Evaluación", icon: "🏛️" },
 ];
 
 // Prepare ranking data for all modes
@@ -52,7 +52,7 @@ const rankingEntries = getRankingWithCandidates().slice(0, 10).map((entry, idx) 
 const statsData = [
   { value: candidates.length, label: "Candidatos", gradient: "from-cyan-600 to-blue-600" },
   { value: 10, label: "Pilares", gradient: "from-blue-600 to-indigo-600" },
-  { value: 6, label: "Tipos de penalización", gradient: "from-indigo-600 to-purple-600" },
+  { value: 11, label: "Tipos de penalización", gradient: "from-indigo-600 to-purple-600" },
   { value: 4, label: "Dimensiones", gradient: "from-purple-600 to-pink-600" },
 ];
 
@@ -99,12 +99,12 @@ const howItWorksItems = [
   },
   {
     title: "Penalizaciones",
-    description: "¿Afecta negativamente las finanzas públicas?",
+    description: "¿Afecta negativamente las finanzas públicas o viola principios constitucionales?",
     bgColor: "from-rose-50 to-red-50 border-rose-200",
     iconBg: "from-rose-500 to-red-600",
     link: "/metodologia#penalizaciones",
     icon: "⚠️",
-    badge: "Fiscal",
+    badge: "Fiscal + Legal",
     badgeColor: "bg-white/80 text-rose-700",
   },
 ];
@@ -136,45 +136,6 @@ const howItWorksItems = [
     />
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 space-y-16">
-
-      <!-- Fiscal Risk Dashboard -->
-      <section>
-        <div class="flex items-center gap-3 mb-4">
-          <span class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-red-500 flex items-center justify-center text-white text-lg shadow-lg">
-            ⚠️
-          </span>
-          <h2 class="text-2xl font-bold text-slate-900">Riesgo y Responsabilidad de los Planes</h2>
-        </div>
-
-        <!-- Contexto educativo y neutral -->
-        <div class="mb-6 p-5 bg-gradient-to-br from-slate-50 to-blue-50 border border-slate-200 rounded-xl">
-          <p class="text-slate-700 leading-relaxed mb-3">
-            Evaluamos si los planes de gobierno <strong>comprometen la estabilidad financiera</strong> del país 
-            o <strong>omiten urgencias nacionales</strong> que deben abordarse. Esta información le ayuda a entender 
-            qué tan completas y responsables son las propuestas.
-          </p>
-          <div class="grid md:grid-cols-2 gap-3 text-sm">
-            <div class="flex items-start gap-2">
-              <span class="text-red-600 mt-0.5">🔴</span>
-              <div>
-                <strong class="text-slate-800">Penalizaciones por irresponsabilidad:</strong> Atacan la regla fiscal o proponen más deuda sin plan de sostenibilidad.
-              </div>
-            </div>
-            <div class="flex items-start gap-2">
-              <span class="text-amber-600 mt-0.5">🟠</span>
-              <div>
-                <strong class="text-slate-800">Omisiones de urgencias:</strong> Ignoran temas críticos como seguridad operativa o crisis de la CCSS.
-              </div>
-            </div>
-          </div>
-          <p class="text-xs text-slate-500 mt-3 pt-3 border-t border-slate-200">
-            Esta evaluación se basa en el <strong>texto literal</strong> de los planes. No juzga ideologías. 
-            <a href="/metodologia#penalizaciones" class="text-cyan-600 hover:text-cyan-700 underline">Ver metodología completa →</a>
-          </p>
-        </div>
-        
-        <FiscalRiskDashboard client:visible stats={fiscalStats} />
-      </section>
 
       <!-- Stats Section -->
       <section>
@@ -260,6 +221,76 @@ const howItWorksItems = [
           </div>
         </div>
       </section>
+
+      <!-- Fiscal Risk Dashboard (after "¿Cómo evaluamos?") -->
+      <section class="mt-8">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-red-500 flex items-center justify-center text-white text-lg shadow-lg">
+            ⚠️
+          </span>
+          <h2 class="text-2xl font-bold text-slate-900">Riesgo y Responsabilidad de los Planes</h2>
+        </div>
+
+        <!-- Contexto educativo y neutral mejorado -->
+        <div class="mb-6 p-5 bg-gradient-to-br from-slate-50 to-blue-50 border border-slate-200 rounded-xl">
+          <p class="text-slate-700 leading-relaxed mb-4">
+            El <strong>motor de análisis</strong> evalúa si los planes de gobierno <strong>comprometen la estabilidad financiera</strong> del país, 
+            <strong>omiten urgencias nacionales</strong> que deben abordarse, o <strong>violan principios constitucionales</strong>. 
+            Esta información le ayuda a entender qué tan completas, responsables y viables son las propuestas.
+          </p>
+          
+          <!-- Tres tipos de penalizaciones -->
+          <div class="grid md:grid-cols-3 gap-3 mb-4">
+            <div class="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <span class="text-red-600 mt-0.5 text-lg">🔴</span>
+              <div class="text-sm">
+                <strong class="text-slate-800 block mb-1">Penalizaciones Fiscales</strong>
+                <span class="text-slate-600">Atacan la regla fiscal o proponen más deuda sin plan de sostenibilidad</span>
+              </div>
+            </div>
+            <div class="flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+              <span class="text-amber-600 mt-0.5 text-lg">🟠</span>
+              <div class="text-sm">
+                <strong class="text-slate-800 block mb-1">Omisiones de Urgencias</strong>
+                <span class="text-slate-600">Ignoran temas críticos como seguridad operativa o crisis de la CCSS</span>
+              </div>
+            </div>
+            <div class="flex items-start gap-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <span class="text-blue-600 mt-0.5 text-lg">⚖️</span>
+              <div class="text-sm">
+                <strong class="text-slate-800 block mb-1">Viabilidad Legal</strong>
+                <span class="text-slate-600">Violan separación de poderes, derechos fundamentales o garantías constitucionales</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bonos y Flags -->
+          <div class="grid md:grid-cols-2 gap-3 mb-4 pt-4 border-t border-slate-200">
+            <div class="flex items-start gap-2 p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
+              <span class="text-emerald-600 mt-0.5 text-lg">🎁</span>
+              <div class="text-sm">
+                <strong class="text-slate-800 block mb-1">Sistema de Bonos</strong>
+                <span class="text-slate-600">Premiamos múltiples propuestas (3+), propuestas completas (4/4 dimensiones) y propuestas con financiamiento claro</span>
+              </div>
+            </div>
+            <div class="flex items-start gap-2 p-3 bg-indigo-50 border border-indigo-200 rounded-lg">
+              <span class="text-indigo-600 mt-0.5 text-lg">ℹ️</span>
+              <div class="text-sm">
+                <strong class="text-slate-800 block mb-1">Flags Informativos</strong>
+                <span class="text-slate-600">Información objetiva basada en evidencia verificable. <strong>NO penalizan</strong> el score</span>
+              </div>
+            </div>
+          </div>
+
+          <p class="text-xs text-slate-500 mt-3 pt-3 border-t border-slate-200">
+            Esta evaluación se basa en el <strong>texto literal</strong> de los planes de gobierno. No juzga ideologías ni predice resultados. 
+            <a href="/metodologia#penalizaciones" class="text-cyan-600 hover:text-cyan-700 underline font-medium">Ver metodología completa →</a>
+          </p>
+        </div>
+        
+        <FiscalRiskDashboard client:visible stats={fiscalStats} />
+      </section>
+
 
       <!-- CTA Section -->
       <section class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8 md:p-12">

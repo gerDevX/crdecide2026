@@ -115,15 +115,31 @@ const pillarData = [
           <span class="flex items-center justify-center w-8 h-8 bg-red-100 text-red-700 rounded-full font-bold text-sm shrink-0">4</span>
           <div>
             <p class="font-semibold text-slate-800">Aplica penalizaciones automáticas</p>
-            <p class="text-sm text-slate-600">Si detecta que un plan ataca la regla fiscal, propone más deuda o ignora urgencias nacionales, resta puntos.</p>
+            <p class="text-sm text-slate-600">Si detecta que un plan ataca la regla fiscal, propone más deuda, ignora urgencias nacionales o viola principios constitucionales, resta puntos.</p>
           </div>
         </div>
         
         <div class="flex items-start gap-3 bg-white rounded-lg p-4 shadow-sm">
           <span class="flex items-center justify-center w-8 h-8 bg-emerald-100 text-emerald-700 rounded-full font-bold text-sm shrink-0">5</span>
           <div>
+            <p class="font-semibold text-slate-800">Aplica bonos por calidad y cantidad</p>
+            <p class="text-sm text-slate-600">Premia candidatos con múltiples propuestas (3+), propuestas completas (4/4 dimensiones) y propuestas con financiamiento claro.</p>
+          </div>
+        </div>
+        
+        <div class="flex items-start gap-3 bg-white rounded-lg p-4 shadow-sm">
+          <span class="flex items-center justify-center w-8 h-8 bg-blue-100 text-blue-700 rounded-full font-bold text-sm shrink-0">6</span>
+          <div>
+            <p class="font-semibold text-slate-800">Genera flags informativos</p>
+            <p class="text-sm text-slate-600">Identifica información adicional (violaciones constitucionales, similitudes con modelos históricos, requisitos de negociación) que NO penaliza, solo informa.</p>
+          </div>
+        </div>
+        
+        <div class="flex items-start gap-3 bg-white rounded-lg p-4 shadow-sm">
+          <span class="flex items-center justify-center w-8 h-8 bg-purple-100 text-purple-700 rounded-full font-bold text-sm shrink-0">7</span>
+          <div>
             <p class="font-semibold text-slate-800">Genera los puntajes y el ranking</p>
-            <p class="text-sm text-slate-600">Cada candidato obtiene un puntaje basado en qué tan completas son sus propuestas, ajustado por penalizaciones.</p>
+            <p class="text-sm text-slate-600">Cada candidato obtiene un puntaje basado en qué tan completas son sus propuestas, ajustado por penalizaciones y bonos.</p>
           </div>
         </div>
       </div>
@@ -551,6 +567,237 @@ const pillarData = [
       </div>
     </div>
 
+    <hr />
+
+    <h2 class="text-emerald-700">🎁 Sistema de Bonos</h2>
+    
+    <p>
+      <strong>El motor de análisis premia la calidad y cantidad de propuestas.</strong> Los bonos se suman al puntaje 
+      y pueden ayudar a compensar penalizaciones:
+    </p>
+
+    <div class="not-prose overflow-x-auto mt-4">
+      <table class="min-w-full text-sm border border-emerald-200">
+        <thead>
+          <tr class="bg-emerald-50 border-b border-emerald-200">
+            <th class="text-left py-3 px-4">Bono</th>
+            <th class="text-left py-3 px-4">¿Cuándo se aplica?</th>
+            <th class="text-center py-3 px-4">Valor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-emerald-100">
+            <td class="py-3 px-4 font-medium">
+              <span class="text-lg">🎯</span> Múltiples propuestas
+            </td>
+            <td class="py-3 px-4 text-slate-600">
+              Si un candidato tiene 3 o más propuestas válidas (con al menos 2 dimensiones) en el mismo pilar
+            </td>
+            <td class="py-3 px-4 text-center font-bold text-emerald-600">+1.0 puntos</td>
+          </tr>
+          <tr class="border-b border-emerald-100">
+            <td class="py-3 px-4 font-medium">
+              <span class="text-lg">⭐</span> Propuesta completa
+            </td>
+            <td class="py-3 px-4 text-slate-600">
+              Si una propuesta cumple las 4 dimensiones (Existe + Cuándo + Cómo + Fondos = 4/4)
+            </td>
+            <td class="py-3 px-4 text-center font-bold text-emerald-600">+0.25 puntos</td>
+          </tr>
+          <tr>
+            <td class="py-3 px-4 font-medium">
+              <span class="text-lg">💰</span> Financiamiento claro
+            </td>
+            <td class="py-3 px-4 text-slate-600">
+              Si una propuesta tiene un score de 3 o más (incluye financiamiento)
+            </td>
+            <td class="py-3 px-4 text-center font-bold text-emerald-600">+0.1 puntos</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="not-prose bg-emerald-50 border border-emerald-200 rounded-lg p-4 mt-4">
+      <div class="flex items-start gap-3">
+        <span class="text-2xl">💡</span>
+        <div>
+          <p class="font-semibold text-emerald-800">¿Por qué bonos?</p>
+          <p class="text-sm text-emerald-700 mt-1">
+            Los bonos premian a candidatos que tienen <strong>múltiples propuestas bien desarrolladas</strong> 
+            en cada pilar, no solo una. Esto refleja mayor planificación y detalle en sus planes de gobierno.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr />
+
+    <h2 class="text-blue-700">⚖️ Verificación de Viabilidad Legal</h2>
+    
+    <p>
+      <strong>El motor de análisis verifica si las propuestas son viables constitucionalmente.</strong> 
+      Las violaciones constitucionales reciben penalizaciones:
+    </p>
+
+    <div class="not-prose overflow-x-auto mt-4">
+      <table class="min-w-full text-sm border border-blue-200">
+        <thead>
+          <tr class="bg-blue-50 border-b border-blue-200">
+            <th class="text-left py-3 px-4">Violación</th>
+            <th class="text-left py-3 px-4">¿Qué significa?</th>
+            <th class="text-center py-3 px-4">Penalización</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-blue-100">
+            <td class="py-3 px-4 font-medium">
+              <span class="text-lg">⚖️</span> Separación de poderes
+            </td>
+            <td class="py-3 px-4 text-slate-600">
+              Propuestas que eliminan o debilitan poderes del Estado (ej: "eliminar Asamblea Legislativa")
+            </td>
+            <td class="py-3 px-4 text-center font-bold text-blue-600">-1.0 puntos</td>
+          </tr>
+          <tr class="border-b border-blue-100">
+            <td class="py-3 px-4 font-medium">
+              <span class="text-lg">🛡️</span> Derechos fundamentales
+            </td>
+            <td class="py-3 px-4 text-slate-600">
+              Propuestas que eliminan servicios esenciales (ej: "eliminar CCSS completamente")
+            </td>
+            <td class="py-3 px-4 text-center font-bold text-blue-600">-1.0 puntos</td>
+          </tr>
+          <tr class="border-b border-blue-100">
+            <td class="py-3 px-4 font-medium">
+              <span class="text-lg">📜</span> Garantías constitucionales
+            </td>
+            <td class="py-3 px-4 text-slate-600">
+              Propuestas que eliminan garantías individuales (ej: "suspender hábeas corpus")
+            </td>
+            <td class="py-3 px-4 text-center font-bold text-blue-600">-1.0 puntos</td>
+          </tr>
+          <tr>
+            <td class="py-3 px-4 font-medium">
+              <span class="text-lg">📋</span> Procedimientos constitucionales
+            </td>
+            <td class="py-3 px-4 text-slate-600">
+              Propuestas que violan procesos constitucionales (ej: "aprobar presupuesto sin Asamblea")
+            </td>
+            <td class="py-3 px-4 text-center font-bold text-blue-600">-0.5 puntos</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="not-prose bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
+      <div class="flex items-start gap-3">
+        <span class="text-2xl">ℹ️</span>
+        <div>
+          <p class="font-semibold text-blue-800">Nota importante</p>
+          <p class="text-sm text-blue-700 mt-1">
+            <strong>NO se penaliza proponer reformas constitucionales</strong> (puede ser legítimo y necesario). 
+            Solo se penalizan violaciones directas de principios constitucionales.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr />
+
+    <h2 class="text-indigo-700">ℹ️ Flags Informativos</h2>
+    
+    <p>
+      <strong>Los flags informativos NO penalizan el score.</strong> Son información objetiva basada en evidencia 
+      verificable que se muestra al ciudadano para que pueda tomar decisiones más informadas:
+    </p>
+
+    <div class="not-prose space-y-4 mt-4">
+      <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-5">
+        <h4 class="font-bold text-indigo-900 mb-3 flex items-center gap-2">
+          <span>⚠️</span> Propuestas Actuales Problemáticas
+        </h4>
+        <p class="text-slate-700 mb-2">
+          Se muestran propuestas que violan principios constitucionales, pero <strong>ya fueron penalizadas</strong> 
+          en el score. El flag solo informa al ciudadano.
+        </p>
+        <ul class="text-sm text-slate-600 space-y-1 list-disc list-inside">
+          <li>Viola separación de poderes</li>
+          <li>Viola derechos fundamentales</li>
+          <li>Viola garantías constitucionales</li>
+          <li>Viola procedimientos constitucionales</li>
+        </ul>
+      </div>
+
+      <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-5">
+        <h4 class="font-bold text-indigo-900 mb-3 flex items-center gap-2">
+          <span>📚</span> Similitudes con Modelos Históricos
+        </h4>
+        <p class="text-slate-700 mb-2">
+          Detecta similitudes <strong>objetivas</strong> con patrones históricamente verificables de modelos dictatoriales 
+          (Cuba, Venezuela), basado en comportamientos verificables, NO en ideología política.
+        </p>
+        <ul class="text-sm text-slate-600 space-y-1 list-disc list-inside">
+          <li>Similitudes con modelo cubano (patrones objetivos verificables)</li>
+          <li>Similitudes con modelo venezolano (patrones objetivos verificables)</li>
+        </ul>
+      </div>
+
+      <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-5">
+        <h4 class="font-bold text-indigo-900 mb-3 flex items-center gap-2">
+          <span>🤝</span> Requisitos de Negociación entre Poderes
+        </h4>
+        <p class="text-slate-700 mb-2">
+          Indica complejidad de implementación, <strong>NO es un problema</strong>. Solo informa que la propuesta 
+          requiere coordinación entre poderes del Estado.
+        </p>
+        <ul class="text-sm text-slate-600 space-y-1 list-disc list-inside">
+          <li>Requiere aprobación de Asamblea Legislativa</li>
+          <li>Requiere mayoría calificada (2/3)</li>
+          <li>Requiere coordinación entre poderes</li>
+        </ul>
+      </div>
+
+      <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-5">
+        <h4 class="font-bold text-indigo-900 mb-3 flex items-center gap-2">
+          <span>📖</span> Evidencia Histórica Verificable
+        </h4>
+        <p class="text-slate-700 mb-2">
+          Muestra evidencia histórica verificable de comportamiento del candidato/partido, basada en:
+        </p>
+        <ul class="text-sm text-slate-600 space-y-1 list-disc list-inside">
+          <li>Comportamiento anti-democrático (sentencias, resoluciones internacionales)</li>
+          <li>Violaciones de derechos humanos (sentencias de cortes internacionales)</li>
+          <li>Corrupción verificada (sentencias judiciales, informes de Contraloría)</li>
+        </ul>
+      </div>
+
+      <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-5">
+        <h4 class="font-bold text-indigo-900 mb-3 flex items-center gap-2">
+          <span>🔄</span> Contradicciones Histórico-Actual
+        </h4>
+        <p class="text-slate-700 mb-2">
+          Detecta patrones consistentes entre evidencia histórica y propuestas actuales problemáticas.
+        </p>
+        <ul class="text-sm text-slate-600 space-y-1 list-disc list-inside">
+          <li>Contradicción histórico-actual (patrón consistente de comportamiento problemático)</li>
+          <li>Preocupación corrupción-transparencia (histórico corrupto + propuestas sin transparencia)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="not-prose bg-amber-50 border border-amber-200 rounded-lg p-4 mt-4">
+      <div class="flex items-start gap-3">
+        <span class="text-2xl">⚠️</span>
+        <div>
+          <p class="font-semibold text-amber-800">Importante: Flags NO afectan el score</p>
+          <p class="text-sm text-amber-700 mt-1">
+            Los flags informativos son <strong>solo información</strong> para el ciudadano. 
+            No penalizan ni premian. El ciudadano decide qué hacer con esta información.
+          </p>
+        </div>
+      </div>
+    </div>
+
     <div class="not-prose bg-indigo-50 border border-indigo-200 rounded-xl p-6 mt-6">
       <h4 class="font-bold text-lg mb-4 flex items-center gap-2 text-indigo-800">
         <span>🎯</span> ¿Por qué estas reglas y no otras?
@@ -649,7 +896,8 @@ const pillarData = [
       </div>
       
       <p class="text-slate-700 mb-4">
-        Para cada pilar, tomamos la <strong>mejor propuesta</strong> del candidato en ese tema.
+        Para cada pilar, evaluamos <strong>hasta 3 propuestas</strong> del candidato en ese tema, 
+        tomando la mejor como base y premiando a quienes tienen múltiples propuestas bien dimensionadas.
       </p>
       
       <h4 class="font-bold text-slate-800 mb-3">📐 Proceso de cálculo:</h4>
@@ -657,22 +905,26 @@ const pillarData = [
       <div class="space-y-3">
         <div class="flex items-start gap-3">
           <span class="flex items-center justify-center w-7 h-7 bg-blue-100 text-blue-700 rounded-full font-bold text-sm shrink-0">1</span>
-          <p class="text-slate-700">Se calcula el <strong>puntaje bruto (raw)</strong> de cada pilar (0-4)</p>
+          <p class="text-slate-700">Se calcula el <strong>puntaje bruto (raw)</strong> de cada pilar (0-4) basado en la mejor propuesta</p>
         </div>
         <div class="flex items-start gap-3">
-          <span class="flex items-center justify-center w-7 h-7 bg-red-100 text-red-700 rounded-full font-bold text-sm shrink-0">2</span>
-          <p class="text-slate-700"><strong class="text-red-700">Se aplican penalizaciones por irresponsabilidad</strong> (el puntaje puede bajar)</p>
+          <span class="flex items-center justify-center w-7 h-7 bg-emerald-100 text-emerald-700 rounded-full font-bold text-sm shrink-0">2</span>
+          <p class="text-slate-700"><strong class="text-emerald-700">Se aplican bonos</strong>: +1.0 por 3+ propuestas, +0.25 por propuesta completa, +0.1 por financiamiento</p>
         </div>
         <div class="flex items-start gap-3">
-          <span class="flex items-center justify-center w-7 h-7 bg-purple-100 text-purple-700 rounded-full font-bold text-sm shrink-0">3</span>
+          <span class="flex items-center justify-center w-7 h-7 bg-red-100 text-red-700 rounded-full font-bold text-sm shrink-0">3</span>
+          <p class="text-slate-700"><strong class="text-red-700">Se aplican penalizaciones</strong>: por irresponsabilidad fiscal, omisión de urgencias, y violaciones constitucionales</p>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="flex items-center justify-center w-7 h-7 bg-purple-100 text-purple-700 rounded-full font-bold text-sm shrink-0">4</span>
           <p class="text-slate-700">Se <strong>normaliza</strong> el puntaje efectivo (0 a 1)</p>
         </div>
         <div class="flex items-start gap-3">
-          <span class="flex items-center justify-center w-7 h-7 bg-amber-100 text-amber-700 rounded-full font-bold text-sm shrink-0">4</span>
+          <span class="flex items-center justify-center w-7 h-7 bg-amber-100 text-amber-700 rounded-full font-bold text-sm shrink-0">5</span>
           <p class="text-slate-700">Se <strong>multiplica por el peso</strong> del pilar</p>
         </div>
         <div class="flex items-start gap-3">
-          <span class="flex items-center justify-center w-7 h-7 bg-emerald-100 text-emerald-700 rounded-full font-bold text-sm shrink-0">5</span>
+          <span class="flex items-center justify-center w-7 h-7 bg-indigo-100 text-indigo-700 rounded-full font-bold text-sm shrink-0">6</span>
           <p class="text-slate-700">Se <strong>suman todos los pilares</strong> para el puntaje final</p>
         </div>
       </div>
@@ -826,7 +1078,7 @@ const pillarData = [
     </div>
 
     <p class="text-sm text-slate-500 mt-12">
-      <em>Última actualización: Enero 2026 · Versión del análisis: v6 (Neutral + Estricto)</em>
+      <em>Última actualización: Enero 2026 · Motor de análisis (Neutral + Estricto + Bonos + Viabilidad Legal + Flags Informativos)</em>
     </p>
 
   </article>
@@ -920,10 +1172,40 @@ const pillarData = [
         </div>
       </div>
 
+      <!-- Bonos -->
+      <div class="express-section">
+        <h2 class="express-section-title">🎁 Sistema de Bonos</h2>
+        <p class="express-section-desc">Premiamos calidad y cantidad de propuestas:</p>
+        
+        <div class="express-bonuses-grid">
+          <div class="express-bonus express-bonus-green">
+            <span class="express-bonus-icon">🎯</span>
+            <div>
+              <strong>3+ propuestas</strong>
+              <span class="express-bonus-points">+1.0</span>
+            </div>
+          </div>
+          <div class="express-bonus express-bonus-green">
+            <span class="express-bonus-icon">⭐</span>
+            <div>
+              <strong>Propuesta completa</strong>
+              <span class="express-bonus-points">+0.25</span>
+            </div>
+          </div>
+          <div class="express-bonus express-bonus-green">
+            <span class="express-bonus-icon">💰</span>
+            <div>
+              <strong>Con financiamiento</strong>
+              <span class="express-bonus-points">+0.1</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Penalizaciones -->
       <div class="express-section">
-        <h2 class="express-section-title">⚠️ Penalizaciones por Irresponsabilidad</h2>
-        <p class="express-section-desc">Restamos puntos a propuestas que comprometen la estabilidad del país:</p>
+        <h2 class="express-section-title">⚠️ Penalizaciones</h2>
+        <p class="express-section-desc">Restamos puntos por irresponsabilidad y violaciones:</p>
         
         <div class="express-penalties-grid">
           <div class="express-penalty express-penalty-red">
@@ -940,18 +1222,62 @@ const pillarData = [
               <span class="express-penalty-points">-1 pt</span>
             </div>
           </div>
+          <div class="express-penalty express-penalty-blue">
+            <span class="express-penalty-icon">⚖️</span>
+            <div>
+              <strong>Viola constitución</strong>
+              <span class="express-penalty-points">-1.0/-0.5</span>
+            </div>
+          </div>
           <div class="express-penalty express-penalty-amber">
             <span class="express-penalty-icon">🔫</span>
             <div>
-              <strong>Ignora crimen organizado</strong>
+              <strong>Ignora crimen</strong>
               <span class="express-penalty-points">-0.5 pts</span>
             </div>
           </div>
           <div class="express-penalty express-penalty-amber">
             <span class="express-penalty-icon">🏥</span>
             <div>
-              <strong>Ignora crisis CCSS</strong>
+              <strong>Ignora CCSS</strong>
               <span class="express-penalty-points">-1 pt</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Flags Informativos -->
+      <div class="express-section">
+        <h2 class="express-section-title">ℹ️ Información Adicional</h2>
+        <p class="express-section-desc">Flags que NO penalizan, solo informan:</p>
+        
+        <div class="express-flags-grid">
+          <div class="express-flag express-flag-blue">
+            <span class="express-flag-icon">⚠️</span>
+            <div>
+              <strong>Propuestas problemáticas</strong>
+              <span class="express-flag-note">Ya penalizadas</span>
+            </div>
+          </div>
+          <div class="express-flag express-flag-blue">
+            <span class="express-flag-icon">📚</span>
+            <div>
+              <strong>Similitudes históricas</strong>
+              <span class="express-flag-note">Solo informa</span>
+            </div>
+          </div>
+          <div class="express-flag express-flag-blue">
+            <span class="express-flag-icon">🤝</span>
+            <div>
+              <strong>Requiere negociación</strong>
+              <span class="express-flag-note">Complejidad</span>
+            </div>
+          </div>
+          <div class="express-flag express-flag-blue">
+            <span class="express-flag-icon">📖</span>
+            <div>
+              <strong>Evidencia histórica</strong>
+              <span class="express-flag-note">Verificable</span>
             </div>
           </div>
         </div>
@@ -992,7 +1318,7 @@ const pillarData = [
       </div>
 
       <p class="express-footer-note">
-        Última actualización: Enero 2026 · Versión v6
+        Última actualización: Enero 2026 · Motor de análisis (Bonos + Viabilidad + Flags)
       </p>
     </div>
   </div>
@@ -1171,11 +1497,46 @@ const pillarData = [
         </div>
       </section>
 
+      <!-- Bonos -->
+      <section class="reading-section">
+        <h2 class="reading-section-title reading-title-green">🎁 Sistema de Bonos</h2>
+        <p class="reading-intro-text">
+          El motor de análisis premia la calidad y cantidad de propuestas. Los bonos se suman al puntaje y pueden ayudar a compensar penalizaciones:
+        </p>
+        
+        <div class="reading-bonuses-box">
+          <div class="reading-bonus-item reading-bonus-major">
+            <span class="reading-bonus-icon">🎯</span>
+            <div>
+              <strong>Bono por múltiples propuestas</strong>
+              <p>Si un candidato tiene 3 o más propuestas válidas (con al menos 2 dimensiones) en el mismo pilar</p>
+            </div>
+            <span class="reading-bonus-points">+1.0 puntos</span>
+          </div>
+          <div class="reading-bonus-item reading-bonus-minor">
+            <span class="reading-bonus-icon">⭐</span>
+            <div>
+              <strong>Bono por propuesta completa</strong>
+              <p>Si una propuesta cumple las 4 dimensiones (Existe + Cuándo + Cómo + Fondos = 4/4)</p>
+            </div>
+            <span class="reading-bonus-points">+0.25 puntos</span>
+          </div>
+          <div class="reading-bonus-item reading-bonus-minor">
+            <span class="reading-bonus-icon">💰</span>
+            <div>
+              <strong>Bono por financiamiento claro</strong>
+              <p>Si una propuesta tiene un score de 3 o más (incluye financiamiento claro)</p>
+            </div>
+            <span class="reading-bonus-points">+0.1 puntos</span>
+          </div>
+        </div>
+      </section>
+
       <!-- Penalizaciones -->
       <section class="reading-section">
-        <h2 class="reading-section-title reading-title-red">⚠️ Penalizaciones por Irresponsabilidad Fiscal</h2>
+        <h2 class="reading-section-title reading-title-red">⚠️ Penalizaciones</h2>
         <p class="reading-intro-text">
-          Costa Rica enfrenta urgencias fiscales reales. Penalizamos propuestas que comprometen la estabilidad financiera del país:
+          Penalizamos propuestas que comprometen la estabilidad del país o violan principios constitucionales:
         </p>
         
         <div class="reading-penalties-box">
@@ -1195,6 +1556,38 @@ const pillarData = [
             </div>
             <span class="reading-penalty-points">-1 punto</span>
           </div>
+          <div class="reading-penalty-item reading-penalty-blue">
+            <span class="reading-penalty-icon">⚖️</span>
+            <div>
+              <strong>Viola separación de poderes</strong>
+              <p>Propuestas que eliminan o debilitan poderes del Estado</p>
+            </div>
+            <span class="reading-penalty-points">-1.0 puntos</span>
+          </div>
+          <div class="reading-penalty-item reading-penalty-blue">
+            <span class="reading-penalty-icon">🛡️</span>
+            <div>
+              <strong>Viola derechos fundamentales</strong>
+              <p>Propuestas que eliminan servicios esenciales (ej: eliminar CCSS completamente)</p>
+            </div>
+            <span class="reading-penalty-points">-1.0 puntos</span>
+          </div>
+          <div class="reading-penalty-item reading-penalty-blue">
+            <span class="reading-penalty-icon">📜</span>
+            <div>
+              <strong>Viola garantías constitucionales</strong>
+              <p>Propuestas que eliminan garantías individuales (ej: suspender hábeas corpus)</p>
+            </div>
+            <span class="reading-penalty-points">-1.0 puntos</span>
+          </div>
+          <div class="reading-penalty-item reading-penalty-blue">
+            <span class="reading-penalty-icon">📋</span>
+            <div>
+              <strong>Viola procedimientos constitucionales</strong>
+              <p>Propuestas que violan procesos constitucionales (ej: aprobar presupuesto sin Asamblea)</p>
+            </div>
+            <span class="reading-penalty-points">-0.5 puntos</span>
+          </div>
           <div class="reading-penalty-item reading-penalty-moderate">
             <span class="reading-penalty-icon">🚨</span>
             <div>
@@ -1211,6 +1604,73 @@ const pillarData = [
             </div>
             <span class="reading-penalty-points">-1 punto</span>
           </div>
+          <div class="reading-penalty-item reading-penalty-moderate">
+            <span class="reading-penalty-icon">💼</span>
+            <div>
+              <strong>Ignora empleo formal</strong>
+              <p>No menciona formalización, empleo formal o trabajo decente</p>
+            </div>
+            <span class="reading-penalty-points">-0.5 puntos</span>
+          </div>
+          <div class="reading-penalty-item reading-penalty-moderate">
+            <span class="reading-penalty-icon">🔫</span>
+            <div>
+              <strong>Ignora crimen organizado</strong>
+              <p>No menciona narcotráfico, sicariato, extorsión o lavado de dinero</p>
+            </div>
+            <span class="reading-penalty-points">-0.5 puntos</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Flags Informativos -->
+      <section class="reading-section">
+        <h2 class="reading-section-title reading-title-indigo">ℹ️ Flags Informativos</h2>
+        <p class="reading-intro-text">
+          Los flags informativos <strong>NO penalizan el score</strong>. Son información objetiva basada en evidencia verificable:
+        </p>
+        
+        <div class="reading-flags-box">
+          <div class="reading-flag-item reading-flag-warning">
+            <span class="reading-flag-icon">⚠️</span>
+            <div>
+              <strong>Propuestas Actuales Problemáticas</strong>
+              <p>Propuestas que violan principios constitucionales (ya fueron penalizadas en el score). El flag solo informa al ciudadano.</p>
+            </div>
+          </div>
+          <div class="reading-flag-item reading-flag-info">
+            <span class="reading-flag-icon">📚</span>
+            <div>
+              <strong>Similitudes con Modelos Históricos</strong>
+              <p>Detecta similitudes objetivas con patrones históricamente verificables (Cuba, Venezuela), basado en comportamientos verificables, NO en ideología política.</p>
+            </div>
+          </div>
+          <div class="reading-flag-item reading-flag-info">
+            <span class="reading-flag-icon">🤝</span>
+            <div>
+              <strong>Requisitos de Negociación entre Poderes</strong>
+              <p>Indica complejidad de implementación (requiere aprobación de Asamblea, mayoría calificada, coordinación entre poderes). NO es un problema, solo informa.</p>
+            </div>
+          </div>
+          <div class="reading-flag-item reading-flag-info">
+            <span class="reading-flag-icon">📖</span>
+            <div>
+              <strong>Evidencia Histórica Verificable</strong>
+              <p>Muestra evidencia histórica verificable de comportamiento del candidato/partido (sentencias, resoluciones internacionales, informes de Contraloría).</p>
+            </div>
+          </div>
+          <div class="reading-flag-item reading-flag-warning">
+            <span class="reading-flag-icon">🔄</span>
+            <div>
+              <strong>Contradicciones Histórico-Actual</strong>
+              <p>Detecta patrones consistentes entre evidencia histórica y propuestas actuales problemáticas.</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="reading-warning-box" style="margin-top: 1.5rem;">
+          <span class="reading-warning-icon">⚠️</span>
+          <p><strong>Importante:</strong> Los flags informativos NO afectan el score. Son solo información para que el ciudadano pueda tomar decisiones más informadas.</p>
         </div>
       </section>
 
@@ -1272,7 +1732,7 @@ const pillarData = [
       </section>
 
       <p class="reading-footer-note">
-        <em>Última actualización: Enero 2026 · Versión del análisis: v6 (Neutral + Estricto)</em>
+        <em>Última actualización: Enero 2026 · Motor de análisis (Neutral + Estricto + Bonos + Viabilidad Legal + Flags Informativos)</em>
       </p>
     </div>
   </div>
@@ -1537,6 +1997,89 @@ const pillarData = [
     padding: 0.125rem 0.5rem;
     border-radius: 9999px;
     margin-left: auto;
+  }
+
+  /* v7: Bonos en Express Mode */
+  .express-bonuses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+  }
+
+  .express-bonus {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    border: 2px solid;
+  }
+
+  .express-bonus-green {
+    background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+    border-color: #22c55e;
+  }
+
+  .express-bonus-icon {
+    font-size: 1.5rem;
+  }
+
+  .express-bonus strong {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #15803d;
+    text-align: center;
+  }
+
+  .express-bonus-points {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #15803d;
+    background: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+  }
+
+  /* v7: Flags en Express Mode */
+  .express-flags-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+  }
+
+  .express-flag {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    border: 2px solid;
+  }
+
+  .express-flag-blue {
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+    border-color: #3b82f6;
+  }
+
+  .express-flag-icon {
+    font-size: 1.5rem;
+  }
+
+  .express-flag strong {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #1e40af;
+    text-align: center;
+  }
+
+  .express-flag-note {
+    font-size: 0.7rem;
+    color: #64748b;
+    font-style: italic;
   }
   
   .express-risk-grid {
@@ -1955,6 +2498,108 @@ const pillarData = [
     border-radius: 9999px;
     border: 2px solid #fca5a5;
     white-space: nowrap;
+  }
+
+  /* v7: Bonos en Reading Mode */
+  .reading-bonuses-box {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .reading-bonus-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+    border: 3px solid;
+  }
+
+  .reading-bonus-major {
+    background: #ecfdf5;
+    border-color: #10b981;
+  }
+
+  .reading-bonus-minor {
+    background: #f0fdf4;
+    border-color: #22c55e;
+  }
+
+  .reading-bonus-icon {
+    font-size: 2rem;
+  }
+
+  .reading-bonus-item strong {
+    font-size: 1.25rem;
+    color: #15803d;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  .reading-bonus-item p {
+    font-size: 1.05rem;
+    color: #059669;
+  }
+
+  .reading-bonus-points {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #15803d;
+    background: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    border: 2px solid #22c55e;
+    white-space: nowrap;
+  }
+
+  /* v7: Flags en Reading Mode */
+  .reading-flags-box {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .reading-flag-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+    border: 3px solid;
+  }
+
+  .reading-flag-warning {
+    background: #fef3c7;
+    border-color: #f59e0b;
+  }
+
+  .reading-flag-info {
+    background: #dbeafe;
+    border-color: #3b82f6;
+  }
+
+  .reading-flag-icon {
+    font-size: 2rem;
+  }
+
+  .reading-flag-item strong {
+    font-size: 1.25rem;
+    color: #1a1a1a;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .reading-flag-item p {
+    font-size: 1.05rem;
+    color: #475569;
+    line-height: 1.6;
+  }
+
+  .reading-penalty-blue {
+    background: #eff6ff;
+    border: 2px solid #3b82f6;
   }
   
   .reading-risk-cards {

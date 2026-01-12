@@ -88,7 +88,7 @@ function getRiskColor(riskLevel: string): string {
       
       <div class="reading-fiscal-types">
         <div class="reading-fiscal-type-box reading-type-fiscal">
-          <h3 class="reading-type-title">🔴 Penalizaciones por Irresponsabilidad</h3>
+          <h3 class="reading-type-title">🔴 Penalizaciones por Irresponsabilidad Fiscal</h3>
           <p class="reading-type-desc">Atacan la regla fiscal o proponen más deuda sin plan de sostenibilidad.</p>
           <div class="reading-type-stats">
             <div class="reading-type-stat">
@@ -103,7 +103,7 @@ function getRiskColor(riskLevel: string): string {
         </div>
         
         <div class="reading-fiscal-type-box reading-type-omissions">
-          <h3 class="reading-type-title">🟠 Omisiones de Urgencias</h3>
+          <h3 class="reading-type-title">🟠 Omisiones de Urgencias Nacionales</h3>
           <p class="reading-type-desc">Ignoran temas críticos como seguridad operativa o crisis de la CCSS.</p>
           <div class="reading-type-stats">
             <div class="reading-type-stat">
@@ -113,6 +113,29 @@ function getRiskColor(riskLevel: string): string {
             <div class="reading-type-stat">
               <span class="reading-stat-icon">🏥</span>
               <span class="reading-stat-text"><strong>{fiscalStats.ignoreCCSS}</strong> ignoran crisis CCSS</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="reading-fiscal-type-box reading-type-viability">
+          <h3 class="reading-type-title">⚖️ Penalizaciones por Viabilidad Legal</h3>
+          <p class="reading-type-desc">Violan principios constitucionales: separación de poderes, derechos fundamentales, garantías constitucionales o procedimientos constitucionales.</p>
+          <div class="reading-type-stats">
+            <div class="reading-type-stat">
+              <span class="reading-stat-icon">⚖️</span>
+              <span class="reading-stat-text">Penalización: <strong>-1.0</strong> por violación de separación de poderes</span>
+            </div>
+            <div class="reading-type-stat">
+              <span class="reading-stat-icon">🛡️</span>
+              <span class="reading-stat-text">Penalización: <strong>-1.0</strong> por violación de derechos fundamentales</span>
+            </div>
+            <div class="reading-type-stat">
+              <span class="reading-stat-icon">📜</span>
+              <span class="reading-stat-text">Penalización: <strong>-1.0</strong> por violación de garantías constitucionales</span>
+            </div>
+            <div class="reading-type-stat">
+              <span class="reading-stat-icon">📋</span>
+              <span class="reading-stat-text">Penalización: <strong>-0.5</strong> por violación de procedimientos constitucionales</span>
             </div>
           </div>
         </div>
@@ -150,6 +173,11 @@ function getRiskColor(riskLevel: string): string {
       
       <div class="reading-fiscal-note">
         <p>
+          <strong>Motor de análisis:</strong> También aplicamos <strong>bonos</strong> por múltiples propuestas (3+), 
+          propuestas completas (4/4 dimensiones) y propuestas con financiamiento claro. 
+          Los <strong>flags informativos</strong> (similitudes históricas, requisitos de negociación) NO penalizan, solo informan.
+        </p>
+        <p style="margin-top: 1rem;">
           Esta evaluación se basa en el <strong>texto literal</strong> de los planes de gobierno. 
           No juzga ideologías ni predice resultados. Es una herramienta para que usted, como ciudadano, 
           pueda tomar decisiones más informadas.
@@ -1008,6 +1036,11 @@ function getRiskColor(riskLevel: string): string {
   .reading-type-omissions {
     background: #fffbeb;
     border-color: #f59e0b;
+  }
+  
+  .reading-type-viability {
+    background: #eff6ff;
+    border-color: #3b82f6;
   }
   
   .reading-type-title {

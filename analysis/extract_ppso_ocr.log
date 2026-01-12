@@ -1,0 +1,109 @@
+✅ EasyOCR disponible
+✅ Tesseract disponible
+================================================================================
+EXTRACCIÓN OCR PARA PPSO
+================================================================================
+📄 PDF: /Users/gerdevx/Documents/Personal/gerxDev/crdecide2026/analysis/planes/PPSO.pdf
+💾 Salida: /Users/gerdevx/Documents/Personal/gerxDev/crdecide2026/analysis/data/ppso_ocr_text.txt
+🔧 OCR: Tesseract
+📐 DPI: 300
+================================================================================
+
+📖 Total de páginas: 88
+
+  Procesando página 1/88... ✅ (107 caracteres)
+  Procesando página 2/88... ⚠️  (sin texto)
+  Procesando página 3/88... ✅ (1520 caracteres)
+  Procesando página 4/88... ✅ (2734 caracteres)
+  Procesando página 5/88... ✅ (28 caracteres)
+  Procesando página 6/88... ✅ (1387 caracteres)
+  Procesando página 7/88... ✅ (27 caracteres)
+  Procesando página 8/88... ✅ (49 caracteres)
+  Procesando página 9/88... ✅ (1809 caracteres)
+  Procesando página 10/88... ✅ (3204 caracteres)
+  Procesando página 11/88... ✅ (3520 caracteres)
+  Procesando página 12/88... ✅ (285 caracteres)
+  Procesando página 13/88... ✅ (3766 caracteres)
+  Procesando página 14/88... ✅ (3709 caracteres)
+  Procesando página 15/88... ✅ (3904 caracteres)
+  Procesando página 16/88... ✅ (1918 caracteres)
+  Procesando página 17/88... ✅ (3515 caracteres)
+  Procesando página 18/88... ✅ (3703 caracteres)
+  Procesando página 19/88... ✅ (2567 caracteres)
+  Procesando página 20/88... ✅ (60 caracteres)
+  Procesando página 21/88... ✅ (2847 caracteres)
+  Procesando página 22/88... ✅ (2850 caracteres)
+  Procesando página 23/88... ✅ (3041 caracteres)
+  Procesando página 24/88... ✅ (61 caracteres)
+  Procesando página 25/88... ✅ (3603 caracteres)
+  Procesando página 26/88... ✅ (2231 caracteres)
+  Procesando página 27/88... ✅ (1854 caracteres)
+  Procesando página 28/88... ✅ (1954 caracteres)
+  Procesando página 29/88... ✅ (2837 caracteres)
+  Procesando página 30/88... ✅ (3132 caracteres)
+  Procesando página 31/88... ✅ (2485 caracteres)
+  Procesando página 32/88... ✅ (2873 caracteres)
+  Procesando página 33/88... ✅ (2721 caracteres)
+  Procesando página 34/88... ✅ (2565 caracteres)
+  Procesando página 35/88... ✅ (2411 caracteres)
+  Procesando página 36/88... ✅ (2387 caracteres)
+  Procesando página 37/88... ✅ (2528 caracteres)
+  Procesando página 38/88... ✅ (2754 caracteres)
+  Procesando página 39/88... ✅ (2612 caracteres)
+  Procesando página 40/88... ✅ (2468 caracteres)
+  Procesando página 41/88... ✅ (2716 caracteres)
+  Procesando página 42/88... ✅ (2588 caracteres)
+  Procesando página 43/88... ✅ (2421 caracteres)
+  Procesando página 44/88... ✅ (2879 caracteres)
+  Procesando página 45/88... ✅ (2830 caracteres)
+  Procesando página 46/88... ✅ (2641 caracteres)
+  Procesando página 47/88... ✅ (3219 caracteres)
+  Procesando página 48/88... ✅ (3177 caracteres)
+  Procesando página 49/88... ✅ (2429 caracteres)
+  Procesando página 50/88... ✅ (2700 caracteres)
+  Procesando página 51/88... ✅ (2601 caracteres)
+  Procesando página 52/88... ✅ (2854 caracteres)
+  Procesando página 53/88... ✅ (2641 caracteres)
+  Procesando página 54/88... ✅ (2553 caracteres)
+  Procesando página 55/88... ✅ (2864 caracteres)
+  Procesando página 56/88... ✅ (2716 caracteres)
+  Procesando página 57/88... ✅ (2546 caracteres)
+  Procesando página 58/88... ✅ (2793 caracteres)
+  Procesando página 59/88... ✅ (2571 caracteres)
+  Procesando página 60/88... ✅ (2808 caracteres)
+  Procesando página 61/88... ✅ (2483 caracteres)
+  Procesando página 62/88... ✅ (2649 caracteres)
+  Procesando página 63/88... ✅ (2757 caracteres)
+  Procesando página 64/88... ✅ (2566 caracteres)
+  Procesando página 65/88... ✅ (2289 caracteres)
+  Procesando página 66/88... ✅ (2449 caracteres)
+  Procesando página 67/88... ✅ (3034 caracteres)
+  Procesando página 68/88... ✅ (2514 caracteres)
+  Procesando página 69/88... ✅ (2750 caracteres)
+  Procesando página 70/88... ✅ (2742 caracteres)
+  Procesando página 71/88... ✅ (2833 caracteres)
+  Procesando página 72/88... ✅ (3031 caracteres)
+  Procesando página 73/88... ✅ (2840 caracteres)
+  Procesando página 74/88... ✅ (2716 caracteres)
+  Procesando página 75/88... ✅ (2592 caracteres)
+  Procesando página 76/88... ✅ (2726 caracteres)
+  Procesando página 77/88... ✅ (3054 caracteres)
+  Procesando página 78/88... ✅ (2744 caracteres)
+  Procesando página 79/88... ✅ (2899 caracteres)
+  Procesando página 80/88... ✅ (2938 caracteres)
+  Procesando página 81/88... ✅ (2642 caracteres)
+  Procesando página 82/88... ✅ (2791 caracteres)
+  Procesando página 83/88... ✅ (1855 caracteres)
+  Procesando página 84/88... ✅ (1885 caracteres)
+  Procesando página 85/88... ✅ (2442 caracteres)
+  Procesando página 86/88... ✅ (2191 caracteres)
+  Procesando página 87/88... ✅ (1133 caracteres)
+  Procesando página 88/88... ✅ (88 caracteres)
+
+💾 Guardando 87 páginas en /Users/gerdevx/Documents/Personal/gerxDev/crdecide2026/analysis/data/ppso_ocr_text.txt...
+✅ Archivo guardado exitosamente
+   Páginas procesadas: 87/88
+   Total de caracteres: 212,206
+
+📝 El archivo /Users/gerdevx/Documents/Personal/gerxDev/crdecide2026/analysis/data/ppso_ocr_text.txt será usado automáticamente
+   en la próxima ejecución de process_plans_v7.py

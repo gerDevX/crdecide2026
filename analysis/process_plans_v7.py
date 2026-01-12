@@ -303,10 +303,108 @@ MISSING_PRIORITY_PILLAR_PENALTY = -0.5
 # FUNCIONES UTILITARIAS
 # ====================================================================
 
+def clean_cid_characters(text: str) -> str:
+    """
+    Limpia caracteres CID (Character ID) que aparecen cuando PyMuPDF no puede
+    interpretar correctamente ciertos caracteres del PDF.
+    
+    Formato: (cid:XXX) donde XXX es un número.
+    
+    Estrategia:
+    1. Algunos CID comunes se mapean a caracteres conocidos (espacios, letras comunes)
+    2. El resto se elimina o reemplaza con espacio según contexto
+    """
+    if not text:
+        return text
+    
+    # Mapeo de CID comunes a caracteres reales (basado en patrones comunes en PDFs)
+    # Estos son valores comunes que aparecen frecuentemente en PDFs con problemas de encoding
+    # NOTA: Los CID son específicos de cada PDF y fuente, por lo que este mapeo es aproximado
+    cid_mapping = {
+        # Espacios y separadores comunes
+        '(cid:1228)': ' ',  # Espacio común en muchos PDFs
+        '(cid:32)': ' ',   # Espacio estándar ASCII
+        # Letras mayúsculas comunes (ASCII)
+        '(cid:65)': 'A', '(cid:66)': 'B', '(cid:67)': 'C', '(cid:68)': 'D',
+        '(cid:69)': 'E', '(cid:70)': 'F', '(cid:71)': 'G', '(cid:72)': 'H',
+        '(cid:73)': 'I', '(cid:74)': 'J', '(cid:75)': 'K', '(cid:76)': 'L',
+        '(cid:77)': 'M', '(cid:78)': 'N', '(cid:79)': 'O', '(cid:80)': 'P',
+        '(cid:81)': 'Q', '(cid:82)': 'R', '(cid:83)': 'S', '(cid:84)': 'T',
+        '(cid:85)': 'U', '(cid:86)': 'V', '(cid:87)': 'W', '(cid:88)': 'X',
+        '(cid:89)': 'Y', '(cid:90)': 'Z',
+        # Letras minúsculas comunes (ASCII)
+        '(cid:97)': 'a', '(cid:98)': 'b', '(cid:99)': 'c', '(cid:100)': 'd',
+        '(cid:101)': 'e', '(cid:102)': 'f', '(cid:103)': 'g', '(cid:104)': 'h',
+        '(cid:105)': 'i', '(cid:106)': 'j', '(cid:107)': 'k', '(cid:108)': 'l',
+        '(cid:109)': 'm', '(cid:110)': 'n', '(cid:111)': 'o', '(cid:112)': 'p',
+        '(cid:113)': 'q', '(cid:114)': 'r', '(cid:115)': 's', '(cid:116)': 't',
+        '(cid:117)': 'u', '(cid:118)': 'v', '(cid:119)': 'w', '(cid:120)': 'x',
+        '(cid:121)': 'y', '(cid:122)': 'z',
+        # Números comunes
+        '(cid:48)': '0', '(cid:49)': '1', '(cid:50)': '2', '(cid:51)': '3',
+        '(cid:52)': '4', '(cid:53)': '5', '(cid:54)': '6', '(cid:55)': '7',
+        '(cid:56)': '8', '(cid:57)': '9',
+        # Caracteres comunes en español (aproximaciones basadas en patrones observados en PPSO)
+        # NOTA: Estos son aproximaciones basadas en análisis de contexto y pueden no ser 100% precisos
+        # Los CID son específicos de cada PDF y fuente, pero estos son patrones comunes observados
+        '(cid:212)': 'é',  # é común (observado en "estandarizada", "establecer")
+        '(cid:240)': 'ó',  # ó común (observado en "correcta", "organizada")
+        '(cid:253)': 'í',  # í común (observado en "implementación", "digital")
+        '(cid:246)': 'ó',  # ó común (variante, observado en "totalidad")
+        '(cid:282)': 'a',  # a común
+        '(cid:286)': 'c',  # c común (observado en "correcta", "actualización")
+        '(cid:309)': 'a',  # a común (observado en "actualización", "aprobación")
+        '(cid:316)': 'n',  # n común (observado en "implementación", "organizada")
+        '(cid:317)': 'o',  # o común (observado en "correcta", "organizada")
+        '(cid:323)': 'i',  # i común
+        '(cid:325)': 's',  # s común (observado en "estandarizada", "establecer")
+        '(cid:353)': 'e',  # e común (observado en "estandarizada", "establecer")
+        '(cid:355)': 'e',  # e común (variante)
+        '(cid:356)': 'l',  # l común (observado en "legislación", "laboral")
+        '(cid:363)': 'o',  # o común (variante)
+        '(cid:371)': 'r',  # r común (observado en "correcta", "organizada")
+        '(cid:377)': 't',  # t común (observado en "totalidad", "establecer")
+        '(cid:398)': 'a',  # a común (variante)
+        '(cid:402)': '•',  # viñeta/bullet point común
+        '(cid:404)': '•',  # viñeta/bullet point (variante)
+        '(cid:414)': 'a',  # a común (variante)
+        '(cid:482)': 'a',  # a común (variante)
+        # Rango común de espacios y separadores
+        '(cid:1139)': ' ', '(cid:1140)': ' ', '(cid:1235)': ' ', '(cid:1236)': ' ', '(cid:1237)': ' ',
+    }
+    
+    # Primero, reemplazar CID conocidos
+    for cid, replacement in cid_mapping.items():
+        text = text.replace(cid, replacement)
+    
+    # Para CID no mapeados, intentar inferir si es espacio o eliminarlo
+    # Patrón: (cid:XXX) donde XXX es cualquier número
+    def replace_unknown_cid(match):
+        cid_num = match.group(1)
+        # Si el CID está entre valores comunes de espacios/separadores, usar espacio
+        # De lo contrario, eliminar
+        try:
+            num = int(cid_num)
+            # Rango común de espacios y caracteres de control
+            if 32 <= num <= 47 or 1228 <= num <= 1235:
+                return ' '
+            # Otros CID: eliminar (no podemos inferir el carácter real)
+            return ''
+        except ValueError:
+            return ''
+    
+    # Reemplazar todos los CID restantes
+    text = re.sub(r'\(cid:(\d+)\)', replace_unknown_cid, text)
+    
+    return text
+
 def normalize_text(text: str) -> str:
-    """Normaliza el texto extraído, incluyendo correcciones para EasyOCR."""
+    """Normaliza el texto extraído, incluyendo correcciones para EasyOCR y limpieza de CID."""
     if not text:
         return ""
+    
+    # PRIMERO: Limpiar caracteres CID (debe hacerse antes de otras normalizaciones)
+    text = clean_cid_characters(text)
     
     # Eliminar caracteres de control
     text = re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f-\x9f]', '', text)

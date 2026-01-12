@@ -5,11 +5,13 @@ import DimensionBadges from '../../components/ui/DimensionBadges.astro';
 import EvidenceLink from '../../components/ui/EvidenceLink.astro';
 import FiscalRiskBadge from '../../components/ui/FiscalRiskBadge.astro';
 import ScoreBar from '../../components/ui/ScoreBar.astro';
+import InformativeFlags from '../../components/ui/InformativeFlags.astro';
 import { 
   candidates, 
   getCandidateScore, 
   getCandidateAnalysis,
   getProposalsByCandidate,
+  getPillarBonuses,
   pillarIndex 
 } from '../../lib/data';
 import { PILLAR_ICONS, PENALTY_LABELS } from '../../lib/types';
@@ -260,6 +262,9 @@ const riskEmoji = riskLevel === 'BAJO' ? '🟢' : riskLevel === 'MEDIO' ? '🟠'
       </section>
     )}
 
+    <!-- Informative Flags (v7) -->
+    <InformativeFlags candidateId={candidate.candidate_id} />
+
     <!-- Strengths & Weaknesses -->
     {analysis && (analysis.strengths.length > 0 || analysis.weaknesses.length > 0) && (
         <section class="analysis-grid">
@@ -315,10 +320,20 @@ const riskEmoji = riskLevel === 'BAJO' ? '🟢' : riskLevel === 'MEDIO' ? '🟠'
               const scoreB = b.dimensions.existence + b.dimensions.when + b.dimensions.how + b.dimensions.funding;
               return scoreB - scoreA;
             })
-            .slice(0, 3);
+            .slice(0, 3); // Mostrar hasta 3 propuestas
           
           const hasPenalties = ps.penalties && ps.penalties.length > 0;
           const scoreColor = scorePercent >= 75 ? 'excellent' : scorePercent >= 50 ? 'good' : scorePercent >= 25 ? 'regular' : 'low';
+          
+          // v7: Obtener bonos y violaciones
+          const bonuses = getPillarBonuses(candidate.candidate_id, ps.pillar_id as PillarId);
+          const hasViabilityPenalty = (ps.viability_penalty || 0) < 0;
+          const viabilityFlags = ps.viability_flags || {
+            violates_separation_powers: false,
+            violates_fundamental_rights: false,
+            violates_constitutional_guarantees: false,
+            violates_constitutional_procedures: false,
+          };
           
           return (
               <div class={`combined-pillar-card ${hasPenalties ? 'penalized' : ''}`}>
@@ -366,26 +381,81 @@ const riskEmoji = riskLevel === 'BAJO' ? '🟢' : riskLevel === 'MEDIO' ? '🟠'
                   </span>
               </div>
               
+                <!-- v7: Bonos y Violaciones -->
+                {(bonuses.total > 0 || hasViabilityPenalty) && (
+                  <div class="pillar-bonuses-penalties">
+                    {bonuses.total > 0 && (
+                      <div class="bonus-section">
+                        <span class="bonus-label">🎁 Bonos:</span>
+                        {bonuses.multiple > 0 && (
+                          <span class="bonus-badge" title="Bono por múltiples propuestas (3+)">
+                            🎯 +{bonuses.multiple}
+                          </span>
+                        )}
+                        {bonuses.quality > 0 && (
+                          <span class="bonus-badge" title="Bono por propuesta completa">
+                            ⭐ +{bonuses.quality}
+                          </span>
+                        )}
+                        {bonuses.funding > 0 && (
+                          <span class="bonus-badge" title="Bono por financiamiento">
+                            💰 +{bonuses.funding}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                    {hasViabilityPenalty && (
+                      <div class="viability-alert">
+                        <span class="viability-icon">⚖️</span>
+                        <div class="viability-content">
+                          <strong>Violación Constitucional</strong>
+                          <div class="viability-flags-list">
+                            {viabilityFlags.violates_separation_powers && <span>Separación de poderes</span>}
+                            {viabilityFlags.violates_fundamental_rights && <span>Derechos fundamentales</span>}
+                            {viabilityFlags.violates_constitutional_guarantees && <span>Garantías constitucionales</span>}
+                            {viabilityFlags.violates_constitutional_procedures && <span>Procedimientos constitucionales</span>}
+                          </div>
+                          <span class="penalty-amount">Penalización: {ps.viability_penalty}</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              
                 <!-- Proposals -->
               {pillarProposals.length > 0 ? (
                   <div class="combined-proposals">
-                    <h4 class="proposals-subtitle">Propuestas destacadas:</h4>
-                  {pillarProposals.map((proposal) => (
-                      <div class="combined-proposal-item">
-                        <div class="proposal-content">
-                          <h5>{proposal.proposal_title}</h5>
-                          <p>{proposal.proposal_text}</p>
-                        </div>
-                        <div class="proposal-meta">
-                        <DimensionBadges dimensions={proposal.dimensions} compact={true} />
-                        <EvidenceLink 
-                          pdfId={proposal.evidence.pdf_id}
-                          page={proposal.evidence.page}
-                          compact={true}
-                        />
-                      </div>
+                    <div class="proposals-header">
+                      <h4 class="proposals-subtitle">
+                        Propuestas destacadas:
+                        <span class="proposal-count">
+                          {pillarProposals.length} de {ps.num_proposals || pillarProposals.length}
+                          {pillarProposals.length >= 3 && (
+                            <span class="multiple-bonus-indicator" title="Bono por 3+ propuestas">🎯</span>
+                          )}
+                        </span>
+                      </h4>
                     </div>
-                  ))}
+                  {pillarProposals.map((proposal, idx) => {
+                      const isBest = idx === 0;
+                      return (
+                        <div class={`combined-proposal-item ${isBest ? 'best-proposal' : ''}`}>
+                          {isBest && <span class="best-proposal-badge">⭐ Mejor propuesta</span>}
+                          <div class="proposal-content">
+                            <h5>{proposal.proposal_title}</h5>
+                            <p>{proposal.proposal_text}</p>
+                          </div>
+                          <div class="proposal-meta">
+                            <DimensionBadges dimensions={proposal.dimensions} compact={true} />
+                            <EvidenceLink 
+                              pdfId={proposal.evidence.pdf_id}
+                              page={proposal.evidence.page}
+                              compact={true}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
                 </div>
               ) : (
                   <div class="combined-no-proposals">
@@ -465,6 +535,9 @@ const riskEmoji = riskLevel === 'BAJO' ? '🟢' : riskLevel === 'MEDIO' ? '🟠'
         </div>
       )}
 
+      <!-- Informative Flags (v7) -->
+      <InformativeFlags candidateId={candidate.candidate_id} />
+
       <!-- Pillar Scores -->
       <section class="express-pillars-section">
         <h2 class="express-section-title">📊 Puntaje por Pilar</h2>
@@ -488,26 +561,43 @@ const riskEmoji = riskLevel === 'BAJO' ? '🟢' : riskLevel === 'MEDIO' ? '🟠'
         </div>
       </section>
 
-      <!-- Top Proposals -->
+      <!-- Top Proposals (v7: agrupadas por pilar, hasta 3 por pilar) -->
       <section class="express-proposals-section">
         <h2 class="express-section-title">📋 Propuestas Destacadas</h2>
-        <div class="express-proposals-list">
-          {proposals.slice(0, 5).map((proposal) => {
-            const pillar = pillarIndex[proposal.pillar_id];
-            const icon = PILLAR_ICONS[proposal.pillar_id as PillarId];
-            
-            return (
-              <div class="express-proposal-card">
-                <div class="express-proposal-header">
-                  <span class="express-proposal-icon">{icon}</span>
-                  <span class="express-proposal-pillar">{pillar?.pillar_name}</span>
-                </div>
-                <h3 class="express-proposal-title">{proposal.proposal_title}</h3>
-                <p class="express-proposal-text">{proposal.proposal_text}</p>
+        {score.pillar_scores.map((ps) => {
+          const pillar = pillarIndex[ps.pillar_id];
+          const icon = PILLAR_ICONS[ps.pillar_id as PillarId];
+          const pillarProposals = (proposalsByPillar[ps.pillar_id] || [])
+            .sort((a, b) => {
+              const scoreA = a.dimensions.existence + a.dimensions.when + a.dimensions.how + a.dimensions.funding;
+              const scoreB = b.dimensions.existence + b.dimensions.when + b.dimensions.how + b.dimensions.funding;
+              return scoreB - scoreA;
+            })
+            .slice(0, 2); // Express: mostrar solo 2 para mantener compacto
+          
+          if (pillarProposals.length === 0) return null;
+          
+          const bonuses = getPillarBonuses(candidate.candidate_id, ps.pillar_id as PillarId);
+          
+          return (
+            <div class="express-pillar-proposals">
+              <div class="express-pillar-proposals-header">
+                <span class="express-pillar-proposals-icon">{icon}</span>
+                <span class="express-pillar-proposals-name">{pillar?.pillar_name}</span>
+                {pillarProposals.length >= 3 && (
+                  <span class="express-bonus-badge" title="Bono por múltiples propuestas">🎯 +{bonuses.multiple}</span>
+                )}
               </div>
-            );
-          })}
-        </div>
+              {pillarProposals.map((proposal, idx) => (
+                <div class={`express-proposal-card ${idx === 0 ? 'best-proposal' : ''}`}>
+                  {idx === 0 && <span class="express-best-badge">⭐</span>}
+                  <h3 class="express-proposal-title">{proposal.proposal_title}</h3>
+                  <p class="express-proposal-text">{proposal.proposal_text.slice(0, 100)}...</p>
+                </div>
+              ))}
+            </div>
+          );
+        })}
       </section>
 
       <!-- Actions -->
@@ -625,6 +715,9 @@ const riskEmoji = riskLevel === 'BAJO' ? '🟢' : riskLevel === 'MEDIO' ? '🟠'
         </section>
       )}
 
+      <!-- Informative Flags (v7) -->
+      <InformativeFlags candidateId={candidate.candidate_id} />
+
       <!-- Strengths & Weaknesses -->
       {analysis && (analysis.strengths.length > 0 || analysis.weaknesses.length > 0) && (
         <section class="reading-analysis-section">
@@ -651,7 +744,7 @@ const riskEmoji = riskLevel === 'BAJO' ? '🟢' : riskLevel === 'MEDIO' ? '🟠'
         </section>
       )}
 
-      <!-- Pillar Scores -->
+      <!-- Pillar Scores (v7: con propuestas y bonos) -->
       <section class="reading-pillars-section">
         <h2 class="reading-section-title">📊 Evaluación por Pilar</h2>
         <p class="reading-section-intro">
@@ -662,19 +755,79 @@ const riskEmoji = riskLevel === 'BAJO' ? '🟢' : riskLevel === 'MEDIO' ? '🟠'
             const pillar = pillarIndex[ps.pillar_id];
             const icon = PILLAR_ICONS[ps.pillar_id as PillarId];
             const scorePercent = Math.round((ps.effective_score / 4) * 100);
+            const pillarProposals = (proposalsByPillar[ps.pillar_id] || [])
+              .sort((a, b) => {
+                const scoreA = a.dimensions.existence + a.dimensions.when + a.dimensions.how + a.dimensions.funding;
+                const scoreB = b.dimensions.existence + b.dimensions.when + b.dimensions.how + b.dimensions.funding;
+                return scoreB - scoreA;
+              })
+              .slice(0, 3);
+            
+            const bonuses = getPillarBonuses(candidate.candidate_id, ps.pillar_id as PillarId);
+            const hasViabilityPenalty = (ps.viability_penalty || 0) < 0;
             
             return (
-              <div class="reading-pillar-row">
-                <span class="reading-pillar-icon">{icon}</span>
-                <span class="reading-pillar-name">{pillar?.pillar_name || ps.pillar_id}</span>
-                <span class={`reading-pillar-score ${scorePercent >= 75 ? 'high' : scorePercent >= 50 ? 'medium' : 'low'}`}>
-                  {scorePercent}%
-                </span>
-            </div>
-          );
-        })}
-      </div>
-    </section>
+              <div class="reading-pillar-card">
+                <div class="reading-pillar-header">
+                  <span class="reading-pillar-icon">{icon}</span>
+                  <span class="reading-pillar-name">{pillar?.pillar_name || ps.pillar_id}</span>
+                  <span class={`reading-pillar-score ${scorePercent >= 75 ? 'high' : scorePercent >= 50 ? 'medium' : 'low'}`}>
+                    {scorePercent}%
+                  </span>
+                </div>
+                
+                {pillarProposals.length > 0 && (
+                  <div class="reading-pillar-proposals">
+                    <p class="reading-proposal-count">
+                      <strong>{pillarProposals.length}</strong> propuesta{pillarProposals.length !== 1 ? 's' : ''} encontrada{pillarProposals.length !== 1 ? 's' : ''}
+                      {pillarProposals.length >= 3 && (
+                        <span class="reading-bonus-text"> (Bono de +{bonuses.multiple} por múltiples propuestas)</span>
+                      )}
+                    </p>
+                    {pillarProposals.map((proposal, idx) => (
+                      <div class="reading-proposal-item">
+                        {idx === 0 && <strong>Mejor propuesta:</strong>}
+                        <h4>{proposal.proposal_title}</h4>
+                        <p>{proposal.proposal_text}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                
+                {bonuses.total > 0 && (
+                  <div class="reading-bonus-section">
+                    <strong>Bonos recibidos:</strong>
+                    {bonuses.multiple > 0 && (
+                      <p>Bono por múltiples propuestas: +{bonuses.multiple} puntos</p>
+                    )}
+                    {bonuses.quality > 0 && (
+                      <p>Bono por calidad: +{bonuses.quality} puntos</p>
+                    )}
+                    {bonuses.funding > 0 && (
+                      <p>Bono por financiamiento: +{bonuses.funding} puntos</p>
+                    )}
+                  </div>
+                )}
+                
+                {hasViabilityPenalty && (
+                  <div class="reading-viability-alert">
+                    <strong>⚠️ Violación Constitucional Detectada</strong>
+                    <p>Penalización: {ps.viability_penalty} puntos</p>
+                    {ps.viability_flags && (
+                      <ul>
+                        {ps.viability_flags.violates_separation_powers && <li>Viola separación de poderes</li>}
+                        {ps.viability_flags.violates_fundamental_rights && <li>Viola derechos fundamentales</li>}
+                        {ps.viability_flags.violates_constitutional_guarantees && <li>Viola garantías constitucionales</li>}
+                        {ps.viability_flags.violates_constitutional_procedures && <li>Viola procedimientos constitucionales</li>}
+                      </ul>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </section>
 
       <!-- Actions -->
       <section class="reading-actions">
@@ -1420,6 +1573,123 @@ const riskEmoji = riskLevel === 'BAJO' ? '🟢' : riskLevel === 'MEDIO' ? '🟠'
   .no-proposals-icon {
     font-size: 1.25rem;
   }
+
+  /* v7: Bonos y Violaciones */
+  .pillar-bonuses-penalties {
+    margin: 1rem 0;
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: 0.75rem;
+    border: 1px solid #e2e8f0;
+  }
+
+  .bonus-section {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+  }
+
+  .bonus-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #059669;
+  }
+
+  .bonus-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    background: #dcfce7;
+    color: #15803d;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .viability-alert {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: #fef2f2;
+    border-left: 4px solid #ef4444;
+    border-radius: 0.5rem;
+  }
+
+  .viability-icon {
+    font-size: 1.25rem;
+    flex-shrink: 0;
+  }
+
+  .viability-content {
+    flex: 1;
+  }
+
+  .viability-content strong {
+    display: block;
+    font-size: 0.875rem;
+    color: #991b1b;
+    margin-bottom: 0.25rem;
+  }
+
+  .viability-flags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    margin: 0.25rem 0;
+  }
+
+  .viability-flags-list span {
+    font-size: 0.75rem;
+    padding: 0.125rem 0.375rem;
+    background: white;
+    border-radius: 0.25rem;
+    color: #dc2626;
+  }
+
+  .penalty-amount {
+    font-size: 0.75rem;
+    color: #dc2626;
+    font-weight: 600;
+  }
+
+  .proposals-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+
+  .proposal-count {
+    font-size: 0.75rem;
+    color: #64748b;
+    font-weight: normal;
+    margin-left: 0.5rem;
+  }
+
+  .multiple-bonus-indicator {
+    margin-left: 0.25rem;
+    font-size: 0.875rem;
+  }
+
+  .best-proposal {
+    border-left-width: 4px;
+    border-left-color: #fbbf24;
+    background: linear-gradient(90deg, rgba(251, 191, 36, 0.05), transparent);
+  }
+
+  .best-proposal-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    padding: 0.125rem 0.375rem;
+    background: #fef3c7;
+    color: #92400e;
+    border-radius: 0.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
   
   /* Responsive Dashboard Mode - Fluid Typography */
   .candidate-name {
@@ -1785,6 +2055,57 @@ const riskEmoji = riskLevel === 'BAJO' ? '🟢' : riskLevel === 'MEDIO' ? '🟠'
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+
+  /* v7: Express Mode - Propuestas por pilar */
+  .express-pillar-proposals {
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.75rem;
+  }
+
+  .express-pillar-proposals-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .express-pillar-proposals-icon {
+    font-size: 1rem;
+  }
+
+  .express-pillar-proposals-name {
+    flex: 1;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #0f172a;
+  }
+
+  .express-bonus-badge {
+    font-size: 0.7rem;
+    padding: 0.125rem 0.375rem;
+    background: #dcfce7;
+    color: #15803d;
+    border-radius: 9999px;
+    font-weight: 600;
+  }
+
+  .express-best-badge {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .express-proposal-card.best-proposal {
+    position: relative;
+    border: 2px solid #fbbf24;
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.05), rgba(251, 191, 36, 0.02));
   }
   
   .express-actions {
@@ -2196,6 +2517,118 @@ const riskEmoji = riskLevel === 'BAJO' ? '🟢' : riskLevel === 'MEDIO' ? '🟠'
   .reading-pillar-score.high { color: #15803d; }
   .reading-pillar-score.medium { color: #d97706; }
   .reading-pillar-score.low { color: #dc2626; }
+
+  /* v7: Reading Mode - Propuestas y bonos */
+  .reading-pillar-card {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .reading-pillar-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e2e8f0;
+  }
+
+  .reading-pillar-proposals {
+    margin: 1rem 0;
+  }
+
+  .reading-proposal-count {
+    font-size: 1rem;
+    color: #475569;
+    margin-bottom: 1rem;
+  }
+
+  .reading-bonus-text {
+    color: #059669;
+    font-weight: 600;
+  }
+
+  .reading-proposal-item {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  .reading-proposal-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .reading-proposal-item h4 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #0f172a;
+    margin: 0.5rem 0;
+  }
+
+  .reading-proposal-item p {
+    font-size: 1rem;
+    color: #334155;
+    line-height: 1.6;
+    margin: 0.5rem 0;
+  }
+
+  .reading-bonus-section {
+    background: #f0fdf4;
+    border-left: 4px solid #22c55e;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin: 1rem 0;
+  }
+
+  .reading-bonus-section strong {
+    display: block;
+    font-size: 1rem;
+    color: #15803d;
+    margin-bottom: 0.5rem;
+  }
+
+  .reading-bonus-section p {
+    font-size: 0.95rem;
+    color: #334155;
+    margin: 0.25rem 0;
+  }
+
+  .reading-viability-alert {
+    background: #fef2f2;
+    border-left: 4px solid #ef4444;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin: 1rem 0;
+  }
+
+  .reading-viability-alert strong {
+    display: block;
+    font-size: 1rem;
+    color: #991b1b;
+    margin-bottom: 0.5rem;
+  }
+
+  .reading-viability-alert p {
+    font-size: 0.95rem;
+    color: #dc2626;
+    margin: 0.5rem 0;
+  }
+
+  .reading-viability-alert ul {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+  }
+
+  .reading-viability-alert li {
+    font-size: 0.95rem;
+    color: #334155;
+    margin: 0.25rem 0;
+  }
   
   .reading-actions {
     background: #1e3a5f;

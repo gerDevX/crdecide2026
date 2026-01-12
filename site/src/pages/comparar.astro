@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ScoreBar from '../components/ui/ScoreBar.astro';
-import { candidates, scoresByCandidate, pillars, pillarIndex, analysisByCandidate, proposals, getPdfUrl } from '../lib/data';
+import { candidates, scoresByCandidate, pillars, pillarIndex, analysisByCandidate, proposals, getPdfUrl, getInformativeFlags, hasActiveInformativeFlags, getTotalBonuses, getPillarBonuses } from '../lib/data';
 import { PILLAR_ICONS } from '../lib/types';
 import type { PillarId } from '../lib/types';
 
@@ -1450,6 +1450,12 @@ function buildPdfUrl(pdfId: string, page: number): string {
           
           const percent = Math.round((pillarScore.effective_score / 4) * 100);
           
+          // v7: Obtener bonos y violaciones
+          const bonuses = score.pillar_scores.find(ps => ps.pillar_id === pillarId);
+          const hasBonuses = bonuses && ((bonuses.bonus_multiple || 0) + (bonuses.bonus_quality || 0) + (bonuses.bonus_funding || 0)) > 0;
+          const hasViability = bonuses && (bonuses.viability_penalty || 0) < 0;
+          const numProposals = bonuses?.num_proposals || 0;
+          
           return `
             <div class="flex-1 px-2 score-cell">
               <div class="flex items-center gap-2 w-full">
@@ -1458,6 +1464,19 @@ function buildPdfUrl(pdfId: string, page: number): string {
                 </div>
                 <span class="font-bold text-sm">${percent}%</span>
               </div>
+              ${numProposals > 0 ? `<div class="text-xs text-slate-500 mt-1">${numProposals} propuesta${numProposals !== 1 ? 's' : ''}</div>` : ''}
+              ${hasBonuses ? `
+                <div class="flex gap-1 mt-1 flex-wrap">
+                  ${bonuses.bonus_multiple > 0 ? `<span class="text-xs px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded" title="Bono por múltiples propuestas">🎯 +${bonuses.bonus_multiple}</span>` : ''}
+                  ${bonuses.bonus_quality > 0 ? `<span class="text-xs px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded" title="Bono por calidad">⭐ +${bonuses.bonus_quality}</span>` : ''}
+                  ${bonuses.bonus_funding > 0 ? `<span class="text-xs px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded" title="Bono por financiamiento">💰 +${bonuses.bonus_funding}</span>` : ''}
+                </div>
+              ` : ''}
+              ${hasViability ? `
+                <div class="text-xs text-red-600 mt-1" title="Violación constitucional">
+                  ⚖️ ${bonuses.viability_penalty}
+                </div>
+              ` : ''}
               ${getDashboardPdfLink(candidate.candidate_id, pillarId)}
             </div>
           `;
@@ -1465,20 +1484,45 @@ function buildPdfUrl(pdfId: string, page: number): string {
       }
     });
 
-    // Render overall scores with candidate names
+    // Render overall scores with candidate names (v7: con flags informativos y bonos)
     if (overallScores) {
-      overallScores.innerHTML = candidateData.map(({ candidate, score }) => `
-        <div class="flex items-center justify-between p-3 bg-white rounded-lg">
-          <div>
-            <div class="font-bold text-slate-900">${getDisplayName(candidate)}</div>
-            <div class="text-sm text-slate-500">${candidate.party_name}</div>
+      overallScores.innerHTML = candidateData.map(({ candidate, score }) => {
+        const totalBonuses = (score.pillar_scores || []).reduce((sum, ps) => {
+          return sum + (ps.bonus_multiple || 0) + (ps.bonus_quality || 0) + (ps.bonus_funding || 0);
+        }, 0);
+        const hasFlags = score.informative_flags && (
+          Object.values(score.informative_flags.current_proposals || {}).some(f => f.active) ||
+          Object.values(score.informative_flags.dictatorial_patterns || {}).some(f => f?.active) ||
+          Object.values(score.informative_flags.power_negotiation_requirements || {}).some(f => f?.active) ||
+          Object.values(score.informative_flags.historical || {}).some(f => f?.active) ||
+          Object.values(score.informative_flags.contradictions || {}).some(f => f?.active)
+        );
+        
+        return `
+          <div class="flex items-center justify-between p-3 bg-white rounded-lg border border-slate-200">
+            <div class="flex-1">
+              <div class="font-bold text-slate-900">${getDisplayName(candidate)}</div>
+              <div class="text-sm text-slate-500">${candidate.party_name}</div>
+              ${totalBonuses > 0 ? `
+                <div class="flex gap-1 mt-1 flex-wrap">
+                  <span class="text-xs text-emerald-600">🎁 Bonos totales: +${totalBonuses.toFixed(2)}</span>
+                </div>
+              ` : ''}
+              ${hasFlags ? `
+                <div class="mt-1">
+                  <span class="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full" title="Tiene información adicional">
+                    ℹ️ Información adicional
+                  </span>
+                </div>
+              ` : ''}
+            </div>
+            <div class="text-right">
+              <div class="text-2xl font-bold text-civic-600">${Math.round(score.overall.weighted_sum * 100)}%</div>
+              <div class="text-sm text-slate-500">General</div>
+            </div>
           </div>
-          <div class="text-right">
-            <div class="text-2xl font-bold text-civic-600">${Math.round(score.overall.weighted_sum * 100)}%</div>
-            <div class="text-sm text-slate-500">General</div>
-          </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
   }
 
@@ -1605,9 +1649,20 @@ function buildPdfUrl(pdfId: string, page: number): string {
                     const ps = score.pillar_scores.find(p => p.pillar_id === pillar.pillar_id);
                     const percent = ps ? Math.round((ps.effective_score / 4) * 100) : 0;
                     const textColor = percent >= 50 ? '#059669' : '#dc2626';
+                    
+                    // v7: Bonos y violaciones
+                    const bonuses = ps ? ((ps.bonus_multiple || 0) + (ps.bonus_quality || 0) + (ps.bonus_funding || 0)) : 0;
+                    const hasViability = ps && (ps.viability_penalty || 0) < 0;
+                    const numProposals = ps?.num_proposals || 0;
+                    
                     return `
-                      <div style="width: ${colWidth}; min-width: ${colWidth}; text-align: center; font-weight: 700; font-size: 0.9rem;">
-                        ${getPercentPdfLink(candidate.candidate_id, pillar.pillar_id, percent, textColor)}
+                      <div style="width: ${colWidth}; min-width: ${colWidth}; text-align: center;">
+                        <div style="font-weight: 700; font-size: 0.9rem;">
+                          ${getPercentPdfLink(candidate.candidate_id, pillar.pillar_id, percent, textColor)}
+                        </div>
+                        ${numProposals > 0 ? `<div style="font-size: 0.65rem; color: #64748b; margin-top: 0.125rem;">${numProposals}p</div>` : ''}
+                        ${bonuses > 0 ? `<div style="font-size: 0.65rem; color: #059669; margin-top: 0.125rem; font-weight: 600;">🎁+${bonuses.toFixed(1)}</div>` : ''}
+                        ${hasViability ? `<div style="font-size: 0.65rem; color: #dc2626; margin-top: 0.125rem;">⚖️${ps.viability_penalty}</div>` : ''}
                       </div>
                     `;
                   }).join('')}
@@ -1800,12 +1855,21 @@ function buildPdfUrl(pdfId: string, page: number): string {
                     const percent = ps ? Math.round((ps.effective_score / 4) * 100) : 0;
                     const bgColor = percent >= 75 ? '#d1fae5' : percent >= 50 ? '#fef3c7' : '#fee2e2';
                     const textColor = percent >= 75 ? '#059669' : percent >= 50 ? '#d97706' : '#dc2626';
+                    
+                    // v7: Bonos y violaciones
+                    const bonuses = ps ? ((ps.bonus_multiple || 0) + (ps.bonus_quality || 0) + (ps.bonus_funding || 0)) : 0;
+                    const hasViability = ps && (ps.viability_penalty || 0) < 0;
+                    const numProposals = ps?.num_proposals || 0;
+                    
                     return `
                       <div class="row-score-cell" style="text-align: center; padding: 0.75rem; background: ${bgColor}; border-radius: 0.5rem; min-width: ${minColWidth};">
                         <div class="row-score-candidate" style="font-size: 0.7rem; color: #475569; margin-bottom: 0.25rem; display: none;">${candidate.pdf_id}</div>
                         <div class="row-score-percent" style="font-size: 1.5rem; font-weight: 800;">
                           ${getPercentPdfLink(candidate.candidate_id, pillar.pillar_id, percent, textColor)}
                         </div>
+                        ${numProposals > 0 ? `<div style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem;">${numProposals} prop.</div>` : ''}
+                        ${bonuses > 0 ? `<div style="font-size: 0.7rem; color: #059669; margin-top: 0.25rem; font-weight: 600;">🎁 +${bonuses.toFixed(2)}</div>` : ''}
+                        ${hasViability ? `<div style="font-size: 0.7rem; color: #dc2626; margin-top: 0.25rem;">⚖️ ${ps.viability_penalty}</div>` : ''}
                       </div>
                     `;
                   }).join('')}

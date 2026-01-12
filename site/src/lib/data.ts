@@ -15,6 +15,7 @@ import type {
   OmissionAnalysis,
   PenaltyType,
   PRIORITY_PILLARS,
+  InformativeFlags,
 } from './types';
 
 // Importar datos JSON
@@ -400,4 +401,68 @@ export function getPenaltyColor(penaltyType: PenaltyType): string {
     return 'text-red-600 bg-red-50';
   }
   return 'text-amber-600 bg-amber-50';
+}
+
+// ============================================
+// FUNCIONES DE FLAGS INFORMATIVOS (v7)
+// ============================================
+
+export function getInformativeFlags(candidateId: string): InformativeFlags | undefined {
+  const score = scoresByCandidate[candidateId];
+  return score?.informative_flags;
+}
+
+export function hasActiveInformativeFlags(candidateId: string): boolean {
+  const flags = getInformativeFlags(candidateId);
+  if (!flags) return false;
+  
+  // Verificar cada categoría
+  const hasCurrentProposals = Object.values(flags.current_proposals || {})
+    .some(f => f.active);
+  const hasDictatorial = Object.values(flags.dictatorial_patterns || {})
+    .some(f => f?.active);
+  const hasNegotiation = Object.values(flags.power_negotiation_requirements || {})
+    .some(f => f?.active);
+  const hasHistorical = Object.values(flags.historical || {})
+    .some(f => f?.active);
+  const hasContradictions = Object.values(flags.contradictions || {})
+    .some(f => f?.active);
+  
+  return hasCurrentProposals || hasDictatorial || hasNegotiation || 
+         hasHistorical || hasContradictions;
+}
+
+export function getTotalBonuses(candidateId: string): number {
+  const score = scoresByCandidate[candidateId];
+  if (!score) return 0;
+  
+  return score.pillar_scores.reduce((sum, ps) => {
+    return sum + (ps.bonus_multiple || 0) + 
+                 (ps.bonus_quality || 0) + 
+                 (ps.bonus_funding || 0);
+  }, 0);
+}
+
+export function getPillarBonuses(candidateId: string, pillarId: PillarId): {
+  multiple: number;
+  quality: number;
+  funding: number;
+  total: number;
+} {
+  const score = scoresByCandidate[candidateId];
+  if (!score) return { multiple: 0, quality: 0, funding: 0, total: 0 };
+  
+  const pillarScore = score.pillar_scores.find(ps => ps.pillar_id === pillarId);
+  if (!pillarScore) return { multiple: 0, quality: 0, funding: 0, total: 0 };
+  
+  const multiple = pillarScore.bonus_multiple || 0;
+  const quality = pillarScore.bonus_quality || 0;
+  const funding = pillarScore.bonus_funding || 0;
+  
+  return {
+    multiple,
+    quality,
+    funding,
+    total: multiple + quality + funding,
+  };
 }

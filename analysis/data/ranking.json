@@ -14,18 +14,18 @@
     "P10": 0.09
   },
   "priority_pillars": [
-    "P4",
     "P1",
+    "P4",
     "P3",
     "P7"
   ],
   "critical_pillars": [
-    "P4",
-    "P2",
-    "P7",
     "P1",
+    "P2",
+    "P5",
     "P3",
-    "P5"
+    "P4",
+    "P7"
   ],
   "penalties_applied": {
     "fiscal": {
@@ -44,7 +44,7 @@
     {
       "rank": 1,
       "candidate_id": "laura-fernandez-delgado",
-      "weighted_sum": 0.936,
+      "weighted_sum": 0.9388,
       "total_penalties": 0
     },
     {
@@ -166,7 +166,7 @@
     {
       "rank": 1,
       "candidate_id": "laura-fernandez-delgado",
-      "priority_weighted_sum": 0.5685
+      "priority_weighted_sum": 0.57
     },
     {
       "rank": 2,
@@ -268,7 +268,7 @@
     {
       "rank": 1,
       "candidate_id": "laura-fernandez-delgado",
-      "critical_weighted_sum": 0.7785
+      "critical_weighted_sum": 0.78
     },
     {
       "rank": 2,

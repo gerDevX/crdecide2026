@@ -43,7 +43,7 @@ const candidateList = candidates.map(c => ({
       
       <div class="express-fiscal-content">
         <div class="express-fiscal-explanation">
-          <p>Analizamos dos tipos de penalizaciones:</p>
+          <p>Analizamos tres tipos de penalizaciones:</p>
           <div class="express-fiscal-types">
             <div class="express-fiscal-type express-fiscal-red">
               <span>🔴</span>
@@ -55,6 +55,12 @@ const candidateList = candidates.map(c => ({
               <span>🟠</span>
               <div>
                 <strong>Omisiones:</strong> Ignoran urgencias como seguridad operativa o crisis de la CCSS
+              </div>
+            </div>
+            <div class="express-fiscal-type express-fiscal-blue">
+              <span>⚖️</span>
+              <div>
+                <strong>Viabilidad Legal:</strong> Violan separación de poderes, derechos fundamentales, garantías o procedimientos constitucionales
               </div>
             </div>
           </div>
@@ -95,6 +101,7 @@ const candidateList = candidates.map(c => ({
         </div>
         
         <p class="express-fiscal-note">
+          <strong>Motor de análisis:</strong> También aplicamos bonos por múltiples propuestas y calidad. 
           Basado en el texto literal de los planes. <a href="/metodologia#penalizaciones" class="express-fiscal-link">Ver metodología →</a>
         </p>
       </div>
@@ -511,6 +518,11 @@ const candidateList = candidates.map(c => ({
   .express-fiscal-amber {
     background: #fffbeb;
     border-left: 3px solid #f59e0b;
+  }
+  
+  .express-fiscal-blue {
+    background: #eff6ff;
+    border-left: 3px solid #3b82f6;
   }
   
   .express-fiscal-type span {
