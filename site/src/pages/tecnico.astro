@@ -3,6 +3,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title="Detalles Técnicos">
+  
+  <!-- ============================================
+       MODE: DASHBOARD 📊
+       ============================================ -->
+  <div class="mode-dashboard-content">
   <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 prose prose-slate prose-lg">
     
     <h1 class="flex items-center gap-3">
@@ -186,7 +191,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <h2>⚙️ Configuración del OCR</h2>
 
     <div class="not-prose bg-slate-900 rounded-xl p-5 mt-4 overflow-x-auto">
-      <pre class="text-sm text-slate-100 font-mono"><code set:text={`# Configuración en process_plans_v6.py
+      <pre class="text-sm text-slate-100 font-mono"><code set:text={`# Configuración en process_plans_v7.py
 
 # Resolución para renderizar páginas como imagen
 RENDER_DPI = 200
@@ -261,9 +266,10 @@ CORRUPT_THRESHOLD = 0.02`}></code></pre>
           <div class="relative flex items-start gap-4">
             <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white font-bold z-10 shrink-0">5</div>
             <div class="bg-white border border-slate-200 rounded-xl p-4 flex-1 shadow-sm">
-              <h4 class="font-bold text-slate-900">Evaluación y Penalización</h4>
+              <h4 class="font-bold text-slate-900">Evaluación, Penalización y Bonos</h4>
               <p class="text-sm text-slate-600 mt-1">
-                Se evalúan las 4 dimensiones y se aplican penalizaciones por irresponsabilidad y por omisión.
+                Se evalúan las 4 dimensiones, se aplican penalizaciones (fiscales, omisión, viabilidad legal), 
+                se calculan bonos (múltiples propuestas, calidad, financiamiento) y se generan flags informativos.
               </p>
             </div>
           </div>
@@ -340,9 +346,9 @@ pip install PyMuPDF Pillow pytesseract
 # 2. Instalar Tesseract (macOS)
 brew install tesseract tesseract-lang
 
-# 3. Ejecutar el análisis v6
+# 3. Ejecutar el análisis v7
 cd analysis/
-python process_plans_v6.py
+python process_plans_v7.py
 
 # Salida esperada:
 # ================================================================================
@@ -368,11 +374,11 @@ FISCAL_PENALTIES = {
 
 # Penalizaciones por omisión (urgencias nacionales)
 OMISSION_PENALTIES = {
-    "ignores_security": -1,           # No menciona seguridad operativa
-    "ignores_ccss": -1,               # No menciona crisis CCSS
-    "ignores_employment": -0.5,       # No menciona empleo formal
-    "ignores_organized_crime": -0.5,  # No menciona crimen organizado
-    "missing_priority_pillar": -0.5,  # Por cada pilar prioritario faltante
+    "ignores_security_operations": -1,    # No menciona seguridad operativa
+    "ignores_ccss_crisis": -1,            # No menciona crisis CCSS
+    "ignores_formal_employment": -0.5,    # No menciona empleo formal
+    "ignores_organized_crime": -0.5,      # No menciona crimen organizado
+    "missing_priority_pillar": -0.5,      # Por cada pilar prioritario faltante
 }
 
 # Penalizaciones por viabilidad legal (v7)
@@ -393,19 +399,89 @@ BONUSES = {
 # Pilares prioritarios (P3=Seguridad, P4=Salud, P1=Fiscal, P7=Reforma)
 PRIORITY_PILLARS = {"P3", "P4", "P1", "P7"}
 
-# Pesos por pilar
+# Pesos por pilar (v7)
 PILLAR_WEIGHTS = {
-    "P1": 0.14,  # Finanzas
-    "P2": 0.11,  # Empleo
-    "P3": 0.18,  # Seguridad
-    "P4": 0.16,  # Salud
+    "P1": 0.14,  # Sostenibilidad fiscal
+    "P2": 0.11,  # Empleo y competitividad
+    "P3": 0.18,  # Seguridad ciudadana
+    "P4": 0.16,  # Salud pública (CCSS)
     "P5": 0.10,  # Educación
     "P6": 0.03,  # Ambiente
-    "P7": 0.12,  # Reforma
-    "P8": 0.05,  # Social
-    "P9": 0.02,  # Exterior
+    "P7": 0.12,  # Reforma del Estado
+    "P8": 0.05,  # Política social
+    "P9": 0.02,  # Política exterior
     "P10": 0.09, # Infraestructura
+}
+
+# Flags Informativos (v7 - NO penalizan, solo informan)
+INFORMATIVE_FLAGS = {
+    "current_proposals": {
+        "violates_separation_powers": "Viola separación de poderes",
+        "violates_fundamental_rights": "Viola derechos fundamentales",
+        "violates_constitutional_guarantees": "Viola garantías constitucionales",
+        "violates_constitutional_procedures": "Viola procedimientos constitucionales",
+    },
+    "dictatorial_patterns": "Similitudes con modelos dictatoriales (Cuba, Venezuela)",
+    "power_negotiation_requirements": "Requisitos de negociación entre poderes",
+    "historical": "Evidencia histórica verificable",
+    "contradictions": "Contradicciones histórico-actual",
 }`}></code></pre>
+    </div>
+
+    <hr />
+
+    <h2>ℹ️ Flags Informativos (v7)</h2>
+
+    <div class="not-prose space-y-4 mt-4">
+      <div class="bg-blue-50 border border-blue-200 rounded-xl p-5">
+        <h3 class="font-bold text-blue-900 mb-3">¿Qué son los Flags Informativos?</h3>
+        <p class="text-slate-700 mb-3">
+          Los <strong>flags informativos NO penalizan el score</strong>. Son señales de información objetiva 
+          basadas en evidencia verificable que ayudan al ciudadano a tomar decisiones más informadas.
+        </p>
+        <div class="space-y-3">
+          <div class="bg-white rounded-lg p-3">
+            <p class="font-semibold text-slate-800 mb-1">1. Propuestas Actuales Problemáticas</p>
+            <p class="text-sm text-slate-600">
+              Detecta violaciones constitucionales en propuestas actuales (separación de poderes, 
+              derechos fundamentales, garantías constitucionales, procedimientos).
+            </p>
+          </div>
+          <div class="bg-white rounded-lg p-3">
+            <p class="font-semibold text-slate-800 mb-1">2. Similitudes con Modelos Dictatoriales</p>
+            <p class="text-sm text-slate-600">
+              Detecta patrones objetivos similares a modelos históricos (Cuba, Venezuela) basados 
+              en evidencia verificable. NO juzga ideología, solo detecta patrones de comportamiento.
+            </p>
+          </div>
+          <div class="bg-white rounded-lg p-3">
+            <p class="font-semibold text-slate-800 mb-1">3. Requisitos de Negociación</p>
+            <p class="text-sm text-slate-600">
+              Indica complejidad de implementación (requiere aprobación de Asamblea, mayoría calificada, 
+              coordinación entre poderes). NO es un problema, solo informa sobre complejidad.
+            </p>
+          </div>
+          <div class="bg-white rounded-lg p-3">
+            <p class="font-semibold text-slate-800 mb-1">4. Evidencia Histórica Verificable</p>
+            <p class="text-sm text-slate-600">
+              Muestra evidencia histórica verificable de comportamiento del candidato/partido basada en 
+              sentencias judiciales, resoluciones internacionales, informes de Contraloría.
+            </p>
+          </div>
+          <div class="bg-white rounded-lg p-3">
+            <p class="font-semibold text-slate-800 mb-1">5. Contradicciones Histórico-Actual</p>
+            <p class="text-sm text-slate-600">
+              Detecta patrones consistentes entre evidencia histórica y propuestas actuales problemáticas.
+            </p>
+          </div>
+        </div>
+        <div class="mt-4 bg-amber-50 border border-amber-200 rounded-lg p-3">
+          <p class="text-sm text-amber-800">
+            <strong>⚠️ Importante:</strong> Los flags informativos NO afectan el score. Son solo información 
+            para que el ciudadano pueda tomar decisiones más informadas.
+          </p>
+        </div>
+      </div>
     </div>
 
     <hr />
@@ -424,9 +500,316 @@ PILLAR_WEIGHTS = {
     </p>
 
   </article>
+  </div>
+
+  <!-- ============================================
+       MODE: EXPRESS 🚀
+       ============================================ -->
+  <div class="mode-express-content">
+    <div class="express-tecnico-container">
+      <h1 class="express-tecnico-title">⚙️ Detalles Técnicos</h1>
+      
+      <div class="express-tech-card">
+        <h2>🐍 Stack</h2>
+        <div class="express-tech-grid">
+          <div class="express-tech-item">
+            <span class="express-tech-icon">🐍</span>
+            <strong>Python 3.10+</strong>
+            <span>Scripts de procesamiento</span>
+          </div>
+          <div class="express-tech-item">
+            <span class="express-tech-icon">🚀</span>
+            <strong>Astro 4.x</strong>
+            <span>Framework web</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="express-tech-card">
+        <h2>📄 Librerías</h2>
+        <div class="express-tech-list">
+          <div class="express-tech-lib">
+            <strong>PyMuPDF</strong>
+            <code>pip install PyMuPDF</code>
+          </div>
+          <div class="express-tech-lib">
+            <strong>Tesseract OCR</strong>
+            <code>brew install tesseract</code>
+          </div>
+          <div class="express-tech-lib">
+            <strong>Pillow</strong>
+            <code>pip install Pillow</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="express-tech-card">
+        <h2>🔄 Flujo</h2>
+        <div class="express-flow">
+          <div class="express-flow-step">1. Leer PDF</div>
+          <div class="express-flow-step">2. Detectar corrupción</div>
+          <div class="express-flow-step">3. Extraer texto (OCR si es necesario)</div>
+          <div class="express-flow-step">4. Buscar propuestas</div>
+          <div class="express-flow-step">5. Evaluar + Penalizar + Bonos</div>
+          <div class="express-flow-step">6. Generar JSON</div>
+        </div>
+      </div>
+
+      <div class="express-tech-card">
+        <h2>📐 Constantes v7</h2>
+        <div class="express-constants">
+          <div class="express-constant-group">
+            <strong>Penalizaciones Fiscales</strong>
+            <span>Ataca regla: -2 | Más deuda: -1</span>
+          </div>
+          <div class="express-constant-group">
+            <strong>Penalizaciones Omisión</strong>
+            <span>Seguridad: -1 | CCSS: -1 | Empleo: -0.5</span>
+          </div>
+          <div class="express-constant-group">
+            <strong>Viabilidad Legal</strong>
+            <span>Separación poderes: -1.0 | Derechos: -1.0</span>
+          </div>
+          <div class="express-constant-group">
+            <strong>Bonos</strong>
+            <span>Múltiples: +1.0 | Completa: +0.25 | Financiamiento: +0.1</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="express-tech-card">
+        <h2>ℹ️ Flags Informativos</h2>
+        <p class="express-flags-note">NO penalizan, solo informan:</p>
+        <div class="express-flags-list">
+          <span>⚠️ Propuestas problemáticas</span>
+          <span>📚 Similitudes históricas</span>
+          <span>🤝 Requisitos negociación</span>
+          <span>📖 Evidencia histórica</span>
+          <span>🔄 Contradicciones</span>
+        </div>
+      </div>
+
+      <p class="express-footer-note">
+        Motor v7: Neutral + Estricto + Bonos + Viabilidad + Flags · Enero 2026
+      </p>
+    </div>
+  </div>
+
+  <!-- ============================================
+       MODE: READING 📖
+       ============================================ -->
+  <div class="mode-reading-content">
+    <article class="reading-tecnico-container">
+      <h1 class="reading-main-title">⚙️ Detalles Técnicos del Análisis</h1>
+      
+      <div class="reading-note-box">
+        <p class="reading-large-text">
+          Esta página está dirigida a personas con conocimientos técnicos que deseen entender 
+          cómo funciona el sistema de análisis. Si busca una explicación más general, 
+          visite la <a href="/metodologia" class="reading-link">página de metodología</a>.
+        </p>
+      </div>
+
+      <section class="reading-section">
+        <h2 class="reading-section-title">🐍 Stack Tecnológico</h2>
+        <p class="reading-medium-text">
+          El sistema utiliza <strong>Python 3.10+</strong> para el procesamiento de documentos 
+          y <strong>Astro 4.x</strong> como framework web para la visualización de resultados.
+        </p>
+      </section>
+
+      <section class="reading-section">
+        <h2 class="reading-section-title">📄 Procesamiento de PDFs</h2>
+        <p class="reading-medium-text mb-4">
+          El sistema utiliza las siguientes librerías para procesar los documentos PDF:
+        </p>
+        
+        <div class="reading-lib-item">
+          <h3 class="reading-lib-title">PyMuPDF (fitz)</h3>
+          <p class="reading-medium-text">
+            Librería de alto rendimiento para lectura y manipulación de documentos PDF. 
+            Se utiliza para extraer texto página por página, detectar texto corrupto 
+            (fuentes mal embebidas) y renderizar páginas como imágenes para OCR.
+          </p>
+          <code class="reading-code-block">pip install PyMuPDF</code>
+        </div>
+
+        <div class="reading-lib-item">
+          <h3 class="reading-lib-title">Tesseract OCR</h3>
+          <p class="reading-medium-text">
+            Motor de reconocimiento óptico de caracteres (OCR) de código abierto, mantenido por Google. 
+            Se utiliza para leer PDFs con texto corrupto o escaneado, y para extraer texto de imágenes de páginas.
+          </p>
+          <code class="reading-code-block">brew install tesseract tesseract-lang</code>
+        </div>
+
+        <div class="reading-lib-item">
+          <h3 class="reading-lib-title">Pillow (PIL)</h3>
+          <p class="reading-medium-text">
+            Fork moderno de Python Imaging Library para manipulación de imágenes. 
+            Se utiliza para convertir páginas PDF a imágenes PNG y preparar imágenes para OCR.
+          </p>
+          <code class="reading-code-block">pip install Pillow</code>
+        </div>
+      </section>
+
+      <section class="reading-section">
+        <h2 class="reading-section-title">🔄 Flujo de Procesamiento</h2>
+        <p class="reading-medium-text mb-4">
+          El sistema procesa los planes de gobierno en los siguientes pasos:
+        </p>
+        <ol class="reading-steps-list">
+          <li class="reading-step-item">
+            <strong>Lectura del PDF:</strong> Se abre el documento usando <code>fitz.open(pdf_path)</code>.
+          </li>
+          <li class="reading-step-item">
+            <strong>Detección de Texto Corrupto:</strong> Se muestrean las primeras 10 páginas. 
+            Si más del 2% son caracteres de fuentes privadas, se activa OCR.
+          </li>
+          <li class="reading-step-item">
+            <strong>Extracción de Texto:</strong> En modo normal se usa <code>page.get_text()</code>. 
+            En modo OCR se renderiza a imagen y luego se procesa con Tesseract.
+          </li>
+          <li class="reading-step-item">
+            <strong>Búsqueda de Propuestas:</strong> Se buscan keywords por pilar y se extraen propuestas con contexto.
+          </li>
+          <li class="reading-step-item">
+            <strong>Evaluación, Penalización y Bonos:</strong> Se evalúan las 4 dimensiones, se aplican penalizaciones 
+            (fiscales, omisión, viabilidad legal), se calculan bonos (múltiples propuestas, calidad, financiamiento) 
+            y se generan flags informativos.
+          </li>
+          <li class="reading-step-item">
+            <strong>Generación de JSON:</strong> Se exportan los resultados a archivos JSON que consume el sitio web.
+          </li>
+        </ol>
+      </section>
+
+      <section class="reading-section">
+        <h2 class="reading-section-title">📐 Constantes de Penalización y Bonos (v7)</h2>
+        <p class="reading-medium-text mb-4">
+          El sistema utiliza las siguientes constantes para calcular los puntajes:
+        </p>
+        
+        <div class="reading-constants-box">
+          <h3 class="reading-constants-title">Penalizaciones Fiscales</h3>
+          <ul class="reading-constants-list">
+            <li>Ataca regla fiscal: <strong>-2 puntos</strong></li>
+            <li>Propone más deuda sin plan: <strong>-1 punto</strong></li>
+          </ul>
+        </div>
+
+        <div class="reading-constants-box">
+          <h3 class="reading-constants-title">Penalizaciones por Omisión</h3>
+          <ul class="reading-constants-list">
+            <li>Ignora seguridad operativa: <strong>-1 punto</strong></li>
+            <li>Ignora crisis CCSS: <strong>-1 punto</strong></li>
+            <li>Ignora empleo formal: <strong>-0.5 puntos</strong></li>
+            <li>Ignora crimen organizado: <strong>-0.5 puntos</strong></li>
+            <li>Pilar prioritario faltante: <strong>-0.5 puntos</strong></li>
+          </ul>
+        </div>
+
+        <div class="reading-constants-box">
+          <h3 class="reading-constants-title">Penalizaciones por Viabilidad Legal</h3>
+          <ul class="reading-constants-list">
+            <li>Viola separación de poderes: <strong>-1.0 puntos</strong></li>
+            <li>Viola derechos fundamentales: <strong>-1.0 puntos</strong></li>
+            <li>Viola garantías constitucionales: <strong>-1.0 puntos</strong></li>
+            <li>Viola procedimientos constitucionales: <strong>-0.5 puntos</strong></li>
+          </ul>
+        </div>
+
+        <div class="reading-constants-box reading-constants-bonus">
+          <h3 class="reading-constants-title">Bonos</h3>
+          <ul class="reading-constants-list">
+            <li>Múltiples propuestas (3+ por pilar): <strong>+1.0 puntos</strong></li>
+            <li>Propuesta completa (4/4 dimensiones): <strong>+0.25 puntos</strong></li>
+            <li>Financiamiento claro (score >=3): <strong>+0.1 puntos</strong></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="reading-section">
+        <h2 class="reading-section-title">ℹ️ Flags Informativos (v7)</h2>
+        <p class="reading-large-text mb-4">
+          Los <strong>flags informativos NO penalizan el score</strong>. Son señales de información objetiva 
+          basadas en evidencia verificable que ayudan al ciudadano a tomar decisiones más informadas.
+        </p>
+        
+        <div class="reading-flags-box">
+          <h3 class="reading-flags-title">1. Propuestas Actuales Problemáticas</h3>
+          <p class="reading-medium-text">
+            Detecta violaciones constitucionales en propuestas actuales (separación de poderes, 
+            derechos fundamentales, garantías constitucionales, procedimientos).
+          </p>
+        </div>
+
+        <div class="reading-flags-box">
+          <h3 class="reading-flags-title">2. Similitudes con Modelos Dictatoriales</h3>
+          <p class="reading-medium-text">
+            Detecta patrones objetivos similares a modelos históricos (Cuba, Venezuela) basados 
+            en evidencia verificable. NO juzga ideología, solo detecta patrones de comportamiento.
+          </p>
+        </div>
+
+        <div class="reading-flags-box">
+          <h3 class="reading-flags-title">3. Requisitos de Negociación</h3>
+          <p class="reading-medium-text">
+            Indica complejidad de implementación (requiere aprobación de Asamblea, mayoría calificada, 
+            coordinación entre poderes). NO es un problema, solo informa sobre complejidad.
+          </p>
+        </div>
+
+        <div class="reading-flags-box">
+          <h3 class="reading-flags-title">4. Evidencia Histórica Verificable</h3>
+          <p class="reading-medium-text">
+            Muestra evidencia histórica verificable de comportamiento del candidato/partido basada en 
+            sentencias judiciales, resoluciones internacionales, informes de Contraloría.
+          </p>
+        </div>
+
+        <div class="reading-flags-box">
+          <h3 class="reading-flags-title">5. Contradicciones Histórico-Actual</h3>
+          <p class="reading-medium-text">
+            Detecta patrones consistentes entre evidencia histórica y propuestas actuales problemáticas.
+          </p>
+        </div>
+
+        <div class="reading-warning-box">
+          <p class="reading-medium-text">
+            <strong>⚠️ Importante:</strong> Los flags informativos NO afectan el score. Son solo información 
+            para que el ciudadano pueda tomar decisiones más informadas.
+          </p>
+        </div>
+      </section>
+
+      <p class="reading-footer-note">
+        Motor de análisis (Neutral + Estricto + Bonos + Viabilidad Legal + Flags Informativos) · Enero 2026
+      </p>
+    </article>
+  </div>
+
 </BaseLayout>
 
 <style>
+  /* ============================================
+     MODE VISIBILITY
+     ============================================ */
+  .mode-dashboard-content { display: block; }
+  .mode-express-content { display: none; }
+  .mode-reading-content { display: none; }
+  
+  :global(html[data-mode="express"]) .mode-dashboard-content { display: none; }
+  :global(html[data-mode="express"]) .mode-express-content { display: block; }
+  :global(html[data-mode="express"]) .mode-reading-content { display: none; }
+  
+  :global(html[data-mode="reading"]) .mode-dashboard-content { display: none; }
+  :global(html[data-mode="reading"]) .mode-express-content { display: none; }
+  :global(html[data-mode="reading"]) .mode-reading-content { display: block; }
+
+  /* ============================================
+     MODE: DASHBOARD (default)
+     ============================================ */
   .prose h2 {
     font-size: 1.5rem;
     font-weight: 700;
@@ -445,5 +828,327 @@ PILLAR_WEIGHTS = {
   
   code {
     font-size: 0.875em;
+  }
+
+  /* ============================================
+     MODE: EXPRESS 🚀
+     ============================================ */
+  .express-tecnico-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+  
+  .express-tecnico-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  
+  .express-tech-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+  
+  .express-tech-card h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 1rem;
+  }
+  
+  .express-tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  
+  .express-tech-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: 0.75rem;
+  }
+  
+  .express-tech-icon {
+    font-size: 2rem;
+  }
+  
+  .express-tech-item strong {
+    font-size: 1rem;
+    color: #1e293b;
+  }
+  
+  .express-tech-item span {
+    font-size: 0.875rem;
+    color: #64748b;
+  }
+  
+  .express-tech-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .express-tech-lib {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: #f1f5f9;
+    border-radius: 0.5rem;
+  }
+  
+  .express-tech-lib strong {
+    color: #1e293b;
+  }
+  
+  .express-tech-lib code {
+    background: #0f172a;
+    color: #e2e8f0;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+  }
+  
+  .express-flow {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.75rem;
+  }
+  
+  .express-flow-step {
+    padding: 0.75rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 0.5rem;
+    text-align: center;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  
+  .express-constants {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .express-constant-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.75rem;
+    background: #f8fafc;
+    border-radius: 0.5rem;
+  }
+  
+  .express-constant-group strong {
+    color: #1e293b;
+    font-size: 0.875rem;
+  }
+  
+  .express-constant-group span {
+    color: #64748b;
+    font-size: 0.75rem;
+  }
+  
+  .express-flags-note {
+    color: #64748b;
+    font-size: 0.875rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .express-flags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .express-flags-list span {
+    padding: 0.5rem 0.75rem;
+    background: #dbeafe;
+    color: #1e40af;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+  }
+  
+  .express-footer-note {
+    text-align: center;
+    color: #64748b;
+    font-size: 0.875rem;
+    margin-top: 2rem;
+  }
+
+  /* ============================================
+     MODE: READING 📖
+     ============================================ */
+  .reading-tecnico-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem;
+    font-family: Georgia, serif;
+  }
+  
+  .reading-main-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 2rem;
+    line-height: 1.2;
+  }
+  
+  .reading-note-box {
+    background: #f8fafc;
+    border-left: 4px solid #3b82f6;
+    padding: 1.5rem;
+    margin-bottom: 3rem;
+    border-radius: 0.5rem;
+  }
+  
+  .reading-large-text {
+    font-size: 1.25rem;
+    line-height: 1.8;
+    color: #1a1a1a;
+  }
+  
+  .reading-medium-text {
+    font-size: 1.125rem;
+    line-height: 1.8;
+    color: #374151;
+  }
+  
+  .reading-link {
+    color: #0066cc;
+    text-decoration: underline;
+  }
+  
+  .reading-section {
+    margin-bottom: 3rem;
+  }
+  
+  .reading-section-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 1rem;
+  }
+  
+  .reading-lib-item {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .reading-lib-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 0.75rem;
+  }
+  
+  .reading-code-block {
+    display: block;
+    background: #1a1a1a;
+    color: #e5e7eb;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    font-family: 'Courier New', monospace;
+    font-size: 1rem;
+    margin-top: 0.75rem;
+    overflow-x: auto;
+  }
+  
+  .reading-steps-list {
+    list-style: decimal;
+    padding-left: 2rem;
+    margin-top: 1rem;
+  }
+  
+  .reading-step-item {
+    font-size: 1.125rem;
+    line-height: 1.8;
+    color: #374151;
+    margin-bottom: 1rem;
+  }
+  
+  .reading-step-item code {
+    background: #f3f4f6;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.9em;
+  }
+  
+  .reading-constants-box {
+    background: #f9fafb;
+    border-left: 4px solid #3b82f6;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 0.5rem;
+  }
+  
+  .reading-constants-box.reading-constants-bonus {
+    border-left-color: #10b981;
+    background: #f0fdf4;
+  }
+  
+  .reading-constants-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 0.75rem;
+  }
+  
+  .reading-constants-list {
+    list-style: disc;
+    padding-left: 1.5rem;
+    margin-top: 0.5rem;
+  }
+  
+  .reading-constants-list li {
+    font-size: 1.125rem;
+    line-height: 1.8;
+    color: #374151;
+    margin-bottom: 0.5rem;
+  }
+  
+  .reading-flags-box {
+    background: #eff6ff;
+    border-left: 4px solid #3b82f6;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 0.5rem;
+  }
+  
+  .reading-flags-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 0.75rem;
+  }
+  
+  .reading-warning-box {
+    background: #fef3c7;
+    border-left: 4px solid #f59e0b;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    border-radius: 0.5rem;
+  }
+  
+  .reading-footer-note {
+    text-align: center;
+    color: #6b7280;
+    font-size: 1rem;
+    font-style: italic;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e5e7eb;
   }
 </style>

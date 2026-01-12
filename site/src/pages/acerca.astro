@@ -265,9 +265,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <p class="text-lg text-blue-800 mb-2">
             Si encuentras errores, tienes sugerencias o quieres reportar un problema:
           </p>
-          <p class="text-blue-700">
-            Puedes contactarnos a través del repositorio del proyecto.
+          <p class="text-blue-700 mb-3">
+            Puedes contactarnos a través de nuestro correo electrónico:
           </p>
+          <a href="mailto:solicitudes@costaricadecide.org" class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold text-lg">
+            📧 solicitudes@costaricadecide.org
+          </a>
         </div>
       </div>
     </div>
@@ -443,7 +446,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         </a>
       </div>
 
-      <p class="express-footer">🇨🇷 Costa Rica Decide 2026 · Motor de análisis</p>
+      <!-- Contacto -->
+      <div class="express-section express-section-blue">
+        <h2 class="express-section-title">📬 Contacto</h2>
+        <p class="express-contact-text">
+          Si encuentras errores o tienes sugerencias:
+        </p>
+        <a href="mailto:solicitudes@costaricadecide.org" class="express-contact-email">
+          📧 solicitudes@costaricadecide.org
+        </a>
+      </div>
+
+      <p class="express-footer">🇨🇷 Costa Rica Decide 2026 · Motor v7 (Neutral + Estricto + Bonos + Viabilidad + Flags)</p>
     </div>
   </div>
 
@@ -648,6 +662,22 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         </div>
       </section>
 
+      <!-- Contacto -->
+      <section class="reading-section">
+        <h2 class="reading-section-title">📬 Contacto</h2>
+        <div class="reading-box reading-box-blue">
+          <p class="reading-large-text mb-3">
+            Si encuentra errores, tiene sugerencias o quiere reportar un problema:
+          </p>
+          <p class="reading-medium-text mb-3">
+            Puede contactarnos a través de nuestro correo electrónico:
+          </p>
+          <a href="mailto:solicitudes@costaricadecide.org" class="reading-contact-email">
+            📧 solicitudes@costaricadecide.org
+          </a>
+        </div>
+      </section>
+
       <!-- Links -->
       <section class="reading-section">
         <div class="reading-links">
@@ -661,7 +691,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </section>
 
       <p class="reading-footer">
-        🇨🇷 Costa Rica Decide 2026 · Motor de análisis (Neutral + Estricto)
+        🇨🇷 Costa Rica Decide 2026 · Motor de análisis v7 (Neutral + Estricto + Bonos + Viabilidad Legal + Flags Informativos)
       </p>
     </div>
   </div>
@@ -995,6 +1025,37 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     background: white;
     color: #0891b2;
     border: 2px solid #0891b2;
+  }
+  
+  .express-section-blue {
+    background: linear-gradient(135deg, #eff6ff, #dbeafe);
+    border: 2px solid #93c5fd;
+  }
+  
+  .express-contact-text {
+    font-size: 0.95rem;
+    color: #1e40af;
+    margin-bottom: 0.75rem;
+  }
+  
+  .express-contact-email {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1e40af;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    background: white;
+    border-radius: 0.5rem;
+    border: 2px solid #93c5fd;
+    transition: all 0.2s;
+  }
+  
+  .express-contact-email:hover {
+    background: #dbeafe;
+    transform: translateY(-2px);
   }
   
   .express-footer {
@@ -1353,6 +1414,28 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     background: white;
     color: #0891b2;
     border: 3px solid #0891b2;
+  }
+  
+  .reading-contact-email {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #1e40af;
+    text-decoration: none;
+    padding: 1rem 1.5rem;
+    background: white;
+    border-radius: 0.75rem;
+    border: 3px solid #3b82f6;
+    transition: all 0.2s;
+    margin-top: 0.5rem;
+  }
+  
+  .reading-contact-email:hover {
+    background: #dbeafe;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   }
   
   .reading-footer {
